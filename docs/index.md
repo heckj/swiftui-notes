@@ -1,3 +1,6 @@
+---
+title: SwiftUI Notes
+---
 # SwiftUI Notes
 
-hi there
+hi there, with front-matter
