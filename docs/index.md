@@ -1,6 +1,7 @@
 ---
 title: SwiftUI Notes
 ---
-# SwiftUI Notes
 
-hi there, with updated configuration (w/ slightly tweaked layout and sidebar?)
+## SwiftUI Notes
+
+hi there, with updated configuration (w/ slightly tweaked layout)
