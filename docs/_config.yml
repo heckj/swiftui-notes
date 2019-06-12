@@ -11,3 +11,8 @@ plugins:
   - jekyll-mentions
   - jekyll-seo-tag
   - jekyll-avatar
+
+title: SwiftUI Notes
+description: Notes on using SwiftUI and Combine
+show_downloads: true
+google_analytics: UA-898243-5
