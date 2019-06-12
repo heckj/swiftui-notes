@@ -7,3 +7,5 @@ github: [metadata]
  jailed: false
  theme: dinky
  gfm_quirks: paragraph_end
+
+theme: jekyll-theme-dinky
