@@ -1,3 +1,5 @@
+---
+---
 # SwiftUI Notes
 
-hi there, without front-matter
+hi there, with front-matter
