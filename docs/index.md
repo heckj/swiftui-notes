@@ -1,5 +1,3 @@
-----
-----
 # SwiftUI Notes
 
 hi there
