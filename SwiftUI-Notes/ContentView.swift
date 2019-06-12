@@ -8,11 +8,14 @@
 
 import SwiftUI
 
+/// the sample ContentView
 struct ContentView : View {
     var body: some View {
         Text("Hello World")
     }
 }
+
+// MARK: - SwiftUI VIEW DEBUG
 
 #if DEBUG
 struct ContentView_Previews : PreviewProvider {
