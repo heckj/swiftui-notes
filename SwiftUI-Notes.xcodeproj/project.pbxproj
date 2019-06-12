@@ -27,6 +27,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1ABF361B22B1C47B0014C427 /* docs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = docs; sourceTree = "<group>"; };
+		1ABF361C22B1C4870014C427 /* CONTRIBUTING.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CONTRIBUTING.md; sourceTree = "<group>"; };
+		1ABF361D22B1C4870014C427 /* CODE_OF_CONDUCT.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CODE_OF_CONDUCT.md; sourceTree = "<group>"; };
+		1ABF361E22B1C4870014C427 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		1ABF361F22B1C4870014C427 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		1AC8C77522B1BED80064C1AE /* SwiftUI-Notes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SwiftUI-Notes.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AC8C77822B1BED80064C1AE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1AC8C77A22B1BED80064C1AE /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -61,6 +66,11 @@
 		1AC8C76C22B1BED80064C1AE = {
 			isa = PBXGroup;
 			children = (
+				1ABF361D22B1C4870014C427 /* CODE_OF_CONDUCT.md */,
+				1ABF361C22B1C4870014C427 /* CONTRIBUTING.md */,
+				1ABF361F22B1C4870014C427 /* LICENSE */,
+				1ABF361E22B1C4870014C427 /* README.md */,
+				1ABF361B22B1C47B0014C427 /* docs */,
 				1AC8C77722B1BED80064C1AE /* SwiftUI-Notes */,
 				1AC8C78E22B1BED90064C1AE /* SwiftUI-NotesTests */,
 				1AC8C77622B1BED80064C1AE /* Products */,
