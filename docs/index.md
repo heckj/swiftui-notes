@@ -6,4 +6,4 @@ google_analytics: UA-898243-5
 ---
 # SwiftUI Notes
 
-hi there, with front-matter
+hi there, with front-matter (and download)
