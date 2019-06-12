@@ -7,6 +7,7 @@ future: true
 jailed: false
 gfm_quirks: paragraph_end
 theme: jekyll-theme-dinky
+# docs at https://github.com/pages-themes/dinky/
 plugins:
   - jekyll-mentions
   - jekyll-seo-tag
