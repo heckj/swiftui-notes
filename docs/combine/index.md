@@ -1,13 +1,13 @@
 # Description of Combine
 
-Combine is a unified declarative framework for processing values over time. It is Apple's framework that
-is built using the functional reactive concepts that can be found in other languages. If you are already familar
-with ReactiveX extensions, there is [a pretty good cheat-sheet for translating the specifics between Rx and Combine](https://medium.com/gett-engineering/rxswift-to-apples-combine-cheat-sheet-e9ce32b14c5b),
+Combine is a unified declarative framework for processing values over time. It is Apple's
+framework that is built using the functional reactive concepts that can be found in other
+languages. If you are already familar with ReactiveX extensions, there is [a pretty good cheat-sheet for translating the specifics between Rx and Combine](https://medium.com/gett-engineering/rxswift-to-apples-combine-cheat-sheet-e9ce32b14c5b),
 built and inspired by the data collected at
 [https://github.com/freak4pc/rxswift-to-combine-cheatsheet](https://github.com/freak4pc/rxswift-to-combine-cheatsheet).
 
-Combine is Apple's functional reactive library. In Apple's words, it provides "a declarative Swift API
-for processing values over time".
+Combine is Apple's functional reactive library. In Apple's words, it provides
+> "a declarative Swift API for processing values over time".
 
 ## Core Concepts
 
@@ -29,10 +29,12 @@ Publisher <OutputType>, <FailureType>
 Subscriber <InputType>, <FailureType>
 ```
 
-Operators are used to transform types - both the Output and Failure type. Operators may also split/duplicate streams, or merge streams, but must always be aligned by the combination of Output/Failure types.
+Operators are used to transform types - both the Output and Failure type. Operators may also
+split or duplicate streams, or merge streams, Operators must always be aligned by the combination
+of Output/Failure types.
 
-The interals of the system are all driven by the subscriber. Subscribers and Publishers communicate in a well
-defined sequence:
+The interals of the system are all driven by the subscriber. Subscribers and Publishers
+communicate in a well defined sequence:
 
 - the subscriber is attached to a publisher: `.subscribe(Subscriber)`
 - the publisher sends a subscription: `receive(subscription)`
@@ -41,8 +43,8 @@ defined sequence:
 - publisher sends completion: `receive(completion:)`
 
 Operators fit in between Publishers and Subscribers. They adopt the
-[Publisher protocol](https://developer.apple.com/documentation/combine/publisher), subscribing to
-one or more Publishers, and sending results to one (or more) Subscribers.
+[Publisher protocol](https://developer.apple.com/documentation/combine/publisher), subscribing
+to one or more Publishers, and sending results to one (or more) Subscribers.
 
 ## Publishers
 
@@ -76,41 +78,43 @@ combining streams
 - zip
 - combineLatest
 
-flatMap
-merge
-reduce
-contains
-drop
-collect
+(operators to be organized and described):
 
-catch
-dropFirst
-allSatisfy
-breakpoint
-setFailureType
-prepend
-replaceError
-append
-filter
-removeDuplicates
-replaceNil
-count
-abortOnError
-breakpointOnError
-ignoreOutput
-switchToLatest
-scan
-handleEvents
-max
-retry
-first
-log
-mapError
-print
-min
-last
-output
-replaceEmpty
+- flatMap
+- merge
+- reduce
+- contains
+- drop
+- collect
+
+- catch
+- dropFirst
+- allSatisfy
+- breakpoint
+- setFailureType
+- prepend
+- replaceError
+- append
+- filter
+- removeDuplicates
+- replaceNil
+- count
+- abortOnError
+- breakpointOnError
+- ignoreOutput
+- switchToLatest
+- scan
+- handleEvents
+- max
+- retry
+- first
+- log
+- mapError
+- print
+- min
+- last
+- output
+- replaceEmpty
 
 The naming pattern of operators tends to follow similiar patterns on ordered collection types.
 
