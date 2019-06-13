@@ -46,8 +46,72 @@ one or more Publishers, and sending results to one (or more) Subscribers.
 
 ## Publishers
 
+[Publisher](https://developer.apple.com/documentation/combine/publisher)
 A publisher defines how values (and errors) are produced, and allows the registration of a subscriber.
+
+NotificationCenter.default.publisher
 
 ## Subscribers
 
+Assign (`Subscribers.Assign(object: exampleObject, keyPath: \.someProperty)`)
+
 ## Operators
+
+functional transformations
+
+- map
+- compactMap
+- prefix
+- decode
+
+list operations
+
+- filter
+
+error handling
+thread or queue movement
+scheduling and time
+
+combining streams
+- zip
+- combineLatest
+
+flatMap
+merge
+reduce
+contains
+drop
+collect
+
+catch
+dropFirst
+allSatisfy
+breakpoint
+setFailureType
+prepend
+replaceError
+append
+filter
+removeDuplicates
+replaceNil
+count
+abortOnError
+breakpointOnError
+ignoreOutput
+switchToLatest
+scan
+handleEvents
+max
+retry
+first
+log
+mapError
+print
+min
+last
+output
+replaceEmpty
+
+The naming pattern of operators tends to follow similiar patterns on ordered collection types.
+
+.assign (operator? subscriber?)
