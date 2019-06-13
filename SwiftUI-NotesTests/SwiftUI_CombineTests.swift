@@ -41,4 +41,12 @@ class SwiftUI_CombineTests: XCTestCase {
         print("fini")
     }
 
+    func testFutureMaking() {
+//        let x = Future { promise in
+//            promise(.success("a result"))
+//        }
+        // THIS should be creating a Result<String, Error>, but I don't think the initial release
+        // includes the Future convenience - not finding it in the documentation either... only the WWDC
+        // presentation data
+    }
 }
