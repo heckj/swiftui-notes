@@ -51,71 +51,178 @@ to one or more Publishers, and sending results to one (or more) Subscribers.
 [Publisher](https://developer.apple.com/documentation/combine/publisher)
 A publisher defines how values (and errors) are produced, and allows the registration of a subscriber.
 
-NotificationCenter.default.publisher
+NotificationCenter.default.publisher -> <Notification>, <Never>
+
+Just -> <SomeType>, <Never>
+
+- often used in error handling, provides a single result as a stream and ends
+
+publisher -> <SomeType>, <Never>
+
+- extracts a property from an object and returns it
+- ex: `.publisher(for: \.name)`
+
+BindableObject
+
+- often linked with method `didChange` to publish changes to model objects
+- `@ObjectBinding var model: MyModel`
+
+@Published
+
+- property wrapper that adds a Combine publisher to any property
+
+Future
+
+- you provide a closure that converts a callback/function of your own choosing into a promise.
+- example:
+
+```swift
+return Future { promise in
+  self.myFunctionCall(someVariable) { varname in
+    promise(.success(varname ? username : nil))
+  }
+}
+```
+
+- can be used within a Flatmap in an operator sequence to do your own processing/logic within
+  a stream, call out to an external service, etc.
+- commonly used when making external service calls over the network.
+
 
 ## Subscribers
 
-Assign (`Subscribers.Assign(object: exampleObject, keyPath: \.someProperty)`)
+Cancellation:
+
+Subscribers can support cancellation, which terminates a subscription early.
+
+```swift
+let trickNamePublisher = ... // Publisher of <String, Never>
+
+let canceller = trickNamePublisher.sink { trickName in
+}
+```
+
+Kinds of subscribers:
+
+- key-path assignment
+  - ex: `Subscribers.Assign(object: exampleObject, keyPath: \.someProperty)`
+  - ex: `.assign(to: \.isEnabled, on: signupButton)`
+
+- Sink
+  - you provide a closure where you process the results
+
+- Subject
+  - behave like both a publisher and subscriber
+  - broadcasts values to multiple subscribers
+  - `Passthrough` and `CurrentValue` subscribers
+    - Passthrough doesn't maintain any state - just passes through provided values
+    - CurrentValue remembers the current value so that when you attach a subscriber you can see the current value
+
+- SwiftUI
+  - SwiftUI provides the subscribers, you primarily fill in the publishers and operators
 
 ## Operators
+
+
+The naming pattern of operators tends to follow similiar patterns on ordered collection types.
+
+signature transformations
+
+- eraseToAnyPublisher
+  - when you chain operators together in swift, the object's type signature accumulates all the various
+    types, and it gets ugly pretty quickly.
+  - eraseToAnyPublisher takes the signature and "erases" the type back to the common type of AnyPublisher
+  - this provides a cleaner type for external declarations (framework was created prior to Swift 5's opaque types)
+  - `.eraseToAnyPublisher()`
+  - often at the end of chains of operators, and cleans up the type signature of the property getting asigned to the chain of operators
 
 functional transformations
 
 - map
+  - you provide a closure that gets the values and chooses what to publish
+
 - compactMap
+  - you provide a closure that gets the values and chooses what to publish
+
 - prefix
 - decode
+  - common operating where you hand in a type of decoder, and transform data (ex: JSON) into an object
+  - can fail, so it returns an error type
+  -> <SomeType>, <Error>
+
+- flatMap
+  - collapses nil values out of a stream
+  - used with error recovery or async operations that might fail (ex: Future)
+
+- removeDuplicates
+  - `.removeDuplicates()`
+  - remembers what was previously sent in the stream, and only passes forward new values
 
 list operations
 
 - filter
-
-error handling
-thread or queue movement
-scheduling and time
-
-combining streams
-- zip
-- combineLatest
-
-(operators to be organized and described):
-
-- flatMap
 - merge
 - reduce
 - contains
 - drop
-- collect
-
-- catch
 - dropFirst
-- allSatisfy
-- breakpoint
+- last
+- count
+
+error handling
+
+- assertNoFailure
+- retry
+- catch
+- mapError
 - setFailureType
+
+- breakpoint
+
+thread or queue movement
+
+- receive(on:)
+  `.receive(on: RunLoop.main)`
+
+- subscribe(on:)
+
+scheduling and time
+
+- throttle
+- delay
+- debounce
+  - `.debounce(for: 0.5, scheduler: RunLoop.main)`
+  - collapses multiple values within a specified time window into a single value
+  - often used with `.removeDuplicates()`
+
+combining streams
+
+- zip
+- combineLatest
+  - brings inputs from 2 (or more) streams together
+  - you provide a closure that gets the values and chooses what to publish
+
+(operators to be organized and described):
+
+- collect
+- max
+- min
+
+- allSatisfy
 - prepend
 - replaceError
 - append
 - filter
-- removeDuplicates
 - replaceNil
-- count
 - abortOnError
 - breakpointOnError
 - ignoreOutput
 - switchToLatest
 - scan
 - handleEvents
-- max
-- retry
 - first
 - log
-- mapError
 - print
-- min
-- last
 - output
 - replaceEmpty
 
-The naming pattern of operators tends to follow similiar patterns on ordered collection types.
-
-.assign (operator? subscriber?)
