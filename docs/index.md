@@ -2,7 +2,7 @@
 
 A collection of notes, project pieces, playgrounds and ideas on learning and using SwiftUI and Combine.
 
-## Table of Contents
+## Section
 
 - [Apple's Documentation and content](apple/)
 - [Combine](combine/)
