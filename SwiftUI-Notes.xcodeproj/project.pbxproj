@@ -43,6 +43,7 @@
 		1AC8C78B22B1BED90064C1AE /* SwiftUI-NotesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SwiftUI-NotesTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AC8C78F22B1BED90064C1AE /* SwiftUI_NotesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUI_NotesTests.swift; sourceTree = "<group>"; };
 		1AC8C79122B1BED90064C1AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1AD1154B22B2C7C6009CF36D /* SwiftUI_IOS_Playground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = SwiftUI_IOS_Playground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +67,7 @@
 		1AC8C76C22B1BED80064C1AE = {
 			isa = PBXGroup;
 			children = (
+				1AD1154B22B2C7C6009CF36D /* SwiftUI_IOS_Playground.playground */,
 				1ABF361D22B1C4870014C427 /* CODE_OF_CONDUCT.md */,
 				1ABF361C22B1C4870014C427 /* CONTRIBUTING.md */,
 				1ABF361F22B1C4870014C427 /* LICENSE */,
