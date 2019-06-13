@@ -263,6 +263,7 @@ functional transformations
 
 - breakpoint
   - Raises a debugger signal when a provided closure needs to stop the process in the debugger.
+
 - breakpointOnError
   - Raises a debugger signal upon receiving a failure.
 
@@ -362,3 +363,5 @@ functional transformations
   - requires Failure to be `<Never>`
 
 - output
+
+- multicast

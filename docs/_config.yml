@@ -10,7 +10,7 @@ gfm_quirks: paragraph_end
 theme: jekyll-theme-dinky
 # docs at https://github.com/pages-themes/dinky/
 plugins:
-  - jekyll-mentions
+#  - jekyll-mentions # picking up @wrappers as mentions...
   - jekyll-seo-tag
   - jekyll-avatar
 
