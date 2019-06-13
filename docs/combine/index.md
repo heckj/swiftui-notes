@@ -22,7 +22,7 @@ protocols in Swift, and when defined in code are set up
 with two associated types: an Output type and a Failure type. Subscribers have an Input and Failure
 type defined, and these must align to the publisher types for the two to be composed together.
 
-```shell
+```text
 Publisher <OutputType>, <FailureType>
               |  |          |  |
                \/            \/
@@ -48,17 +48,32 @@ to one or more Publishers, and sending results to one (or more) Subscribers.
 
 ## Publishers
 
-[Publisher](https://developer.apple.com/documentation/combine/publisher)
+protocol documentation: [Publisher](https://developer.apple.com/documentation/combine/publisher)
+
 A publisher defines how values (and errors) are produced, and allows the registration of a subscriber.
 
 NotificationCenter.default.publisher -> `<Notification>`, `<Never>`
 
-Just -> `<SomeType>`, `<Never>`
+[Convenience publishers](https://developer.apple.com/documentation/combine/publishers)
 
-- often used in error handling, provides a single result as a stream and ends
+- Just -> `<SomeType>`, `<Never>`
+  - often used in error handling
+  - provides a single result on a stream and then terminates
+- Empty -> `<SomeType>`, `<Error>`
+  - never publishes any values, and optionally finishes immediately
+  - `Empty(completeImmediately: false)`
+- Fail
+  - A publisher that immediately gterminates with the specified failure
+- Once
+  - Generates an output to each subscriber exactly once then finishes or fails immediately
+- Optional
+  - generates a value exactly once for each subscriber, if the optional has a value
+- Sequence
+  - publishes a given sequence of elements
+- Deferred
+  - publisher waits for a subscriber before running the provided closure to create values for the subscriber
 
 publisher -> `<SomeType>`, `<Never>`
-
 - extracts a property from an object and returns it
 - ex: `.publisher(for: \.name)`
 
@@ -106,6 +121,8 @@ Kinds of subscribers:
 - key-path assignment
   - ex: `Subscribers.Assign(object: exampleObject, keyPath: \.someProperty)`
   - ex: `.assign(to: \.isEnabled, on: signupButton)`
+  - Assigns the value of a KVO-compliant property from a publisher.
+  - requires Failure to be `<Never>`
 
 - Sink
   - you provide a closure where you process the results
@@ -138,64 +155,139 @@ functional transformations
 
 - map
   - you provide a closure that gets the values and chooses what to publish
+  - there's a variant `tryMap` that that transforms all elements from the upstream publisher with a provided error-throwing closure.
 
 - compactMap
-  - you provide a closure that gets the values and chooses what to publish
+  - republishes all non-nil results of calling a closure with each received element.
+  - there's a variant `tryCompactMap` for use with a provided error-throwing closure.
 
 - prefix
+  - Republishes elements until another publisher emits an element.
+  - requires Failure to be `<Never>`
+
 - decode
   - common operating where you hand in a type of decoder, and transform data (ex: JSON) into an object
   - can fail, so it returns an error type
+  - Available when Output conforms to Decodable.
   -> `<SomeType>`, `<Error>`
 
 - flatMap
   - collapses nil values out of a stream
   - used with error recovery or async operations that might fail (ex: Future)
+  - requires Failure to be `<Never>`
 
 - removeDuplicates
   - `.removeDuplicates()`
   - remembers what was previously sent in the stream, and only passes forward new values
+  - there's a variant `tryRemoveDuplicates` for use with a provided error-throwing closure.
 
-list operations
+- encode
+  - Encodes the output from upstream using a specified TopLevelEncoder. For example, use JSONEncoder.
+  - Available when Output conforms to Encodable.
+
+**list operations**
 
 - filter
-- merge
-- reduce
-- contains
-- drop
-- dropFirst
-- last
-- count
+  - requires Failure to be `<Never>`
+  - takes a closure where you can specify how/what gets filtered
+  - there's a variant `tryFilter`for use with a provided error-throwing closure.
 
-error handling
+- merge
+  - Combines elements from this publisher with those from another publisher of the same type, delivering an interleaved sequence of elements.
+  - requires Failure to be `<Never>`
+  - multiple variants that will merge between 2 and 8 different streams
+
+- reduce
+  - A publisher that applies a closure to all received elements and produces an accumulated value when the upstream publisher finishes.
+  - requires Failure to be `<Never>`
+  - there's a varient `tryReduce` for use with a provided error-throwing closure.
+
+- contains
+  - emits a Boolean value when a specified element is received from its upstream publisher.
+  - variant `containsWhere` when a provided predicate is satisfied
+  - variant `tryContainsWhere` when a provided predicate is satisfied but could throw errors
+
+- drop
+  - multiple variants
+  - requires Failure to be `<Never>`
+  - Ignores elements from the upstream publisher until it receives an element from a second publisher.
+  - or `drop(while: {})`
+
+- dropFirst
+
+- count
+  - publishes the number of items received from the upstream publisher
+
+- comparison
+  - republishes items from another publisher only if each new item is in increasing order from the previously-published item.
+  - there's a variant `tryComparson` which fails if the ordering logic throws an error
+
+- prepend
+  - Prefixes a Publisher’s output with the specified sequence.
+  - requires Failure to be `<Never>`
+
+- append
+  - Append a Publisher’s output with the specified sequence.
+  - requires Failure to be `<Never>`
+
+**error handling**
 
 - assertNoFailure
+  - Raises a fatal error when its upstream publisher fails, and otherwise republishes all received input.
+
 - retry
+  - requires Failure to be `<Never>`
+  - multiple variants - once or by a provided count
+
 - catch
+  - Handles errors from an upstream publisher by replacing it with another publisher.
+
 - mapError
+  - Converts any failure from the upstream publisher into a new error.
+
 - setFailureType
 
 - breakpoint
+  - Raises a debugger signal when a provided closure needs to stop the process in the debugger.
+- breakpointOnError
+  - Raises a debugger signal upon receiving a failure.
 
-thread or queue movement
+**thread or queue movement**
 
 - receive(on:)
   `.receive(on: RunLoop.main)`
 
 - subscribe(on:)
 
-scheduling and time
+**scheduling and time**
 
 - throttle
-- delay
+  - Publishes either the most-recent or first element published by the upstream publisher in the specified time interval.
+  - requires Failure to be `<Never>`
+
+- timeout
+  - Terminates publishing if the upstream publisher exceeds the specified time interval without producing an element.
+  - requires Failure to be `<Never>`
+
 - debounce
   - `.debounce(for: 0.5, scheduler: RunLoop.main)`
   - collapses multiple values within a specified time window into a single value
   - often used with `.removeDuplicates()`
 
-combining streams
+- delay
+  - Delays delivery of all output to the downstream receiver by a specified amount of time on a particular scheduler.
+  - requires Failure to be `<Never>`
+
+- measureInterval
+  - Measures and emits the time interval between events received from an upstream publisher.
+  - requires Failure to be `<Never>`
+
+**combining streams**
 
 - zip
+  - Combine elements from another publisher and deliver pairs of elements as tuples.
+  - requires Failure to be `<Never>`
+
 - combineLatest
   - brings inputs from 2 (or more) streams together
   - you provide a closure that gets the values and chooses what to publish
@@ -203,23 +295,56 @@ combining streams
 (operators to be organized and described):
 
 - collect
+  - multiple variants
+    - buffers items
+    - `collect()` Collects all received elements, and emits a single array of the collection when the upstream publisher finishes.
+    - `collect(Int)` collects N elements and emits as an array
+    - `collect(.byTime)` or `collect(.byTimeOrCount)`
+
 - max
+  - Available when Output conforms to Comparable.
+  - Publishes the maximum value received from the upstream publisher, after it finishes.
+
 - min
+  - Publishes the minimum value received from the upstream publisher, after it finishes.
+  - Available when Output conforms to Comparable.
 
 - allSatisfy
-- prepend
+  - Publishes a single Boolean value that indicates whether all received elements pass a given predicate.
+  - there's a variant `tryAllSatisfy` when the predicate can throw errors
+
 - replaceError
-- append
-- filter
-- replaceNil
-- abortOnError
-- breakpointOnError
-- ignoreOutput
-- switchToLatest
-- scan
-- handleEvents
-- first
-- log
-- print
-- output
+  - requires Failure to be `<Never>`
+
 - replaceEmpty
+  - requires Failure to be `<Never>`
+
+- replaceNil
+  - requires Failure to be `<Never>`
+  - Replaces nil elements in the stream with the proviced element.
+
+- abortOnError
+
+- ignoreOutput
+
+- switchToLatest
+
+- scan
+
+- handleEvents
+
+- first
+  - requires Failure to be `<Never>`
+  - publishes the first element to satisfy a provided predicate
+
+- last
+  - requires Failure to be `<Never>`
+  - publishes the last element to satisfy a provided predicate
+
+- log
+
+- print
+  - Prints log messages for all publishing events.
+  - requires Failure to be `<Never>`
+
+- output
