@@ -74,6 +74,7 @@ NotificationCenter.default.publisher -> `<Notification>`, `<Never>`
   - publisher waits for a subscriber before running the provided closure to create values for the subscriber
 
 publisher -> `<SomeType>`, `<Never>`
+
 - extracts a property from an object and returns it
 - ex: `.publisher(for: \.name)`
 
@@ -105,37 +106,50 @@ return Future { promise in
 
 ## Subscribers
 
-Cancellation:
-
-Subscribers can support cancellation, which terminates a subscription early.
-
-```swift
-let trickNamePublisher = ... // Publisher of <String, Never>
-
-let canceller = trickNamePublisher.sink { trickName in
-}
-```
+Subscribers can support cancellation, which terminates a subscription and shuts down all
+the stream processing prior to any Completion sent by the publisher.
+Both `Assign` and `Sink` conform to the
+[cancellable protocol](https://developer.apple.com/documentation/combine/cancellable).
 
 Kinds of subscribers:
 
-- key-path assignment
+- [Assign](https://developer.apple.com/documentation/combine/subscribers/assign): key-path assignment
   - ex: `Subscribers.Assign(object: exampleObject, keyPath: \.someProperty)`
   - ex: `.assign(to: \.isEnabled, on: signupButton)`
   - Assigns the value of a KVO-compliant property from a publisher.
   - requires Failure to be `<Never>`
 
-- Sink
+- [Sink](https://developer.apple.com/documentation/combine/subscribers/sink)
   - you provide a closure where you process the results
+  - ex:
 
-- Subject
-  - behave like both a publisher and subscriber
-  - broadcasts values to multiple subscribers
-  - `Passthrough` and `CurrentValue` subscribers
-    - Passthrough doesn't maintain any state - just passes through provided values
-    - CurrentValue remembers the current value so that when you attach a subscriber you can see the current value
+  ```swift
+  let cancellablePublisher = somePublisher.sink { data in
+    // do what you need with the data...
+  }
 
-- SwiftUI
-  - SwiftUI provides the subscribers, you primarily fill in the publishers and operators
+  cancellablePublisher.cancel() // to kill the stream before it's complete
+  ```
+
+SwiftUI also provides subscribers.
+
+- SwiftUI provides the subscribers, you primarily fill in the publishers and operators
+
+## Subjects
+
+A [Subject](https://developer.apple.com/documentation/combine/subject) behaves like both a
+publisher and subscriber. Subjects can be used to "inject" values into a stream, by calling the
+subject's `.send()` method. This is useful for integrating existing imperative code with Combine.
+
+A subject can also broadcast values to multiple subscribers.
+
+There are two primary types of Subject:
+
+- [`Passthrough`](https://developer.apple.com/documentation/combine/passthroughsubject)
+  - Passthrough doesn't maintain any state - just passes through provided values
+
+- [`CurrentValue`](https://developer.apple.com/documentation/combine/currentvaluesubject) subscribers
+  - CurrentValue remembers the current value so that when you attach a subscriber you can see the current value
 
 ## Operators
 
@@ -185,7 +199,7 @@ functional transformations
   - Encodes the output from upstream using a specified TopLevelEncoder. For example, use JSONEncoder.
   - Available when Output conforms to Encodable.
 
-**list operations**
+### list operations
 
 - filter
   - requires Failure to be `<Never>`
@@ -230,7 +244,7 @@ functional transformations
   - Append a Publisher’s output with the specified sequence.
   - requires Failure to be `<Never>`
 
-**error handling**
+### error handling
 
 - assertNoFailure
   - Raises a fatal error when its upstream publisher fails, and otherwise republishes all received input.
@@ -252,14 +266,14 @@ functional transformations
 - breakpointOnError
   - Raises a debugger signal upon receiving a failure.
 
-**thread or queue movement**
+### thread or queue movement
 
 - receive(on:)
   `.receive(on: RunLoop.main)`
 
 - subscribe(on:)
 
-**scheduling and time**
+### scheduling and time
 
 - throttle
   - Publishes either the most-recent or first element published by the upstream publisher in the specified time interval.
@@ -282,7 +296,7 @@ functional transformations
   - Measures and emits the time interval between events received from an upstream publisher.
   - requires Failure to be `<Never>`
 
-**combining streams**
+### combining streams
 
 - zip
   - Combine elements from another publisher and deliver pairs of elements as tuples.
