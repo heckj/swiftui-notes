@@ -16,5 +16,5 @@ plugins:
 
 title: SwiftUI Notes
 description: Notes on using SwiftUI and Combine
-show_downloads: true
+show_downloads: false
 google_analytics: UA-898243-5
