@@ -22,7 +22,7 @@ protocols in Swift, and when defined in code are set up
 with two associated types: an Output type and a Failure type. Subscribers have an Input and Failure
 type defined, and these must align to the publisher types for the two to be composed together.
 
-```
+```shell
 Publisher <OutputType>, <FailureType>
               |  |          |  |
                \/            \/
@@ -51,13 +51,13 @@ to one or more Publishers, and sending results to one (or more) Subscribers.
 [Publisher](https://developer.apple.com/documentation/combine/publisher)
 A publisher defines how values (and errors) are produced, and allows the registration of a subscriber.
 
-NotificationCenter.default.publisher -> <Notification>, <Never>
+NotificationCenter.default.publisher -> `<Notification>`, `<Never>`
 
-Just -> <SomeType>, <Never>
+Just -> `<SomeType>`, `<Never>`
 
 - often used in error handling, provides a single result as a stream and ends
 
-publisher -> <SomeType>, <Never>
+publisher -> `<SomeType>`, `<Never>`
 
 - extracts a property from an object and returns it
 - ex: `.publisher(for: \.name)`
@@ -87,7 +87,6 @@ return Future { promise in
 - can be used within a Flatmap in an operator sequence to do your own processing/logic within
   a stream, call out to an external service, etc.
 - commonly used when making external service calls over the network.
-
 
 ## Subscribers
 
@@ -123,7 +122,6 @@ Kinds of subscribers:
 
 ## Operators
 
-
 The naming pattern of operators tends to follow similiar patterns on ordered collection types.
 
 signature transformations
@@ -148,7 +146,7 @@ functional transformations
 - decode
   - common operating where you hand in a type of decoder, and transform data (ex: JSON) into an object
   - can fail, so it returns an error type
-  -> <SomeType>, <Error>
+  -> `<SomeType>`, `<Error>`
 
 - flatMap
   - collapses nil values out of a stream
@@ -225,4 +223,3 @@ combining streams
 - print
 - output
 - replaceEmpty
-
