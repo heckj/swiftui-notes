@@ -10,3 +10,23 @@ for processing values over time".
 
 ## Core Concepts
 
+Combine is built to process streams of events - one or more events, over time. It does so by sourcing data from **publishers**, transforming the events through **operators**, which are consumed by **subscribers**. These sequences, often called "streams" are composed and typically chained together.
+
+Publisher and Subscriber are defined as protocols in Swift, and when defined in code are set up with two associated types: an Output type and a Failure type. Subscribers have an Input and Failure type defined, and these must align to the publisher types for the two to be composed together.
+
+```
+Publisher <OutputType>, <FailureType>
+              |  |          |  |
+               \/            \/
+Subscriber <InputType>, <FailureType>
+```
+
+Operators are used to transform types - both the Output and Failure type. Operators may also split/duplicate streams, or merge streams, but must always be aligned by the combination of Output/Failure types.
+
+### Publishers
+
+A publisher defines how values (and errors) are produced, and allows the registration of a subscriber.
+
+### Subscribers
+
+### Operators
