@@ -27,15 +27,13 @@ class SwiftUI_CombineTests: XCTestCase {
             print(data)
         }
 
-        let countingCollector = foo
+        let _ = foo
             .collect(3)
             .sink { (listOfStrings: [String]) in
                 XCTAssertEqual(listOfStrings, originalListOfString)
             }
 
-        XCTAssertNotNil(printingSubscriber)
-        XCTAssertNotNil(countingCollector)
-        print("fini")
+        XCTAssertNotNil(printingSubscriber) 
     }
 
     func testAnyFuture_CreationAndUse() {
@@ -135,6 +133,9 @@ class SwiftUI_CombineTests: XCTestCase {
             .sink(receiveValue: { placeholder in
                 XCTAssertEqual(placeholder, "yo")
             })
-
     }
+
+    // IDEA: It might make more sense to use Subject to check/test values being processed in Combine
+    // rather than dropping them into .sink() which triggers the invocation of everything, and in which failures
+    // propogate upward to see a failure.
 }
