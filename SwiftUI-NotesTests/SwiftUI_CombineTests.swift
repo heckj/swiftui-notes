@@ -11,14 +11,6 @@ import Combine
 
 class SwiftUI_CombineTests: XCTestCase {
 
-    override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
     func testSimpleSequencePublisher() {
 
         let originalListOfString = ["foo", "bar", "baz"]
@@ -46,52 +38,103 @@ class SwiftUI_CombineTests: XCTestCase {
         print("fini")
     }
 
-    func testFutureMaking() {
+    func testAnyFuture_CreationAndUse() {
         // A generic Future that always returns <Any>"A result"
         let goodPlace = Publishers.Future<Any, Error> { promise in
             promise(.success("A result"))
         }
 
+        let goodSinkHolder = goodPlace.sink(receiveValue: { receivedThing in
+            // receiveValue here is typed as "<Any>"
+            XCTAssertNotNil(receivedThing)
+            print(receivedThing)
+        })
+
+        // just to hide the Xcode "unused" warnings really...
+        XCTAssertNotNil(goodSinkHolder)
+        XCTAssertNotNil(goodPlace)
+    }
+
+    func testStringFuture_CreationAndUse() {
+        // A generic Future that always returns <Any>"A result"
+        let goodPlace = Publishers.Future<String, Error> { promise in
+            promise(.success("A result"))
+        }
+
+        let goodSinkHolder = goodPlace.sink(receiveValue: { receivedThing in
+            // receivedThing here is typed as String
+            XCTAssertNotNil(receivedThing)
+            // which makes it a lot easier to assert against
+            XCTAssertEqual(receivedThing, "A result")
+        })
+
+        // just to hide the Xcode "unused" warnings really...
+        XCTAssertNotNil(goodSinkHolder)
+        XCTAssertNotNil(goodPlace)
+    }
+
+    func testAnyFuture_FailingAFuture() {
         enum sampleError: Error {
             case exampleError
+            case aDifferentError
         }
 
         // A generic Future that always returns a Failure
-        let badPlace = Publishers.Future<Any, Error> { promise in
+        let badPlace = Publishers.Future<String, sampleError> { promise in
             // promise is Result<Any, Error> and this is expect to return Void
             // you generally call promise with .success() or .failure() enclosing relevant information (or results)
             promise(.failure(sampleError.exampleError))
         }
 
-        let goodSinkHolder = goodPlace.sink(receiveValue: { receivedThing in
-            XCTAssertNotNil(receivedThing)
-            print("Got something from this here Future.... : ")
-            print(receivedThing)
-        })
+        // NOTE(heckj) I'm not entirely clear on how you can/should check failure path of a result chain
+        // .sink() is a good place to drop in assertions for determining what happened in the success path,
+        // but never gets called when a Future publisher sends a failure result.
 
-        let badSinkHolder = badPlace
-            //.assertNoFailure() // kind of expecting this to blow up... and it does
-//            .mapError({ someError in
-//                XCTAssertNotNil(someError) // this errors with: Cannot convert value of type '()' to closure result type '_'
-//            })
+        // IDEA: using .assertNoFailure()
+        //   this causes a fatalException and invoke the debugger if you try this path
+
+        // badPlace
+        //    .assertNoFailure()
+
+
+        // IDEA: Can we use "mapError" and slip in assert to validate the failure propogating through the chain?
+
+        //   unfortunately, no - sticking an assert as the only thing in that closure will return it, which causes
+        // the compiler to complain about changing the error type to the Error type that XCTAssert... methods
+        // use to validate the test case.
+
+        //   and using an assert in the sequence either never gets executed or doesn't end up propogating the error
+        // up to the test runner.
+
+        /*
+        let _ = badPlace
+            .mapError({ someError -> sampleError in // -> sampleError is because the compiler can't infer the type...
+                XCTAssertNil(someError) // by itself this errors with: Cannot convert value of type '()' to closure result type '_'
+                // XCTAssertEqual(sampleError.exampleError, someError)
+                // This doesn't work, compiler error: "Protocol type 'Error' cannot conform to 'Equatable' because only concrete types can conform to protocols"
+                return sampleError.aDifferentError
+            })
+         */
+
+        // one way that *does* appear to work is to explicitly catch the error and using .catch() to
+        // convert it into a result value, and then verify that result value gets called.
+        let _ = badPlace
             .catch({ someError in
+                // expected to return a publisher of SOME form...
+                // .catch() is used to keep the whole stream alive and connected
+
                 // XCTAssertNotNil(someError)
                 // trying to assert anything in the catch results in the compiler erroring:
                 // Cannot invoke 'sink' with an argument list of type '(receiveValue: @escaping (Any) -> Void)'
 
-                // expected to return a publisher of SOME form...
-                // .catch() is used to keep the whole stream alive and connected
+                // while this is catching an error, I'm not entirely clear on if you can validate
+                // the kind and any details of the specifics of the instance of error - that is, which
+                // error happened...
                 return Publishers.Just("yo")
             })
             .sink(receiveValue: { placeholder in
-                print("We got a ", placeholder)
-                // this will never get invoked?
-        })
+                XCTAssertEqual(placeholder, "yo")
+            })
 
-        // just to hide the Xcode "unused" warnings really...
-        XCTAssertNotNil(goodSinkHolder)
-        XCTAssertNotNil(badSinkHolder)
-        XCTAssertNotNil(goodPlace)
-        XCTAssertNotNil(badPlace)
     }
 }
