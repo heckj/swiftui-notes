@@ -90,12 +90,24 @@ BindableObject
 Future
 
 - you provide a closure that converts a callback/function of your own choosing into a promise.
+- in creating a Future publisher, you need to handle the logic of when you generate the relevant
+  Result<Output, Error> with the asynchronous calls.
+
 - example:
 
 ```swift
-return Future { promise in
-  self.myFunctionCall(someVariable) { varname in
-    promise(.success(varname ? username : nil))
+
+enum sampleError: Error {
+    case exampleError
+}
+
+let x = Publishers.Future<String, Error> { promise in
+  do {
+      try self.myFunctionCall(someVariable) { varname in
+          promise(.success(varname ? username : nil))
+      }
+  } catch {
+      promise(.failure(sampleError.exampleError))
   }
 }
 ```
