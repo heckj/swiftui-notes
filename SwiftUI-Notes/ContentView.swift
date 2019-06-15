@@ -7,13 +7,46 @@
 //
 
 import SwiftUI
+import MapKit
+
+struct MapView: UIViewRepresentable {
+
+    func makeUIView(context: Context) -> MKMapView {
+        MKMapView(frame: .zero)
+    }
+
+    func updateUIView(_ view: MKMapView, context: Context) {
+        let coordinate = CLLocationCoordinate2D(
+            latitude: 47.6418507, longitude: -122.3479701)
+        let span = MKCoordinateSpan(latitudeDelta: 1.0, longitudeDelta: 1.0)
+        let region = MKCoordinateRegion(center: coordinate, span: span)
+        view.setRegion(region, animated: true)
+    }
+
+}
 
 /// the sample ContentView
 struct ContentView : View {
     @ObjectBinding var model: ExampleModel
-    
+
+    func clickityButton() {
+
+    }
+
     var body: some View {
-        Text(model.foo)
+        VStack {
+            Text(model.foo)
+                .font(.title)
+                .color(.blue)
+
+            Text("so here's something simpler")
+                .font(.caption)
+                .color(.black)
+
+            Spacer()
+
+            MapView()
+        }
     }
 }
 
