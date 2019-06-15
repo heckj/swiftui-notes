@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1AA72DB022B5536200FB8297 /* ExampleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA72DAF22B5536200FB8297 /* ExampleModel.swift */; };
 		1AC8C77922B1BED80064C1AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC8C77822B1BED80064C1AE /* AppDelegate.swift */; };
 		1AC8C77B22B1BED80064C1AE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC8C77A22B1BED80064C1AE /* SceneDelegate.swift */; };
 		1AC8C77D22B1BED80064C1AE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC8C77C22B1BED80064C1AE /* ContentView.swift */; };
@@ -28,6 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1AA72DAF22B5536200FB8297 /* ExampleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleModel.swift; sourceTree = "<group>"; };
 		1ABF361B22B1C47B0014C427 /* docs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = docs; sourceTree = "<group>"; };
 		1ABF361C22B1C4870014C427 /* CONTRIBUTING.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CONTRIBUTING.md; sourceTree = "<group>"; };
 		1ABF361D22B1C4870014C427 /* CODE_OF_CONDUCT.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CODE_OF_CONDUCT.md; sourceTree = "<group>"; };
@@ -95,6 +97,7 @@
 			children = (
 				1AC8C77822B1BED80064C1AE /* AppDelegate.swift */,
 				1AC8C77A22B1BED80064C1AE /* SceneDelegate.swift */,
+				1AA72DAF22B5536200FB8297 /* ExampleModel.swift */,
 				1AC8C77C22B1BED80064C1AE /* ContentView.swift */,
 				1AC8C77E22B1BED80064C1AE /* Assets.xcassets */,
 				1AC8C78322B1BED80064C1AE /* LaunchScreen.storyboard */,
@@ -225,6 +228,7 @@
 			files = (
 				1AC8C77922B1BED80064C1AE /* AppDelegate.swift in Sources */,
 				1AC8C77B22B1BED80064C1AE /* SceneDelegate.swift in Sources */,
+				1AA72DB022B5536200FB8297 /* ExampleModel.swift in Sources */,
 				1AC8C77D22B1BED80064C1AE /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

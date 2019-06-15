@@ -10,17 +10,21 @@ import SwiftUI
 
 /// the sample ContentView
 struct ContentView : View {
+    @ObjectBinding var model: ExampleModel
+    
     var body: some View {
-        Text("Hello World")
+        Text(model.foo)
     }
 }
 
 // MARK: - SwiftUI VIEW DEBUG
 
 #if DEBUG
+var blah = ExampleModel()
+
 struct ContentView_Previews : PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(model: blah)
     }
 }
 #endif
