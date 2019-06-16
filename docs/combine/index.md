@@ -119,6 +119,15 @@ let x = Publishers.Future<String, Error> { promise in
   a stream, call out to an external service, etc.
 - commonly used when making external service calls over the network.
 
+DataTaskPublisher
+
+- part of URLSession (missing from Xcode 11 beta1 docs)
+- ex: 
+```swift
+var request = URLRequest(url: regularURL)
+return URLSession.shared.dataTaskPublisher(for: request)
+```
+
 ## Subscribers
 
 Subscribers can support cancellation, which terminates a subscription and shuts down all
