@@ -27,7 +27,7 @@ after_failure:
   - docker logs asciidoc-to-epub3
 
 after_success:
-  - cd output ; mv using-combine-book.html index.html ; cp -R ../images images
+  - cd output ; mv using-combine-book.html index.html ; cp -R ../docs/images images
   - git init
   - git config user.name "${GH_USER_NAME}"
   - git config user.email "{GH_USER_EMAIL}"
