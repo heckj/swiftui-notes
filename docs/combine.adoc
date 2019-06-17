@@ -1,4 +1,4 @@
-# Combine
+== Apple's Combine
 
 In Apple's words, Combine is
 > "a declarative Swift API for processing values over time".
@@ -12,7 +12,7 @@ built and inspired by the data collected at
 Apple's framework uses many of the same functional reactive concepts that can be found in other
 languages and libraries, applying the strongly-typed nature of Swift to their solution.
 
-## Core Concepts
+== Core Concepts
 
 Combine is built to process streams of events - one or more events, over time. It does so by
 sourcing data from **publishers**, transforming the events through **operators**, which are
@@ -49,7 +49,7 @@ Operators fit in between Publishers and Subscribers. They adopt the
 [Publisher protocol](https://developer.apple.com/documentation/combine/publisher), subscribing
 to one or more Publishers, and sending results to one (or more) Subscribers.
 
-## Publishers
+== Publishers
 
 protocol documentation: [Publisher](https://developer.apple.com/documentation/combine/publisher)
 
@@ -128,7 +128,7 @@ var request = URLRequest(url: regularURL)
 return URLSession.shared.dataTaskPublisher(for: request)
 ```
 
-## Subscribers
+== Subscribers
 
 Subscribers can support cancellation, which terminates a subscription and shuts down all
 the stream processing prior to any Completion sent by the publisher.

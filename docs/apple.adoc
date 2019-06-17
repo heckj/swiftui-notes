@@ -1,4 +1,4 @@
-# Apple's documentation and content
+== Apple's documentation and content
 
 The [online documentation for Combine](https://developer.apple.com/documentation/combine)
 can be found at [https://developer.apple.com/documentation/combine](https://developer.apple.com/documentation/combine).

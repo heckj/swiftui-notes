@@ -37,7 +37,7 @@ the content.
 
 The content is hosted by Github (on github pages), generated with Jekyll, primarily written in Markdown.
 
-### Setting up the local rendering
+### Setting up asciidoctor for local rendering
 
 - get a more recent ruby (I'm using rbenv with `brew install rbenv`), current 2.6.3
 
@@ -45,12 +45,36 @@ The content is hosted by Github (on github pages), generated with Jekyll, primar
 rbenv install 2.6.3
 rbenv global 2.6.3
 
-cd docs
 gem install bundler
 gem install asciidoctor
 NOKOGIRI_USE_SYSTEM_LIBRARIES=1 gem install asciidoctor-epub3 --pre
 gem install pygments.rb
 ```
+
+### Rendering
+
+```bash
+cd docs
+asciidoctor-epub3 -D output using-combine-book.adoc
+asciidoctor-pdf -D output using-combine-book.adoc
+asciidoctor -D html -r ./lib/google-analytics-docinfoprocessor.rb using-combine-book.adoc
+```
+
+A variation of these commands are included in the [`.travisCI`](.travis.yml) build configuration.
+
+You can do all this rendering locally with docker. Do this from the **top** of the repository:
+
+    # get the docker image loaded up
+    docker pull asciidoctor/docker-asciidoctor
+
+    # render the HTML, results should appear in `output` directory
+    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html asciidoctor/docker-asciidoctor asciidoctor -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
+
+    # render a PDF, results should appear in `output` directory
+    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-pdf asciidoctor/docker-asciidoctor asciidoctor-pdf -D /documents/output docs/using-combine-book.adoc
+
+    # render an epub3 file, results should appear in `output` directory
+    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-epub3 asciidoctor/docker-asciidoctor asciidoctor-epub3 -D /documents/output docs/using-combine-book.adoc
 
 ## Outline (work in progress)
 
