@@ -1,0 +1,14 @@
+= Using Combine
+Joseph Heck
+v1.0, 2019-06-17
+:doctype: book
+:creator: {author}
+:producer: Asciidoctor
+:keywords: Apple, Combine, ReactiveX, SwiftUI
+:copyright: Joseph Heck 2019
+:imagesdir: images
+:toc: left
+
+include::apple.adoc[]
+
+include::combine.adoc[]

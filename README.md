@@ -45,11 +45,19 @@ The content is hosted by Github (on github pages), generated with Jekyll, primar
 rbenv install 2.6.3
 rbenv global 2.6.3
 
-cd docs
 gem install bundler
 gem install asciidoctor
 NOKOGIRI_USE_SYSTEM_LIBRARIES=1 gem install asciidoctor-epub3 --pre
 gem install pygments.rb
+```
+
+Rendering
+
+```bash
+cd docs
+asciidoctor-epub3 -D output using-combine-book.adoc
+asciidoctor-pdf -D output using-combine-book.adoc
+asciidoctor -D html using-combine-book.adoc
 ```
 
 ## Outline (work in progress)
