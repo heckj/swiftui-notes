@@ -57,7 +57,7 @@ Rendering
 cd docs
 asciidoctor-epub3 -D output using-combine-book.adoc
 asciidoctor-pdf -D output using-combine-book.adoc
-asciidoctor -D html using-combine-book.adoc
+asciidoctor -D html -r ./lib/google-analytics-docinfoprocessor.rb using-combine-book.adoc
 ```
 
 ## Outline (work in progress)

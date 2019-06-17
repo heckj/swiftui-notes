@@ -7,6 +7,7 @@ v1.0, 2019-06-17
 :keywords: Apple, Combine, ReactiveX, SwiftUI
 :copyright: Joseph Heck 2019
 :imagesdir: images
+:google-analytics-account: UA-898243-5
 :toc: left
 
 include::apple.adoc[]
