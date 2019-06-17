@@ -8,6 +8,7 @@ v1.0, 2019-06-17
 :copyright: Joseph Heck 2019
 :imagesdir: images
 :google-analytics-account: UA-898243-5
+:url-issues: https://github.com/heckj/swiftui-notes/issues
 :toc: left
 
 include::apple.adoc[]
