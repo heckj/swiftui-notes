@@ -41,6 +41,9 @@ The content is hosted by Github (on github pages), generated with Jekyll, primar
 
 - get a more recent ruby (I'm using rbenv with `brew install rbenv`), current 2.6.3
 
+The git metadata requires "rugged", which wants cmake to install it... so you might need to
+`brew install cmake` to make this all work.
+
 ```bash
 rbenv install 2.6.3
 rbenv global 2.6.3
@@ -49,6 +52,8 @@ gem install bundler
 gem install asciidoctor
 NOKOGIRI_USE_SYSTEM_LIBRARIES=1 gem install asciidoctor-epub3 --pre
 gem install pygments.rb
+
+gem install rugged # required for the git-metadata extension, requires 'cmake'
 ```
 
 ### Rendering
@@ -69,16 +74,16 @@ A variation of these commands are included in the [`.travisCI`](.travis.yml) bui
 You can do all this rendering locally with docker. Do this from the **top** of the repository:
 
     # get the docker image loaded up
-    docker pull asciidoctor/docker-asciidoctor
+    docker pull heckj/docker-asciidoctor
 
     # render the HTML, results should appear in `output` directory
-    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html asciidoctor/docker-asciidoctor asciidoctor -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
+    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html asciidoctor/docker-asciidoctor asciidoctor -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb -r ./docs/lib/git-metadata-preprocessor.rb docs/using-combine-book.adoc --trace
 
     # render a PDF, results should appear in `output` directory
-    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-pdf asciidoctor/docker-asciidoctor asciidoctor-pdf -D /documents/output docs/using-combine-book.adoc
+    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-pdf asciidoctor/docker-asciidoctor asciidoctor-pdf -r ./docs/lib/git-metadata-preprocessor.rb -D /documents/output docs/using-combine-book.adoc
 
     # render an epub3 file, results should appear in `output` directory
-    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-epub3 asciidoctor/docker-asciidoctor asciidoctor-epub3 -D /documents/output docs/using-combine-book.adoc
+    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-epub3 asciidoctor/docker-asciidoctor asciidoctor-epub3 -r ./docs/lib/git-metadata-preprocessor.rb -D /documents/output docs/using-combine-book.adoc
 
     # copy in the images for the HTML
     cp -r docs/images output/images

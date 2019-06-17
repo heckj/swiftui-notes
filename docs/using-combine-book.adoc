@@ -14,3 +14,5 @@ v1.0, 2019-06-17
 include::apple.adoc[]
 
 include::combine.adoc[]
+
+include::git.adoc[]

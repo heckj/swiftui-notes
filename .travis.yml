@@ -7,14 +7,15 @@ services:
 
 before_install:
   - mkdir -p output
-  - docker pull asciidoctor/docker-asciidoctor
+  - docker pull heckj/docker-asciidoctor
+  # using instead of asciidoctor/docker-asciidoctor because I added rugged to support git metadata
 
 script:
-  - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-html asciidoctor/docker-asciidoctor asciidoctor -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
+  - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
 
-  - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-pdf asciidoctor/docker-asciidoctor asciidoctor-pdf -D /documents/output docs/using-combine-book.adoc
+  - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-pdf heckj/docker-asciidoctor asciidoctor-pdf -D /documents/output docs/using-combine-book.adoc
 
-  - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-epub3 asciidoctor/docker-asciidoctor asciidoctor-epub3 -D /documents/output docs/using-combine-book.adoc
+  - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-epub3 heckj/docker-asciidoctor asciidoctor-epub3 -D /documents/output docs/using-combine-book.adoc
 
 after_error:
   - docker logs asciidoc-to-html
