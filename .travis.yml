@@ -31,6 +31,5 @@ after_success:
   - git init
   - git config user.name "${GH_USER_NAME}"
   - git config user.email "{GH_USER_EMAIL}"
-  - echo ${GH_REF}
   - git add . ; git commit -m "Deploying to GitHub Pages"
-  - git push --force --quiet "https://${GH_TOKEN}@$github.com/heckj/swiftui-notes.git" master:gh-pages > /dev/null 2>&1
+  - git push --force "https://${GH_TOKEN}@$github.com/heckj/swiftui-notes.git" master:gh-pages
