@@ -76,6 +76,9 @@ You can do all this rendering locally with docker. Do this from the **top** of t
     # render an epub3 file, results should appear in `output` directory
     docker run --rm -v $(pwd):/documents/ --name asciidoc-to-epub3 asciidoctor/docker-asciidoctor asciidoctor-epub3 -D /documents/output docs/using-combine-book.adoc
 
+    # copy in the images for the HTML
+    cp -r docs/images output/images
+
 ## Outline (work in progress)
 
 - Combine
