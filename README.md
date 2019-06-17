@@ -62,6 +62,20 @@ asciidoctor -D html -r ./lib/google-analytics-docinfoprocessor.rb using-combine-
 
 A variation of these commands are included in the [`.travisCI`](.travis.yml) build configuration.
 
+You can do all this rendering locally with docker. Do this from the **top** of the repository:
+
+    # get the docker image loaded up
+    docker pull asciidoctor/docker-asciidoctor
+
+    # render the HTML, results should appear in `output` directory
+    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html asciidoctor/docker-asciidoctor asciidoctor -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
+
+    # render a PDF, results should appear in `output` directory
+    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-pdf asciidoctor/docker-asciidoctor asciidoctor-pdf -D /documents/output docs/using-combine-book.adoc
+
+    # render an epub3 file, results should appear in `output` directory
+    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-epub3 asciidoctor/docker-asciidoctor asciidoctor-epub3 -D /documents/output docs/using-combine-book.adoc
+
 ## Outline (work in progress)
 
 - Combine
