@@ -55,9 +55,13 @@ gem install pygments.rb
 
 ```bash
 cd docs
+
 asciidoctor-epub3 -D output using-combine-book.adoc
 asciidoctor-pdf -D output using-combine-book.adoc
-asciidoctor -D html -r ./lib/google-analytics-docinfoprocessor.rb using-combine-book.adoc
+asciidoctor -D output \
+  -r ./lib/google-analytics-docinfoprocessor.rb \
+  -r ./lib/git-metadata-preprocessor/extension.rb \
+  using-combine-book.adoc
 ```
 
 A variation of these commands are included in the [`.travisCI`](.travis.yml) build configuration.
