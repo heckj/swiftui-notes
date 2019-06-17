@@ -37,7 +37,7 @@ the content.
 
 The content is hosted by Github (on github pages), generated with Jekyll, primarily written in Markdown.
 
-### Setting up the local rendering
+### Setting up asciidoctor for local rendering
 
 - get a more recent ruby (I'm using rbenv with `brew install rbenv`), current 2.6.3
 
@@ -51,7 +51,7 @@ NOKOGIRI_USE_SYSTEM_LIBRARIES=1 gem install asciidoctor-epub3 --pre
 gem install pygments.rb
 ```
 
-Rendering
+### Rendering
 
 ```bash
 cd docs
@@ -59,6 +59,8 @@ asciidoctor-epub3 -D output using-combine-book.adoc
 asciidoctor-pdf -D output using-combine-book.adoc
 asciidoctor -D html -r ./lib/google-analytics-docinfoprocessor.rb using-combine-book.adoc
 ```
+
+A variation of these commands are included in the [`.travisCI`](.travis.yml) build configuration.
 
 ## Outline (work in progress)
 
