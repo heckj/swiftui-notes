@@ -32,4 +32,4 @@ after_success:
   - git config user.name "${GH_USER_NAME}"
   - git config user.email "{GH_USER_EMAIL}"
   - git add . ; git commit -m "Deploying to GitHub Pages"
-  - git push --force "https://${GH_TOKEN}@$github.com/heckj/swiftui-notes.git" master:gh-pages
+  - git push --force "https://${GH_TOKEN}@github.com/heckj/swiftui-notes.git" master:gh-pages
