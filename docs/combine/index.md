@@ -3,7 +3,7 @@
 In Apple's words, Combine is
 > "a declarative Swift API for processing values over time".
 
-Combine is Apple's take on a functional reactive library, akin to [RxSwift](https://github.com/ReactiveX/RxSwift). RxSwift itself is a port of [ReactiveX](http://reactivex.io). 
+Combine is Apple's take on a functional reactive library, akin to [RxSwift](https://github.com/ReactiveX/RxSwift). RxSwift itself is a port of [ReactiveX](http://reactivex.io).
 
 If you are already familar with RxSwift there is [a pretty good cheat-sheet for translating the specifics between Rx and Combine](https://medium.com/gett-engineering/rxswift-to-apples-combine-cheat-sheet-e9ce32b14c5b),
 built and inspired by the data collected at
@@ -122,7 +122,7 @@ let x = Publishers.Future<String, Error> { promise in
 DataTaskPublisher
 
 - part of URLSession (missing from Xcode 11 beta1 docs)
-- ex: 
+- ex:
 ```swift
 var request = URLRequest(url: regularURL)
 return URLSession.shared.dataTaskPublisher(for: request)
@@ -189,7 +189,7 @@ signature transformations
   - `.eraseToAnyPublisher()`
   - often at the end of chains of operators, and cleans up the type signature of the property getting asigned to the chain of operators
 
-functional transformations
+### functional transformations
 
 - map
   - you provide a closure that gets the values and chooses what to publish
