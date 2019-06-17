@@ -15,3 +15,6 @@ Additional sessions from WWDC19 that mention Combine:
 - [Data Flow Through SwiftUI](https://developer.apple.com/videos/play/wwdc2019/226)
 - [Introducing Combine and Advances in Foundation](https://developer.apple.com/videos/play/wwdc2019/711)
 - [Advances in Networking, Part 1](https://developer.apple.com/videos/play/wwdc2019/712/)
+
+.Image of Mars from Osirisx
+image::mars.png[]
