@@ -1,0 +1,30 @@
+= testing rendering of swift source sample
+:source-highlighter: pygments
+
+.swiftcode
+[source,swift]
+----
+enum sampleError: Error {
+    case exampleError
+}
+
+let x = Publishers.Future<String, Error> { promise in
+  do {
+      try self.myFunctionCall(someVariable) { varname in
+          promise(.success(varname ? username : nil))
+      }
+  } catch {
+      promise(.failure(sampleError.exampleError))
+  }
+}
+----
+
+.app.rb
+[source,ruby]
+----
+require 'sinatra'
+
+get '/hi' do
+  "Hello World!"
+end
+----
