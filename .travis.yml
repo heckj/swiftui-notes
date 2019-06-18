@@ -11,32 +11,29 @@ before_install:
   # using instead of asciidoctor/docker-asciidoctor because I added rugged to support git metadata
 
 stages:
-  - html
-  - pdf
-  - epub
+  - render
   - name: deploy
     if: branch = master
 
 jobs:
   include:
-    - stage: html
-      name: "render HTML"
-      script: docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
-    - stage: pdf
-      name: "render PDF"
-      script: docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-pdf heckj/docker-asciidoctor asciidoctor-pdf -D /documents/output docs/using-combine-book.adoc
-    - stage: epub
-      name: "render ePub"
-      script: docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-epub3 heckj/docker-asciidoctor asciidoctor-epub3 -D /documents/output docs/using-combine-book.adoc
-    - stage: deploy
-      name: "deploy to github pages"
+    - stage: render
       script:
-        - cd output ; mv using-combine-book.html index.html ; cp -R ../docs/images images
-        - git init
-        - git config user.name "${GH_USER_NAME}"
-        - git config user.email "{GH_USER_EMAIL}"
-        - git add . ; git commit -m "Deploying to GitHub Pages"
-        - git push --force "https://${GH_TOKEN}@github.com/heckj/swiftui-notes.git" master:gh-pages
+      - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
+      - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-pdf heckj/docker-asciidoctor asciidoctor-pdf -D /documents/output docs/using-combine-book.adoc
+      - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-epub3 heckj/docker-asciidoctor asciidoctor-epub3 -D /documents/output docs/using-combine-book.adoc
+
+    - stage: deploy
+      script:
+      - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
+      - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-pdf heckj/docker-asciidoctor asciidoctor-pdf -D /documents/output docs/using-combine-book.adoc
+      - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-epub3 heckj/docker-asciidoctor asciidoctor-epub3 -D /documents/output docs/using-combine-book.adoc
+      - cd output ; mv using-combine-book.html index.html ; cp -R ../docs/images images
+      - git init
+      - git config user.name "${GH_USER_NAME}"
+      - git config user.email "{GH_USER_EMAIL}"
+      - git add . ; git commit -m "Deploying to GitHub Pages"
+      - git push --force "https://${GH_TOKEN}@github.com/heckj/swiftui-notes.git" master:gh-pages
 
 after_error:
   - docker logs asciidoc-to-html
