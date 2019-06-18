@@ -1,4 +1,4 @@
-# SwiftUI-Notes
+# SwiftUI-Notes [![Build Status](https://travis-ci.org/heckj/swiftui-notes.svg?branch=master)](https://travis-ci.org/heckj/swiftui-notes)
 
 A collection of notes, project pieces, playgrounds and ideas on learning and using SwiftUI and Combine.
 Changes, corrections, and feedback all welcome! See [CONTRIBUTING](CONTRIBUTING.md) for details and links.
