@@ -30,7 +30,7 @@ Bonus points:
 ## Where stuff resides
 
 The [`docs` directory](https://github.com/heckj/swiftui-notes/tree/master/docs) in this
-repository is the source for the HTML content hosted at https://heckj.github.io/swiftui-notes/
+repository is the source for the HTML content hosted at <https://heckj.github.io/swiftui-notes/>
 
 The project (`SwiftUI-Notes.xcodeproj`) has sample code, tests, and trials used in building and vetting
 the content.
@@ -56,7 +56,16 @@ gem install pygments.rb
 gem install rugged # required for the git-metadata extension, requires 'cmake'
 ```
 
-### Rendering
+If you have docker installed, you can also use a docker image to do the rendering,
+and not have to install anything directly. If you want to try out different extensions,
+you probably want to install this locally, but if you're just generating the output
+then the docker path is significantly easier.
+
+The "official" image is [asciidoctor/docker-asciidoctor](https://hub.docker.com/r/asciidoctor/docker-asciidoctor/).
+I have a small variant at [heckj/docker-asciidoctor](https://hub.docker.com/r/asciidoctor/docker-asciidoctor/)
+that is built to include the gem `rugged` which is providing the git metadata resolution.
+
+### Rendering - using local code
 
 ```bash
 cd docs
@@ -69,24 +78,28 @@ asciidoctor -D output \
   using-combine-book.adoc
 ```
 
-A variation of these commands are included in the [`.travisCI`](.travis.yml) build configuration.
+### Rendering - using docker
 
 You can do all this rendering locally with docker. Do this from the **top** of the repository:
 
-    # get the docker image loaded up
-    docker pull heckj/docker-asciidoctor
+```bash
+# get the docker image loaded locally
+docker pull heckj/docker-asciidoctor
 
-    # render the HTML, results should appear in `output` directory
-    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb -r ./docs/lib/git-metadata-preprocessor.rb docs/using-combine-book.adoc
+# render the HTML, results will appear in `output` directory
+docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb -r ./docs/lib/git-metadata-preprocessor.rb docs/using-combine-book.adoc
 
-    # render a PDF, results should appear in `output` directory
-    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-pdf heckj/docker-asciidoctor asciidoctor-pdf -r ./docs/lib/git-metadata-preprocessor.rb -D /documents/output docs/using-combine-book.adoc
+# render a PDF, results will appear in `output` directory
+docker run --rm -v $(pwd):/documents/ --name asciidoc-to-pdf heckj/docker-asciidoctor asciidoctor-pdf -r ./docs/lib/git-metadata-preprocessor.rb -D /documents/output docs/using-combine-book.adoc
 
-    # render an epub3 file, results should appear in `output` directory
-    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-epub3 heckj/docker-asciidoctor asciidoctor-epub3 -r ./docs/lib/git-metadata-preprocessor.rb -D /documents/output docs/using-combine-book.adoc
+# render an epub3 file, will should appear in `output` directory
+docker run --rm -v $(pwd):/documents/ --name asciidoc-to-epub3 heckj/docker-asciidoctor asciidoctor-epub3 -r ./docs/lib/git-metadata-preprocessor.rb -D /documents/output docs/using-combine-book.adoc
 
-    # copy in the images for the HTML
-    cp -r docs/images output/images
+# copy in the images for the HTML
+cp -r docs/images output/images
+```
+
+A variation of these commands are included in the [`.travisCI`](.travis.yml) build configuration.
 
 ## Outline (work in progress)
 
