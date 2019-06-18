@@ -8,6 +8,7 @@ v0.1, 2019-06-18
 :copyright: Joseph Heck 2019
 :imagesdir: images
 :google-analytics-account: UA-898243-5
+:source-highlighter: pygments
 :url-issues: https://github.com/heckj/swiftui-notes/issues
 :toc: left
 
