@@ -127,10 +127,22 @@ let x = Publishers.Future<String, Error> { promise in
 
 DataTaskPublisher
 
-- part of URLSession (missing from Xcode 11 beta1 docs)
-- ex:
+* part of URLSession
+** https://developer.apple.com/documentation/foundation/urlsession/3329707-datataskpublisher[dataTaskPublisher]
+** two versions, on taking a type `URL`, the other `URLSession
+** outputs https://developer.apple.com/documentation/foundation/urlsession/datataskpublisher[`URLSession.DataTaskPublisher`]
 
-Timer... (something in Foundation)
+Timer
+
+* https://developer.apple.com/documentation/foundation/timer/timerpublisher[TimerPublisher]
+
+Scene Publisher (from https://developer.apple.com/documentation/realitykit[RealityKit])
+
+* https://developer.apple.com/documentation/realitykit/scene/publisher[Scene.Publisher]
+** https://developer.apple.com/documentation/realitykit/sceneevents[SceneEvents]
+** https://developer.apple.com/documentation/realitykit/animationevents[AnimationEvents]
+** https://developer.apple.com/documentation/realitykit/audioevents[AudioEvents]
+** https://developer.apple.com/documentation/realitykit/collisionevents[CollisionEvents]
 
 [source,swift]
 ----
