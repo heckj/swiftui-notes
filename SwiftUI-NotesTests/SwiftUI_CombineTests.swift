@@ -71,6 +71,54 @@ class SwiftUI_CombineTests: XCTestCase {
         XCTAssertNotNil(goodPlace)
     }
 
+    func testSendingWithSubject() {
+        // borrowing from CareKit test case at
+        // https://github.com/carekit-apple/CareKit/blob/master/CareKit/CareKitTests/TestSynchronizedViewController.swift
+
+        let publisher = PassthroughSubject<String?, Never>()
+        // publisher is something where we control when data gets sent, which we do later
+        // with the publisher.send() function
+
+        // this sets up the chain of whatever it's going to do
+        let _ = publisher
+            .handleEvents(receiveSubscription: { stringValue in
+                print("receiveSubscription event called with \(String(describing: stringValue))")
+                // this happened second:
+                // receiveSubscription event called with PassthroughSubject
+            }, receiveOutput: { stringValue in
+                // third:
+                // handle events gives us an interesting window into all the flow mechanisms that
+                // can happen during the Publish/Subscribe conversation, including capturing when
+                // we receive completions, values, etc
+                print("receiveOutput was invoked with \(String(describing: stringValue))")
+            }, receiveCompletion: { stringValue in
+                // no completions were sent in this test
+                print("receiveCompletion event called with \(String(describing: stringValue))")
+            }, receiveCancel: {
+                // no cancellations sent in this test
+                print("receiveCancel event invoked")
+            }, receiveRequest: { stringValue in
+                print("receiveRequest event called with \(String(describing: stringValue))")
+                // this happened first:
+                // receiveRequest event called with unlimited
+            })
+        .sink(receiveValue: { receivedValue in
+            // sink captures and terminates the pipeline of operators
+            print("sink captured the result of \(String(describing: receivedValue))")
+        })
+
+        // this is where we trigger the data to cascade through
+        // The whole process is driving by the subscribers, and handleEvents() and sink()
+        // above have set up a subscriber asking for "infinite data" - so the subscription
+        // part of this thing has already happened. Which means that we can now control
+        // what we send and when we send it using publisher.send() and test the results
+        // of whatever we set up in the pipeline.
+
+        // CareKit did that by asserting an initial value of something, then sending the data
+        // and validating that the value had changed. (Bindable property, etc)
+        publisher.send("DATA IN")
+    }
+
     func testAnyFuture_FailingAFuture() {
         enum sampleError: Error {
             case exampleError
