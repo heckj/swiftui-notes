@@ -77,13 +77,13 @@ You can do all this rendering locally with docker. Do this from the **top** of t
     docker pull heckj/docker-asciidoctor
 
     # render the HTML, results should appear in `output` directory
-    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html asciidoctor/docker-asciidoctor asciidoctor -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb -r ./docs/lib/git-metadata-preprocessor.rb docs/using-combine-book.adoc --trace
+    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb -r ./docs/lib/git-metadata-preprocessor.rb docs/using-combine-book.adoc
 
     # render a PDF, results should appear in `output` directory
-    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-pdf asciidoctor/docker-asciidoctor asciidoctor-pdf -r ./docs/lib/git-metadata-preprocessor.rb -D /documents/output docs/using-combine-book.adoc
+    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-pdf heckj/docker-asciidoctor asciidoctor-pdf -r ./docs/lib/git-metadata-preprocessor.rb -D /documents/output docs/using-combine-book.adoc
 
     # render an epub3 file, results should appear in `output` directory
-    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-epub3 asciidoctor/docker-asciidoctor asciidoctor-epub3 -r ./docs/lib/git-metadata-preprocessor.rb -D /documents/output docs/using-combine-book.adoc
+    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-epub3 heckj/docker-asciidoctor asciidoctor-epub3 -r ./docs/lib/git-metadata-preprocessor.rb -D /documents/output docs/using-combine-book.adoc
 
     # copy in the images for the HTML
     cp -r docs/images output/images
