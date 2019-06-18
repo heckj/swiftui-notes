@@ -1,4 +1,5 @@
-== Git Information
+[#git]
+= Git Information
 
 [cols="1,m,m,1",options="header"]
 |===

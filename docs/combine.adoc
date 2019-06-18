@@ -1,13 +1,16 @@
-== Apple's Combine
+[#combine]
+= Combine
 
 In Apple's words, Combine is
-> "a declarative Swift API for processing values over time".
 
-Combine is Apple's take on a functional reactive library, akin to [RxSwift](https://github.com/ReactiveX/RxSwift). RxSwift itself is a port of [ReactiveX](http://reactivex.io).
+[quote]
+a declarative Swift API for processing values over time
 
-If you are already familar with RxSwift there is [a pretty good cheat-sheet for translating the specifics between Rx and Combine](https://medium.com/gett-engineering/rxswift-to-apples-combine-cheat-sheet-e9ce32b14c5b),
+Combine is Apple's take on a functional reactive library, akin to https://github.com/ReactiveX/RxSwift[RxSwift]. RxSwift itself is a port of http://reactivex.io[ReactiveX].
+
+If you are already familar with RxSwift there is https://medium.com/gett-engineering/rxswift-to-apples-combine-cheat-sheet-e9ce32b14c5b[a pretty good cheat-sheet for translating the specifics between Rx and Combine],
 built and inspired by the data collected at
-[https://github.com/freak4pc/rxswift-to-combine-cheatsheet](https://github.com/freak4pc/rxswift-to-combine-cheatsheet).
+https://github.com/freak4pc/rxswift-to-combine-cheatsheet.
 
 Apple's framework uses many of the same functional reactive concepts that can be found in other
 languages and libraries, applying the strongly-typed nature of Swift to their solution.
@@ -19,18 +22,19 @@ sourcing data from **publishers**, transforming the events through **operators**
 consumed by **subscribers**. These sequences, often called "streams" are composed and typically
 chained together.
 
-[Publisher](https://developer.apple.com/documentation/combine/publisher) and
-[Subscriber](https://developer.apple.com/documentation/combine/subscriber) are defined as
+https://developer.apple.com/documentation/combine/publisher[Publisher] and
+https://developer.apple.com/documentation/combine/subscriber[Subscriber] are defined as
 protocols in Swift, and when defined in code are set up
 with two associated types: an Output type and a Failure type. Subscribers have an Input and Failure
 type defined, and these must align to the publisher types for the two to be composed together.
 
-```text
+[source]
+--
 Publisher <OutputType>, <FailureType>
               |  |          |  |
                \/            \/
 Subscriber <InputType>, <FailureType>
-```
+--
 
 Operators are used to transform types - both the Output and Failure type. Operators may also
 split or duplicate streams, or merge streams, Operators must always be aligned by the combination
@@ -46,18 +50,18 @@ communicate in a well defined sequence:
 - publisher sends completion: `receive(completion:)`
 
 Operators fit in between Publishers and Subscribers. They adopt the
-[Publisher protocol](https://developer.apple.com/documentation/combine/publisher), subscribing
+https://developer.apple.com/documentation/combine/publisher[Publisher protocol], subscribing
 to one or more Publishers, and sending results to one (or more) Subscribers.
 
 == Publishers
 
-protocol documentation: [Publisher](https://developer.apple.com/documentation/combine/publisher)
+protocol documentation: https://developer.apple.com/documentation/combine/publisher[Publisher]
 
 A publisher defines how values (and errors) are produced, and allows the registration of a subscriber.
 
 NotificationCenter.default.publisher -> `<Notification>`, `<Never>`
 
-[Convenience publishers](https://developer.apple.com/documentation/combine/publishers)
+https://developer.apple.com/documentation/combine/publishers[Convenience publishers]
 
 - Just -> `<SomeType>`, `<Never>`
   - often used in error handling
@@ -98,8 +102,8 @@ Future
 
 - example:
 
-```swift
-
+[source,swift]
+----
 enum sampleError: Error {
     case exampleError
 }
@@ -113,7 +117,7 @@ let x = Publishers.Future<String, Error> { promise in
       promise(.failure(sampleError.exampleError))
   }
 }
-```
+----
 
 - can be used within a Flatmap in an operator sequence to do your own processing/logic within
   a stream, call out to an external service, etc.
@@ -123,37 +127,40 @@ DataTaskPublisher
 
 - part of URLSession (missing from Xcode 11 beta1 docs)
 - ex:
-```swift
+
+[source,swift]
+----
 var request = URLRequest(url: regularURL)
 return URLSession.shared.dataTaskPublisher(for: request)
-```
+----
 
 == Subscribers
 
 Subscribers can support cancellation, which terminates a subscription and shuts down all
 the stream processing prior to any Completion sent by the publisher.
 Both `Assign` and `Sink` conform to the
-[cancellable protocol](https://developer.apple.com/documentation/combine/cancellable).
+https://developer.apple.com/documentation/combine/cancellable[cancellable protocol].
 
 Kinds of subscribers:
 
-- [Assign](https://developer.apple.com/documentation/combine/subscribers/assign): key-path assignment
-  - ex: `Subscribers.Assign(object: exampleObject, keyPath: \.someProperty)`
-  - ex: `.assign(to: \.isEnabled, on: signupButton)`
-  - Assigns the value of a KVO-compliant property from a publisher.
-  - requires Failure to be `<Never>`
+* https://developer.apple.com/documentation/combine/subscribers/assign[Assign]: key-path assignment
+** ex: `Subscribers.Assign(object: exampleObject, keyPath: \.someProperty)`
+** ex: `.assign(to: \.isEnabled, on: signupButton)`
+** Assigns the value of a KVO-compliant property from a publisher.
+** requires Failure to be `<Never>`
 
-- [Sink](https://developer.apple.com/documentation/combine/subscribers/sink)
-  - you provide a closure where you process the results
-  - ex:
+* https://developer.apple.com/documentation/combine/subscribers/sink[Sink]
+** you provide a closure where you process the results
+** ex:
 
-  ```swift
-  let cancellablePublisher = somePublisher.sink { data in
-    // do what you need with the data...
-  }
+[source,swift]
+----
+let cancellablePublisher = somePublisher.sink { data in
+  // do what you need with the data...
+}
 
-  cancellablePublisher.cancel() // to kill the stream before it's complete
-  ```
+cancellablePublisher.cancel() // to kill the stream before it's complete
+----
 
 SwiftUI also provides subscribers.
 
@@ -161,7 +168,7 @@ SwiftUI also provides subscribers.
 
 ## Subjects
 
-A [Subject](https://developer.apple.com/documentation/combine/subject) behaves like both a
+A https://developer.apple.com/documentation/combine/subject[Subject] behaves like both a
 publisher and subscriber. Subjects can be used to "inject" values into a stream, by calling the
 subject's `.send()` method. This is useful for integrating existing imperative code with Combine.
 
@@ -169,10 +176,10 @@ A subject can also broadcast values to multiple subscribers.
 
 There are two primary types of Subject:
 
-- [`Passthrough`](https://developer.apple.com/documentation/combine/passthroughsubject)
+- https://developer.apple.com/documentation/combine/passthroughsubject[`Passthrough`]
   - Passthrough doesn't maintain any state - just passes through provided values
 
-- [`CurrentValue`](https://developer.apple.com/documentation/combine/currentvaluesubject) subscribers
+- https://developer.apple.com/documentation/combine/currentvaluesubject[`CurrentValue`] subscribers
   - CurrentValue remembers the current value so that when you attach a subscriber you can see the current value
 
 ## Operators

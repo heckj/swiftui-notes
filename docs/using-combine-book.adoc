@@ -1,6 +1,13 @@
+ifeval::["{git-metadata-branch}" == "master"]
+:version: {git-metadata-branch}-{git-metadata-sha-short}
+endif::[]
+ifeval::["{git-metadata-branch}" != "master"]
+:version: {git-metadata-branch}
+endif::[]
+
 = Using Combine
 Joseph Heck
-v1.0, 2019-06-17
+{version}, {git-metadata-date}
 :doctype: book
 :creator: {author}
 :producer: Asciidoctor
