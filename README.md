@@ -110,6 +110,8 @@ A variation of these commands are included in the [`.travisCI`](.travis.yml) bui
 
   - Introduction/what it is
 
+  - When its useful
+
   - Core Concepts
     - Publisher
     - Subscriber
@@ -126,8 +128,14 @@ A variation of these commands are included in the [`.travisCI`](.travis.yml) bui
     - binding to SwiftUI
       - validating forms
       - UX responsiveness - live updates
+    - binding to RealityKit
 
-  - Reference
+    - testing with Combine
+      - testing streams/pipelines
+      - testing publishers
+      - testing subscribers
+
+  - Combine Reference
 
     - Publishers
       - Just
@@ -219,4 +227,3 @@ A variation of these commands are included in the [`.travisCI`](.travis.yml) bui
       - handleEvents
       - multicast
       - output
-
