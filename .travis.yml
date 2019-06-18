@@ -13,7 +13,7 @@ before_install:
 stages:
   - render
   - name: deploy
-    if: branch = master
+    if: branch = master AND type NOT IN (pull_request)
 
 jobs:
   include:
