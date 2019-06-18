@@ -61,6 +61,8 @@ A publisher defines how values (and errors) are produced, and allows the registr
 
 NotificationCenter.default.publisher -> `<Notification>`, `<Never>`
 
+KeyValueObserving
+
 https://developer.apple.com/documentation/combine/publishers[Convenience publishers]
 
 - Just -> `<SomeType>`, `<Never>`
@@ -127,6 +129,8 @@ DataTaskPublisher
 
 - part of URLSession (missing from Xcode 11 beta1 docs)
 - ex:
+
+Timer... (something in Foundation)
 
 [source,swift]
 ----
@@ -227,7 +231,7 @@ signature transformations
   - there's a variant `tryRemoveDuplicates` for use with a provided error-throwing closure.
 
 - encode
-  - Encodes the output from upstream using a specified TopLevelEncoder. For example, use JSONEncoder.
+  - Encodes the output from upstream using a specified TopLevelEncoder. For example, use JSONEncoder or PropertyListEncoder
   - Available when Output conforms to Encodable.
 
 ### list operations
