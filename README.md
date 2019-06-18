@@ -70,9 +70,15 @@ that is built to include the gem `rugged` which is providing the git metadata re
 ```bash
 cd docs
 
-asciidoctor-epub3 -D output using-combine-book.adoc
-asciidoctor-pdf -D output using-combine-book.adoc
-asciidoctor -D output \
+asciidoctor-epub3 -v -t -D output \
+  -r ./lib/git-metadata-preprocessor/extension.rb \
+  using-combine-book.adoc
+
+asciidoctor-pdf -v -t -D output \
+  -r ./lib/git-metadata-preprocessor/extension.rb \
+  using-combine-book.adoc
+
+asciidoctor -v -t -D output \
   -r ./lib/google-analytics-docinfoprocessor.rb \
   -r ./lib/git-metadata-preprocessor/extension.rb \
   using-combine-book.adoc
