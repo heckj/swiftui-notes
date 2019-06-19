@@ -1,6 +1,43 @@
 [#coreconcepts]
 = Core Concepts
 
+Two key concepts, described in code with protocols, are the https://developer.apple.com/documentation/combine/publisher[*publisher*] and the https://developer.apple.com/documentation/combine/subscriber[*subscriber*].
+
+A publisher provides data. 
+It is described with two associated types: one for Output and one for Failure.
+A subscriber requests data.
+It is also described with two associated types, one for Input and one for Failure.
+When you connect a subscriber to a publisher, both types must match: Output to Input, and Failure to Failure.
+
+[source]
+====
+Publisher <OutputType>, <FailureType>
+              |  |          |  |
+               \/            \/
+Subscriber <InputType>, <FailureType>
+====
+
+Operators are classes that adopt the https://developer.apple.com/documentation/combine/publisher[Publisher protocol], subscribing to one or more Publishers, and sending results to one (or more) Subscribers.
+
+You can create chains of these together, for processing, reacting, and transforming the data provided by a publisher, and requested by the subscriber.
+These composed sequences are often referred to as "streams" or "pipelines".
+
+Operators can be used to transform types - both the Output and Failure type.
+Operators may also split or duplicate streams, or merge streams together.
+Operators must always be aligned by the combination of Output/Failure types.
+
+=== How it works
+
+The interals of Combine are all driven by the subscriber.
+Subscribers and Publishers communicate in a well defined sequence:
+
+* the subscriber is attached to a publisher: `.subscribe(Subscriber)`
+* the publisher sends a subscription: `receive(subscription)`
+* subscriber requests _N_ values: `request(_ : Demand)`
+* publisher sends _N_ (or fewer) values: `receive(_ : Input)`
+* publisher sends completion: `receive(completion:)`
+
+
 == Publishers
 
 == Subscribers
