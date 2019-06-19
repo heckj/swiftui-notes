@@ -1,0 +1,6 @@
+[#choosingcombine]
+= Choosing Combine
+
+== when you should use combine
+
+When to choose and use combine - when its useful/the right tool for the job.

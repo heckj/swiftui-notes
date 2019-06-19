@@ -12,6 +12,13 @@ v0.1, 2019-06-18
 :url-issues: https://github.com/heckj/swiftui-notes/issues
 :toc: left
 
-include::apple.adoc[]
+include::aboutthisbook.adoc[]
 
-include::combine.adoc[]
+include::introduction.adoc[]
+include::choosingcombine.adoc[]
+include::coreconcepts.adoc[]
+include::patterns.adoc[]
+include::reference.adoc[]
+
+include::raw-notes.adoc[]
+include::apple.adoc[]

@@ -1,0 +1,22 @@
+[#patterns]
+= Patterns and Recipes
+
+== sequencing async operations
+
+** handling errors, fallback pattern
+
+== binding
+
+* binding with models
+* binding with notifications
+* binding to SwiftUI
+** validating forms
+** UX responsiveness - live updates
+* binding to RealityKit
+
+== testing
+
+* testing with Combine
+** testing streams/pipelines
+** testing publishers
+** testing subscribers
