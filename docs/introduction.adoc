@@ -1,4 +1,43 @@
 [#introduction]
 = Introduction to Combine
 
-== Combine is
+In Apple's words, Combine is:
+
+[quote]
+a declarative Swift API for processing values over time.
+
+Combine is Apple's take on a functional reactive library, akin to https://github.com/ReactiveX/RxSwift[RxSwift].
+RxSwift itself is a port of http://reactivex.io[ReactiveX].
+Apple's framework uses many of the same functional reactive concepts that can be found in other languages and libraries, applying the strongly-typed nature of Swift to their solution.
+
+[NOTE]
+====
+If you are already familar with RxSwift there is https://medium.com/gett-engineering/rxswift-to-apples-combine-cheat-sheet-e9ce32b14c5b[a pretty good cheat-sheet for translating the specifics between Rx and Combine],
+built and inspired by the data collected at
+https://github.com/freak4pc/rxswift-to-combine-cheatsheet.
+There is also a post https://www.caseyliss.com/2019/6/17/combine-wheres-the-beef[Combine: Where's the Beef?] by Casey Liss describing how Combine maps back to RxSwift and RxCocoa's concepts, and where it is different.
+====
+
+== Functional reactive programming
+
+https://en.wikipedia.org/wiki/Functional_reactive_programming[Functional reactive programming], also known as data-flow programming, builds on the concepts of https://en.wikipedia.org/wiki/Functional_programming[functional programming].
+Where functional programming applies to lists of elements, functional reactive programming is applied to streams of elements.
+The kinds of functions in functional programming, such as `map`, `filter`, and `reduce` all have analogues that can be applied to streams.
+In addition, functional reactive programming includes functions to split streams, create pipelines of operations to transform the data within a stream, and merge streams.
+
+There are many parts of the systems we program that can be viewed as asynchronous streams of information - events, objects, or pieces of data.
+Programming practices defined the Observer pattern for watching a single object, getting notified of changes and updates.
+As this happens over time, you can view the updates as a "stream".
+
+You may want to create logic to watch more than one element that is changing.
+You may also want to include logic that does additional asynchronous operations, some of which may fail.
+You may also want to change the content of the streams based on timing.
+Handling the flow of all these event streams, the timing of all the various pieces, errors when they happen, and coordinating how a system responds to all those events is at the heart of this kind of programming.
+
+This solution is particularly effective when programming user interfaces, or for creating pipelines that process and transform data from external sources, or rely on asynchronous APIs.
+
+== Combine specifics
+
+Applying these concepts to a strongly typed language like swift is part of what Apple has created in Combine.
+Combine embeds the concept of back-pressure, which allows the subscriber to control how much information is gets at once and needs to process.
+In addition, it supports efficient operation with the notion of streams that are cancellable and driven primarily by the subscriber.
