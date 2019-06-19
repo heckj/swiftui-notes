@@ -1,10 +1,10 @@
 [#apple]
-== Apple's documentation and content
+= Apple's documentation and content
 
 The https://developer.apple.com/documentation/combine[online documentation for Combine]
 can be found at https://developer.apple.com/documentation/combine.
 
-=== WWDC content
+== WWDC content
 
 Apple provides video sessions from WWDC introducing and hitting the basics of Combine:
 

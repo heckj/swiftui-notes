@@ -16,6 +16,7 @@ v0.1, 2019-06-18
 :source-highlighter: pygments
 :url-issues: https://github.com/heckj/swiftui-notes/issues
 :toc: left
+ifndef::ebook-format[:leveloffset: 1]
 
 include::aboutthisbook.adoc[]
 

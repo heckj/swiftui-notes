@@ -1,11 +1,11 @@
 [#patterns]
-== Patterns and Recipes
+= Patterns and Recipes
 
-=== sequencing async operations
+== sequencing async operations
 
 ** handling errors, fallback pattern
 
-=== binding
+== binding
 
 * binding with models
 * binding with notifications
@@ -14,7 +14,7 @@
 ** UX responsiveness - live updates
 * binding to RealityKit
 
-=== testing
+== testing
 
 * testing with Combine
 ** testing streams/pipelines

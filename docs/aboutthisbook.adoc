@@ -1,7 +1,7 @@
 [#aboutthisbook]
-== About This Book
+= About This Book
 
-=== Supporting this effort
+== Supporting this effort
 
 **_This is a work in progress._**
 
@@ -13,7 +13,7 @@ If you are so inclined, feel free to fork the project and send me https://github
 
 I am working through how to make it available to the widest audience while also generating a small amount of money to support the creation of this book, from technical authoring and review through copy editing.
 
-=== Author Bio
+== Author Bio
 
 Joe Heck has broad software engineering development and management experience crossing startups and large companies.
 He works across all the layers of solutions, from architecture, development, validation, deployment, and operations.
