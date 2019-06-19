@@ -1,4 +1,4 @@
 [#introduction]
-= Introduction to Combine
+== Introduction to Combine
 
-== Combine is
+=== Combine is

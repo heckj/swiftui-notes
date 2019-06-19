@@ -1,4 +1,4 @@
 [#reference]
-= Combine Reference
+== Combine Reference
 
-== reference details and structure
+=== reference details and structure

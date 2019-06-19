@@ -1,20 +1,19 @@
 [#aboutthisbook]
-= About This Book
+== About This Book
 
-== Work in progress
+=== Supporting this effort
 
-This book is a work in progress.
+**_This is a work in progress._**
+
+The book is being made available at no cost.
 The content for this book, including sample code and tests is available on GitHub at https://github.com/heckj/swiftui-notes.
 
 If you want to report a problem (typo, grammar, or technical fault), please https://github.com/heckj/swiftui-notes/issues/new/choose[Open an issue] in GitHub.
 If you are so inclined, feel free to fork the project and send me https://github.com/heckj/swiftui-notes/compare?expand=1[pull requests] with updates or corrections.
 
-=== Supporting this effort
-
-The book is being made available at no cost.
 I am working through how to make it available to the widest audience while also generating a small amount of money to support the creation of this book, from technical authoring and review through copy editing.
 
-== Author Bio
+=== Author Bio
 
 Joe Heck has broad software engineering development and management experience crossing startups and large companies.
 He works across all the layers of solutions, from architecture, development, validation, deployment, and operations.
@@ -33,7 +32,7 @@ There is also an Xcode project (`SwiftUI-Notes.xcodeproj`) available from GitHub
 
 === Download the project
 
-You will need Xcode v11 (currently beta2 as of this writing).
+You will need Xcode v11 (beta2 as of this writing).
 
 image::welcomeToXcode.png[Welcome to Xcode,406,388]
 

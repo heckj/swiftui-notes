@@ -1,5 +1,5 @@
 [#raw-notes]
-= Raw Notes
+== Raw Notes
 
 In Apple's words, Combine is
 

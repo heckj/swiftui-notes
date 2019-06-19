@@ -1,11 +1,11 @@
 [#coreconcepts]
-= Core Concepts
+== Core Concepts
 
-== Publishers
+=== Publishers
 
-== Subscribers
+=== Subscribers
 
-== Subjects
+=== Subjects
 
-== Operators
+=== Operators
 
