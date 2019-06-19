@@ -6,7 +6,12 @@ v0.1, 2019-06-18
 :producer: Asciidoctor
 :keywords: Apple, Combine, ReactiveX, SwiftUI
 :copyright: Joseph Heck 2019
+:publication-tye: book
+// NOTE use 'anthology' for per-chapter author support
+:idprefix:
+:idseparator: -
 :imagesdir: images
+//:front-cover-image: image:front-cover.jpg[Front Cover,1050,1600]
 :google-analytics-account: UA-898243-5
 :source-highlighter: pygments
 :url-issues: https://github.com/heckj/swiftui-notes/issues
