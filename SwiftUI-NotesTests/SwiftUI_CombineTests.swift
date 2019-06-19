@@ -119,6 +119,18 @@ class SwiftUI_CombineTests: XCTestCase {
         publisher.send("DATA IN")
     }
 
+    /* - using this to explore - not functional or useful yet
+    func testPublisherFor() {
+
+        let x: String = "whassup"
+
+        // as good a place to start as any...
+        let publisher = PassthroughSubject<String?, Never>()
+            // Publishers.ValueForKey
+        .publisher(for: \.foo) // <- This is for getting a keypath to a property - not sure if it's passed down from the publisher, or if this is meant to send to a publisher keypath that the code scope has access to... (a variant on sink or assign)
+    }
+     */
+
     func testAnyFuture_FailingAFuture() {
         enum sampleError: Error {
             case exampleError

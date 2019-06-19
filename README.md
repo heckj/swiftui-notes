@@ -5,7 +5,9 @@ Changes, corrections, and feedback all welcome! See [CONTRIBUTING](CONTRIBUTING.
 
 ## Goal
 
-I wanted to learn Combine, so describing how to use it to other people works really well for me.
+While I started digging into SwiftUI, I was attracted to Combine and realized how much depth there was in just the Combine framework.
+I wanted to learn Combine, and describing how to use it to other people works really well for me.
+
 My goal for this is to create easily accessible reference documentation for myself, and for anyone else
 wanting to use it. I do (not-so-secretly) hope that Apple's own reference documentation will completely
 obviate the reference section of all of this, but it doesn't today.
@@ -65,7 +67,7 @@ The "official" image is [asciidoctor/docker-asciidoctor](https://hub.docker.com/
 I have a small variant at [heckj/docker-asciidoctor](https://hub.docker.com/r/asciidoctor/docker-asciidoctor/)
 that is built to include the gem `rugged` which is providing the git metadata resolution.
 
-### Rendering - using local code
+### Rendering - using locally installed asciidoctor & tooling
 
 ```bash
 cd docs
@@ -81,7 +83,7 @@ asciidoctor -v -t -D output \
   using-combine-book.adoc
 ```
 
-### Rendering - using docker
+### Rendering - using a docker-based toolchain
 
 You can do all this rendering locally with docker. Do this from the **top** of the repository:
 
@@ -106,11 +108,14 @@ A variation of these commands are included in the [`.travisCI`](.travis.yml) bui
 
 ## Outline (work in progress)
 
-- Combine
+- Using Combine
 
-  - Introduction/what it is
+  - Introduction
+    - what it is
 
-  - When its useful
+  - Choosing the right tool
+    - when its useful
+    - where to use it
 
   - Core Concepts
     - Publisher
@@ -118,7 +123,7 @@ A variation of these commands are included in the [`.travisCI`](.travis.yml) bui
     - Subject
     - Operators
 
-  - Using Combine (aka patterns and recipes)
+  - Patterns and recipes
 
     - sequencing async operations
       - handling errors, fallback pattern
