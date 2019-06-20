@@ -15,7 +15,8 @@ Apple's framework uses many of the same functional reactive concepts that can be
 If you are already familar with RxSwift there is https://medium.com/gett-engineering/rxswift-to-apples-combine-cheat-sheet-e9ce32b14c5b[a pretty good cheat-sheet for translating the specifics between Rx and Combine],
 built and inspired by the data collected at
 https://github.com/freak4pc/rxswift-to-combine-cheatsheet.
-There is also a post https://www.caseyliss.com/2019/6/17/combine-wheres-the-beef[Combine: Where's the Beef?] by Casey Liss describing how Combine maps back to RxSwift and RxCocoa's concepts, and where it is different.
+
+Another good over is a post https://www.caseyliss.com/2019/6/17/combine-wheres-the-beef[Combine: Where's the Beef?] by Casey Liss describing how Combine maps back to RxSwift and RxCocoa's concepts, and where it is different.
 ====
 
 == Functional reactive programming
@@ -27,7 +28,7 @@ In addition, functional reactive programming includes functions to split streams
 
 There are many parts of the systems we program that can be viewed as asynchronous streams of information - events, objects, or pieces of data.
 Programming practices defined the Observer pattern for watching a single object, getting notified of changes and updates.
-As this happens over time, you can view the updates as a "stream".
+As this happens over time, you can view the updates as a stream of objects.
 
 You may want to create logic to watch more than one element that is changing.
 You may also want to include logic that does additional asynchronous operations, some of which may fail.
@@ -41,3 +42,38 @@ This solution is particularly effective when programming user interfaces, or for
 Applying these concepts to a strongly typed language like swift is part of what Apple has created in Combine.
 Combine embeds the concept of back-pressure, which allows the subscriber to control how much information is gets at once and needs to process.
 In addition, it supports efficient operation with the notion of streams that are cancellable and driven primarily by the subscriber.
+
+Combine was also set up to be composed, and Combine is explicitly supported by a couple of Apple's other frameworks.
+SwiftUI is the obvious example that has the most attention, with both subscriber and publisher elements.
+RealityKit also has publishers that you can use to react to events.
+URLSession and Timer in the Foundation also now include publishers.
+
+Any asynchronous operation API _can_ be leveraged with Combine.
+For example, you could use some of the APIs in the Vision framework, composing data flowing to it, and from it, by leveraging Combine.
+
+[sidebar]
+****
+In this work, I'm going to call a set of composed operations in Combine a **pipeline**.
+****
+
+== When to use Combine
+
+Combine fits most naturally when you want to set up a system that is "immediately" reactive to a variety of inputs.
+User interfaces fit very naturally into this pattern.
+
+The classic examples revolve around the user experience with form validation, where the inputs are text fields and a button for submitting.
+
+* You can set up pipelines to enable the button for submission only when values entered into the fields are valid.
+* A pipeline can also do asynchronous actions (such as checking with a network service) and using the values returned to choose how and what to update within a view.
+* Pipelines can also be used to react to a user typing dynamically into a text field and updating the user interface view based on what they're typing.
+
+Combine is not limited to user interfaces.
+Any sequence of asynchronous operations can be effective as a pipeline, especially when the results of each step flow to the next step.
+An example of such might be a series a network service requests, followed by decoding the results.
+
+Combine can also be used to define how to handle errors from asynchronous operations.
+Combine supports doing this by setting up pipelines and merging them together.
+One of Apple's examples with Combine include a pipeline to fall back to getting a lower-resolution image from a network service when the local network is constrained.
+
+Many of the pipelines you create with Combine will only be a few operations.
+Even with just a few operations, Combine can still make it much easier to view and understand what's happening when you compose a pipeline.

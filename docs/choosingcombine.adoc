@@ -1,9 +1,0 @@
-[#choosingcombine]
-= Choosing Combine
-
-Combine fits most easily with other frameworks that have built in publishers.
-The most obvious of which is SwiftUI, the declarative user interface framework that works across all of Apple's platforms.
-
-RealityKit is also built with publishers.
-
-Any API that provides asynchronous operations *can* be leverage with Combine.

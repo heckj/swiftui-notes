@@ -21,7 +21,6 @@ ifndef::ebook-format[:leveloffset: 1]
 include::aboutthisbook.adoc[]
 
 include::introduction.adoc[]
-include::choosingcombine.adoc[]
 include::coreconcepts.adoc[]
 include::patterns.adoc[]
 include::reference.adoc[]
