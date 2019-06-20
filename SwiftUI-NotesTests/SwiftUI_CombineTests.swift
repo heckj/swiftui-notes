@@ -11,6 +11,30 @@ import Combine
 
 class SwiftUI_CombineTests: XCTestCase {
 
+    func testSimplePipeline() {
+
+        let _ = Publishers.Just(5)
+            .map { value in
+                switch value {
+                case _ where value < 1:
+                    return "none"
+                case _ where value == 1:
+                    return "one"
+                case _ where value == 2:
+                    return "couple"
+                case _ where value == 3:
+                    return "few"
+                case _ where value > 8:
+                    return "many"
+                default:
+                    return "some"
+                }
+            }
+            .sink { receivedValue in
+                print("The end result was \(receivedValue)")
+        }
+    }
+
     func testSimpleSequencePublisher() {
 
         let originalListOfString = ["foo", "bar", "baz"]
@@ -33,7 +57,7 @@ class SwiftUI_CombineTests: XCTestCase {
                 XCTAssertEqual(listOfStrings, originalListOfString)
             }
 
-        XCTAssertNotNil(printingSubscriber) 
+        XCTAssertNotNil(printingSubscriber)
     }
 
     func testAnyFuture_CreationAndUse() {

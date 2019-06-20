@@ -1,34 +1,109 @@
 [#coreconcepts]
 = Core Concepts
 
-Two key concepts, described in code with protocols, are the https://developer.apple.com/documentation/combine/publisher[*publisher*] and the https://developer.apple.com/documentation/combine/subscriber[*subscriber*].
+Two key concepts, described in swift with protocols, are the https://developer.apple.com/documentation/combine/publisher[*publisher*] and the https://developer.apple.com/documentation/combine/subscriber[*subscriber*].
 
 A publisher provides data.
 It is described with two associated types: one for Output and one for Failure.
+
 A subscriber requests data.
 It is also described with two associated types, one for Input and one for Failure.
+
 When you connect a subscriber to a publisher, both types must match: Output to Input, and Failure to Failure.
+You can view this as a series of operations on two types in parallel.
 
 [source]
 ----
-Publisher <OutputType>, <FailureType>
-              |  |          |  |
-               \/            \/
-Subscriber <InputType>, <FailureType>
+Publisher source       Subscriber
++--------------+      +--------------+
+|        <Output> --> <Input>        |
+|       <Failure> --> <Failure>      |
++--------------+      +--------------+
 ----
 
 Operators are classes that adopt the https://developer.apple.com/documentation/combine/publisher[Publisher protocol], subscribing to one or more Publishers, and sending results to one (or more) Subscribers.
 
 You can create chains of these together, for processing, reacting, and transforming the data provided by a publisher, and requested by the subscriber.
-These composed sequences are often referred to as "streams" or "pipelines".
+
+I'm calling these composed sequences **pipelines**.
+
+[source]
+----
+Publisher source       Operator                          Subscriber
++--------------+      +---------------------------+      +--------------+
+|        <Output> --> <Input>      map      <Output> --> <Input>        |
+|       <Failure> --> <Failure>  function  <Failure> --> <Failure>      |
++--------------+      +---------------------------+      +--------------+
+----
+
 
 Operators can be used to transform types - both the Output and Failure type.
 Operators may also split or duplicate streams, or merge streams together.
 Operators must always be aligned by the combination of Output/Failure types.
 
+A simple pipeline, using Combine, might look like:
+[source, swift]
+----
+let _ = Publishers.somePublisher
+    .map { value -> String in
+        // do something with the incoming value here
+        // and return a string
+        return "a string"
+    }
+    .sink { receivedValue in
+        // sink is the subscriber and terminates the pipeline
+        print("The end result was \(receivedValue)")
+    }
+----
+
+
+The compiler will enforce the matching types.
+When you are viewing a pipeline, or creating one, you can think of it as a sequence of operations linked by the types.
+
+[source, swift]
+----
+let _ = Publishers.Just(5) <1>
+    .map { value -> String in <2>
+        switch value {
+        case _ where value < 1:
+            return "none"
+        case _ where value == 1:
+            return "one"
+        case _ where value == 2:
+            return "couple"
+        case _ where value == 3:
+            return "few"
+        case _ where value > 8:
+            return "many"
+        default:
+            return "some"
+        }
+    }
+    .sink { receivedValue in <3>
+        print("The end result was \(receivedValue)")
+    }
+----
+<1> creates an `<Int>`, `<Never>` type combination
+<2> the `.map()` function takes in an `<Int>`, `<Never>` combination and transforms it into a `<String>`,
+<3> receives the `<String>`, `<Never>` combination
+
+Because the types are enforced, there are a number of Combine functions that are created to help with these transformations.
+Some operators are prefixed with `try` that indicate that they will return an <Error> type.
+In other cases, you will just need to define the type being returned in the closure you're providing to the operator.
+
+[sidebar]
+****
+When you are creating pipelines in Xcode, you will likely get assistance in the form of error messages like: `Unable to infer complex closure return type; add explicit type to disambiguate`.
+****
+
+Combine typically supports error handling by creating two streams - one for the functional case and one for the error case, and combining them together.
+We will see that in more detail in the section on patterns.
+
 == How it works
 
 The interals of Combine are all driven by the subscriber.
+This is how Combine supports the concept of back pressure.
+
 Subscribers and Publishers communicate in a well defined sequence:
 
 * the subscriber is attached to a publisher: `.subscribe(Subscriber)`
