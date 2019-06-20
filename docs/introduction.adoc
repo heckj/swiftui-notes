@@ -46,7 +46,7 @@ In addition, it supports efficient operation with the notion of streams that are
 Combine was also set up to be composed, and Combine is explicitly supported by a couple of Apple's other frameworks.
 SwiftUI is the obvious example that has the most attention, with both subscriber and publisher elements.
 RealityKit also has publishers that you can use to react to events.
-URLSession and Timer in the Foundation also now include publishers.
+NotificationCenter, URLSession, and Timer in the Foundation also now include publishers.
 
 Any asynchronous operation API _can_ be leveraged with Combine.
 For example, you could use some of the APIs in the Vision framework, composing data flowing to it, and from it, by leveraging Combine.

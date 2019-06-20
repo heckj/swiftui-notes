@@ -96,28 +96,70 @@ In other cases, you will just need to define the type being returned in the clos
 When you are creating pipelines in Xcode, you will likely get assistance in the form of error messages like: `Unable to infer complex closure return type; add explicit type to disambiguate`.
 ****
 
-Combine typically supports error handling by creating two streams - one for the functional case and one for the error case, and combining them together.
+Combine supports error handling by creating two streams - one for the functional case and one for the error case, and combining them together.
 We will see that in more detail in the section on patterns.
 
-== How it works
+== The lifecycle of Publishers and Subscribers
 
 The interals of Combine are all driven by the subscriber.
 This is how Combine supports the concept of back pressure.
 
-Subscribers and Publishers communicate in a well defined sequence:
+Internally, Combine supports this with the enumeration https://developer.apple.com/documentation/combine/subscribers/demand[Demand].
+When a subscriber is communicating with a publisher, it requests based on demand.
+This request is what drives calling all the closures up the composed pipeline.
 
-* the subscriber is attached to a publisher: `.subscribe(Subscriber)`
-* the publisher sends a subscription: `receive(subscription)`
-* subscriber requests _N_ values: `request(_ : Demand)`
-* publisher sends _N_ (or fewer) values: `receive(_ : Input)`
-* publisher sends completion: `receive(completion:)`
+Because subscribers drive the closure execution, it also allows Combine to support cancellation.
+Cancellation can be triggered by the subscriber.
 
+This is all built on subscribers and publishers communicating in a well defined sequence, or lifecycle.
+
+* When the subscriber is attached to a publisher, it starts with a call to `.subscribe(Subscriber)`.
+* The publisher in turn acknowledges the subscription calling `receive(subscription)`.
+
+** After the subscription has been acknowledged, the subscriber requests _N_ values with `request(_ : Demand)`.
+** The publisher may then (as it has values) sending _N_ (or fewer) values: `receive(_ : Input)`.
+A publisher should never send **more** than the demand requested.
+** Also after the subscription has been acknowledged, the subscriber can send a https://developer.apple.com/documentation/combine/subscribers/completion[cancellation] with `.cancel()`
+
+* A publisher may optionally send https://developer.apple.com/documentation/combine/subscribers/completion[completion]: `receive(completion:)` which is also how errors are propogated.
 
 == Publishers
 
-== Subscribers
+The publisher is the provider of data.
+The https://developer.apple.com/documentation/combine/publisher[publisher protocol] has a strict contract returning values, or terminating with an explicit completion enumeration.
+
+Combine provides a number of convenience publishers:
+
+* Publishers.Empty
+* Publishers.Fail
+* Publishers.Just
+* Publishers.Once
+* Publishers.Optional
+* Publishers.Sequence
+* Publishers.Deferred
+
+Combine allows you to create a publisher with the https://developer.apple.com/documentation/combine/published[`@Published`] property wrapper to provide a publisher for a specific property.
+
+SwiftUI provides https://developer.apple.com/documentation/swiftui/objectbinding[`@ObjectBinding`] which can be used to create a publisher.
+
+A number of other Apple APIs provide publishers as well:
+
+* https://developer.apple.com/documentation/foundation/notificationcenter[`NoticationCenter`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publisher`]
+
+* https://developer.apple.com/documentation/foundation/timer[`Timer`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publish`] and https://developer.apple.com/documentation/foundation/timer/timerpublisher[`Timer.TimerPublisher`]
+
+* https://developer.apple.com/documentation/foundation/urlsession[`URLSession`] https://developer.apple.com/documentation/foundation/urlsession/3329707-datataskpublisher[`dataTaskPublisher`]
+
+* https://developer.apple.com/documentation/realitykit[`RealityKit`] https://developer.apple.com/documentation/realitykit/scene[`.Scene`] https://developer.apple.com/documentation/realitykit/scene/3254685-publisher[`.publisher()`]
+
+Combine also includes mechanisms to allow you to create your own publishers with `Publishers.Future`. A future is initialized with a closure that eventually resolves to a https://developer.apple.com/documentation/combine/publishers/future/promise[Promise]. This can be used to wrap any existing API (Apple or your own) that provides a completion closure to turn it into a publisher.
+
+
+== Operators
+
 
 == Subjects
 
-== Operators
+== Subscribers
+
 
