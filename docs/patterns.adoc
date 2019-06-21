@@ -1,22 +1,138 @@
 [#patterns]
 = Patterns and Recipes
 
+[#patterns-creating-subscriber]
+== Creating a subscriber with `.sink`
+
+If you are creating the subscriber, you can use `.sink()`` to receive and process this information.
+The simplest form of `.sink()` takes a single closure - but by default this is the closure that receives data (if provided by the pipeline).
+If you don't also include a closure to get the completion, you will not receive any information about failures.
+
+[IMPORTANT]
+====
+Remember that the subscriber drives the execution of any Combine pipelines you create. When you create and connect a subscriber with `.sink()`, it will connect and set up a request for unlimited data.
+
+When you create your sink methods, be aware that your receiveValue closure may be called repeatedly, depending on what the publisher or pipeline does and how it is configured.
+====
+
+A simple sink that ignores the errors and triggers on data might be:
+
+[source, swift]
+----
+let _ = remoteDataPublisher.sink { value in
+    print(".sink() received \(String(describing: value))")
+}
+----
+
+A more complete form of a subscriber has the two closures:
+
+[source, swift]
+----
+let _ = remoteDataPublisher.sink(receiveCompletion: { err in
+    print(".sink() received the completion", String(describing: err))
+}, receiveValue: { value in
+    print(".sink() received \(String(describing: value))")
+})
+----
+
+If you want to handle the error in the subscriber, you can `switch` on the returned completion to determine if it is `.finished` or `.failure`.
+
+[source, swift]
+----
+.sink(receiveCompletion: { completion in
+    switch completion {
+    case .finished:
+        // no associated data, but you can react to knowing the request has been completed
+        break
+    case .failure(let anError):
+        // do what you want with the error details, presenting, logging, or hiding as appropriate
+        print("GOT THE ERROR: ", anError)
+        break
+    }
+}, receiveValue: { someValue in
+    // do what you want with the resulting value passed down
+    // be aware that depending on the data type being returned, you may get this closure invoked
+    // multiple times.
+    print(".sink() received \(someValue)")
+})
+----
 
 
 [#patterns-sequencing-async]
 == sequencing async operations
 
-With swift, there are a variety of ways to chain together asynchronous operations.
-Combine adds one, especially useful when you want to use the data from one operation as the input to the next.
-If you are familiar with using Promises in another language, such as Javascript, this pattern is the equivalent of https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises#Chaining[Promise chaining].
+There are a variety of ways to chain together asynchronous operations.
+Combine adds to this variety, and is effective when you want to use the data from one operation as the input to the next.
+If you are familiar with using Promises in another language, such as Javascript, this pattern is roughly the equivalent of https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises#Chaining[Promise chaining].
+The benefit to using Combine is that the sequencing can be relatively easy to parse visually.
 
-general sequencing of async operations
+[#patterns-sequencing-dataTaskPublisher]
+=== Making a network request with dataTaskPublisher
 
-* URLSession -> Decode -> (subscriber)
-* URLSession -> Decode -> URLSession -> Decode -> (subscriber)
+One of the common use cases is requesting JSON data from a URL and decoding it.
+This can be readily accomplished with Combine using https://developer.apple.com/documentation/foundation/urlsession/3329708-datataskpublisher[dataTaskPublisher] on https://developer.apple.com/documentation/foundation/urlsession[URLSession].
+The data that is returns down the pipeline is a tuple: `(data: Data, response: URLResponse)`
+
+The simplest case of using this might be:
+
+[source, swift]
+----
+struct IPInfo: Codable {
+    // matching the data structure returned from ip.jsontest.com
+    var ip: String
+}
+let myURL = URL(string: "http://ip.jsontest.com")
+// NOTE(heckj): you'll need to enable insecure downloads in your Info.plist for this example
+
+let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
+    // the dataTaskPublisher output combination is (data: Data, response: URLResponse)
+    .map({ (inputTuple) -> Data in
+        return inputTuple.data
+    })
+    .decode(type: IPInfo.self, decoder: JSONDecoder())
+    .eraseToAnyPublisher()
+----
+
+The subscriber will get either the data, or receiving a completion notification with an error.
+The dataTaskPublisher will make a single request, and what you build in the pipeline will determine what the subscriber receives.
+
+In the above example, a failed URL request will result in a `.failure` completion with an encapsulated error.
+Likewise, if the returned data couldn't be decoded based on the structure, or wasn't JSON, then the result will be a `.failure` completion with an encapsulated decoding error from the decoder.
+
+If you want to have more control over what is considered a failure in the URL response, you use a tryMap on the tuple response from dataTaskPublisher.
+An example of that might look like:
+
+[source, swift]
+----
+struct IPInfo: Codable {
+    // matching the data structure returned from ip.jsontest.com
+    var ip: String
+}
+let myURL = URL(string: "http://ip.jsontest.com")
+// NOTE(heckj): you'll need to enable insecure downloads in your Info.plist for this example
+
+enum testFailureCondition: Error {
+    case invalidServerResponse
+}
+
+let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
+    // the dataTaskPublisher output combination is (data: Data, response: URLResponse)
+    .tryMap { data, response -> Data in
+        // this give you the full capability to react to both the data and the HTTPURLResponse
+        // with the expectation that you will throw an error if a failure completion is warranted.
+        guard let httpResponse = response as? HTTPURLResponse,
+            // this will casue an .failure completion on anything other than a 200 response
+            httpResponse.statusCode == 200 else {
+                throw testFailureCondition.invalidServerResponse
+        }
+        return data
+    }
+    .decode(type: IPInfo.self, decoder: JSONDecoder())
+    .eraseToAnyPublisher()
+----
 
 [#patterns-general-error-handling]
-== general error handling strategies
+== Handling errors in the pipline
 
 assertNoError
 

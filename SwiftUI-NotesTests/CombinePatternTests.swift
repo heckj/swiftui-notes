@@ -20,6 +20,11 @@ class CombinePatternTests: XCTestCase {
     let testUrlString = "http://ip.jsontest.com"
     // this always returns data in the format of {"ip": "63.234.253.210"}
 
+    // matching the data structure returned from ip.jsontest.com
+    struct IPInfo: Codable {
+        var ip: String
+    }
+
     override func setUp() {
         self.testURL = URL(string: testUrlString)
     }
@@ -29,25 +34,31 @@ class CombinePatternTests: XCTestCase {
 
         let _ = simplePublisher
             .print()
-            .sink(receiveCompletion: { err in
-            // XCTFail()
-            print(".sink() caught the failure", String(describing: err))
-
-        }, receiveValue: { stringValue in
-            XCTAssertNotNil(stringValue)
-            print(".sink() received \(stringValue)")
-
-            // expecting this to fail, want to see what happens
-            // XCTAssertEqual(stringValue, "foo") // and it does - throws two test exceptions for this test
-        })
+            // the result of adding in .print() to this chain is the following additional console output
+            //        receive subscription: (PassthroughSubject)
+            //        request unlimited
+            //        receive value: (firstStringValue)
+            //        receive value: (secondStringValue)
+            //        receive error: (invalidServerResponse)
+            .sink(receiveCompletion: { fini in
+                print(".sink() received the completion:", String(describing: fini))
+            }, receiveValue: { stringValue in
+                XCTAssertNotNil(stringValue)
+                print(".sink() received \(stringValue)")
+                // this print adds into the console output:
+                //        .sink() received firstStringValue
+                //        .sink() received secondStringValue
+                //        .sink() caught the failure failure(SwiftUI_NotesTests.CombinePatternTests.testFailureCondition.invalidServerResponse)
+            })
 
         simplePublisher.send("firstStringValue")
         simplePublisher.send("secondStringValue")
-//        let aFailure = Subscribers.Completion<Failure: Error>
-        // Cannot convert value of type 'CombinePatternTests.testFailureCondition.Type' to expected argument type 'Subscribers.Completion<Error>'
         simplePublisher.send(completion: Subscribers.Completion.failure(testFailureCondition.invalidServerResponse))
 
-// test console output
+        // this data will never be seen by anything in the pipeline above because we've already sent a completion
+        simplePublisher.send(completion: Subscribers.Completion.finished)
+
+// the full console output from this test
 //        receive subscription: (PassthroughSubject)
 //        request unlimited
 //        receive value: (firstStringValue)
@@ -58,28 +69,8 @@ class CombinePatternTests: XCTestCase {
 //        .sink() caught the failure failure(SwiftUI_NotesTests.CombinePatternTests.testFailureCondition.invalidServerResponse)
 
     }
-    func testAlternateDataTaskPublisherSetup() {
-        // setup
-        let myUrlRequest = URLRequest(url: testURL!)
-        let myUrlSession = URLSession.shared
-        let foo = URLSession.DataTaskPublisher(request: myUrlRequest, session: myUrlSession)
-            .print()
-//receive subscription: ((extension in Foundation):__C.NSURLSession.DataTaskPublisher.(unknown context at $10e337eb4).Inner<Combine.Publishers.Print<(extension in Foundation):__C.NSURLSession.DataTaskPublisher>.(unknown context at $10b75c24c).Inner<Combine.Subscribers.Sink<Combine.Publishers.Print<(extension in Foundation):__C.NSURLSession.DataTaskPublisher>>>>)
-//request unlimited
-            .sink(receiveCompletion: { err in
-                // XCTFail()
-                print("foo.sink() caught the failure", String(describing: err))
 
-            }, receiveValue: { stringValue in
-                XCTAssertNotNil(stringValue)
-                print("foo.sink() received \(stringValue)")
-            })
-
-        XCTAssertNotNil(foo) // shut up the compiler warning about unused variable
-        //NOTE(heckj): chain is clearly set up, but unlimited subscription isn't receiving any values
-    }
-
-    func testSimpleURLDecodeChain() {
+    func testSimpleURLErrorMapDecodeChain() {
         // setup
         let expectation = XCTestExpectation(description: "Download from \(String(describing: testURL))")
         let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: self.testURL!)
@@ -93,7 +84,7 @@ class CombinePatternTests: XCTestCase {
                 print(" >returning NSData")
                 return data
         }
-        // validate
+        .decode(type: IPInfo.self, decoder: JSONDecoder())
 
         XCTAssertNotNil(remoteDataPublisher)
 
@@ -105,9 +96,9 @@ class CombinePatternTests: XCTestCase {
             case .finished: expectation.fulfill()
             case .failure: XCTFail()
             }
-        }, receiveValue: { stringValue in
-            XCTAssertNotNil(stringValue)
-            print(".sink() received \(stringValue)")
+        }, receiveValue: { someValue in
+            XCTAssertNotNil(someValue)
+            print(".sink() received \(someValue)")
         })
 
         wait(for: [expectation], timeout: 10.0)
@@ -115,18 +106,115 @@ class CombinePatternTests: XCTestCase {
         //NOTE(heckj): chain is clearly set up, but unlimited subscription isn't receiving any values
     }
 
+    func testSimpleURLDecodeChain() {
+        // setup
+        let expectation = XCTestExpectation(description: "Download from \(String(describing: testURL))")
+        let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: self.testURL!)
+            // the dataTaskPublisher output combination is (data: Data, response: URLResponse)
+            .map({ (inputTuple) -> Data in
+                return inputTuple.data
+            })
+            .decode(type: IPInfo.self, decoder: JSONDecoder())
+
+        XCTAssertNotNil(remoteDataPublisher)
+
+        // validate
+        let _ = remoteDataPublisher
+            .sink(receiveCompletion: { fini in
+                print(".sink() received the completion", String(describing: fini))
+                switch fini {
+                case .finished: expectation.fulfill()
+                case .failure: XCTFail()
+                }
+            }, receiveValue: { someValue in
+                XCTAssertNotNil(someValue)
+                print(".sink() received \(someValue)")
+            })
+
+        wait(for: [expectation], timeout: 10.0)
+        print("TEST COMPLETE")
+        //NOTE(heckj): pipeline is set up, but unlimited subscription isn't receiving any values unless we test with an expectation...
+    }
+
+    func testSimpleFailingURLDecodeChain_URLError() {
+        // setup
+        let myURL = URL(string: "https://doesntexist.jsontest.com") // whole chain fails with completion/error sent from dataTaskPublisher
+        let expectation = XCTestExpectation(description: "Download from \(String(describing: myURL))")
+        let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
+            // the dataTaskPublisher output combination is (data: Data, response: URLResponse)
+            .map({ (inputTuple) -> Data in
+                return inputTuple.data
+            })
+            .decode(type: IPInfo.self, decoder: JSONDecoder())
+            .eraseToAnyPublisher()
+            // validate
+            .sink(receiveCompletion: { fini in
+                print(".sink() received the completion", String(describing: fini))
+                switch fini {
+                case .finished: XCTFail()
+                case .failure(let anError):
+                    print("GOT THE ERROR: ", anError)
+                    expectation.fulfill()
+                }
+            }, receiveValue: { someValue in
+                XCTAssertNotNil(someValue)
+                print(".sink() received \(someValue)")
+            })
+
+        XCTAssertNotNil(remoteDataPublisher)
+
+        wait(for: [expectation], timeout: 3.0)
+    }
+
+    func testSimpleFailingURLDecodeChain_DecodeError() {
+        // setup
+        struct BadlyStructuredIPInfo: Codable {
+            var ip: String
+            var anotherValue: Int
+        }
+
+        let myURL = URL(string: "https://ip.jsontest.com") // whole chain fails with completion/error sent from dataTaskPublisher
+        let expectation = XCTestExpectation(description: "Download from \(String(describing: myURL))")
+        let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
+            // the dataTaskPublisher output combination is (data: Data, response: URLResponse)
+            .map({ (inputTuple) -> Data in
+                return inputTuple.data
+            })
+            .decode(type: BadlyStructuredIPInfo.self, decoder: JSONDecoder())
+            .eraseToAnyPublisher()
+            // validate
+            .sink(receiveCompletion: { fini in
+                print(".sink() received the completion", String(describing: fini))
+                switch fini {
+                case .finished: XCTFail()
+                case .failure(let anError):
+                    print("GOT THE ERROR: ", anError)
+                    expectation.fulfill()
+                }
+            }, receiveValue: { someValue in
+                XCTAssertNotNil(someValue)
+                print(".sink() received \(someValue)")
+            })
+
+        XCTAssertNotNil(remoteDataPublisher)
+
+        wait(for: [expectation], timeout: 3.0)
+    }
+
     func testDataTaskPublisher() {
         // setup
         let expectation = XCTestExpectation(description: "Download from \(String(describing: testURL))")
         let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: self.testURL!)
             // validate
-            .sink(receiveCompletion: { err in
-//                XCTFail(String(describing: err))
-                print(".sink() caught the completion", String(describing: err))
+            .sink(receiveCompletion: { fini in
+                print(".sink() received the completion", String(describing: fini))
+                switch fini {
+                case .finished: expectation.fulfill()
+                case .failure: XCTFail()
+                }
             }, receiveValue: { stringValue in
                 XCTAssertNotNil(stringValue)
                 print(".sink() received \(stringValue)")
-                expectation.fulfill()
             })
 
         XCTAssertNotNil(remoteDataPublisher)
