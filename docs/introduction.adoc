@@ -54,6 +54,7 @@ For example, you could use some of the APIs in the Vision framework, composing d
 [sidebar]
 ****
 In this work, I'm going to call a set of composed operations in Combine a **pipeline**.
+Pipeline is not a term that Apple is (yet?) using in its documentation.
 ****
 
 == When to use Combine

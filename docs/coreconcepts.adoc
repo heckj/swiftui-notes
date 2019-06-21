@@ -5,10 +5,8 @@ Two key concepts, described in swift with protocols, are the https://developer.a
 
 A publisher provides data.
 It is described with two associated types: one for Output and one for Failure.
-
 A subscriber requests data.
 It is also described with two associated types, one for Input and one for Failure.
-
 When you connect a subscriber to a publisher, both types must match: Output to Input, and Failure to Failure.
 You can view this as a series of operations on two types in parallel.
 
@@ -283,19 +281,6 @@ Operators can also help with error handling and retry logic, buffering and prefe
 
 // NOTE(heckj): add xref link to reference section when written
 
-=== Pipelines and threads
-
-Combine is not just a single threaded construct.
-Combine allows for publishers to specify the scheduler used when either receiving from an upstream publisher (in the case of operators), or when sending to a downstream subscriber.
-This is critical when working with a subscriber that updates UI elements, as that should always be called on the main thread.
-
-You may see this in code as an operator, for example:
-
-[source, swift]
-----
-    .receive(on: RunLoop.main)
-----
-
 == Subjects
 
 Subjects are a special case of publisher that also adhere to https://developer.apple.com/documentation/combine/subject[`subject`] protocol.
@@ -427,4 +412,17 @@ The resulting type would simplify to:
 [source, swift]
 ----
 AnyPublisher<String, Never>
+----
+
+== Pipelines and threads
+
+Combine is not just a single threaded construct.
+Combine allows for publishers to specify the scheduler used when either receiving from an upstream publisher (in the case of operators), or when sending to a downstream subscriber.
+This is critical when working with a subscriber that updates UI elements, as that should always be called on the main thread.
+
+You may see this in code as an operator, for example:
+
+[source, swift]
+----
+    .receive(on: RunLoop.main)
 ----
