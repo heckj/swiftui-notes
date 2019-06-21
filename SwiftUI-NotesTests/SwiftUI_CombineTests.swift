@@ -11,7 +11,7 @@ import Combine
 
 class SwiftUI_CombineTests: XCTestCase {
 
-    func verifySignature() {
+    func testVerifySignature() {
 
         let x = PassthroughSubject<String, Never>()
             .flatMap { name in
@@ -24,10 +24,23 @@ class SwiftUI_CombineTests: XCTestCase {
                 }
         }.eraseToAnyPublisher()
 
-        
+        let y = PassthroughSubject<String, Never>()
+            .flatMap { name in
+                return Publishers.Future<String, Error> { promise in
+                    promise(.success(""))
+                    }.catch { _ in
+                        Publishers.Just("No user found")
+                    }.map { result in
+                        return "\(result) foo"
+                }
+            }
 
-
+        print("composed type")
+        print(type(of: x.self))
+        print("erased type")
+        print(type(of: y.self))
     }
+
     func testSimplePipeline() {
 
         let _ = Publishers.Just(5)
