@@ -109,6 +109,7 @@ We will see that in more detail in the section on patterns.
 
 // TODO(heckj): come back and map 'section on patterns' to xref's to the pattern section when created
 
+[#core-lifecycle]
 == The lifecycle of Publishers and Subscribers
 
 The interals of Combine are all driven by the subscriber.
@@ -133,6 +134,7 @@ A publisher should never send **more** than the demand requested.
 
 * A publisher may optionally send https://developer.apple.com/documentation/combine/subscribers/completion[completion]: `receive(completion:)` which is also how errors are propogated.
 
+[#core-publishers]
 == Publishers
 
 The publisher is the provider of data.
@@ -166,6 +168,7 @@ A number of other Apple APIs provide publishers as well:
 
 Combine also includes mechanisms to allow you to create your own publishers with `Publishers.Future`. A future is initialized with a closure that eventually resolves to a https://developer.apple.com/documentation/combine/publishers/future/promise[Promise]. This can be used to wrap any existing API (Apple or your own) that provides a completion closure to turn it into a publisher.
 
+[#core-operators]
 == Operators
 
 Operators are a convenient name for a number of pre-built functions that are included under Publisher in Apple's reference documentation.
@@ -281,6 +284,7 @@ Operators can also help with error handling and retry logic, buffering and prefe
 
 // NOTE(heckj): add xref link to reference section when written
 
+[#core-subjects]
 == Subjects
 
 Subjects are a special case of publisher that also adhere to https://developer.apple.com/documentation/combine/subject[`subject`] protocol.
@@ -304,6 +308,7 @@ Both CurrentValueSubject and PassthroughSubject are also useful for creating pub
 
 Subjects can also be useful for fanning out values to multiple subscribers.
 
+[#core-subscribers]
 == Subscribers
 
 While https://developer.apple.com/documentation/combine/subscriber[`subscriber`] is the protocol used to receive data throughout a pipeline, the Subscriber typically refers to the end of a pipeline.
@@ -353,6 +358,7 @@ struct MyView : View {
 
 For any type of UI object (UIKit, AppKit, or SwiftUI), `.assign` can be used with pipelines to manipulate properties.
 
+[#core-types]
 == Swift types and exposing pipelines or subscribers
 
 When you compose pipelines within swift, the chaining is interpretted as nesting generic types to the compiler.
@@ -414,6 +420,7 @@ The resulting type would simplify to:
 AnyPublisher<String, Never>
 ----
 
+[#core-threads]
 == Pipelines and threads
 
 Combine is not just a single threaded construct.

@@ -1,8 +1,9 @@
 [#reference]
-= Extended Reference
+= Reference
 
-* extending the apple documentation
-** beta2 is better, but fairly anemic
+== extending the apple documentation
+
+* beta2 is better, but fairly anemic
 
 things to potentially include for each segment
 
@@ -12,10 +13,12 @@ things to potentially include for each segment
 * marble/railroad diagram explaining what the transformation does
 * sample code showing it being used and/or tested
 
+[#reference-publishers]
 == Publishers
 
 //NOTE(heckj) make xref link back to coreconcepts:publishers
 
+[#reference-conveniencePublishers]
 === convenience publishers
 
 * https://developer.apple.com/documentation/combine/publishers/empty[`Publishers.Empty`]
@@ -30,12 +33,14 @@ things to potentially include for each segment
 
 A future is initialized with a closure that eventually resolves to a https://developer.apple.com/documentation/combine/publishers/future/promise[Promise].
 
-* @Published 
+* @Published
 
+[#reference-swiftUI]
 === SwiftUI
 
 * @ObjectBinding (swiftUI)
 
+[#reference-foundation]
 === Foundation
 
 * https://developer.apple.com/documentation/foundation/notificationcenter[`NoticationCenter`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publisher`]
@@ -44,14 +49,17 @@ A future is initialized with a closure that eventually resolves to a https://dev
 
 * https://developer.apple.com/documentation/foundation/urlsession[`URLSession`] https://developer.apple.com/documentation/foundation/urlsession/3329707-datataskpublisher[`dataTaskPublisher`]
 
+[#reference-realitykit]
 === RealityKit
 
 * https://developer.apple.com/documentation/realitykit[`RealityKit`] https://developer.apple.com/documentation/realitykit/scene[`.Scene`] https://developer.apple.com/documentation/realitykit/scene/3254685-publisher[`.publisher()`]
 
+[#reference-operators]
 == Operators
 
 //NOTE(heckj) make xref link back to coreconcepts:operators
 
+[#reference-operators-mapping]
 === Mapping elements
 
 // NOTE(heckj): add xref link to reference section when written
@@ -63,6 +71,7 @@ A future is initialized with a closure that eventually resolves to a https://dev
 * flatMap
 * setFailureType
 
+[#reference-operators-filtering]
 === Filtering elements
 
 * compactMap
@@ -74,6 +83,7 @@ A future is initialized with a closure that eventually resolves to a https://dev
 * replaceEmpty
 * replaceError
 
+[#reference-operators-reducing]
 === Reducing elements
 
 * collect
@@ -83,12 +93,14 @@ A future is initialized with a closure that eventually resolves to a https://dev
 * reduce
 * tryReduce
 
+[#reference-operators-mathematical]
 === Mathematic opertions on elements
 
 * comparison
 * tryComparison
 * count
 
+[#reference-operators-criteria]
 === Applying matching criteria to elements
 
 * allSatisfy
@@ -97,6 +109,7 @@ A future is initialized with a closure that eventually resolves to a https://dev
 * containsWhere
 * tryContainsWhere
 
+[#reference-operators-sequence]
 === Applying sequence operations to elements
 
 * first
@@ -115,6 +128,7 @@ A future is initialized with a closure that eventually resolves to a https://dev
 * tryPrefixWhile
 * output
 
+[#reference-operators-combinepublishers]
 === Combining elements from multiple publishers
 
 * combineLatest
@@ -122,16 +136,19 @@ A future is initialized with a closure that eventually resolves to a https://dev
 * merge
 * zip
 
+[#reference-operators-handlingErrors]
 === Handling errors
 
 * assertNoFailure
 * catch
 * retry
 
+[#reference-operators-adaptingTypes]
 === Adapting publisher types
 
 * switchToLatest
 
+[#reference-operators-timing]
 === Controlling timing
 
 * debounce
@@ -140,21 +157,25 @@ A future is initialized with a closure that eventually resolves to a https://dev
 * throttle
 * timeout
 
+[#reference-operators-coding]
 === Encoding and decoding
 
 * encode
 * decode
 
+[#reference-operators-multipleSubscribers]
 === Working with mulitple subscribers
 
 * multicast
 
+[#reference-operators-debugging]
 === Debugging
 
 * breakpoint
 * handleEvents
 * print
 
+[#reference-subjects]
 == Subjects
 
 //NOTE(heckj) make xref link back to coreconcepts:subjects
@@ -162,9 +183,10 @@ A future is initialized with a closure that eventually resolves to a https://dev
 * https://developer.apple.com/documentation/combine/currentvaluesubject[`CurrentValueSubject`]
 * https://developer.apple.com/documentation/combine/passthroughsubject[`PassthroughSubject`]
 
+[#reference-subscribers]
 == Subscribers
 
 //NOTE(heckj) make xref link back to coreconcepts:subscribers
 
-* https://developer.apple.com/documentation/combine/subscribers/assign[`assign`] 
-* https://developer.apple.com/documentation/combine/subscribers/sink[`sink`] 
+* https://developer.apple.com/documentation/combine/subscribers/assign[`assign`]
+* https://developer.apple.com/documentation/combine/subscribers/sink[`sink`]

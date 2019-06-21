@@ -78,3 +78,28 @@ One of Apple's examples with Combine include a pipeline to fall back to getting 
 
 Many of the pipelines you create with Combine will only be a few operations.
 Even with just a few operations, Combine can still make it much easier to view and understand what's happening when you compose a pipeline.
+
+== Apple's Documentation
+
+icon:apple[size=2x]
+
+The https://developer.apple.com/documentation/combine[online documentation for Combine] can be found at https://developer.apple.com/documentation/combine.
+Apple's developer documentation is hosted at https://developer.apple.com/documentation/.
+
+=== WWDC content
+
+Apple provides video, slides, and some sample code in sessions from https://developer.apple.com/videos/play/wwdc2019[WWDC 2019]
+
+A number of these introduce and go into some depth on Combine:
+
+* https://developer.apple.com/videos/play/wwdc2019/722/[Introducing Combine]
+** https://devstreaming-cdn.apple.com/videos/wwdc/2019/722l6blhn0efespfgx/722/722_introducing_combine.pdf?dl=1[PDF of presentation notes]
+
+* https://developer.apple.com/videos/play/wwdc2019/721/[Combine in Practice]
+** https://devstreaming-cdn.apple.com/videos/wwdc/2019/721ga0kflgr4ypfx/721/721_combine_in_practice.pdf?dl=1[PDF of presentation notes]
+
+A number of additional sessions mention Combine:
+
+* https://developer.apple.com/videos/play/wwdc2019/226[Data Flow Through SwiftUI]
+* https://developer.apple.com/videos/play/wwdc2019/711[Introducing Combine and Advances in Foundation]
+* https://developer.apple.com/videos/play/wwdc2019/712/[Advances in Networking, Part 1]

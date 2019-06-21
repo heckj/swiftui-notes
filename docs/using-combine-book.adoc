@@ -1,6 +1,6 @@
 = Using Combine
 Joseph Heck
-v0.1, 2019-06-18
+v0.1, 2019-06-21
 :doctype: book
 :creator: {author}
 :producer: Asciidoctor
@@ -16,6 +16,10 @@ v0.1, 2019-06-18
 :source-highlighter: pygments
 :url-issues: https://github.com/heckj/swiftui-notes/issues
 :toc: left
+:toclevels: 4
+// enable font-awesome icons in content
+:icons: font
+
 ifndef::ebook-format[:leveloffset: 1]
 
 include::aboutthisbook.adoc[]
@@ -24,6 +28,3 @@ include::introduction.adoc[]
 include::coreconcepts.adoc[]
 include::patterns.adoc[]
 include::reference.adoc[]
-
-include::raw-notes.adoc[]
-include::apple.adoc[]

@@ -1,16 +1,165 @@
 [#patterns]
 = Patterns and Recipes
 
+[#patterns-sequencing-async]
 == sequencing async operations
 
-* handling errors, fallback/placeholder pattern
-** image fallback under constrained network
+general sequencing of async operations
 
+* URLSession -> Decode -> (subscriber)
+* URLSession -> Decode -> URLSession -> Decode -> (subscriber)
+
+[#patterns-general-error-handling]
+== general error handling strategies
+
+assertNoError
+
+general failure handing pattern with flatMap
+
+[source, swift]
+----
+let trickNamePublisher = NotificationCenter.default.publisher(for: .newTrickDownloaded)
+.map { notification in
+    return notification.userInfo?["data"] as! Data
+}
+.flatMap { data in
+    return Just(data)
+    .decode(MagicTrick.self, JSONDecoder())
+    .catch {
+        return Just(MagicTrick.placeholder)
+    }
+}
+.publisher(for: \.name)
+.receive(on: RunLoop.main)
+----
+
+diagram version:
+
+[source]
+----
+flatMap -> (                                           ) -> subscriber
+            Just -> decode -> catch (                 )
+                                     Just(fallback) ->
+----
+
+replace `decode` with any operator that might return an error
+
+retry
+
+* (mention idempotency issues here)
+
+image fallback under constrained network
+
+[source, swift]
+----
+// Generalized Publisher for Adaptive URL Loading
+func adaptiveLoader(regularURL: URL, lowDataURL: URL) -> AnyPublisher<Data, Error> {
+    var request = URLRequest(url: regularURL)
+    request.allowsConstrainedNetworkAccess = false
+    return URLSession.shared.dataTaskPublisher(for: request)
+        .tryCatch { error -> URLSession.DataTaskPublisher in
+            guard error.networkUnavailableReason == .constrained else {
+               throw error
+            }
+            return URLSession.shared.dataTaskPublisher(for: lowDataURL)
+        .tryMap { data, response -> Data in
+            guard let httpResponse = response as? HTTPUrlResponse,
+                   httpResponse.status_code == 200 else {
+                       throw MyNetworkingError.invalidServerResponse
+            }
+            return data
+}
+.eraseToAnyPublisher()
+----
+
+
+the general failure, fallback pattern
+
+* URLSession data gathering when on a constrained network
+* URLSession returning placeholder data when service unavailable
+
+[#patterns-binding]
 == binding
+
+binding to objects to get data from them
+
+simple case - data validation with external service
+
+[source, swift]
+----
+@Published var username: String = ""
+
+var validatedUsername: AnyPublisher<String?, Never> {
+    return $username
+        .debounce(for: 0.5, scheduler: RunLoop.main)
+           //  <String?>|<Never>
+        .removeDuplicates()
+           //  <String?>|<Never>
+        .flatMap { username in
+            return Future { promise in
+                self.usernameAvailable(username) { available in
+                   promise(.success(available ? username : nil))
+                }
+          //    <Result<Output, Failure>>
+            }
+        }
+          // <String?>|<Never>
+        .eraseToAnyPublisher()
+}
+----
+
+validation - listening for changes to validate them together
+
+[source, swift]
+----
+@Published var password: String = ""
+@Published var passwordAgain: String = ""
+
+var validatedPassword: AnyPublisher<String?, Never> {
+    return CombineLatest($password, $passwordAgain) { password, passwordAgain in
+        guard password == passwordAgain, password.count > 8 else { return nil }
+        return password
+    }
+      //  <String?>|<Never>
+    .map { $0 == password1 ? nil : $0 }
+      //  <String?>|<Never>
+    .eraseToAnyPublisher()
+      //  <String?>|<Never>
+}
+----
+
+more complex validation - bringing together substreams
+
+[source, swift]
+----
+var validatedCredentials: AnyPublisher<(String, String)?, Never> {
+    return CombineLatest(validatedUsername, validatedPassword) { username, password in
+        guard let uname = username, let pwd = password else { return nil }
+        return (uname, pwd)
+    }
+    .eraseToAnyPublisher()
+}
+
+@IBOutlet var signupButton: UIButton!
+
+var signupButtonStream: AnyCancellable?
+
+override func viewDidLoad() {
+    super.viewDidLoad()
+    self.signupButtonStream = self.validatedCredentials
+        .map { $0 != nil }
+        .receive(on: RunLoop.main)
+        .assign(to: \.isEnabled, on: signupButton)
+}
+----
 
 * binding with models
 
 * binding with notifications
+
+* binding to RealityKit
+
+binding to objects to send data to them
 
 * binding to SwiftUI
 ** validating forms
@@ -18,11 +167,14 @@
 ** handling error within property update
 ** retry for remote service
 
-* binding to RealityKit
 
+[#patterns-testing]
 == testing
 
-* testing with Combine
+test strategies with combine
+
 ** testing streams/pipelines
 ** testing publishers
 ** testing subscribers
+
+using PassthroughSubject and creative sinks

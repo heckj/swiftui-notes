@@ -25,6 +25,13 @@ Joe also builds teams and mentors people to learn, build, validate, deploy and r
 Joe works extensively with and in open source, contributing and collaborating with a wide variety of open source projects.
 He writes online across a variety of topics at https://rhonabwy.com/.
 
+[cols="3*^",frame=none,grid=none,width=50%]
+|===
+.^| https://github.com/heckj[icon:github[size=2x]]
+.^| https://www.linkedin.com/in/josephheck/[icon:linkedin[size=2x]]
+.^| http://twitter.com/heckj[icon:twitter[size=2x]]
+|===
+
 == Where to get this book
 
 The contents of this book are available as https://heckj.github.io/swiftui-notes/[HTML], https://heckj.github.io/swiftui-notes/using-combine-book.pdf[PDF], and https://heckj.github.io/swiftui-notes/using-combine-book.epub[ePub].
@@ -32,15 +39,13 @@ There is also an Xcode project (`SwiftUI-Notes.xcodeproj`) available from GitHub
 
 === Download the project
 
-You will need Xcode v11 (beta2 as of this writing).
+The project associated with this book requires Xcode v11 (which has been released as beta2 as of this writing) and MacOS 10.14 or later.
 
 image::welcomeToXcode.png[Welcome to Xcode,406,388]
 
 * From the Welcome to Xcode window, choose **Clone an existing project**
-* enter `https://github.com/heckj/swiftui-notes.git` and click `Clone`
+* Enter `https://github.com/heckj/swiftui-notes.git` and click `Clone`
 
 image::cloneRepository.png[clone Repository,463,263]
 
-* choose the `master` branch to check out
-* place where convenient for yourself
-
+* Choose the `master` branch to check out
