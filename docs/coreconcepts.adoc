@@ -40,6 +40,7 @@ Publisher source       Operator                          Subscriber
 Operators can be used to transform types - both the Output and Failure type.
 Operators may also split or duplicate streams, or merge streams together.
 Operators must always be aligned by the combination of Output/Failure types.
+The compiler will enforce the matching types, so getting it wrong will result in a compiler error (and sometimes a useful _fixit_ snippet.)
 
 A simple pipeline, using Combine, might look like:
 [source, swift]
@@ -56,9 +57,18 @@ let _ = Publishers.somePublisher
     }
 ----
 
-
-The compiler will enforce the matching types.
 When you are viewing a pipeline, or creating one, you can think of it as a sequence of operations linked by the types.
+This pattern will come in handy when you start constructing your own pipelines, as some of operators will either require conformance of a type, or will change the Failure output type.
+
+Because the types are enforced, there are a number of Combine functions that are created to help with these transformations.
+Some operators are prefixed with `try` that indicate that they will return an <Error> type.
+In some cases, you may need to define the type being returned in the closure you're providing to the operator.
+
+An example of this is map and tryMap.
+https://developer.apple.com/documentation/combine/publishers/map[`map`] allows for any combination of Output and Failure type and passes them through.
+https://developer.apple.com/documentation/combine/publishers/trymap['tryMap'] accepts any Input, Failure types, and allows any Output type, but will always output an `<Error>` failure type.
+
+To illustrate changing types within a pipeline, here is a short snippet thsat starts with a publisher that generates `<Int>`, `<Never>` and end with a subscription taking `<String>`, `<Never>`.
 
 [source, swift]
 ----
@@ -87,17 +97,19 @@ let _ = Publishers.Just(5) <1>
 <2> the `.map()` function takes in an `<Int>`, `<Never>` combination and transforms it into a `<String>`,
 <3> receives the `<String>`, `<Never>` combination
 
-Because the types are enforced, there are a number of Combine functions that are created to help with these transformations.
-Some operators are prefixed with `try` that indicate that they will return an <Error> type.
-In other cases, you will just need to define the type being returned in the closure you're providing to the operator.
 
 [sidebar]
 ****
-When you are creating pipelines in Xcode, you will likely get assistance in the form of error messages like: `Unable to infer complex closure return type; add explicit type to disambiguate`.
+When you are creating pipelines in Xcode and don't match the types, the error message from Xcode may include
+a helpful _fixit_.
+In some cases, such as the example above, the compiler is unable to infer the return types of closure provided to `map` withpout specifying the return type.
+Xcode (11 beta 2) displays this as the error message: `Unable to infer complex closure return type; add explicit type to disambiguate`.
 ****
 
 Combine supports error handling by creating two streams - one for the functional case and one for the error case, and combining them together.
 We will see that in more detail in the section on patterns.
+
+// TODO(heckj): come back and map 'section on patterns' to xref's to the pattern section when created
 
 == The lifecycle of Publishers and Subscribers
 
@@ -130,13 +142,15 @@ The https://developer.apple.com/documentation/combine/publisher[publisher protoc
 
 Combine provides a number of convenience publishers:
 
-* Publishers.Empty
-* Publishers.Fail
-* Publishers.Just
-* Publishers.Once
-* Publishers.Optional
-* Publishers.Sequence
-* Publishers.Deferred
+// TODO(heckj): come back and map these to xref's to the reference section when created
+
+* https://developer.apple.com/documentation/combine/publishers/empty[`Publishers.Empty`]
+* https://developer.apple.com/documentation/combine/publishers/fail[`Publishers.Fail`]
+* https://developer.apple.com/documentation/combine/publishers/just[`Publishers.Just`]
+* https://developer.apple.com/documentation/combine/publishers/once[`Publishers.Once`]
+* https://developer.apple.com/documentation/combine/publishers/optional[`Publishers.Optional`]
+* https://developer.apple.com/documentation/combine/publishers/sequence[`Publishers.Sequence`]
+* https://developer.apple.com/documentation/combine/publishers/deferred[`Publishers.Deferred`]
 
 Combine allows you to create a publisher with the https://developer.apple.com/documentation/combine/published[`@Published`] property wrapper to provide a publisher for a specific property.
 
@@ -154,12 +168,263 @@ A number of other Apple APIs provide publishers as well:
 
 Combine also includes mechanisms to allow you to create your own publishers with `Publishers.Future`. A future is initialized with a closure that eventually resolves to a https://developer.apple.com/documentation/combine/publishers/future/promise[Promise]. This can be used to wrap any existing API (Apple or your own) that provides a completion closure to turn it into a publisher.
 
-
 == Operators
 
+Operators are a convenient name for a number of pre-built functions that are included under Publisher in Apple's reference documentation.
+These functions are all meant to be composed into pipelines.
+Many will accept  one of more closures from the developer to define the business logic of the operator, while maintaining the adherance to the publisher/subscriber lifecycle.
+
+Some operators support bringing together outputs from different pipelines, or splitting to send to multiple subscribers.
+Operators may also have constraints on the types they will operate on.
+Operators can also help with error handling and retry logic, buffering and prefetch, controlling timing, and supporting debugging.
+
+=== Mapping elements
+
+// NOTE(heckj): add xref link to reference section when written
+
+* scan
+* tryScan
+* map
+* tryMap
+* flatMap
+* setFailureType
+
+=== Filtering elements
+
+* compactMap
+* tryCompactMap
+* filter
+* tryFilter
+* removeDuplicates
+* tryRemoveDuplicates
+* replaceEmpty
+* replaceError
+
+=== Reducing elements
+
+* collect
+* collectByCount
+* collectByTime
+* ignoreOutput
+* reduce
+* tryReduce
+
+=== Mathematic opertions on elements
+
+* comparison
+* tryComparison
+* count
+
+=== Applying matching criteria to elements
+
+* allSatisfy
+* tryAllSatisfy
+* contains
+* containsWhere
+* tryContainsWhere
+
+=== Applying sequence operations to elements
+
+* first
+* firstWhere
+* tryFirstWhere
+* last
+* lastWhere
+* tryLastWhere
+* dropUntilOutput
+* dropWhile
+* tryDropWhile
+* concatenate
+* drop
+* prefixUntilOutput
+* prefixWhile
+* tryPrefixWhile
+* output
+
+=== Combining elements from multiple publishers
+
+* combineLatest
+* tryCombineLatest
+* merge
+* zip
+
+=== Handling errors
+
+* assertNoFailure
+* catch
+* retry
+
+=== Adapting publisher types
+
+* switchToLatest
+
+=== Controlling timing
+
+* debounce
+* delay
+* measureInterval
+* throttle
+* timeout
+
+=== Encoding and decoding
+
+* encode
+* decode
+
+=== Working with mulitple subscribers
+
+* multicast
+
+=== Debugging
+
+* breakpoint
+* handleEvents
+* print
+
+// NOTE(heckj): add xref link to reference section when written
+
+=== Pipelines and threads
+
+Combine is not just a single threaded construct.
+Combine allows for publishers to specify the scheduler used when either receiving from an upstream publisher (in the case of operators), or when sending to a downstream subscriber.
+This is critical when working with a subscriber that updates UI elements, as that should always be called on the main thread.
+
+You may see this in code as an operator, for example:
+
+[source, swift]
+----
+    .receive(on: RunLoop.main)
+----
 
 == Subjects
 
+Subjects are a special case of publisher that also adhere to https://developer.apple.com/documentation/combine/subject[`subject`] protocol.
+This protocol requires subjects to have a `.send()` method to allow the developer to send specific values to a subscriber (or pipeline).
+
+There are two built-in subjects with Combine:
+
+The first is https://developer.apple.com/documentation/combine/currentvaluesubject[`CurrentValueSubject`].
+It is created and initialized with an initial value.
+When a subscriber is connected to it and requests data, the initial value is sent.
+Further calls to `.send()` afterwards will then send those values to any subscribers.
+
+The second is https://developer.apple.com/documentation/combine/passthroughsubject[`PassthroughSubject`].
+When it is created, only the types are defined.
+When a subscriber is connected and requests data, it will not receive any values until a `.send()` call is invoked.
+Calls to `.send()` will then send values to any subscribers.
+
+PassthroughSubject is extremely useful when writing tests for pipelines, as the sending of any requested data (or a failure) is under test control using the `.send()` function.
+
+Both CurrentValueSubject and PassthroughSubject are also useful for creating publishers from objects conforming to https://developer.apple.com/documentation/swiftui/bindableobject[`BindableObject`] within SwiftUI.
+
+Subjects can also be useful for fanning out values to multiple subscribers.
+
 == Subscribers
 
+While https://developer.apple.com/documentation/combine/subscriber[`subscriber`] is the protocol used to receive data throughout a pipeline, the Subscriber typically refers to the end of a pipeline.
 
+There are two subscribers built-in to Combine: assign and sink.
+
+https://developer.apple.com/documentation/combine/subscribers/assign[`assign`] applies values passed down from the publisher to an object defined by a keypath.
+The keypath is set when the pipeline is created.
+An example of this in swift might look like:
+
+[source, swift]
+----
+.assign(to: \.isEnabled, on: signupButton)
+----
+
+https://developer.apple.com/documentation/combine/subscribers/sink[`sink`] accepts a closure that receives any resulting values from the publisher.
+This allows the developer to terminate a pipeline with their own code.
+This subscriber is also extremely helpful when writing unit tests to validate either publishers or pipelines.
+An example of this in swift might look like:
+
+[source, swift]
+----
+.sink { receivedValue in
+    print("The end result was \(String(describing: receivedValue))")
+}
+----
+
+Most other subscribers are part of other Apple frameworks.
+For example, nearly every control in SwiftUI can act as a subscriber.
+The https://developer.apple.com/documentation/swiftui/view/3278619-onreceive[`.onReceive(publisher)`] function is used on SwiftUI views to act as a subscriber, taking a closure akin to `.sink()` that can manipulate `@State` or `@Bindings` within SwiftUI.
+
+An example of that in swift might look like:
+
+[source, swift]
+----
+struct MyView : View {
+
+    @State private var currentStatusValue = "ok"
+    var body: some View {
+        Text("Current status: \(currentStatusValue)")
+    }
+    .onReceive(MyPublisher.currentStatusPublisher) { newStatus in
+        currentStatusValue = newStatus
+    }
+}
+----
+
+For any type of UI object (UIKit, AppKit, or SwiftUI), `.assign` can be used with pipelines to manipulate properties.
+
+== Swift types and exposing pipelines or subscribers
+
+When you compose pipelines within swift, the chaining is interpretted as nesting generic types to the compiler.
+If you expose a pipeline as a publisher, subscriber, or subject the exposed type can be exceptionally complex.
+
+For example, if you created a publisher from a PassthroughSubject such as:
+
+[source, swift]
+----
+let x = PassthroughSubject<String, Never>()
+    .flatMap { name in
+        return Publishers.Future<String, Error> { promise in
+            promise(.success(""))
+            }.catch { _ in
+                Publishers.Just("No user found")
+            }.map { result in
+                return "\(result) foo"
+        }
+}
+----
+
+The resulting type would reflect that composition:
+
+[source, swift]
+----
+Publishers.FlatMap<Publishers.Map<Publishers.Catch<Publishers.Future<String, Error>, Publishers.Just<String>>, String>, PassthroughSubject<String, Never>>
+----
+
+When you want to expose the code, all of that composition detail can be very distracting and make your publisher, subject, or subscriber) harder to use.
+To clean up that interface, and provide a nice API boundary, the three major protocols all support methods that do type erasure.
+This cleans up the exposed type to a simpler generic form.
+
+These three methods are:
+
+* https://developer.apple.com/documentation/combine/publisher/3241548-erasetoanypublisher[`.eraseToAnyPublisher()`]
+* https://developer.apple.com/documentation/combine/subscriber/3241649-erasetoanysubscriber[`.eraseToAnySubscriber()`]
+* https://developer.apple.com/documentation/combine/subject/3241648-erasetoanysubject[`.eraseToAnySubject()`]
+
+If you updated the above code to add .eraseToAnyPublisher() at the end of the pipeline:
+
+[source, swift]
+----
+let x = PassthroughSubject<String, Never>()
+    .flatMap { name in
+        return Publishers.Future<String, Error> { promise in
+            promise(.success(""))
+            }.catch { _ in
+                Publishers.Just("No user found")
+            }.map { result in
+                return "\(result) foo"
+        }
+}.eraseToAnyPublisher()
+----
+
+The resulting type would simplify to:
+
+[source, swift]
+----
+AnyPublisher<String, Never>
+----

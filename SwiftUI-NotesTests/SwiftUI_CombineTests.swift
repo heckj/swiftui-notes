@@ -11,10 +11,27 @@ import Combine
 
 class SwiftUI_CombineTests: XCTestCase {
 
+    func verifySignature() {
+
+        let x = PassthroughSubject<String, Never>()
+            .flatMap { name in
+                return Publishers.Future<String, Error> { promise in
+                    promise(.success(""))
+                    }.catch { _ in
+                        Publishers.Just("No user found")
+                    }.map { result in
+                        return "\(result) foo"
+                }
+        }.eraseToAnyPublisher()
+
+        
+
+
+    }
     func testSimplePipeline() {
 
         let _ = Publishers.Just(5)
-            .map { value in
+            .map { value -> String in
                 switch value {
                 case _ where value < 1:
                     return "none"
