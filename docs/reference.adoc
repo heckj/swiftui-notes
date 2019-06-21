@@ -164,7 +164,7 @@ A future is initialized with a closure that eventually resolves to a https://dev
 * decode
 
 [#reference-operators-multipleSubscribers]
-=== Working with mulitple subscribers
+=== Working with multiple subscribers
 
 * multicast
 

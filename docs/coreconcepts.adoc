@@ -1,6 +1,9 @@
 [#coreconcepts]
 = Core Concepts
 
+[#core-publisher-subscriber]
+== Publisher, Subscriber
+
 Two key concepts, described in swift with protocols, are the https://developer.apple.com/documentation/combine/publisher[*publisher*] and the https://developer.apple.com/documentation/combine/subscriber[*subscriber*].
 
 A publisher provides data.
@@ -110,7 +113,7 @@ We will see that in more detail in the section on patterns.
 // TODO(heckj): come back and map 'section on patterns' to xref's to the pattern section when created
 
 [#core-lifecycle]
-== The lifecycle of Publishers and Subscribers
+== Lifecycle of Publishers and Subscribers
 
 The interals of Combine are all driven by the subscriber.
 This is how Combine supports the concept of back pressure.
@@ -272,7 +275,7 @@ Operators can also help with error handling and retry logic, buffering and prefe
 * encode
 * decode
 
-=== Working with mulitple subscribers
+=== Working with multiple subscribers
 
 * multicast
 
