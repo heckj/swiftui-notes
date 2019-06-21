@@ -1,8 +1,14 @@
 [#patterns]
 = Patterns and Recipes
 
+
+
 [#patterns-sequencing-async]
 == sequencing async operations
+
+With swift, there are a variety of ways to chain together asynchronous operations.
+Combine adds one, especially useful when you want to use the data from one operation as the input to the next.
+If you are familiar with using Promises in another language, such as Javascript, this pattern is the equivalent of https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises#Chaining[Promise chaining].
 
 general sequencing of async operations
 
