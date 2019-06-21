@@ -1,4 +1,170 @@
 [#reference]
-== Combine Reference
+= Extended Reference
 
-=== reference details and structure
+* extending the apple documentation
+** beta2 is better, but fairly anemic
+
+things to potentially include for each segment
+
+* narrative description of what the function does
+** notes on why you might want to use it, or where you may see it
+** xref back to patterns document where functions are being used
+* marble/railroad diagram explaining what the transformation does
+* sample code showing it being used and/or tested
+
+== Publishers
+
+//NOTE(heckj) make xref link back to coreconcepts:publishers
+
+=== convenience publishers
+
+* https://developer.apple.com/documentation/combine/publishers/empty[`Publishers.Empty`]
+* https://developer.apple.com/documentation/combine/publishers/fail[`Publishers.Fail`]
+* https://developer.apple.com/documentation/combine/publishers/just[`Publishers.Just`]
+* https://developer.apple.com/documentation/combine/publishers/once[`Publishers.Once`]
+* https://developer.apple.com/documentation/combine/publishers/optional[`Publishers.Optional`]
+* https://developer.apple.com/documentation/combine/publishers/sequence[`Publishers.Sequence`]
+* https://developer.apple.com/documentation/combine/publishers/deferred[`Publishers.Deferred`]
+
+* Publishers.Future
+
+A future is initialized with a closure that eventually resolves to a https://developer.apple.com/documentation/combine/publishers/future/promise[Promise].
+
+* @Published 
+
+=== SwiftUI
+
+* @ObjectBinding (swiftUI)
+
+=== Foundation
+
+* https://developer.apple.com/documentation/foundation/notificationcenter[`NoticationCenter`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publisher`]
+
+* https://developer.apple.com/documentation/foundation/timer[`Timer`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publish`] and https://developer.apple.com/documentation/foundation/timer/timerpublisher[`Timer.TimerPublisher`]
+
+* https://developer.apple.com/documentation/foundation/urlsession[`URLSession`] https://developer.apple.com/documentation/foundation/urlsession/3329707-datataskpublisher[`dataTaskPublisher`]
+
+=== RealityKit
+
+* https://developer.apple.com/documentation/realitykit[`RealityKit`] https://developer.apple.com/documentation/realitykit/scene[`.Scene`] https://developer.apple.com/documentation/realitykit/scene/3254685-publisher[`.publisher()`]
+
+== Operators
+
+//NOTE(heckj) make xref link back to coreconcepts:operators
+
+=== Mapping elements
+
+// NOTE(heckj): add xref link to reference section when written
+
+* scan
+* tryScan
+* map
+* tryMap
+* flatMap
+* setFailureType
+
+=== Filtering elements
+
+* compactMap
+* tryCompactMap
+* filter
+* tryFilter
+* removeDuplicates
+* tryRemoveDuplicates
+* replaceEmpty
+* replaceError
+
+=== Reducing elements
+
+* collect
+* collectByCount
+* collectByTime
+* ignoreOutput
+* reduce
+* tryReduce
+
+=== Mathematic opertions on elements
+
+* comparison
+* tryComparison
+* count
+
+=== Applying matching criteria to elements
+
+* allSatisfy
+* tryAllSatisfy
+* contains
+* containsWhere
+* tryContainsWhere
+
+=== Applying sequence operations to elements
+
+* first
+* firstWhere
+* tryFirstWhere
+* last
+* lastWhere
+* tryLastWhere
+* dropUntilOutput
+* dropWhile
+* tryDropWhile
+* concatenate
+* drop
+* prefixUntilOutput
+* prefixWhile
+* tryPrefixWhile
+* output
+
+=== Combining elements from multiple publishers
+
+* combineLatest
+* tryCombineLatest
+* merge
+* zip
+
+=== Handling errors
+
+* assertNoFailure
+* catch
+* retry
+
+=== Adapting publisher types
+
+* switchToLatest
+
+=== Controlling timing
+
+* debounce
+* delay
+* measureInterval
+* throttle
+* timeout
+
+=== Encoding and decoding
+
+* encode
+* decode
+
+=== Working with mulitple subscribers
+
+* multicast
+
+=== Debugging
+
+* breakpoint
+* handleEvents
+* print
+
+== Subjects
+
+//NOTE(heckj) make xref link back to coreconcepts:subjects
+
+* https://developer.apple.com/documentation/combine/currentvaluesubject[`CurrentValueSubject`]
+* https://developer.apple.com/documentation/combine/passthroughsubject[`PassthroughSubject`]
+
+== Subscribers
+
+//NOTE(heckj) make xref link back to coreconcepts:subscribers
+
+* https://developer.apple.com/documentation/combine/subscribers/assign[`assign`] 
+* https://developer.apple.com/documentation/combine/subscribers/sink[`sink`] 

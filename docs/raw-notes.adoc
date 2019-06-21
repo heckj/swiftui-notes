@@ -1,55 +1,7 @@
 [#raw-notes]
 = Raw Notes
 
-In Apple's words, Combine is
-
-[quote]
-a declarative Swift API for processing values over time
-
-Combine is Apple's take on a functional reactive library, akin to https://github.com/ReactiveX/RxSwift[RxSwift].
-RxSwift itself is a port of http://reactivex.io[ReactiveX].
-
-If you are already familar with RxSwift there is https://medium.com/gett-engineering/rxswift-to-apples-combine-cheat-sheet-e9ce32b14c5b[a pretty good cheat-sheet for translating the specifics between Rx and Combine],
-built and inspired by the data collected at
-https://github.com/freak4pc/rxswift-to-combine-cheatsheet.
-There is also a post https://www.caseyliss.com/2019/6/17/combine-wheres-the-beef[Combine: Where's the Beef?] by Casey Liss describing how Combine maps back to RxSwift and RxCocoa's concepts, and where it is different.
-
-Apple's framework uses many of the same functional reactive concepts that can be found in other languages and libraries, applying the strongly-typed nature of Swift to their solution.
-
-== Core Concepts
-
-Combine is built to process streams of events - one or more events, over time.
-It does so by sourcing data from **publishers**, transforming the events through **operators**, which are consumed by **subscribers**.
-These sequences, often called "streams" are composed and typically chained together.
-
-https://developer.apple.com/documentation/combine/publisher[Publisher] and
-https://developer.apple.com/documentation/combine/subscriber[Subscriber] are defined as
-protocols in Swift.
-When they are defined in code they are set up with two associated types: an Output type and a Failure type.
-Subscribers have an Input and Failure type defined, and these must align to the publisher types for the two to be composed together.
-
-[source]
---
-Publisher <OutputType>, <FailureType>
-              |  |          |  |
-               \/            \/
-Subscriber <InputType>, <FailureType>
---
-
-Operators are used to transform types - both the Output and Failure type.
-Operators may also split or duplicate streams, or merge streams, Operators must always be aligned by the combination of Output/Failure types.
-
-The interals of the system are all driven by the subscriber.
-Subscribers and Publishers communicate in a well defined sequence:
-
-* the subscriber is attached to a publisher: `.subscribe(Subscriber)`
-* the publisher sends a subscription: `receive(subscription)`
-* subscriber requests _N_ values: `request(_ : Demand)`
-* publisher sends _N_ (or fewer) values: `receive(_ : Input)`
-* publisher sends completion: `receive(completion:)`
-
-Operators fit in between Publishers and Subscribers.
-They adopt the https://developer.apple.com/documentation/combine/publisher[Publisher protocol], subscribing to one or more Publishers, and sending results to one (or more) Subscribers.
+// NOTE(heckj): merge the content from these notes into the reference section
 
 == Publishers
 
