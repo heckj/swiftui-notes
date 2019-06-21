@@ -134,9 +134,95 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
 [#patterns-general-error-handling]
 == Handling errors in the pipline
 
-assertNoError
+The examples above expected that the subscriber would handle the error conditions, if they occured.
+However, you are not always able to control the subscriber - as might be the case if you're using SwiftUI view properties as the subscriber, and you're providing the publisher.
 
-general failure handing pattern with flatMap
+=== using the `assertNoFailure` operator
+
+The most brutal way to handle this is to crash the application when an error happens.
+Combine provides the operator `assertNoFailure()` for this purpose.
+This is useful if you are sure you handled the errors and need to map a pipeline which technically can generate a failure type of `<Error>` to a subscriber that requires a failure type of `<Never>`.
+
+Adding it into the pipeline requires no additional parameters, but you can include a string:
+
+[source, swift]
+----
+.assertNoFailure()
+// OR
+.assertNoFailure("What could possibly go wrong?")
+----
+
+[NOTE]
+====
+I'm not entirely clear on where that string would appear if you did include it.
+
+When trying out this code in unit tests, the tests invariably drop into a debugger at the assertion point when a .failure is processed through the pipeline.
+====
+
+=== using `catch` operator
+
+The `.catch()` operator is useful to recover from an error, but it's a bit quirky.
+It handles errors by replacing the upstream publisher with another publisher that you provide as a return in a closure.
+This effectively terminates the earlier portion of the pipeline.
+
+For example, with this code snippet illustrates what happens:
+
+[source, swift]
+----
+enum testFailureCondition: Error {
+    case invalidServerResponse
+}
+
+let simplePublisher = PassthroughSubject<String, Error>()
+
+let _ = simplePublisher
+    .catch { err in
+        // must return a Publisher
+        return Publishers.Just("replacement value")
+    }
+    .sink(receiveCompletion: { fini in
+        print(".sink() received the completion:", String(describing: fini))
+    }, receiveValue: { stringValue in
+        print(".sink() received \(stringValue)")
+    })
+
+simplePublisher.send("oneValue")
+simplePublisher.send("twoValue")
+simplePublisher.send(completion: Subscribers.Completion.failure(testFailureCondition.invalidServerResponse))
+simplePublisher.send("redValue")
+simplePublisher.send("blueValue")
+simplePublisher.send(completion: .finished)
+----
+
+The values you would see printed are:
+
+[source]
+----
+.sink() received oneValue
+.sink() received twoValue
+.sink() received replacement value
+.sink() received the completion: finished
+----
+
+When the failure was sent through the pipeline, catch intercepted it and returned "replacement value" as expected, but the replacement publisher it used (`Publishers.Just`) sends a single value and then sending a completion.
+
+It's worth mentioning that there is also a `tryCatch()` operator, which supports you doing your own analysis on the error and potentially throwing a new/different failure condition down the chain.
+Like `catch()` it also replaces the publisher.
+
+=== using `flatMap` with `catch` to handle failures
+
+A more general solution to handling the errors is also a bit more complex.
+It leverages the `flatMap()` operator, which transforms all elements from an upstream publisher into a new or existing publisher.
+We can use `flatMap()` operator along with the `just()` publisher and `catch()` operator to bring in placeholder values only when needed and otherwise keep the pipeline operational.
+
+diagram version:
+
+[source]
+----
+publisher -> flatMap -> (                                           ) -> subscriber
+                         Just -> decode -> catch (                 )
+                                                  Just(fallback) ->
+----
 
 [source, swift]
 ----
@@ -155,18 +241,10 @@ let trickNamePublisher = NotificationCenter.default.publisher(for: .newTrickDown
 .receive(on: RunLoop.main)
 ----
 
-diagram version:
-
-[source]
-----
-flatMap -> (                                           ) -> subscriber
-            Just -> decode -> catch (                 )
-                                     Just(fallback) ->
-----
 
 replace `decode` with any operator that might return an error
 
-retry
+=== using the `retry` operator
 
 * (mention idempotency issues here)
 

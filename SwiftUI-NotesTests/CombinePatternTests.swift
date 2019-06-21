@@ -70,6 +70,56 @@ class CombinePatternTests: XCTestCase {
 
     }
 
+    func testDeadSimpleChainAssertNoFailure() {
+        let simplePublisher = PassthroughSubject<String, Error>()
+
+        let _ = simplePublisher
+            .assertNoFailure("What could possibly go wrong?")
+            .sink(receiveCompletion: { fini in
+                print(".sink() received the completion:", String(describing: fini))
+            }, receiveValue: { stringValue in
+                print(".sink() received \(stringValue)")
+            })
+
+        simplePublisher.send("oneValue")
+        simplePublisher.send("twoValue")
+
+        // uncomment this next line to see the failure mode:
+        // simplePublisher.send(completion: Subscribers.Completion.failure(testFailureCondition.invalidServerResponse))
+        simplePublisher.send(completion: .finished)
+    }
+
+    func testDeadSimpleChainCatch() {
+        let simplePublisher = PassthroughSubject<String, Error>()
+
+        let _ = simplePublisher
+            .catch { err in
+                // must return a Publisher
+                return Publishers.Just("replacement value")
+            }
+            .sink(receiveCompletion: { fini in
+                print(".sink() received the completion:", String(describing: fini))
+            }, receiveValue: { stringValue in
+                print(".sink() received \(stringValue)")
+            })
+
+        simplePublisher.send("oneValue")
+        simplePublisher.send("twoValue")
+        simplePublisher.send(completion: Subscribers.Completion.failure(testFailureCondition.invalidServerResponse))
+        simplePublisher.send("redValue")
+        simplePublisher.send("blueValue")
+        simplePublisher.send(completion: .finished)
+
+        // the output of this test is:
+        // .sink() received oneValue
+        // .sink() received twoValue
+        // .sink() received replacement value
+        // .sink() received the completion: finished
+        // NOTE(heckj) catch intercepts the whole chain and replaces it with what you return.
+        // In this case, it's the Just convenience publisher, which in turn immediately sends a "finish" when it's done.
+
+    }
+
     func testSimpleURLErrorMapDecodeChain() {
         // setup
         let expectation = XCTestExpectation(description: "Download from \(String(describing: testURL))")
