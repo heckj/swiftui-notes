@@ -304,12 +304,8 @@ class CombinePatternTests: XCTestCase {
         let simpleControlledPublisher = PassthroughSubject<String, Never>()
 
         let _ = simpleControlledPublisher
-            .map { inputString in
-                return String.uppercased(inputString)
-            }
             .flatMap { someValue in // takes a String in and returns a Publisher
-                let newValue = String.uppercased(someValue)
-                return Publishers.Just<String>(newValue)
+                return Publishers.Just<String>("Alternate data")
                 // flatMap returns a Publisher, where map returns <Input> - String in this case
             }
             .eraseToAnyPublisher()
@@ -334,6 +330,84 @@ class CombinePatternTests: XCTestCase {
         simpleControlledPublisher.send(twoFish)
         simpleControlledPublisher.send(redFish)
         simpleControlledPublisher.send(blueFish)
+
+    }
+
+    func testBasicFlatMapWithBackdoorPublisher_String_NeverPublisher() {
+        // setup
+        let simpleControlledPublisher = PassthroughSubject<String, Never>()
+
+        let backDoorPublisher = PassthroughSubject<String, Never>()
+
+        let _ = simpleControlledPublisher
+            .flatMap { someValue -> AnyPublisher<String, Never> in // takes a String in and returns a Publisher
+                return backDoorPublisher.eraseToAnyPublisher()
+            }
+            .eraseToAnyPublisher()
+//            .print()
+            .sink(receiveCompletion: { fini in
+                print(" ** .sink() received the completion:", String(describing: fini))
+            }, receiveValue: { stringValue in
+                XCTAssertNotNil(stringValue)
+                print(" ** .sink() received \(stringValue)")
+                // this print adds into the console output:
+                // .sink() received Alternate data
+                // .sink() received Alternate data
+                // .sink() received Alternate data
+                // .sink() received Alternate data
+            })
+
+        let oneFish = "onefish"
+        let twoFish = "twofish"
+        let redFish = "redfish"
+        let blueFish = "bluefish"
+
+        simpleControlledPublisher.send(oneFish)
+        backDoorPublisher.send("first response")
+        // backDoorPublisher.send(completion: .finished)
+        // with the above line uncommented, we only receive:
+        //    ** .sink() received first response
+        //    ** .sink() received second response
+        // and the pipeline appears to be terminated is terminated
+
+        simpleControlledPublisher.send(twoFish)
+        backDoorPublisher.send("second response")
+        // simpleControlledPublisher.send(completion: .finished)
+        // with the above line uncommented, the original pipeline is terminated, but the
+        // backDoor pipelines put into place by the flatmap are still completely active to downstream
+        // subscribers. Console output:
+            //** .sink() received first response
+            //** .sink() received second response
+            //** .sink() received second response
+            //** .sink() received third response
+            //** .sink() received third response
+            //** .sink() received fourth response
+            //** .sink() received fourth response
+            //** .sink() received the completion: finished
+
+        simpleControlledPublisher.send(redFish)
+        backDoorPublisher.send("third response")
+        simpleControlledPublisher.send(blueFish)
+        backDoorPublisher.send("fourth response")
+        backDoorPublisher.send(completion: .finished)
+
+
+        simpleControlledPublisher.send(blueFish)
+        backDoorPublisher.send("fifth response")
+
+        // based on this output, flatMap is adding a publisher for every element in the original stream
+        // and each publisher that's created gets added - so if the original stream had 3 events flow through,
+        // there could be 3 active publishers sending data
+        //** .sink() received first response
+        //** .sink() received second response
+        //** .sink() received second response
+        //** .sink() received third response
+        //** .sink() received third response
+        //** .sink() received third response
+        //** .sink() received fourth response
+        //** .sink() received fourth response
+        //** .sink() received fourth response
+        //** .sink() received fourth response
 
     }
 
