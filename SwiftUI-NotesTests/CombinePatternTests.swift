@@ -487,9 +487,142 @@ class CombinePatternTests: XCTestCase {
 
     }
 
-    func testNotificationPublisher() {
-        let continualPublisher = NotificationCenter.default.publisher(for: Notification.Name(rawValue: "something"))
-        .flatMap(<#T##transform: (Notification) -> Publisher##(Notification) -> Publisher#>)
+    func testRetryOperatorWithPassthrough() {
+        // setup
+        let simpleControlledPublisher = PassthroughSubject<String, Error>()
+
+//        let backDoorPublisher = PassthroughSubject<String, Never>()
+
+        let _ = simpleControlledPublisher
+//            .flatMap { someValue -> AnyPublisher<String, Never> in // takes a String in and returns a Publisher
+//                return backDoorPublisher.eraseToAnyPublisher()
+//            }
+            .print()
+            .retry(1)
+            .sink(receiveCompletion: { fini in
+                print(" ** .sink() received the completion:", String(describing: fini))
+            }, receiveValue: { stringValue in
+                XCTAssertNotNil(stringValue)
+                print(" ** .sink() received \(stringValue)")
+            })
+
+        let oneFish = "onefish"
+        let twoFish = "twofish"
+        let redFish = "redfish"
+        let blueFish = "bluefish"
+
+        simpleControlledPublisher.send(oneFish)
+//        backDoorPublisher.send("first response")
+        // backDoorPublisher.send(completion: .finished)
+
+        simpleControlledPublisher.send(twoFish)
+//        backDoorPublisher.send("second response")
+
+        // with an error response, this prints two results and hangs...
+        simpleControlledPublisher.send(completion: Subscribers.Completion.failure(testFailureCondition.invalidServerResponse))
+
+        // with a completion, this prints two results and ends
+        //simpleControlledPublisher.send(completion: .finished)
+
+        simpleControlledPublisher.send(redFish)
+//        backDoorPublisher.send("third response")
+        simpleControlledPublisher.send(blueFish)
+//        backDoorPublisher.send("fourth response")
+//        backDoorPublisher.send(completion: .finished)
+    }
+
+    func testRetryOperatorWithCurrentValueSubject() {
+        // setup
+        let simpleControlledPublisher = CurrentValueSubject<String, Error>("initial value")
+
+        let _ = simpleControlledPublisher
+            .print("(1)>")
+            .retry(3)
+            .print("(2)>")
+            .sink(receiveCompletion: { fini in
+                print(" ** .sink() received the completion:", String(describing: fini))
+            }, receiveValue: { stringValue in
+                XCTAssertNotNil(stringValue)
+                print(" ** .sink() received \(stringValue)")
+            })
+
+        let oneFish = "onefish"
+
+        simpleControlledPublisher.send(oneFish)
+        // with an error response, this prints two results and hangs...
+        simpleControlledPublisher.send(completion: Subscribers.Completion.failure(testFailureCondition.invalidServerResponse))
+
+        // with a completion, this prints two results and ends
+        //simpleControlledPublisher.send(completion: .finished)
+
+//        output:
+//        (1)>: receive subscription: (CurrentValueSubject)
+//        (2)>: receive subscription: (Retry)
+//        (2)>: request unlimited
+//        (1)>: request unlimited
+//        (1)>: receive value: (initial value)
+//        (2)>: receive value: (initial value)
+//        ** .sink() received initial value
+//        (1)>: receive value: (onefish)
+//        (2)>: receive value: (onefish)
+//        ** .sink() received onefish
+//        (1)>: receive finished
+//        (2)>: receive finished
+//        ** .sink() received the completion: finished
+    }
+
+    func testRetryWithOneShotJustPublisher() {
+        // setup
+        let _ = Publishers.Just<String>("yo")
+            .print("(1)>")
+            .retry(3)
+            .print("(2)>")
+            .sink(receiveCompletion: { fini in
+                print(" ** .sink() received the completion:", String(describing: fini))
+            }, receiveValue: { stringValue in
+                XCTAssertNotNil(stringValue)
+                print(" ** .sink() received \(stringValue)")
+            })
+//        output:
+//        (1)>: receive subscription: (Just)
+//        (2)>: receive subscription: (Retry)
+//        (2)>: request unlimited
+//        (1)>: request unlimited
+//        (1)>: receive value: (yo)
+//        (2)>: receive value: (yo)
+//        ** .sink() received yo
+//        (1)>: receive finished
+//        (2)>: receive finished
+//        ** .sink() received the completion: finished
+
+    }
+
+    func testRetryWithOneShotFailPublisher() {
+        // setup
+        let _ = Publishers.Fail(outputType: String.self, failure: testFailureCondition.invalidServerResponse)
+            .print("(1)>")
+            .retry(3)
+            .print("(2)>")
+            .sink(receiveCompletion: { fini in
+                print(" ** .sink() received the completion:", String(describing: fini))
+            }, receiveValue: { stringValue in
+                XCTAssertNotNil(stringValue)
+                print(" ** .sink() received \(stringValue)")
+            })
+//        output:
+//        (1)>: receive subscription: (Empty)
+//        (1)>: receive error: (invalidServerResponse)
+//        (1)>: receive subscription: (Empty)
+//        (1)>: receive error: (invalidServerResponse)
+//        (1)>: receive subscription: (Empty)
+//        (1)>: receive error: (invalidServerResponse)
+//        (1)>: receive subscription: (Empty)
+//        (1)>: receive error: (invalidServerResponse)
+//        (2)>: receive error: (invalidServerResponse)
+//        ** .sink() received the completion: failure(SwiftUI_NotesTests.CombinePatternTests.testFailureCondition.invalidServerResponse)
+//        (2)>: receive subscription: (Retry)
+//        (2)>: request unlimited
+
     }
 
 }

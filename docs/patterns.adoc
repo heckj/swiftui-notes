@@ -15,7 +15,7 @@ Remember that the subscriber drives the execution of any Combine pipelines you c
 When you create your sink methods, be aware that your receiveValue closure may be called repeatedly, depending on what the publisher or pipeline does and how it is configured.
 ====
 
-A simple sink that ignores the errors and triggers on data might be:
+A simple sink is created with a single closure:
 
 [source, swift]
 ----
@@ -24,7 +24,11 @@ let _ = remoteDataPublisher.sink { value in
 }
 ----
 
-A more complete form of a subscriber has the two closures:
+The closure gets invoked for every new update that the publisher creates, up until the completion.
+If an error or failure occurs, then the closure will simply never be called.
+
+If you are creating a subscriber and want to receive and handle failures, or see the completion messages at the end of pipeline, you can create a sink with two closures.
+The more complete sink has the two closures named`receiveCompletion` and `receiveValue`:
 
 [source, swift]
 ----
@@ -35,7 +39,9 @@ let _ = remoteDataPublisher.sink(receiveCompletion: { err in
 })
 ----
 
-If you want to handle the error in the subscriber, you can `switch` on the returned completion to determine if it is `.finished` or `.failure`.
+The type that is passed into receiveCompletion is the enum https://developer.apple.com/documentation/combine/subscribers/completion[`Subscribers.Completion`].
+The completion `.failure` incudes an Error within it, which provides access to the underlying cause of the failure.
+If you want to get to the error in the subscriber, you can `switch` on the returned completion to determine if it is `.finished` or `.failure`, and then pull out the error:
 
 [source, swift]
 ----
@@ -57,17 +63,8 @@ If you want to handle the error in the subscriber, you can `switch` on the retur
 })
 ----
 
-
-[#patterns-sequencing-async]
-== Coordinating a sequence of asynchronous operations
-
-There are a variety of ways to chain together asynchronous operations.
-Combine adds to this variety, and is effective when you want to use the data from one operation as the input to the next.
-If you are familiar with using Promises in another language, such as Javascript, this pattern is roughly the equivalent of https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises#Chaining[Promise chaining].
-The benefit to using Combine is that the sequencing can be relatively easy to parse visually.
-
-[#patterns-sequencing-dataTaskPublisher]
-=== Making a network request with dataTaskPublisher
+[#patterns-dataTaskPublisher-decode]
+== Making a network request with dataTaskPublisher
 
 One of the common use cases is requesting JSON data from a URL and decoding it.
 This can be readily accomplished with Combine using https://developer.apple.com/documentation/foundation/urlsession/3329708-datataskpublisher[dataTaskPublisher] on https://developer.apple.com/documentation/foundation/urlsession[URLSession].
@@ -274,23 +271,114 @@ If we want the pipeline to remain active, we need to change how we handle the er
 
 The `flatMap()` operator is exactly what we need in this use case.
 
-You can think of the flatMap() operator as a way to inject values into your pipeline from a temporary one-shot publisher.
-The `flatMap()` operator transforms all elements from an upstream publisher into a new or existing publisher.
-`flatMap()` expects the closure that you give it to return a Publisher.
+You can think of the `flatMap()` operator as a way to inject values into your pipeline from a temporary one-shot publisher.
+For every element `flatMap()` receives, it invokes it's closure to create a publisher.
+That publisher is then sending values to any downstream subscriber.
 
-We use it by creating a one-shot pipeline that starts with data from the original pipeline.
-We then do the various tasks that might fail, and use the `catch()` operator to provide a fallback value.
+This is a perfect mechanism for when you want to maintain updates up an upstream publisher, as it effectively creates one-shot publishers (or even small pipelines) that send a single value and then complete.
+The completion from the created one-shot publishers terminates in the flatMap and isn't passed to downstream subscribers.
+To use this with error handling, we can create a one-shot publisher, or pipeline, that starts with the value provided upstream.
+Then we create the pipeline to do any potentially failing work, and construct it with a `.catch` as we saw earlier to provide a fallback value.
 
-A diagram version of the pipelines might be:
+A diagram version of this pipelines might be:
 
 [source]
 ----
-publisher -> flatMap -> (    \                                         ) -> subscriber
-                              \                                      ^
-             dataTaskPublisher(value) -> decode -> catch (      ) ->/
-                                                              ^
-                                            Just(fallback) ->/
+     one-shot-publisher(value) -> catch ( fallback )      // <- one-shot pipeline
+                          ^                        \
+                          |                         \
+publisher -> flatMap -> ( +                           +  ) -> subscriber
 ----
+
+In swift, this looks like:
+
+[source, swift]
+----
+.flatMap { data in
+    return Just(data)
+    .decode(YourType.self, JSONDecoder())
+    .catch {
+        return Just(YourType.placeholder)
+    }
+}
+----
+
+=== using the `retry` operator
+
+The `retry` operator can be included in a chain to retry a subscription when a `.failure` completion occurs.
+When you specify this operator in a pipeline and it receives a subscription, it first tries to request a subscription from it's upstream publisher.
+If the response to that subscription fails, then it will retry the subscription to the same publisher.
+
+The retry operator can be specified with a number of retries to attempt.
+If no number of retries is specified, it will attempt to retry indefinitely until it receives a .finished completion from it's subscriber.
+If the number of retries is specified and all requests fail, then the `.failure` completion is passed down to the subscriber of this operator.
+
+In practice, this is mostly commonly desired when attempting to request network resources with an unstable connection.
+If you use a retry operator, you should add a specific number of retries so that the subscription doesn't effectively get into an infinite loop.
+
+An example of the above example using retry:
+
+[source, swift]
+----
+struct IPInfo: Codable {
+    // matching the data structure returned from ip.jsontest.com
+    var ip: String
+}
+let myURL = URL(string: "http://ip.jsontest.com")
+// NOTE(heckj): you'll need to enable insecure downloads in your Info.plist for this example
+// since the URL scheme is 'http'
+
+let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
+    // the dataTaskPublisher output combination is (data: Data, response: URLResponse)
+    .retry(3)
+    // if the URLSession returns a .failure completion, try at most 3 times to get a successful response
+    .map({ (inputTuple) -> Data in
+        return inputTuple.data
+    })
+    .decode(type: IPInfo.self, decoder: JSONDecoder())
+    .catch { err in
+        return Publishers.Just(IPInfo(ip: "8.8.8.8"))
+    }
+    .eraseToAnyPublisher()
+----
+
+[WARNING]
+====
+When using the `retry()` operator with `dataTaskPublisher`, verify that the URL you are requesting isn't going to have negative side effects if requested repeatedly or with a retry.
+Ideally such requests are be expected to be idempotent.
+====
+
+== Requesting data from an alternate URL when the network is constrained
+
+From Apple's WWDC 19 presentation https://developer.apple.com/videos/play/wwdc2019/712/[Advances in Networking, Part 1], a sample pattern was provided using `.tryCatch` and `.tryMap` operators to react to the specific error of having the network be constrained.
+
+[source, swift]
+----
+// Generalized Publisher for Adaptive URL Loading
+func adaptiveLoader(regularURL: URL, lowDataURL: URL) -> AnyPublisher<Data, Error> {
+    var request = URLRequest(url: regularURL)
+    request.allowsConstrainedNetworkAccess = false
+    return URLSession.shared.dataTaskPublisher(for: request)
+        .tryCatch { error -> URLSession.DataTaskPublisher in
+            guard error.networkUnavailableReason == .constrained else {
+               throw error
+            }
+            return URLSession.shared.dataTaskPublisher(for: lowDataURL)
+        .tryMap { data, response -> Data in
+            guard let httpResponse = response as? HTTPUrlResponse,
+                   httpResponse.status_code == 200 else {
+                       throw MyNetworkingError.invalidServerResponse
+            }
+            return data
+}
+.eraseToAnyPublisher()
+----
+
+In the sample, if the error returned from the original request wasn't an issue of the network being constrained, it passes on the .failure completion down the pipeline.
+If the error is that the network is constrained, then the tryCatch operator creates a new request to an alternate URL.
+
+
+== Update the status of your interface from a network request
 
 Below is a contrived example where you want to make a network to check for the username availability that you are watching with `@Published`.
 As the property `username` is updated, you want to check to see if the updated username is available.
@@ -330,12 +418,6 @@ var validatedUsername: AnyPublisher<String?, Never> {
 
 In the example above, for every update into .flatMap() we are creating a request to check and parse for the availability from the service.
 
-=== using the `retry` operator
-
-* (mention idempotency issues here)
-
-image fallback under constrained network
-
 [source, swift]
 ----
 // Generalized Publisher for Adaptive URL Loading
@@ -358,11 +440,27 @@ func adaptiveLoader(regularURL: URL, lowDataURL: URL) -> AnyPublisher<Data, Erro
 .eraseToAnyPublisher()
 ----
 
+[#patterns-sequencing-async]
+== Coordinating a sequence of asynchronous operations
 
-the general failure, fallback pattern
+There are a variety of ways to chain together asynchronous operations.
+Combine adds to this variety, and is effective when you want to use the data from one operation as the input to the next.
+If you are familiar with using Promises in another language, such as Javascript, this pattern is roughly the equivalent of https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises#Chaining[Promise chaining].
 
-* URLSession data gathering when on a constrained network
-* URLSession returning placeholder data when service unavailable
+The benefit to using Combine is that the sequencing can be relatively easy to parse visually.
+
+== Using Future to turn an an asynchronous call into publisher
+
+[source, swift]
+----
+
+let myPublisher = Publishers.Future { promise in
+    asyncFunctionWithACompletion(inputValue) { outputValue in
+        promise(.success(outputValue ? inputValue : nil))
+    }
+}
+.eraseToAnyPublisher()
+----
 
 [#patterns-binding]
 == binding

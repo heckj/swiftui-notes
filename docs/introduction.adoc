@@ -100,7 +100,10 @@ A number of these introduce and go into some depth on Combine:
 
 A number of additional sessions mention Combine:
 
+* https://developer.apple.com/videos/play/wwdc2019/415/[Modern Swift API Design]
 * https://developer.apple.com/videos/play/wwdc2019/226[Data Flow Through SwiftUI]
 * https://developer.apple.com/videos/play/wwdc2019/711[Introducing Combine and Advances in Foundation]
 * https://developer.apple.com/videos/play/wwdc2019/712/[Advances in Networking, Part 1]
 
+* https://developer.apple.com/videos/play/wwdc2019/610/[Building Collaborative AR Experiences]
+* https://developer.apple.com/videos/play/wwdc2019/223/[Expanding the Sensory Experience with Core Haptics]
