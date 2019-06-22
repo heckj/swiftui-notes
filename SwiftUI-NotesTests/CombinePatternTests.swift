@@ -299,11 +299,119 @@ class CombinePatternTests: XCTestCase {
         wait(for: [expectation], timeout: 10.0)
     }
 
-//    func testPerformanceExample() {
-//        // This is an example of a performance test case.
-//        self.measure {
-//            // Put the code you want to measure the time of here.
-//        }
-//    }
+    func testBasicFlatMap_String_NeverPublisher() {
+        // setup
+        let simpleControlledPublisher = PassthroughSubject<String, Never>()
+
+        let _ = simpleControlledPublisher
+            .map { inputString in
+                return String.uppercased(inputString)
+            }
+            .flatMap { someValue in // takes a String in and returns a Publisher
+                let newValue = String.uppercased(someValue)
+                return Publishers.Just<String>(newValue)
+                // flatMap returns a Publisher, where map returns <Input> - String in this case
+            }
+            .eraseToAnyPublisher()
+            .sink(receiveCompletion: { fini in
+                print(".sink() received the completion:", String(describing: fini))
+            }, receiveValue: { stringValue in
+                XCTAssertNotNil(stringValue)
+                print(".sink() received \(stringValue)")
+                // this print adds into the console output:
+                // .sink() received Alternate data
+                // .sink() received Alternate data
+                // .sink() received Alternate data
+                // .sink() received Alternate data
+            })
+
+        let oneFish = "onefish"
+        let twoFish = "twofish"
+        let redFish = "redfish"
+        let blueFish = "bluefish"
+
+        simpleControlledPublisher.send(oneFish)
+        simpleControlledPublisher.send(twoFish)
+        simpleControlledPublisher.send(redFish)
+        simpleControlledPublisher.send(blueFish)
+
+    }
+
+    func testBasicFlatMapFallback_Data_NeverPublisher() {
+        // setup
+        let simpleControlledPublisher = PassthroughSubject<Data, Never>()
+
+        let _ = simpleControlledPublisher
+            .flatMap { value in // takes a String in and returns a Publisher
+                return Publishers.Just<Data>(value)
+                .decode(type: IPInfo.self, decoder: JSONDecoder())
+                .catch { _ in
+                    return Publishers.Just(IPInfo(ip: "8.8.8.8"))
+                }
+            }
+            .sink(receiveCompletion: { fini in
+                print(".sink() received the completion:", String(describing: fini))
+            }, receiveValue: { stringValue in
+                XCTAssertNotNil(stringValue)
+                print(".sink() received \(stringValue)")
+                // this print adds into the console output:
+                // .sink() received IPInfo(ip: "1.2.3.4")
+                // .sink() received IPInfo(ip: "192.168.1.1")
+                // .sink() received IPInfo(ip: "8.8.8.8")
+                // .sink() received IPInfo(ip: "192.168.0.1")
+                // .sink() received the completion: finished
+            })
+
+        let oneFish = "{ \"ip\": \"1.2.3.4\" }".data(using: .utf8)
+        let twoFish = "{ \"ip\": \"192.168.1.1\" }".data(using: .utf8)
+        let redFish = "Opps, crap - no JSON here".data(using: .utf8)
+        let blueFish = "{ \"ip\": \"192.168.0.1\" }".data(using: .utf8)
+
+        simpleControlledPublisher.send(oneFish!)
+        simpleControlledPublisher.send(twoFish!)
+        simpleControlledPublisher.send(redFish!)
+        simpleControlledPublisher.send(blueFish!)
+        simpleControlledPublisher.send(completion: Subscribers.Completion.finished)
+
+    }
+
+    func testBasicFlatMapFallback_Data_ErrorPublisher() {
+        // setup
+        let simpleControlledPublisher = PassthroughSubject<Data, Error>()
+
+        let _ = simpleControlledPublisher
+            .flatMap { value in // takes a String in and returns a Publisher
+                return Publishers.Just(value)
+                .decode(type: IPInfo.self, decoder: JSONDecoder())
+//                .catch { _ in
+//                    return Publishers.Just(IPInfo(ip: "8.8.8.8"))
+//                }
+            }
+            .sink(receiveCompletion: { fini in
+                print(".sink() received the completion:", String(describing: fini))
+            }, receiveValue: { stringValue in
+                XCTAssertNotNil(stringValue)
+                print(".sink() received \(stringValue)")
+                // this print adds into the console output:
+                // .sink() received IPInfo(ip: "1.2.3.4")
+                // .sink() received IPInfo(ip: "192.168.1.1")
+                // .sink() received IPInfo(ip: "8.8.8.8")
+                // .sink() received IPInfo(ip: "192.168.0.1")
+                // .sink() received the completion: finished
+            })
+
+        let oneFish = "{ \"ip\": \"1.2.3.4\" }".data(using: .utf8)
+        let twoFish = "{ \"ip\": \"192.168.1.1\" }".data(using: .utf8)
+        let redFish = "Opps, crap - no JSON here".data(using: .utf8)
+        let blueFish = "{ \"ip\": \"192.168.0.1\" }".data(using: .utf8)
+
+        simpleControlledPublisher.send(oneFish!)
+        simpleControlledPublisher.send(twoFish!)
+        simpleControlledPublisher.send(redFish!)
+        simpleControlledPublisher.send(blueFish!)
+        simpleControlledPublisher.send(completion: Subscribers.Completion.finished)
+
+    }
+
 
 }
