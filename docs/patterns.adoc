@@ -1,8 +1,19 @@
 [#patterns]
 = Patterns and Recipes
 
+Included are a series of patterns and examples of Publishers, Subscribers, and pipelines.
+These examples are meant to illustrate how to use the Combine framework to accomplish various tasks.
+
+[NOTE]
+====
+__Since this is a work in progress:__
+
+If you have a suggestion for a pattern or recipe, I'm happy to consider it.
+Please https://github.com/heckj/swiftui-notes/issues/new/choose[Open an issue] in GitHub to request something.
+====
+
 [#patterns-creating-subscriber]
-== Creating a subscriber with `.sink`
+== Pattern 1: Creating a subscriber with `.sink`
 
 If you are creating the subscriber, you can use `.sink()`` to receive and process this information.
 The simplest form of `.sink()` takes a single closure - but by default this is the closure that receives data (if provided by the pipeline).
@@ -63,8 +74,11 @@ If you want to get to the error in the subscriber, you can `switch` on the retur
 })
 ----
 
+// force a page break - in HTML rendering is just a <HR>
+<<<
+
 [#patterns-dataTaskPublisher-decode]
-== Making a network request with dataTaskPublisher
+== Pattern 2: Making a network request with dataTaskPublisher
 
 One of the common use cases is requesting JSON data from a URL and decoding it.
 This can be readily accomplished with Combine using https://developer.apple.com/documentation/foundation/urlsession/3329708-datataskpublisher[dataTaskPublisher] on https://developer.apple.com/documentation/foundation/urlsession[URLSession].
@@ -135,8 +149,11 @@ This lets you put in logic that inspects the specific status code, or you could 
 
 When an error is triggered on the pipeline, a `.failure` completion is sent with the error encapsulated within it, regardless of where it happened in the pipeline.
 
+// force a page break - in HTML rendering is just a <HR>
+<<<
+
 [#patterns-general-error-handling]
-== Handling errors in the pipline
+== Pattern 3: Handling errors in the pipline
 
 The examples above expected that the subscriber would handle the error conditions, if they occured.
 However, you are not always able to control the subscriber - as might be the case if you're using SwiftUI view properties as the subscriber, and you're providing the publisher.
@@ -148,6 +165,12 @@ For example, if you are working with SwiftUI and the you want to use `.assign` t
 . the subscriber should be called on the main thread
 
 With a publisher that can throw an error (such as `dataTaskPublisher`), you need to construct a pipeline to convert the output type, but also handle the error within the pipeline to match a failure type of `<Never>`.
+
+How you handle the errors within a pipeline is very dependent on how the pipeline is working.
+If the pipeline is set up to return a single result and terminate, the continue below.
+If the pipeline is set up to continually update, the error handling needs to be a little more complex, and you should jump to X-REF Pattern 3.2
+
+// TODO - internal link to Xref Pattern 3.2
 
 === using `assertNoFailure` operator
 
@@ -173,7 +196,11 @@ When trying out this code in unit tests, the tests invariably drop into a debugg
 
 It is far more likely that you want to handle the error and not have the application crash.
 
-=== using `catch` operator with the `just` convenience publisher
+// force a page break - in HTML rendering is just a <HR>
+<<<
+
+[#patterns-oneshot-error-handling]
+== Pattern 3.1: Using `catch` to handle errors in a one-shot pipeline
 
 The `.catch()` operator is useful to recover from an error, but it can have unexpected side effects if you aren't familiar with how it works.
 `.catch()` handles errors by replacing the upstream publisher with another publisher that you provide as a return in a closure.
@@ -218,6 +245,8 @@ Now the `remoteDataPublisher` can be used with
 It's worth mentioning that there is also a `tryCatch()` operator, which supports you doing your own analysis on the error and potentially throwing a new/different failure condition down the chain.
 Like `catch()` it also replaces the publisher.
 ====
+
+// NOTE(heckj): this next bit (until retry) might be better migrated to the reference section on how catch works.
 
 A possible problem with this technique is that the if the original publisher generates more values to which you wish to react, the original pipeline has been ended.
 This means if you are creating a pipeline that reacts to a `@Published` property, then after any failed value that activates the catch operator, the pipeline will cease to react further.
@@ -267,42 +296,6 @@ When the failure was sent through the pipeline, catch intercepts it and returns 
 The replacement publisher it used (`Publishers.Just`) sends a single value and then sends a completion.
 If we want the pipeline to remain active, we need to change how we handle the errors.
 
-=== using `flatMap` with `catch` to handle failures and keep a pipeline active
-
-The `flatMap()` operator is exactly what we need in this use case.
-
-You can think of the `flatMap()` operator as a way to inject values into your pipeline from a temporary one-shot publisher.
-For every element `flatMap()` receives, it invokes it's closure to create a publisher.
-That publisher is then sending values to any downstream subscriber.
-
-This is a perfect mechanism for when you want to maintain updates up an upstream publisher, as it effectively creates one-shot publishers (or even small pipelines) that send a single value and then complete.
-The completion from the created one-shot publishers terminates in the flatMap and isn't passed to downstream subscribers.
-To use this with error handling, we can create a one-shot publisher, or pipeline, that starts with the value provided upstream.
-Then we create the pipeline to do any potentially failing work, and construct it with a `.catch` as we saw earlier to provide a fallback value.
-
-A diagram version of this pipelines might be:
-
-[source]
-----
-     one-shot-publisher(value) -> catch ( fallback )      // <- one-shot pipeline
-                          ^                        \
-                          |                         \
-publisher -> flatMap -> ( +                           +  ) -> subscriber
-----
-
-In swift, this looks like:
-
-[source, swift]
-----
-.flatMap { data in
-    return Just(data)
-    .decode(YourType.self, JSONDecoder())
-    .catch {
-        return Just(YourType.placeholder)
-    }
-}
-----
-
 === using the `retry` operator
 
 The `retry` operator can be included in a chain to retry a subscription when a `.failure` completion occurs.
@@ -348,7 +341,50 @@ When using the `retry()` operator with `dataTaskPublisher`, verify that the URL 
 Ideally such requests are be expected to be idempotent.
 ====
 
-== Requesting data from an alternate URL when the network is constrained
+// force a page break - in HTML rendering is just a <HR>
+<<<
+
+[#patterns-oneshot-error-handling]
+== Pattern 3.2: Using `flatMap` and `catch` to handle errors
+
+The `flatMap()` operator is exactly what we need in this use case.
+
+You can think of the `flatMap()` operator as a way to inject values into your pipeline from a temporary one-shot publisher.
+For every element `flatMap()` receives, it invokes it's closure to create a publisher.
+That publisher is then sending values to any downstream subscriber.
+
+This is a perfect mechanism for when you want to maintain updates up an upstream publisher, as it effectively creates one-shot publishers (or even small pipelines) that send a single value and then complete.
+The completion from the created one-shot publishers terminates in the flatMap and isn't passed to downstream subscribers.
+To use this with error handling, we can create a one-shot publisher, or pipeline, that starts with the value provided upstream.
+Then we create the pipeline to do any potentially failing work, and construct it with a `.catch` as we saw earlier to provide a fallback value.
+
+A diagram version of this pipelines might be:
+
+[source]
+----
+     one-shot-publisher(value) -> catch ( fallback )      // <- one-shot pipeline
+                          ^                        \
+                          |                         \
+publisher -> flatMap -> ( +                           +  ) -> subscriber
+----
+
+In swift, this looks like:
+
+[source, swift]
+----
+.flatMap { data in
+    return Just(data)
+    .decode(YourType.self, JSONDecoder())
+    .catch {
+        return Just(YourType.placeholder)
+    }
+}
+----
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+
+== Pattern 4: Requesting data from an alternate URL when the network is constrained
 
 From Apple's WWDC 19 presentation https://developer.apple.com/videos/play/wwdc2019/712/[Advances in Networking, Part 1], a sample pattern was provided using `.tryCatch` and `.tryMap` operators to react to the specific error of having the network be constrained.
 
@@ -377,8 +413,11 @@ func adaptiveLoader(regularURL: URL, lowDataURL: URL) -> AnyPublisher<Data, Erro
 In the sample, if the error returned from the original request wasn't an issue of the network being constrained, it passes on the .failure completion down the pipeline.
 If the error is that the network is constrained, then the tryCatch operator creates a new request to an alternate URL.
 
+// force a page break - in HTML rendering is just a <HR>
+<<<
 
-== Update the status of your interface from a network request
+[#patterns-update-interface-network-request]
+== Pattern 5: Update the status of your interface from a network request
 
 Below is a contrived example where you want to make a network to check for the username availability that you are watching with `@Published`.
 As the property `username` is updated, you want to check to see if the updated username is available.
@@ -418,30 +457,11 @@ var validatedUsername: AnyPublisher<String?, Never> {
 
 In the example above, for every update into .flatMap() we are creating a request to check and parse for the availability from the service.
 
-[source, swift]
-----
-// Generalized Publisher for Adaptive URL Loading
-func adaptiveLoader(regularURL: URL, lowDataURL: URL) -> AnyPublisher<Data, Error> {
-    var request = URLRequest(url: regularURL)
-    request.allowsConstrainedNetworkAccess = false
-    return URLSession.shared.dataTaskPublisher(for: request)
-        .tryCatch { error -> URLSession.DataTaskPublisher in
-            guard error.networkUnavailableReason == .constrained else {
-               throw error
-            }
-            return URLSession.shared.dataTaskPublisher(for: lowDataURL)
-        .tryMap { data, response -> Data in
-            guard let httpResponse = response as? HTTPUrlResponse,
-                   httpResponse.status_code == 200 else {
-                       throw MyNetworkingError.invalidServerResponse
-            }
-            return data
-}
-.eraseToAnyPublisher()
-----
+// force a page break - in HTML rendering is just a <HR>
+<<<
 
 [#patterns-sequencing-async]
-== Coordinating a sequence of asynchronous operations
+== Pattern 6: Coordinating a sequence of asynchronous operations
 
 There are a variety of ways to chain together asynchronous operations.
 Combine adds to this variety, and is effective when you want to use the data from one operation as the input to the next.
@@ -449,7 +469,7 @@ If you are familiar with using Promises in another language, such as Javascript,
 
 The benefit to using Combine is that the sequencing can be relatively easy to parse visually.
 
-== Using Future to turn an an asynchronous call into publisher
+=== Using Future to turn an an asynchronous call into publisher
 
 [source, swift]
 ----
@@ -462,10 +482,17 @@ let myPublisher = Publishers.Future { promise in
 .eraseToAnyPublisher()
 ----
 
-[#patterns-binding]
-== binding
+// force a page break - in HTML rendering is just a <HR>
+<<<
 
-binding to objects to get data from them
+[#patterns-binding]
+== Pattern 8: binding
+
+* binding to SwiftUI
+** validating forms
+** UX responsiveness - live updates to view properties
+** handling error within property update
+** retry for remote service
 
 simple case - data validation with external service
 
@@ -537,23 +564,11 @@ override func viewDidLoad() {
 }
 ----
 
-* binding with models
-
-* binding with notifications
-
-* binding to RealityKit
-
-binding to objects to send data to them
-
-* binding to SwiftUI
-** validating forms
-** UX responsiveness - live updates to view properties
-** handling error within property update
-** retry for remote service
-
+// force a page break - in HTML rendering is just a <HR>
+<<<
 
 [#patterns-testing]
-== testing
+== Pattern N: Testing pipelines
 
 test strategies with combine
 
@@ -563,5 +578,5 @@ test strategies with combine
 
 using PassthroughSubject and creative sinks
 
-// force a page break - ignored in HTML rendering
+// force a page break - in HTML rendering is just a <HR>
 <<<
