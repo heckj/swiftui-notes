@@ -59,7 +59,7 @@ If you want to handle the error in the subscriber, you can `switch` on the retur
 
 
 [#patterns-sequencing-async]
-== sequencing async operations
+== Coordinating a sequence of asynchronous operations
 
 There are a variety of ways to chain together asynchronous operations.
 Combine adds to this variety, and is effective when you want to use the data from one operation as the input to the next.
@@ -83,6 +83,7 @@ struct IPInfo: Codable {
 }
 let myURL = URL(string: "http://ip.jsontest.com")
 // NOTE(heckj): you'll need to enable insecure downloads in your Info.plist for this example
+// since the URL scheme is 'http'
 
 let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
     // the dataTaskPublisher output combination is (data: Data, response: URLResponse)
@@ -93,13 +94,13 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
     .eraseToAnyPublisher()
 ----
 
-The subscriber will get either the data, or receiving a completion notification with an error.
-The dataTaskPublisher will make a single request, and what you build in the pipeline will determine what the subscriber receives.
+With this example, the subscriber will get an instance of the struct IPInfo or will receive a completion notification with an error.
+The dataTaskPublisher makes a single request, and what you build in the pipeline will determine what the subscriber receives.
 
-In the above example, a failed URL request will result in a `.failure` completion with an encapsulated error.
+A failed URL request will result in a `.failure` completion with an encapsulated error.
 Likewise, if the returned data couldn't be decoded based on the structure, or wasn't JSON, then the result will be a `.failure` completion with an encapsulated decoding error from the decoder.
 
-If you want to have more control over what is considered a failure in the URL response, you use a tryMap on the tuple response from dataTaskPublisher.
+To have more control over what is considered a failure in the URL response, use a `tryMap` operator on the tuple response from dataTaskPublisher.
 An example of that might look like:
 
 [source, swift]
@@ -110,6 +111,7 @@ struct IPInfo: Codable {
 }
 let myURL = URL(string: "http://ip.jsontest.com")
 // NOTE(heckj): you'll need to enable insecure downloads in your Info.plist for this example
+// since the URL scheme is 'http'
 
 enum testFailureCondition: Error {
     case invalidServerResponse
@@ -131,15 +133,28 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
     .eraseToAnyPublisher()
 ----
 
+The above example uses tryMap to allow for an error to be thrown within the closure.
+This lets you put in logic that inspects the specific status code, or you could inspect the data prior to sending it into `JSONDecoder`.
+
+When an error is triggered on the pipeline, a `.failure` completion is sent with the error encapsulated within it, regardless of where it happened in the pipeline.
+
 [#patterns-general-error-handling]
 == Handling errors in the pipline
 
 The examples above expected that the subscriber would handle the error conditions, if they occured.
 However, you are not always able to control the subscriber - as might be the case if you're using SwiftUI view properties as the subscriber, and you're providing the publisher.
+In these cases, you need to build your pipeline so that the output types match the subscriber types.
 
-=== using the `assertNoFailure` operator
+For example, if you are working with SwiftUI and the you want to use `.assign` to set the `isEnabled` property on a button, the subscriber will have a few requirements:
 
-The most brutal way to handle this is to crash the application when an error happens.
+. the subcriber should match the type output of `<Bool>`, `<Never>`
+. the subscriber should be called on the main thread
+
+With a publisher that can throw an error (such as `dataTaskPublisher`), you need to construct a pipeline to convert the output type, but also handle the error within the pipeline to match a failure type of `<Never>`.
+
+=== using `assertNoFailure` operator
+
+A brutal way to handle this is to crash the application when an error happens.
 Combine provides the operator `assertNoFailure()` for this purpose.
 This is useful if you are sure you handled the errors and need to map a pipeline which technically can generate a failure type of `<Error>` to a subscriber that requires a failure type of `<Never>`.
 
@@ -159,13 +174,58 @@ I'm not entirely clear on where that string would appear if you did include it.
 When trying out this code in unit tests, the tests invariably drop into a debugger at the assertion point when a .failure is processed through the pipeline.
 ====
 
-=== using `catch` operator
+It is far more likely that you want to handle the error and not have the application crash.
 
-The `.catch()` operator is useful to recover from an error, but it's a bit quirky.
-It handles errors by replacing the upstream publisher with another publisher that you provide as a return in a closure.
+=== using `catch` operator with the `just` convenience publisher
+
+The `.catch()` operator is useful to recover from an error, but it can have unexpected side effects if you aren't familiar with how it works.
+`.catch()` handles errors by replacing the upstream publisher with another publisher that you provide as a return in a closure.
 This effectively terminates the earlier portion of the pipeline.
+If you're using a one-shot publisher (one that doesn't create more than a single event), then this is fine.
 
-For example, with this code snippet illustrates what happens:
+For example, dataTaskPublisher is a one-shot publisher, and you might use catch with it to ensure that you get a response, returning a placeholder in the event of an error.
+Extending our previous example to provide a default response:
+
+[source, swift]
+----
+struct IPInfo: Codable {
+    // matching the data structure returned from ip.jsontest.com
+    var ip: String
+}
+let myURL = URL(string: "http://ip.jsontest.com")
+// NOTE(heckj): you'll need to enable insecure downloads in your Info.plist for this example
+// since the URL scheme is 'http'
+
+let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
+    // the dataTaskPublisher output combination is (data: Data, response: URLResponse)
+    .map({ (inputTuple) -> Data in
+        return inputTuple.data
+    })
+    .decode(type: IPInfo.self, decoder: JSONDecoder())
+    .catch { err in
+        return Publishers.Just(IPInfo(ip: "8.8.8.8"))
+    }
+    .eraseToAnyPublisher()
+----
+
+Now the `remoteDataPublisher` can be used with
+
+[source, swift]
+----
+.receive(on: RunLoop.main)
+.assign(to: \.isEnabled, on: yourButton)
+----
+
+[NOTE]
+====
+It's worth mentioning that there is also a `tryCatch()` operator, which supports you doing your own analysis on the error and potentially throwing a new/different failure condition down the chain.
+Like `catch()` it also replaces the publisher.
+====
+
+A possible problem with this technique is that the if the original publisher generates more values to which you wish to react, the original pipeline has been ended.
+This means if you are creating a pipeline that reacts to a `@Published` property, then after any failed value that activates the catch operator, the pipeline will cease to react further.
+
+This can be illustrated with the following code snippet:
 
 [source, swift]
 ----
@@ -194,7 +254,9 @@ simplePublisher.send("blueValue")
 simplePublisher.send(completion: .finished)
 ----
 
-The values you would see printed are:
+In this example, we are using a `PassthroughSubject` so that we can control when and what gets sent from the publisher.
+In the above code, we are sending two good values, then a failure, then attempting to send two more good values.
+The values you would see printed from our `.sink()` closures are:
 
 [source]
 ----
@@ -204,45 +266,69 @@ The values you would see printed are:
 .sink() received the completion: finished
 ----
 
-When the failure was sent through the pipeline, catch intercepted it and returned "replacement value" as expected, but the replacement publisher it used (`Publishers.Just`) sends a single value and then sending a completion.
+When the failure was sent through the pipeline, catch intercepts it and returns "replacement value" as expected.
+The replacement publisher it used (`Publishers.Just`) sends a single value and then sends a completion.
+If we want the pipeline to remain active, we need to change how we handle the errors.
 
-It's worth mentioning that there is also a `tryCatch()` operator, which supports you doing your own analysis on the error and potentially throwing a new/different failure condition down the chain.
-Like `catch()` it also replaces the publisher.
+=== using `flatMap` with `catch` to handle failures and keep a pipeline active
 
-=== using `flatMap` with `catch` to handle failures
+The `flatMap()` operator is exactly what we need in this use case.
 
-A more general solution to handling the errors is also a bit more complex.
-It leverages the `flatMap()` operator, which transforms all elements from an upstream publisher into a new or existing publisher.
-We can use `flatMap()` operator along with the `just()` publisher and `catch()` operator to bring in placeholder values only when needed and otherwise keep the pipeline operational.
+You can think of the flatMap() operator as a way to inject values into your pipeline from a temporary one-shot publisher.
+The `flatMap()` operator transforms all elements from an upstream publisher into a new or existing publisher.
+`flatMap()` expects the closure that you give it to return a Publisher.
 
-diagram version:
+We use it by creating a one-shot pipeline that starts with data from the original pipeline.
+We then do the various tasks that might fail, and use the `catch()` operator to provide a fallback value.
+
+A diagram version of the pipelines might be:
 
 [source]
 ----
-publisher -> flatMap -> (                                           ) -> subscriber
-                         Just -> decode -> catch (                 )
-                                                  Just(fallback) ->
+publisher -> flatMap -> (    \                                         ) -> subscriber
+                              \                                      ^
+             dataTaskPublisher(value) -> decode -> catch (      ) ->/
+                                                              ^
+                                            Just(fallback) ->/
 ----
+
+Below is a contrived example where you want to make a network to check for the username availability that you are watching with `@Published`.
+As the property `username` is updated, you want to check to see if the updated username is available.
+
+This contrived example expects that you have a web service that you can query, which will return a structured response in JSON.
 
 [source, swift]
 ----
-let trickNamePublisher = NotificationCenter.default.publisher(for: .newTrickDownloaded)
-.map { notification in
-    return notification.userInfo?["data"] as! Data
+@Published var username: String = ""
+
+struct UsernameResponse: Codable {
+    username: String
+    available: Bool
 }
-.flatMap { data in
-    return Just(data)
-    .decode(MagicTrick.self, JSONDecoder())
-    .catch {
-        return Just(MagicTrick.placeholder)
-    }
+
+var validatedUsername: AnyPublisher<String?, Never> {
+    return $username
+        .debounce(for: 0.5, scheduler: RunLoop.main)
+        .removeDuplicates()
+        .flatMap { username in
+            let constructedURL = URL(string: "https://yourhost.com/?user=\(username)")
+            return remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: constructedURL!)
+                .map({ (inputTuple) -> Data in
+                    return inputTuple.data
+                })
+                .decode(type: UsernameResponse.self, decoder: JSONDecoder())
+                .map { response: UsernameResponse in
+                    return response.available
+                }
+                .catch { err in
+                    // if the service is down, or the JSON malformed, return a false response
+                    return Publishers.Just(False))
+                }
+        }
 }
-.publisher(for: \.name)
-.receive(on: RunLoop.main)
 ----
 
-
-replace `decode` with any operator that might return an error
+In the example above, for every update into .flatMap() we are creating a request to check and parse for the availability from the service.
 
 === using the `retry` operator
 

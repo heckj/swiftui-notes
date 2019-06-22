@@ -372,6 +372,7 @@ class CombinePatternTests: XCTestCase {
 
         simpleControlledPublisher.send(twoFish)
         backDoorPublisher.send("second response")
+        
         // simpleControlledPublisher.send(completion: .finished)
         // with the above line uncommented, the original pipeline is terminated, but the
         // backDoor pipelines put into place by the flatmap are still completely active to downstream
@@ -390,7 +391,6 @@ class CombinePatternTests: XCTestCase {
         simpleControlledPublisher.send(blueFish)
         backDoorPublisher.send("fourth response")
         backDoorPublisher.send(completion: .finished)
-
 
         simpleControlledPublisher.send(blueFish)
         backDoorPublisher.send("fifth response")
@@ -487,5 +487,9 @@ class CombinePatternTests: XCTestCase {
 
     }
 
+    func testNotificationPublisher() {
+        let continualPublisher = NotificationCenter.default.publisher(for: Notification.Name(rawValue: "something"))
+        .flatMap(<#T##transform: (Notification) -> Publisher##(Notification) -> Publisher#>)
+    }
 
 }
