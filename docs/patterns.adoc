@@ -8,7 +8,7 @@ If you are creating the subscriber, you can use `.sink()`` to receive and proces
 The simplest form of `.sink()` takes a single closure - but by default this is the closure that receives data (if provided by the pipeline).
 If you don't also include a closure to get the completion, you will not receive any information about failures.
 
-[IMPORTANT]
+[WARNING]
 ====
 Remember that the subscriber drives the execution of any Combine pipelines you create. When you create and connect a subscriber with `.sink()`, it will connect and set up a request for unlimited data.
 
@@ -562,3 +562,6 @@ test strategies with combine
 ** testing subscribers
 
 using PassthroughSubject and creative sinks
+
+// force a page break - ignored in HTML rendering
+<<<

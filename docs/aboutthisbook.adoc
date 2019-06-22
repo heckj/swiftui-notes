@@ -49,3 +49,6 @@ image::welcomeToXcode.png[Welcome to Xcode,406,388]
 image::cloneRepository.png[clone Repository,463,263]
 
 * Choose the `master` branch to check out
+
+// force a page break - ignored in HTML rendering
+<<<

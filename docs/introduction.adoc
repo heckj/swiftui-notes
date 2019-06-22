@@ -79,6 +79,8 @@ One of Apple's examples with Combine include a pipeline to fall back to getting 
 Many of the pipelines you create with Combine will only be a few operations.
 Even with just a few operations, Combine can still make it much easier to view and understand what's happening when you compose a pipeline.
 
+// force a page break - ignored in HTML rendering
+<<<
 == Apple's Documentation
 
 icon:apple[size=2x]
@@ -107,3 +109,6 @@ A number of additional sessions mention Combine:
 
 * https://developer.apple.com/videos/play/wwdc2019/610/[Building Collaborative AR Experiences]
 * https://developer.apple.com/videos/play/wwdc2019/223/[Expanding the Sensory Experience with Core Haptics]
+
+// force a page break - ignored in HTML rendering
+<<<

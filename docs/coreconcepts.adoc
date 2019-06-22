@@ -112,6 +112,9 @@ We will see that in more detail in the section on patterns.
 
 // TODO(heckj): come back and map 'section on patterns' to xref's to the pattern section when created
 
+// force a page break - ignored in HTML rendering
+<<<
+
 [#core-lifecycle]
 == Lifecycle of Publishers and Subscribers
 
@@ -436,3 +439,7 @@ You may see this in code as an operator, for example:
 ----
     .receive(on: RunLoop.main)
 ----
+
+
+// force a page break - ignored in HTML rendering
+<<<
