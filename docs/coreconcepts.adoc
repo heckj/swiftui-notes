@@ -148,15 +148,27 @@ The https://developer.apple.com/documentation/combine/publisher[publisher protoc
 
 Combine provides a number of convenience publishers:
 
-// TODO(heckj): come back and map these to xref's to the reference section when created
+[cols="3*^"]
+|===
+| https://developer.apple.com/documentation/combine/publishers/empty[`Publishers.Empty`]
+| https://developer.apple.com/documentation/combine/publishers/fail[`Publishers.Fail`]
+| https://developer.apple.com/documentation/combine/publishers/just[`Publishers.Just`]
 
-* https://developer.apple.com/documentation/combine/publishers/empty[`Publishers.Empty`]
-* https://developer.apple.com/documentation/combine/publishers/fail[`Publishers.Fail`]
-* https://developer.apple.com/documentation/combine/publishers/just[`Publishers.Just`]
-* https://developer.apple.com/documentation/combine/publishers/once[`Publishers.Once`]
-* https://developer.apple.com/documentation/combine/publishers/optional[`Publishers.Optional`]
-* https://developer.apple.com/documentation/combine/publishers/sequence[`Publishers.Sequence`]
-* https://developer.apple.com/documentation/combine/publishers/deferred[`Publishers.Deferred`]
+| https://developer.apple.com/documentation/combine/publishers/once[`Publishers.Once`]
+| https://developer.apple.com/documentation/combine/publishers/optional[`Publishers.Optional`]
+| https://developer.apple.com/documentation/combine/publishers/sequence[`Publishers.Sequence`]
+
+| https://developer.apple.com/documentation/combine/publishers/deferred[`Publishers.Deferred`]
+| Publishers.Future
+| @Published
+
+| @ObjectBinding
+
+|===
+
+Other Apple APIs provide publishers as well
+
+// TODO(heckj): come back and map these to xref's to the reference section when created
 
 Combine allows you to create a publisher with the https://developer.apple.com/documentation/combine/published[`@Published`] property wrapper to provide a publisher for a specific property.
 
@@ -185,108 +197,154 @@ Some operators support bringing together outputs from different pipelines, or sp
 Operators may also have constraints on the types they will operate on.
 Operators can also help with error handling and retry logic, buffering and prefetch, controlling timing, and supporting debugging.
 
-=== Mapping elements
-
 // NOTE(heckj): add xref link to reference section when written
 
-* scan
-* tryScan
-* map
-* tryMap
-* flatMap
-* setFailureType
+[cols="3*^"]
+|===
+3+h| Mapping elements
+| scan
+| tryScan
+| map
 
-=== Filtering elements
+| tryMap
+| flatMap
+| setFailureType
+|===
 
-* compactMap
-* tryCompactMap
-* filter
-* tryFilter
-* removeDuplicates
-* tryRemoveDuplicates
-* replaceEmpty
-* replaceError
+[cols="3*^"]
+|===
+3+h| Filtering elements
+| compactMap
+| tryCompactMap
+| filter
 
-=== Reducing elements
+| tryFilter
+| removeDuplicates
+| tryRemoveDuplicates
 
-* collect
-* collectByCount
-* collectByTime
-* ignoreOutput
-* reduce
-* tryReduce
+| replaceEmpty
+| replaceError
+|
+|===
 
-=== Mathematic opertions on elements
 
-* comparison
-* tryComparison
-* count
+[cols="3*^"]
+|===
+3+h| Reducing elements
+| collect
+| collectByCount
+| collectByTime
 
-=== Applying matching criteria to elements
+| ignoreOutput
+| reduce
+| tryReduce
+|===
 
-* allSatisfy
-* tryAllSatisfy
-* contains
-* containsWhere
-* tryContainsWhere
+[cols="3*^"]
+|===
+3+h| Mathematic opertions on elements
+| comparison
+| tryComparison
+| count
+|===
 
-=== Applying sequence operations to elements
+[cols="3*^"]
+|===
+3+h| Applying matching criteria to elements
+| allSatisfy
+| tryAllSatisfy
+| contains
 
-* first
-* firstWhere
-* tryFirstWhere
-* last
-* lastWhere
-* tryLastWhere
-* dropUntilOutput
-* dropWhile
-* tryDropWhile
-* concatenate
-* drop
-* prefixUntilOutput
-* prefixWhile
-* tryPrefixWhile
-* output
+| containsWhere
+| tryContainsWhere
+|
+|===
 
-=== Combining elements from multiple publishers
+[cols="3*^"]
+|===
+3+h| Applying sequence operations to elements
+| first
+| firstWhere
+| tryFirstWhere
 
-* combineLatest
-* tryCombineLatest
-* merge
-* zip
+| last
+| lastWhere
+| tryLastWhere
 
-=== Handling errors
+| dropUntilOutput
+| dropWhile
+| tryDropWhile
 
-* assertNoFailure
-* catch
-* retry
+| concatenate
+| drop
+| prefixUntilOutput
 
-=== Adapting publisher types
+| prefixWhile
+| tryPrefixWhile
+| output
+|===
 
-* switchToLatest
+[cols="3*^"]
+|===
+3+h| Combining elements from multiple publishers
+| combineLatest
+| tryCombineLatest
+| merge
+| zip
+|
+|
+|===
 
-=== Controlling timing
+[cols="3*^"]
+|===
+3+h| Handling errors
+| assertNoFailure
+| catch
+| retry
+|===
 
-* debounce
-* delay
-* measureInterval
-* throttle
-* timeout
+[cols="3*^"]
+|===
+3+h| Adapting publisher types
+| switchToLatest
+|
+|
+|===
 
-=== Encoding and decoding
+[cols="3*^"]
+|===
+3+h| Controlling timing
+| debounce
+| delay
+| measureInterval
+| throttle
+| timeout
+|
+|===
 
-* encode
-* decode
+[cols="3*^"]
+|===
+3+h| Encoding and decoding
+| encode
+| decode
+|
+|===
 
-=== Working with multiple subscribers
+[cols="3*^"]
+|===
+3+h| Working with multiple subscribers
+| multicast
+|
+|
+|===
 
-* multicast
-
-=== Debugging
-
-* breakpoint
-* handleEvents
-* print
+[cols="3*^"]
+|===
+3+h| Debugging
+| breakpoint
+| handleEvents
+| print
+|===
 
 // NOTE(heckj): add xref link to reference section when written
 
