@@ -122,34 +122,80 @@ n/a
 [#reference-sequence]
 ==== Publishers.Sequence
 
+__Summary__::
+
+Publishes a provided sequence of elements.
+
+__Documentation reference__::
+
 * https://developer.apple.com/documentation/combine/publishers/sequence[`Publishers.Sequence`]
 
-* Sequence
-** publishes a given sequence of elements
+__Usage__::
+
+n/a
+
+__Details__::
+
+n/a
+
 
 [#reference-deferred]
 ==== Publishers.Deferred
 
+__Summary__::
+
+Publisher waits for a subscriber before running the provided closure to create values for the subscriber.
+
+__Documentation reference__::
+
 * https://developer.apple.com/documentation/combine/publishers/deferred[`Publishers.Deferred`]
 
-* Deferred
-** publisher waits for a subscriber before running the provided closure to create values for the subscriber
+__Usage__::
+
+n/a
+
+__Details__::
+
+n/a
 
 [#reference-future]
 ==== Publishers.Future
 
-* Publishers.Future
+__Summary__::
 
-A future is initialized with a closure that eventually resolves to a https://developer.apple.com/documentation/combine/publishers/future/promise[Promise].
+A future is initialized with a closure that eventually resolves to a value.
 
-* you provide a closure that converts a callback/function of your own choosing into a promise.
+__Documentation reference__::
+
+* https://developer.apple.com/documentation/combine/publishers/future[Publishers.Future].
+
+__Usage__::
+
+n/a
+
+__Details__::
+
+* you provide a closure that converts a callback/function of your own choosing into a https://developer.apple.com/documentation/combine/publishers/future/promise[Promise].
 * in creating a Future publisher, you need to handle the logic of when you generate the relevant `Result<Output, Error>` with the asynchronous calls.
 
 [#reference-published]
 ==== @Published
 
-* @Published
-* property wrapper that adds a Combine publisher to any property
+__Summary__::
+
+A property wrapper that adds a Combine publisher to any property
+
+__Documentation reference__::
+
+* https://developer.apple.com/documentation/combine/published[Published]
+
+__Usage__::
+
+n/a
+
+__Details__::
+
+Output type is inferred from the property being wrapped.
 
 publisher -> `<SomeType>`, `<Never>`
 
