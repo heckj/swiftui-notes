@@ -1,36 +1,36 @@
 [#reference]
 = Reference
 
-== extending the apple documentation
+reference preamble goes here...
 
-* beta2 is better, but fairly anemic
+[NOTE]
+====
+This is intended to extend Apple's documentation, not replace it.
+
+* The documentation associated with beta2 is better than beta1, but still fairly anemic.
 
 things to potentially include for each segment
 
 * narrative description of what the function does
 ** notes on why you might want to use it, or where you may see it
 ** xref back to patterns document where functions are being used
-* marble/railroad diagram explaining what the transformation does
+* marble/railroad diagram explaining what the transformation/operator does
 * sample code showing it being used and/or tested
+====
 
 [#reference-publishers]
 == Publishers
 
 //NOTE(heckj) make xref link back to coreconcepts:publishers
 
-[#reference-conveniencePublishers]
-=== convenience publishers
-
 [#reference-empty]
-==== Publishers.Empty
+=== Publishers.Empty
 
 __Summary__::
 
 `empty` never publishes any values, and optionally finishes immediately.
 
-__Documentation reference__::
-
-* https://developer.apple.com/documentation/combine/publishers/empty[`Publishers.Empty`]
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/empty[`Publishers.Empty`]
 
 __Usage__::
 
@@ -43,15 +43,13 @@ __Details__::
 ** `Empty(completeImmediately: false)`
 
 [#reference-fail]
-==== Publishers.Fail
+=== Publishers.Fail
 
 __Summary__::
 
 `fail` immediately terminates publishing with the specified failure.
 
-__Documentation reference__::
-
-* https://developer.apple.com/documentation/combine/publishers/fail[`Publishers.Fail`]
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/fail[`Publishers.Fail`]
 
 __Usage__::
 
@@ -62,15 +60,13 @@ __Details__::
 n/a
 
 [#reference-just]
-==== Publishers.Just
+=== Publishers.Just
 
 __Summary__::
 
 `just` provides a single result and then terminates.
 
-__Documentation reference__::
-
-* https://developer.apple.com/documentation/combine/publishers/just[`Publishers.Just`]
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/just[`Publishers.Just`]
 
 __Usage__::
 
@@ -82,15 +78,13 @@ __Details__::
 ** often used in error handling
 
 [#reference-once]
-==== Publishers.Once
+=== Publishers.Once
 
 __Summary__::
 
 Generates an output to each subscriber exactly once then finishes or fails immediately.
 
-__Documentation reference__::
-
-* https://developer.apple.com/documentation/combine/publishers/once[`Publishers.Once`]
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/once[`Publishers.Once`]
 
 __Usage__::
 
@@ -101,15 +95,13 @@ __Details__::
 n/a
 
 [#reference-optional]
-==== Publishers.Optional
+=== Publishers.Optional
 
 __Summary__::
 
 generates a value exactly once for each subscriber, if the optional has a value
 
-__Documentation reference__::
-
-* https://developer.apple.com/documentation/combine/publishers/optional[`Publishers.Optional`]
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/optional[`Publishers.Optional`]
 
 __Usage__::
 
@@ -120,15 +112,13 @@ __Details__::
 n/a
 
 [#reference-sequence]
-==== Publishers.Sequence
+=== Publishers.Sequence
 
 __Summary__::
 
 Publishes a provided sequence of elements.
 
-__Documentation reference__::
-
-* https://developer.apple.com/documentation/combine/publishers/sequence[`Publishers.Sequence`]
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/sequence[`Publishers.Sequence`]
 
 __Usage__::
 
@@ -140,15 +130,13 @@ n/a
 
 
 [#reference-deferred]
-==== Publishers.Deferred
+=== Publishers.Deferred
 
 __Summary__::
 
 Publisher waits for a subscriber before running the provided closure to create values for the subscriber.
 
-__Documentation reference__::
-
-* https://developer.apple.com/documentation/combine/publishers/deferred[`Publishers.Deferred`]
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/deferred[`Publishers.Deferred`]
 
 __Usage__::
 
@@ -159,15 +147,13 @@ __Details__::
 n/a
 
 [#reference-future]
-==== Publishers.Future
+=== Publishers.Future
 
 __Summary__::
 
 A future is initialized with a closure that eventually resolves to a value.
 
-__Documentation reference__::
-
-* https://developer.apple.com/documentation/combine/publishers/future[Publishers.Future].
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/future[Publishers.Future].
 
 __Usage__::
 
@@ -179,15 +165,13 @@ __Details__::
 * in creating a Future publisher, you need to handle the logic of when you generate the relevant `Result<Output, Error>` with the asynchronous calls.
 
 [#reference-published]
-==== @Published
+=== Published
 
 __Summary__::
 
 A property wrapper that adds a Combine publisher to any property
 
-__Documentation reference__::
-
-* https://developer.apple.com/documentation/combine/published[Published]
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/published[Published]
 
 __Usage__::
 
@@ -646,7 +630,8 @@ __Constraints on publisher__::
 
 * __none__
 
-__Documentation reference__::
+__icon:apple[] Documentation reference__::
+
 
 * https://developer.apple.com/documentation/combine/publishers/catch[`Publishers.Catch`]
 

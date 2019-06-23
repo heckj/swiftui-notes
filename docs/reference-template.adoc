@@ -2,7 +2,7 @@ __Summary__::
 
 n/a
 
-__Documentation reference__::
+__icon:apple[] docs__::
 
 n/a
 
