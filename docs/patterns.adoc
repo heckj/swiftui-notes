@@ -7,8 +7,8 @@ These examples are meant to illustrate how to use the Combine framework to accom
 [NOTE]
 ====
 __Since this is a work in progress:__
+if you have a suggestion for a pattern or recipe, I'm happy to consider it.
 
-If you have a suggestion for a pattern or recipe, I'm happy to consider it.
 Please https://github.com/heckj/swiftui-notes/issues/new/choose[Open an issue] in GitHub to request something.
 ====
 
@@ -21,10 +21,11 @@ If you don't also include a closure to get the completion, you will not receive 
 
 [WARNING]
 ====
-Remember that the subscriber drives the execution of any Combine pipelines you create. When you create and connect a subscriber with `.sink()`, it will connect and set up a request for unlimited data.
-
-When you create your sink methods, be aware that your receiveValue closure may be called repeatedly, depending on what the publisher or pipeline does and how it is configured.
+Remember that subscribers drive the execution of any Combine pipelines you create. 
+If you end a pipeline with `.sink()` you are creating the subscriber and connecting it to the pipeline.
+By chaining it, it will implicitly start <<coreconcepts.adoc#core-lifecycle,the lifecycle>> with the `subscribe` and request for unlimited data.
 ====
+
 
 A simple sink is created with a single closure:
 
@@ -38,7 +39,10 @@ let _ = remoteDataPublisher.sink { value in
 The closure gets invoked for every new update that the publisher creates, up until the completion.
 If an error or failure occurs, then the closure will simply never be called.
 
-If you are creating a subscriber and want to receive and handle failures, or see the completion messages at the end of pipeline, you can create a sink with two closures.
+When you write the closure for a `sink` subscriber, be aware that your receiveValue closure may be called repeatedly. 
+How often it is called depends on the pipeline to which it is subscribing.
+
+If you are creating a subscriber and want to receive and handle failures, or see the completion messages at the end of pipeline, create a sink with two closures.
 The more complete sink has the two closures named`receiveCompletion` and `receiveValue`:
 
 [source, swift]
@@ -153,7 +157,7 @@ When an error is triggered on the pipeline, a `.failure` completion is sent with
 <<<
 
 [#patterns-general-error-handling]
-== Pattern 3: Handling errors in the pipline
+== Pattern 3: Handling errors within the pipline
 
 The examples above expected that the subscriber would handle the error conditions, if they occured.
 However, you are not always able to control the subscriber - as might be the case if you're using SwiftUI view properties as the subscriber, and you're providing the publisher.
@@ -168,10 +172,9 @@ With a publisher that can throw an error (such as `dataTaskPublisher`), you need
 
 How you handle the errors within a pipeline is very dependent on how the pipeline is working.
 If the pipeline is set up to return a single result and terminate, the continue below.
-If the pipeline is set up to continually update, the error handling needs to be a little more complex, and you should jump to X-REF Pattern 3.2
+If the pipeline is set up to continually update, the error handling needs to be a little more complex, and you should jump ahead to <<patterns-oneshot-error-handling>>.
 
-// TODO - internal link to Xref Pattern 3.2
-
+[#patterns-assertNoFailure]
 === using `assertNoFailure` operator
 
 A brutal way to handle this is to crash the application when an error happens.
@@ -296,6 +299,7 @@ When the failure was sent through the pipeline, catch intercepts it and returns 
 The replacement publisher it used (`Publishers.Just`) sends a single value and then sends a completion.
 If we want the pipeline to remain active, we need to change how we handle the errors.
 
+[#patterns-retry]
 === using the `retry` operator
 
 The `retry` operator can be included in a chain to retry a subscription when a `.failure` completion occurs.
