@@ -288,6 +288,7 @@ Operators can also help with error handling and retry logic, buffering and prefe
 | combineLatest
 | tryCombineLatest
 | merge
+
 | zip
 |
 |
@@ -315,6 +316,7 @@ Operators can also help with error handling and retry logic, buffering and prefe
 | debounce
 | delay
 | measureInterval
+
 | throttle
 | timeout
 |
@@ -352,14 +354,26 @@ Operators can also help with error handling and retry logic, buffering and prefe
 Subjects are a special case of publisher that also adhere to https://developer.apple.com/documentation/combine/subject[`subject`] protocol.
 This protocol requires subjects to have a `.send()` method to allow the developer to send specific values to a subscriber (or pipeline).
 
+Subjects can be used to "inject" values into a stream, by calling the subject's `.send()` method.
+This is useful for integrating existing imperative code with Combine.
+
+A subject can also broadcast values to multiple subscribers.
+
 There are two built-in subjects with Combine:
 
 The first is https://developer.apple.com/documentation/combine/currentvaluesubject[`CurrentValueSubject`].
+
+** CurrentValue remembers the current value so that when you attach a subscriber you can see the current value
+
+
 It is created and initialized with an initial value.
 When a subscriber is connected to it and requests data, the initial value is sent.
 Further calls to `.send()` afterwards will then send those values to any subscribers.
 
 The second is https://developer.apple.com/documentation/combine/passthroughsubject[`PassthroughSubject`].
+
+** Passthrough doesn't maintain any state - just passes through provided values
+
 When it is created, only the types are defined.
 When a subscriber is connected and requests data, it will not receive any values until a `.send()` call is invoked.
 Calls to `.send()` will then send values to any subscribers.
@@ -376,6 +390,10 @@ Subjects can also be useful for fanning out values to multiple subscribers.
 While https://developer.apple.com/documentation/combine/subscriber[`subscriber`] is the protocol used to receive data throughout a pipeline, the Subscriber typically refers to the end of a pipeline.
 
 There are two subscribers built-in to Combine: assign and sink.
+
+Subscribers can support cancellation, which terminates a subscription and shuts down all the stream processing prior to any Completion sent by the publisher.
+Both `Assign` and `Sink` conform to the https://developer.apple.com/documentation/combine/cancellable[cancellable protocol].
+
 
 https://developer.apple.com/documentation/combine/subscribers/assign[`assign`] applies values passed down from the publisher to an object defined by a keypath.
 The keypath is set when the pipeline is created.

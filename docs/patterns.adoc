@@ -21,7 +21,7 @@ If you don't also include a closure to get the completion, you will not receive 
 
 [WARNING]
 ====
-Remember that subscribers drive the execution of any Combine pipelines you create. 
+Remember that subscribers drive the execution of any Combine pipelines you create.
 If you end a pipeline with `.sink()` you are creating the subscriber and connecting it to the pipeline.
 By chaining it, it will implicitly start <<coreconcepts.adoc#core-lifecycle,the lifecycle>> with the `subscribe` and request for unlimited data.
 ====
@@ -39,7 +39,7 @@ let _ = remoteDataPublisher.sink { value in
 The closure gets invoked for every new update that the publisher creates, up until the completion.
 If an error or failure occurs, then the closure will simply never be called.
 
-When you write the closure for a `sink` subscriber, be aware that your receiveValue closure may be called repeatedly. 
+When you write the closure for a `sink` subscriber, be aware that your receiveValue closure may be called repeatedly.
 How often it is called depends on the pipeline to which it is subscribing.
 
 If you are creating a subscriber and want to receive and handle failures, or see the completion messages at the end of pipeline, create a sink with two closures.
@@ -172,7 +172,7 @@ With a publisher that can throw an error (such as `dataTaskPublisher`), you need
 
 How you handle the errors within a pipeline is very dependent on how the pipeline is working.
 If the pipeline is set up to return a single result and terminate, continue to <<patterns-oneshot-error-handling>>.
-If the pipeline is set up to continually update, the error handling needs to be a little more complex. 
+If the pipeline is set up to continually update, the error handling needs to be a little more complex.
 Jump ahead to <<patterns-continual-error-handling>>.
 
 [#patterns-assertNoFailure]
@@ -254,51 +254,7 @@ Like `catch()` it also replaces the publisher.
 
 A possible problem with this technique is that the if the original publisher generates more values to which you wish to react, the original pipeline has been ended.
 This means if you are creating a pipeline that reacts to a `@Published` property, then after any failed value that activates the catch operator, the pipeline will cease to react further.
-
-This can be illustrated with the following code snippet:
-
-[source, swift]
-----
-enum testFailureCondition: Error {
-    case invalidServerResponse
-}
-
-let simplePublisher = PassthroughSubject<String, Error>()
-
-let _ = simplePublisher
-    .catch { err in
-        // must return a Publisher
-        return Publishers.Just("replacement value")
-    }
-    .sink(receiveCompletion: { fini in
-        print(".sink() received the completion:", String(describing: fini))
-    }, receiveValue: { stringValue in
-        print(".sink() received \(stringValue)")
-    })
-
-simplePublisher.send("oneValue")
-simplePublisher.send("twoValue")
-simplePublisher.send(completion: Subscribers.Completion.failure(testFailureCondition.invalidServerResponse))
-simplePublisher.send("redValue")
-simplePublisher.send("blueValue")
-simplePublisher.send(completion: .finished)
-----
-
-In this example, we are using a `PassthroughSubject` so that we can control when and what gets sent from the publisher.
-In the above code, we are sending two good values, then a failure, then attempting to send two more good values.
-The values you would see printed from our `.sink()` closures are:
-
-[source]
-----
-.sink() received oneValue
-.sink() received twoValue
-.sink() received replacement value
-.sink() received the completion: finished
-----
-
-When the failure was sent through the pipeline, catch intercepts it and returns "replacement value" as expected.
-The replacement publisher it used (`Publishers.Just`) sends a single value and then sends a completion.
-If we want the pipeline to remain active, we need to change how we handle the errors.
+See <<reference.adoc#reference-catch>> for more detail and an example.
 
 [#patterns-retry]
 === retrying in the event of a temporary failure
