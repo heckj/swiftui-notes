@@ -330,7 +330,7 @@ Scene Publisher (from https://developer.apple.com/documentation/realitykit[Reali
 ** remembers what was previously sent in the stream, and only passes forward new values
 ** there's a variant `tryRemoveDuplicates` for use with a provided error-throwing closure.
 
-[#reference-tryRemoteDuplicates]
+[#reference-tryRemoveDuplicates]
 ==== tryRemoveDuplicates
 
 * tryRemoveDuplicates
@@ -469,7 +469,7 @@ Scene Publisher (from https://developer.apple.com/documentation/realitykit[Reali
 
 * containsWhere
 
-[#reference-tryCOntainsWhere]
+[#reference-tryContainsWhere]
 ==== tryContainsWhere
 
 * tryContainsWhere
@@ -706,7 +706,10 @@ If we want the pipeline to remain active, we need to change how we handle the er
 [#reference-operators-adaptingTypes]
 === Adapting publisher types
 
-* switchToLatest
+[#reference-switchToLatest]
+==== switchToLatest
+
+* switchToLatest?
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
