@@ -4,7 +4,7 @@
 [#core-publisher-subscriber]
 == Publisher, Subscriber
 
-Two key concepts, described in swift with protocols, are the https://developer.apple.com/documentation/combine/publisher[*publisher*] and the https://developer.apple.com/documentation/combine/subscriber[*subscriber*].
+Two key concepts, described in swift with protocols, are https://developer.apple.com/documentation/combine/publisher[*publisher*] and https://developer.apple.com/documentation/combine/subscriber[*subscriber*].
 
 A publisher provides data.
 It is described with two associated types: one for Output and one for Failure.
@@ -66,10 +66,10 @@ With enforced types, there are a number of Combine functions that are created to
 
 Some operators will may require conformance of an input or failure type.
 Other operators may change either or both the failure and output types.
-For example, there are a number of operators that have a similar operator prexed with `try` indicating  they return an <Error> failure type.
+For example, there are a number of operators that have a similar operator prefixed with `try`, which indicates they return an <Error> failure type.
 
 An example of this is <<reference.adoc#reference-map>> and <<reference.adoc#reference-tryMap>>.
-`map` allows for any combination of Output and Failure type and passes them through.
+The `map` operator allows for any combination of Output and Failure type and passes them through.
 `tryMap` accepts any Input, Failure types, and allows any Output type, but will always output an `<Error>` failure type.
 
 In the example of `map`, you define the output type being returned in the closure you're providing to the operator.
@@ -136,15 +136,15 @@ Cancellation can be triggered by the subscriber.
 
 This is all enabled by subscribers and publishers communicating in a well defined sequence, or lifecycle.
 
-* When the subscriber is attached to a publisher, it starts with a call to `.subscribe(Subscriber)`.
-* The publisher in turn acknowledges the subscription calling `receive(subscription)`.
+. When the subscriber is attached to a publisher, it starts with a call to `.subscribe(Subscriber)`.
+. The publisher in turn acknowledges the subscription calling `receive(subscription)`.
 
 ** After the subscription has been acknowledged, the subscriber requests _N_ values with `request(_ : Demand)`.
 ** The publisher may then (as it has values) sending _N_ (or fewer) values: `receive(_ : Input)`.
 A publisher should never send **more** than the demand requested.
 ** Also after the subscription has been acknowledged, the subscriber can send a https://developer.apple.com/documentation/combine/subscribers/completion[cancellation] with `.cancel()`
 
-* A publisher may optionally send https://developer.apple.com/documentation/combine/subscribers/completion[completion]: `receive(completion:)` which is also how errors are propogated.
+. A publisher may optionally send https://developer.apple.com/documentation/combine/subscribers/completion[completion]: `receive(completion:)` which is also how errors are propogated.
 
 [#core-publishers]
 == Publishers
@@ -169,22 +169,16 @@ Combine provides a number of convenience publishers:
 | <<reference.adoc#reference-future>>
 | <<reference.adoc#reference-published>>
 
-// TODO(heckj): come back and map these to xref's to the reference section when created
-| @ObjectBinding
-|
-|
-
 |===
 
 A number of additional Apple APIs provide publishers as well.
-
-Combine allows you to create a publisher with the https://developer.apple.com/documentation/combine/published[`@Published`] property wrapper to provide a publisher for a specific property.
-
-SwiftUI provides https://developer.apple.com/documentation/swiftui/objectbinding[`@ObjectBinding`] which can be used to create a publisher.
+// TODO(heckj): come back and map these to xref's to the reference section when created
 
 A number of other Apple APIs provide publishers as well:
 
-* https://developer.apple.com/documentation/foundation/notificationcenter[`NotificationCenter`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publisher`]
+* SwiftUI provides https://developer.apple.com/documentation/swiftui/objectbinding[`@ObjectBinding`] which can be used to create a publisher.
+
+* https://developer.apple.com/documentation/foundation/notificationcenter[`NoticationCenter`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publisher`]
 
 * https://developer.apple.com/documentation/foundation/timer[`Timer`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publish`] and https://developer.apple.com/documentation/foundation/timer/timerpublisher[`Timer.TimerPublisher`]
 
@@ -212,11 +206,11 @@ Operators can also help with error handling and retry logic, buffering and prefe
 3+h| Mapping elements
 | <<reference.adoc#reference-scan>>
 | <<reference.adoc#reference-tryScan>>
-| <<reference.adoc#reference-map>>
+| <<reference.adoc#reference-setFailureType>>
 
+| <<reference.adoc#reference-map>>
 | <<reference.adoc#reference-tryMap>>
 | <<reference.adoc#reference-flatMap>>
-| <<reference.adoc#reference-setFailureType>>
 |===
 
 [cols="3*^"]
@@ -224,14 +218,14 @@ Operators can also help with error handling and retry logic, buffering and prefe
 3+h| Filtering elements
 | <<reference.adoc#reference-compactMap>>
 | <<reference.adoc#reference-tryCompactMap>>
-| <<reference.adoc#reference-filter>>
+| <<reference.adoc#reference-replaceEmpty>>
 
+| <<reference.adoc#reference-filter>>
 | <<reference.adoc#reference-tryFilter>>
+| <<reference.adoc#reference-replaceError>>
+
 | <<reference.adoc#reference-removeDuplicates>>
 | <<reference.adoc#reference-tryRemoveDuplicates>>
-
-| <<reference.adoc#reference-replaceEmpty>>
-| <<reference.adoc#reference-replaceError>>
 |
 |===
 
@@ -243,9 +237,9 @@ Operators can also help with error handling and retry logic, buffering and prefe
 | <<reference.adoc#reference-collectByCount>>
 | <<reference.adoc#reference-collectByTime>>
 
-| <<reference.adoc#reference-ignoreOutput>>
 | <<reference.adoc#reference-reduce>>
 | <<reference.adoc#reference-tryReduce>>
+| <<reference.adoc#reference-ignoreOutput>>
 |===
 
 [cols="3*^"]
@@ -271,17 +265,17 @@ Operators can also help with error handling and retry logic, buffering and prefe
 [cols="3*^"]
 |===
 3+h| Applying sequence operations to elements
-| <<reference.adoc#reference-first>>
 | <<reference.adoc#reference-firstWhere>>
 | <<reference.adoc#reference-tryFirstWhere>>
+| <<reference.adoc#reference-first>>
 
-| <<reference.adoc#reference-last>>
 | <<reference.adoc#reference-lastWhere>>
 | <<reference.adoc#reference-tryLastWhere>>
+| <<reference.adoc#reference-last>>
 
-| <<reference.adoc#reference-dropUntilOutput>>
 | <<reference.adoc#reference-dropWhile>>
 | <<reference.adoc#reference-tryDropWhile>>
+| <<reference.adoc#reference-dropUntilOutput>>
 
 | <<reference.adoc#reference-concatenate>>
 | <<reference.adoc#reference-drop>>
@@ -316,7 +310,7 @@ Operators can also help with error handling and retry logic, buffering and prefe
 |===
 3+h| Adapting publisher types
 | <<reference.adoc#reference-switchToLatest>>
-|
+| <<reference.adoc#reference-eraseToAnyPublisher>>
 |
 |===
 
@@ -369,8 +363,9 @@ A subject can also broadcast values to multiple subscribers.
 
 There are two built-in subjects with Combine:
 
-
 The first is <<reference.adoc#reference-currentValueSubject>>.
+
+// TODO(heckj) collapse some of this over to the reference section
 
 * CurrentValue remembers the current value so that when a subscriber is attached, it immediately receives the current value.
 
@@ -379,6 +374,8 @@ When a subscriber is connected to it and requests data, the initial value is sen
 Further calls to `.send()` afterwards will then send those values to any subscribers.
 
 The second is <<reference.adoc#reference-passthroughSubject>>.
+
+// TODO(heckj) collapse some of this over to the reference section
 
 * Passthrough doesn't maintain any state - just passes through provided values.
 
@@ -401,7 +398,6 @@ There are two subscribers built-in to Combine: assign and sink.
 
 Subscribers can support cancellation, which terminates a subscription and shuts down all the stream processing prior to any Completion sent by the publisher.
 Both `Assign` and `Sink` conform to the https://developer.apple.com/documentation/combine/cancellable[cancellable protocol].
-
 
 https://developer.apple.com/documentation/combine/subscribers/assign[`assign`] applies values passed down from the publisher to an object defined by a keypath.
 The keypath is set when the pipeline is created.
