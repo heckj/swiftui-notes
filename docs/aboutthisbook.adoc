@@ -18,9 +18,9 @@ I am working through how to make it available to the widest audience while also 
 Joe Heck has broad software engineering development and management experience crossing startups and large companies.
 He works across all the layers of solutions, from architecture, development, validation, deployment, and operations.
 
-Joe has developed projects ranging from mobile and desktop application development to large cloud-based distributed systems.
-He has established development processes, CI and CD pipelines, and developed validation and operational automation for software solutions.
-Joe also builds teams and mentors people to learn, build, validate, deploy and run software services and infrastructure.
+Joe has developed projects ranging from mobile and desktop application development to cloud-based distributed systems.
+He has established teams, development processes, CI and CD pipelines, and developed validation and operational automation.
+Joe also builds and mentors people to learn, build, validate, deploy and run software services and infrastructure.
 
 Joe works extensively with and in open source, contributing and collaborating with a wide variety of open source projects.
 He writes online across a variety of topics at https://rhonabwy.com/.
@@ -35,7 +35,9 @@ He writes online across a variety of topics at https://rhonabwy.com/.
 == Where to get this book
 
 The contents of this book are available as https://heckj.github.io/swiftui-notes/[HTML], https://heckj.github.io/swiftui-notes/using-combine-book.pdf[PDF], and https://heckj.github.io/swiftui-notes/using-combine-book.epub[ePub].
-There is also an Xcode project (`SwiftUI-Notes.xcodeproj`) available from GitHub.
+
+There is also an Xcode project (`SwiftUI-Notes.xcodeproj`) https://github.com/heckj/swiftui-notes[available on GitHub].
+The project includes tests, snippets, and trials used in creating this work.
 
 === Download the project
 
