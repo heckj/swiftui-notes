@@ -68,10 +68,9 @@ Some operators will may require conformance of an input or failure type.
 Other operators may change either or both the failure and output types.
 For example, there are a number of operators that have a similar operator prexed with `try` indicating  they return an <Error> failure type.
 
-//TODO(heckj) change to xref to internal reference for these operators
-An example of this is map and tryMap.
-https://developer.apple.com/documentation/combine/publishers/map[`map`] allows for any combination of Output and Failure type and passes them through.
-https://developer.apple.com/documentation/combine/publishers/trymap['tryMap'] accepts any Input, Failure types, and allows any Output type, but will always output an `<Error>` failure type.
+An example of this is <<reference.adoc#reference-map>> and <<reference.adoc#reference-tryMap>>.
+`map` allows for any combination of Output and Failure type and passes them through.
+`tryMap` accepts any Input, Failure types, and allows any Output type, but will always output an `<Error>` failure type.
 
 In the example of `map`, you define the output type being returned in the closure you're providing to the operator.
 
@@ -158,18 +157,19 @@ Combine provides a number of convenience publishers:
 //TODO(heckj) - convert to xref to reference sections on these operators
 [cols="3*^"]
 |===
-| https://developer.apple.com/documentation/combine/publishers/empty[`Publishers.Empty`]
-| https://developer.apple.com/documentation/combine/publishers/fail[`Publishers.Fail`]
-| https://developer.apple.com/documentation/combine/publishers/just[`Publishers.Just`]
+| <<reference.adoc#reference-empty>>
+| <<reference.adoc#reference-fail>>
+| <<reference.adoc#reference-just>>
 
-| https://developer.apple.com/documentation/combine/publishers/once[`Publishers.Once`]
-| https://developer.apple.com/documentation/combine/publishers/optional[`Publishers.Optional`]
-| https://developer.apple.com/documentation/combine/publishers/sequence[`Publishers.Sequence`]
+| <<reference.adoc#reference-once>>
+| <<reference.adoc#reference-optional>>
+| <<reference.adoc#reference-sequence>>
 
-| https://developer.apple.com/documentation/combine/publishers/deferred[`Publishers.Deferred`]
-| Publishers.Future
-| @Published
+| <<reference.adoc#reference-deferred>>
+| <<reference.adoc#reference-future>>
+| <<reference.adoc#reference-published>>
 
+// TODO(heckj): come back and map these to xref's to the reference section when created
 | @ObjectBinding
 |
 |
@@ -177,8 +177,6 @@ Combine provides a number of convenience publishers:
 |===
 
 A number of additional Apple APIs provide publishers as well.
-
-// TODO(heckj): come back and map these to xref's to the reference section when created
 
 Combine allows you to create a publisher with the https://developer.apple.com/documentation/combine/published[`@Published`] property wrapper to provide a publisher for a specific property.
 
@@ -212,28 +210,28 @@ Operators can also help with error handling and retry logic, buffering and prefe
 [cols="3*^"]
 |===
 3+h| Mapping elements
-| scan
-| tryScan
-| map
+| <<reference.adoc#reference-scan>>
+| <<reference.adoc#reference-tryScane>>
+| <<reference.adoc#reference-map>>
 
-| tryMap
-| flatMap
-| setFailureType
+| <<reference.adoc#reference-tryMap>>
+| <<reference.adoc#reference-flatMap>>
+| <<reference.adoc#reference-setFailureType>>
 |===
 
 [cols="3*^"]
 |===
 3+h| Filtering elements
-| compactMap
-| tryCompactMap
-| filter
+| <<reference.adoc#reference-compactMap>>
+| <<reference.adoc#reference-tryCompactMap>>
+| <<reference.adoc#reference-filter>>
 
-| tryFilter
-| removeDuplicates
-| tryRemoveDuplicates
+| <<reference.adoc#reference-tryFilter>>
+| <<reference.adoc#reference-removeDuplicates>>
+| <<reference.adoc#reference-tryRemoveDuplicates>>
 
-| replaceEmpty
-| replaceError
+| <<reference.adoc#reference-replaceEmpty>>
+| <<reference.adoc#reference-replaceError>>
 |
 |===
 
@@ -241,67 +239,67 @@ Operators can also help with error handling and retry logic, buffering and prefe
 [cols="3*^"]
 |===
 3+h| Reducing elements
-| collect
-| collectByCount
-| collectByTime
+| <<reference.adoc#reference-collect>>
+| <<reference.adoc#reference-collectByCount>>
+| <<reference.adoc#reference-collectByTime>>
 
-| ignoreOutput
-| reduce
-| tryReduce
+| <<reference.adoc#reference-ignoreOutput>>
+| <<reference.adoc#reference-reduce>>
+| <<reference.adoc#reference-tryReduce>>
 |===
 
 [cols="3*^"]
 |===
 3+h| Mathematic opertions on elements
-| comparison
-| tryComparison
-| count
+| <<reference.adoc#reference-comparison>>
+| <<reference.adoc#reference-tryComparison>>
+| <<reference.adoc#reference-count>>
 |===
 
 [cols="3*^"]
 |===
 3+h| Applying matching criteria to elements
-| allSatisfy
-| tryAllSatisfy
-| contains
+| <<reference.adoc#reference-allSatisfy>>
+| <<reference.adoc#reference-tryAllSatisfy>>
+| <<reference.adoc#reference-contains>>
 
-| containsWhere
-| tryContainsWhere
+| <<reference.adoc#reference-containsWhere>>
+| <<reference.adoc#reference-tryContainsWhere>>
 |
 |===
 
 [cols="3*^"]
 |===
 3+h| Applying sequence operations to elements
-| first
-| firstWhere
-| tryFirstWhere
+| <<reference.adoc#reference-first>>
+| <<reference.adoc#reference-firstWhere>>
+| <<reference.adoc#reference-tryFirstWhere>>
 
-| last
-| lastWhere
-| tryLastWhere
+| <<reference.adoc#reference-last>>
+| <<reference.adoc#reference-lastWhere>>
+| <<reference.adoc#reference-tryLastWhere>>
 
-| dropUntilOutput
-| dropWhile
-| tryDropWhile
+| <<reference.adoc#reference-dropUntilOutput>>
+| <<reference.adoc#reference-dropWhile>>
+| <<reference.adoc#reference-tryDropWhile>>
 
-| concatenate
-| drop
-| prefixUntilOutput
+| <<reference.adoc#reference-concatenate>>
+| <<reference.adoc#reference-drop>>
+| <<reference.adoc#reference-prefixUntilOutput>>
 
-| prefixWhile
-| tryPrefixWhile
-| output
+| <<reference.adoc#reference-prefixWhile>>
+| <<reference.adoc#reference-tryPrefixWhile>>
+| <<reference.adoc#reference-output>>
 |===
 
 [cols="3*^"]
 |===
 3+h| Combining elements from multiple publishers
-| combineLatest
-| tryCombineLatest
-| merge
+| <<reference.adoc#reference-combineLatest>>
+| <<reference.adoc#reference-tryCombineLatest>>
+| <<reference.adoc#reference-merge>>
 
-| zip
+| <<reference.adoc#reference-zip>>
 |
 |
 |===
@@ -309,15 +307,15 @@ Operators can also help with error handling and retry logic, buffering and prefe
 [cols="3*^"]
 |===
 3+h| Handling errors
-| assertNoFailure
-| catch
-| retry
+| <<reference.adoc#reference-assertNoFailure>>
+| <<reference.adoc#reference-catch>>
+| <<reference.adoc#reference-retry>>
 |===
 
 [cols="3*^"]
 |===
 3+h| Adapting publisher types
-| switchToLatest
+| <<reference.adoc#reference-switchToLatest>>
 |
 |
 |===
@@ -325,27 +323,27 @@ Operators can also help with error handling and retry logic, buffering and prefe
 [cols="3*^"]
 |===
 3+h| Controlling timing
-| debounce
-| delay
-| measureInterval
+| <<reference.adoc#reference-debounce>>
+| <<reference.adoc#reference-delay>>
+| <<reference.adoc#reference-measureInterval>>
 
-| throttle
-| timeout
+| <<reference.adoc#reference-throttle>>
+| <<reference.adoc#reference-timeout>>
 |
 |===
 
 [cols="3*^"]
 |===
 3+h| Encoding and decoding
-| encode
-| decode
+| <<reference.adoc#reference-encode>>
+| <<reference.adoc#reference-decode>>
 |
 |===
 
 [cols="3*^"]
 |===
 3+h| Working with multiple subscribers
-| multicast
+| <<reference.adoc#reference-multicast>>
 |
 |
 |===
@@ -353,12 +351,10 @@ Operators can also help with error handling and retry logic, buffering and prefe
 [cols="3*^"]
 |===
 3+h| Debugging
-| breakpoint
-| handleEvents
-| print
+| <<reference.adoc#reference-breakpoint>>
+| <<reference.adoc#reference-handleEvents>>
+| <<reference.adoc#reference-print>>
 |===
-
-// NOTE(heckj): add xref link to reference section when written
 
 [#core-subjects]
 == Subjects
@@ -373,7 +369,8 @@ A subject can also broadcast values to multiple subscribers.
 
 There are two built-in subjects with Combine:
 
-The first is https://developer.apple.com/documentation/combine/currentvaluesubject[`CurrentValueSubject`].
+
+The first is <<reference.adoc#reference-currentValueSubject>>.
 
 * CurrentValue remembers the current value so that when a subscriber is attached, it immediately receives the current value.
 
@@ -381,7 +378,7 @@ It is created and initialized with an initial value.
 When a subscriber is connected to it and requests data, the initial value is sent.
 Further calls to `.send()` afterwards will then send those values to any subscribers.
 
-The second is https://developer.apple.com/documentation/combine/passthroughsubject[`PassthroughSubject`].
+The second is <<reference.adoc#reference-passthroughSubject>>.
 
 * Passthrough doesn't maintain any state - just passes through provided values.
 
@@ -391,7 +388,7 @@ Calls to `.send()` will then send values to any subscribers.
 
 PassthroughSubject is extremely useful when writing tests for pipelines, as sending of any requested data (or a failure) is under the test writer's control using the `.send()` function.
 
-Both CurrentValueSubject and PassthroughSubject are also useful for creating publishers from objects conforming to https://developer.apple.com/documentation/swiftui/bindableobject[`BindableObject`] within SwiftUI.
+Both CurrentValueSubject and PassthroughSubject are also useful for creating publishers from objects conforming to the https://developer.apple.com/documentation/swiftui/bindableobject[`BindableObject`] protocol within SwiftUI.
 
 Subjects is also useful for fanning out values to multiple subscribers.
 

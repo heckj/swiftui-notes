@@ -1,0 +1,16 @@
+[#patterns-someName]
+== Pattern N: summary description
+
+summary
+* what the pattern does
+
+reference links
+* << link to reference pages>>
+
+see also:
+* << link to other patterns>>
+
+explanation w/ code
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
