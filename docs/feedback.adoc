@@ -1,0 +1,124 @@
+= Using Combine Feedback
+Joseph Heck
+v1.0, 2019-06-23
+:doctype: article
+:creator: {author}
+:producer: Asciidoctor
+:keywords: Apple, Combine, ReactiveX, SwiftUI
+:copyright: Joseph Heck 2019
+:publication-tye: article
+// NOTE use 'anthology' for per-chapter author support
+:idprefix:
+:idseparator: -
+:imagesdir: images
+//:front-cover-image: image:front-cover.jpg[Front Cover,1050,1600]
+:google-analytics-account: UA-898243-5
+:source-highlighter: pygments
+:url-issues: https://github.com/heckj/swiftui-notes/issues
+// :toc: left
+// :toclevels: 4
+// enable font-awesome icons in content
+:icons: font
+
+Thank you for taking a look and providing feedback.
+
+I am looking for feedback on several different topics, primarily around format and ease of use.
+The contents of the book are __very__ first draft, and no editing, spell checking, or grammar review has yet been done.
+While I'm happy to take feedback (or corrections) on those flaws, I'm more interesting in structural feedback for the overall "book".
+Jump down to <<getting-the-book>> for links and URL references to the content.
+
+== Feedback Topics
+
+Please send feedback to me at mailto:heckj@mac.com[heckj@mac.com]
+
+
+=== Describing code snippets/examples
+
+I'm showing sample code and describing it in a couple different formats.
+
+. https://heckj.github.io/swiftui-notes/#source-with-inline-comments[example of source with inline code comments]
+. https://heckj.github.io/swiftui-notes/#source-with-callouts[example of source with callouts]
+. https://heckj.github.io/swiftui-notes/#source-with-exterior-description[example with source with some comments and explanation after the source]
+
+**Q?**: Do any of these formats make it notably easier to understand the code?
+
+**Q?**: Any detract terribly?
+
+**Q?**: Do you prefer one way over the other?
+
+=== Pattern/Recipe layout
+
+The patterns (1 through 3) are in reasonable first-draft shape:
+
+* https://heckj.github.io/swiftui-notes/#patterns-creating-subscriber
+* https://heckj.github.io/swiftui-notes/#patterns-dataTaskPublisher-decode
+* https://heckj.github.io/swiftui-notes/#patterns-general-error-handling
+
+I didn't take any specific formula to structure each one.
+
+**Q?**: Should I have (added a structure - if so, what would you like to see)?
+
+**Q?**: Are the code and tips understandable?
+
+**Q?**: Would you prefer a more structured format for each pattern (or recipe)?
+
+=== Reference layout
+
+Quite possibly the most work pending, and very little of this is "automated", so I'd like to get some solid feedback on the format I'm using.
+Content pattern in question shown at https://heckj.github.io/swiftui-notes/#reference-catch
+
+Specific questions:
+
+The layout currently follows a formula:
+
+* Summary
+* Constraints
+* Apple doc ref
+* Usage (internal links to patterns)
+* Details (more explanation)
+
+For operators in particular, I'm thinking of trying to add "marble diagrams" to help explain what each operator does.
+
+**Q?**: Are any of the sections "noise" to you? (Not useful?)
+
+**Q?**: Is there anything that you'd prefer to see that isn't there?
+
+**Q?**: I'm writing unit tests and sample code in the associated project to frequently check how things work, would it be worth linking to that code?
+
+=== How to fund
+
+I don't expect to ever make a fortune writing, but there are some costs associated with this that I want to cover.
+Specifically I want to hire a copy-editor to help, and possibly hiring assistance with making diagrams.
+I'm considering different ways to deliver, and fund, this work.
+
+What do you think makes the most sense?
+
+Set up a Patreon account and accept a "help the book" project pledge::
+
+* Add a section to the book thanking the contributors by name
+
+Set up a Gumroad account and request people purchase the PDF or ePub version::
+
+* I'm thinking charging something like $30 or $40
+* If I go this route, do you think it's worthwhile to also have the PDF and/or ePub freely available?
+
+Something else?::
+
+* Got another funding pattern that you've seen and liked?
+
+=== How to fund
+
+**Q?**: Anything else?
+
+Any other suggestions, content recommendations, or such that you'd like to see?
+
+[#getting-the-book]
+== How to get the content
+
+The contents of this book are available in several formats:
+
+* https://heckj.github.io/swiftui-notes/[Single page HTML] at https://heckj.github.io/swiftui-notes/
+* https://heckj.github.io/swiftui-notes/using-combine-book.pdf[PDF] at https://heckj.github.io/swiftui-notes/using-combine-book.pdf
+* https://heckj.github.io/swiftui-notes/using-combine-book.epub[ePub] at https://heckj.github.io/swiftui-notes/using-combine-book.epub
+
+The content is updated at those locations as I'm working on the book.

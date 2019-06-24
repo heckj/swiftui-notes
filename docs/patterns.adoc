@@ -58,6 +58,7 @@ The type that is passed into receiveCompletion is the enum https://developer.app
 The completion `.failure` incudes an Error within it, which provides access to the underlying cause of the failure.
 If you want to get to the error in the subscriber, you can `switch` on the returned completion to determine if it is `.finished` or `.failure`, and then pull out the error:
 
+[#source-with-inline-comments]
 [source, swift]
 ----
 .sink(receiveCompletion: { completion in
@@ -118,6 +119,7 @@ Likewise, if the returned data couldn't be decoded based on the structure, or wa
 To have more control over what is considered a failure in the URL response, use a `tryMap` operator on the tuple response from dataTaskPublisher.
 An example of that might look like:
 
+[#source-with-exterior-description]
 [source, swift]
 ----
 struct IPInfo: Codable {

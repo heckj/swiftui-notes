@@ -71,6 +71,7 @@ https://developer.apple.com/documentation/combine/publishers/trymap['tryMap'] ac
 
 To illustrate changing types within a pipeline, here is a short snippet thsat starts with a publisher that generates `<Int>`, `<Never>` and end with a subscription taking `<String>`, `<Never>`.
 
+[#source-with-callouts]
 [source, swift]
 ----
 let _ = Publishers.Just(5) <1>

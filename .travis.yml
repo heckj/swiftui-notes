@@ -26,6 +26,8 @@ jobs:
     - stage: deploy
       script:
       - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb -r ./docs/lib/git-metadata-preprocessor/extension.rb docs/using-combine-book.adoc
+      - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb -r ./docs/lib/git-metadata-preprocessor/extension.rb docs/feedback.adoc
+
       - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-pdf heckj/docker-asciidoctor asciidoctor-pdf -v -t -D /documents/output docs/using-combine-book.adoc
       - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-epub3 heckj/docker-asciidoctor asciidoctor-epub3 -v -t -D /documents/output docs/using-combine-book.adoc
       - cd output ; mv using-combine-book.html index.html ; cp -R ../docs/images images
