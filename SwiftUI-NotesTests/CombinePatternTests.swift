@@ -487,16 +487,11 @@ class CombinePatternTests: XCTestCase {
 
     }
 
-    func testRetryOperatorWithPassthrough() {
+    func testRetryOperatorWithPassthroughSubject() {
         // setup
         let simpleControlledPublisher = PassthroughSubject<String, Error>()
 
-//        let backDoorPublisher = PassthroughSubject<String, Never>()
-
         let _ = simpleControlledPublisher
-//            .flatMap { someValue -> AnyPublisher<String, Never> in // takes a String in and returns a Publisher
-//                return backDoorPublisher.eraseToAnyPublisher()
-//            }
             .print()
             .retry(1)
             .sink(receiveCompletion: { fini in
@@ -512,11 +507,7 @@ class CombinePatternTests: XCTestCase {
         let blueFish = "bluefish"
 
         simpleControlledPublisher.send(oneFish)
-//        backDoorPublisher.send("first response")
-        // backDoorPublisher.send(completion: .finished)
-
         simpleControlledPublisher.send(twoFish)
-//        backDoorPublisher.send("second response")
 
         // with an error response, this prints two results and hangs...
         simpleControlledPublisher.send(completion: Subscribers.Completion.failure(testFailureCondition.invalidServerResponse))
@@ -525,10 +516,7 @@ class CombinePatternTests: XCTestCase {
         //simpleControlledPublisher.send(completion: .finished)
 
         simpleControlledPublisher.send(redFish)
-//        backDoorPublisher.send("third response")
         simpleControlledPublisher.send(blueFish)
-//        backDoorPublisher.send("fourth response")
-//        backDoorPublisher.send(completion: .finished)
     }
 
     func testRetryOperatorWithCurrentValueSubject() {

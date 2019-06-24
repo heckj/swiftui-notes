@@ -534,13 +534,54 @@ override func viewDidLoad() {
 [#patterns-testing]
 == Pattern N: Testing pipelines
 
-test strategies with combine
+a few test strategies...
 
-** testing streams/pipelines
-** testing publishers
-** testing subscribers
+For testing what's happening in a pipeline:
 
-using PassthroughSubject and creative sinks
+* use a Subject -> pipeline -> sink()
+* set up a sink to collect value
+* drive values through the pipeline with Subject.send()
+* assert results after the sink has processed them
+
+For testing a publisher (and any pipeline attached)
+
+* set up an expectation (`XCTestExpectation`)
+* create your publisher & relevant pipeline if so desired
+* create a sink to capture the results that works on both completions and values
+** this can be separate, or just chained to the pipeline, depending on what makes most sense to you
+* `wait` on the expectation to let the test "do it's thing" in the background
+
+For testing a subscriber (how it reacts):
+
+* set up your subscriber and any pipeline leading to it
+* use a Subject to "inject" values
+* test the results after the value is sent
+* if the updates include some async/background work before data is available, use an expectation
+** add a callback to the async pieces where you can trigger the expectation, and do your asserts just prior to fulfilling the expectation
+
+& of course you can always test using UITesting - spinning up your whole app, initializing state, and then driving and verifying the results.
+
+__(Uncertain)__ Mocking or faking a publisher (such as dataTaskPublisher) to validate things like using `retry()` operator
+* might be able to use a `Publishers.Future()`, expose as an AnyPublisher() (do the same with dataTaskPublisher) to make the the same - and in your setup, inject in the one you want to use.
+** Instrument the Future() closure to record what gets called, and maybe set it up to return an explicit set of responses.
+
+[#patterns-debugging]
+== Pattern N+1: Debugging pipelines
+
+. use print() and/or print("prefixValue") to get console output of what's happening in the pipeline lifecycle
+  * create a .sink() to capture results, and drive it with a PassthroughSubject for specific control
+
+. add a handleEvents() operator
+  * create closures to do additional poking at values or digging into more structured pieces than get exposed with a print()
+  * allows you to ignore some sections you don't care about
+  * closures on `receiveSubscription`, `receiveRequest`, `receiveCancel`, `receiveOutput`, and `receiveCompletion`
+
+. breakPoint
+  * if you want to break into a debugger, add in a closure that returns true and you can inspect to your heart's content
+  ** closure's on `receiveSubscription`, `receiveOutput`, and `receiveCompletion`
+
+  * might also be interesting to use breakpointOnError() which triggers only when a failure completion
+
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
