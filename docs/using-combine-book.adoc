@@ -13,7 +13,7 @@ v0.1, 2019-06-23
 :imagesdir: images
 //:front-cover-image: image:front-cover.jpg[Front Cover,1050,1600]
 :google-analytics-account: UA-898243-5
-:source-highlighter: pygments
+:source-highlighter: rouge
 :url-issues: https://github.com/heckj/swiftui-notes/issues
 :toc: left
 :toclevels: 4
