@@ -175,7 +175,7 @@ SwiftUI provides https://developer.apple.com/documentation/swiftui/objectbinding
 
 A number of other Apple APIs provide publishers as well:
 
-* https://developer.apple.com/documentation/foundation/notificationcenter[`NoticationCenter`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publisher`]
+* https://developer.apple.com/documentation/foundation/notificationcenter[`NotificationCenter`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publisher`]
 
 * https://developer.apple.com/documentation/foundation/timer[`Timer`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publish`] and https://developer.apple.com/documentation/foundation/timer/timerpublisher[`Timer.TimerPublisher`]
 
