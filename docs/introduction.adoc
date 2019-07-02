@@ -70,7 +70,7 @@ The classic examples revolve around the user experience with form validation, wh
 
 Combine is not limited to user interfaces.
 Any sequence of asynchronous operations can be effective as a pipeline, especially when the results of each step flow to the next step.
-An example of such might be a series a network service requests, followed by decoding the results.
+An example of such might be a series of network service requests, followed by decoding the results.
 
 Combine can also be used to define how to handle errors from asynchronous operations.
 Combine supports doing this by setting up pipelines and merging them together.
