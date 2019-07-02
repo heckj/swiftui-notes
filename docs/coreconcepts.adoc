@@ -23,7 +23,8 @@ Publisher source       Subscriber
 +--------------+      +--------------+
 ----
 
-Operators are classes that adopt the https://developer.apple.com/documentation/combine/publisher[Publisher protocol], subscribing to one or more Publishers, and sending results to one (or more) Subscribers.
+Operators are classes that adopt both the https://developer.apple.com/documentation/combine/subscriber[Subscriber protocol] and https://developer.apple.com/documentation/combine/publisher[Publisher protocol]. 
+They support subscribing to a publisher, and sending results to any subscribers.
 
 You can create chains of these together, for processing, reacting, and transforming the data provided by a publisher, and requested by the subscriber.
 
@@ -48,23 +49,29 @@ The compiler will enforce the matching types, so getting it wrong will result in
 A simple pipeline, using Combine, might look like:
 [source, swift]
 ----
-let _ = Publishers.somePublisher
-    .map { value -> String in
+let _ = Publishers.Just(5) <1>
+    .map { value -> String in <2>
         // do something with the incoming value here
         // and return a string
         return "a string"
     }
-    .sink { receivedValue in
+    .sink { receivedValue in <3>
         // sink is the subscriber and terminates the pipeline
         print("The end result was \(receivedValue)")
     }
+    
+<1> The pipeline starts with the publisher `Just`, which responds with the value that its defined with (in this case, the Integer `5`). The output type is <Integer>, and the failure type is <Never>.
+<2> the pipeline then has a `map` operator, which is transforming the value. In this example it is ignoring the published input and returning a string. This is also transforming the output type to <String>, and leaving the failure type still set as <Never>
+<3> The pipeline then ends with a `sink` subscriber.
 ----
 
 When you are viewing a pipeline, or creating one, you can think of it as a sequence of operations linked by the types.
 This pattern will come in handy when you start constructing your own pipelines.
-With enforced types, there are a number of Combine functions that are created to help with these transformations.
+When creating pipelines, you are often selecting operators to help you transform the types, to achieve your end goal. 
+That end goal might be enabling or disabling a user interface element, or it might be retrieving some piece of data to be displayed.
 
-Some operators will may require conformance of an input or failure type.
+Many combine operators are specifically created to help with these transformations.
+Some operators require conformance to an input or failure type.
 Other operators may change either or both the failure and output types.
 For example, there are a number of operators that have a similar operator prefixed with `try`, which indicates they return an <Error> failure type.
 
@@ -72,9 +79,10 @@ An example of this is <<reference.adoc#reference-map>> and <<reference.adoc#refe
 The `map` operator allows for any combination of Output and Failure type and passes them through.
 `tryMap` accepts any Input, Failure types, and allows any Output type, but will always output an `<Error>` failure type.
 
-In the example of `map`, you define the output type being returned in the closure you're providing to the operator.
+Operators like `map` allow you to define the output type being returned by infering the type based on what you return in a closure provided to the operator. 
+In the example above, the `map` operator is returning a String output type since that it what the closure returns.
 
-To illustrate changing types within a pipeline, here is a short snippet thsat starts with a publisher that generates `<Int>`, `<Never>` and end with a subscription taking `<String>`, `<Never>`.
+To illustrate the the example of changing types more concretely, we expand upon the logic to use the values being passed. This example still starts with a publisher providing the types `<Int>`, `<Never>` and end with a subscription taking the types     `<String>`, `<Never>`.
 
 [#source-with-callouts]
 [source, swift]
@@ -100,23 +108,23 @@ let _ = Publishers.Just(5) <1>
         print("The end result was \(receivedValue)")
     }
 ----
-<1> creates an `<Int>`, `<Never>` type combination
-<2> the `.map()` function takes in an `<Int>`, `<Never>` combination and transforms it into a `<String>`,
-<3> receives the `<String>`, `<Never>` combination
+<1> Just is a publisher that creates an `<Int>`, `<Never>` type combination and then completes.
+<2> the closure provided to the `.map()` function takes in an `<Int>` and transforms it into a `<String>`. Since the failure type of <Never> is not changed, it is passed through.
+<3> `sink`, the subscriber, receives the `<String>`, `<Never>` combination.
 
 
 [sidebar]
 ****
-When you are creating pipelines in Xcode and don't match the types, the error message from Xcode may include
-a helpful _fixit_.
+When you are creating pipelines in Xcode and don't match the types, the error message from Xcode may include a helpful _fixit_.
 In some cases, such as the example above, the compiler is unable to infer the return types of closure provided to `map` withpout specifying the return type.
 Xcode (11 beta 2) displays this as the error message: `Unable to infer complex closure return type; add explicit type to disambiguate`.
+In the example above, we explicitly specified the type being returned with the line `value -> String in`.
 ****
 
 You can view Combine publishers, operators, and subscribers as having two parallel types that both need to be aligned - one for the functional case and one for the error case.
 Designing your pipeline is frequently choosing how to convert one or both of those types and the associated data with it.
 
-Examples of this, and some common tasks, are detailed in the <<patterns.adoc#patterns,section on patterns>>.
+More examples, and some common tasks, are detailed in the <<patterns.adoc#patterns,section on patterns>>.
 
 // force a page break - ignored in HTML rendering
 <<<
@@ -360,6 +368,7 @@ Subjects can be used to "inject" values into a stream, by calling the subject's 
 This is useful for integrating existing imperative code with Combine.
 
 A subject can also broadcast values to multiple subscribers.
+If multiple subscribers are connected to a subject, it will fanning out values to the multiple subscribers when `send()` is invoked.
 
 There are two built-in subjects with Combine:
 
@@ -386,8 +395,6 @@ Calls to `.send()` will then send values to any subscribers.
 PassthroughSubject is extremely useful when writing tests for pipelines, as sending of any requested data (or a failure) is under the test writer's control using the `.send()` function.
 
 Both CurrentValueSubject and PassthroughSubject are also useful for creating publishers from objects conforming to the https://developer.apple.com/documentation/swiftui/bindableobject[`BindableObject`] protocol within SwiftUI.
-
-Subjects is also useful for fanning out values to multiple subscribers.
 
 [#core-subscribers]
 == Subscribers
