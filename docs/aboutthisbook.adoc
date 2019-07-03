@@ -41,7 +41,7 @@ The project includes tests, snippets, and trials used in creating this work.
 
 === Download the project
 
-The project associated with this book requires Xcode v11 (which has been released as beta2 as of this writing) and MacOS 10.14 or later.
+The project associated with this book requires Xcode v11 (which has been released as beta3 as of this writing) and MacOS 10.14 or later.
 
 image::welcomeToXcode.png[Welcome to Xcode,406,388]
 

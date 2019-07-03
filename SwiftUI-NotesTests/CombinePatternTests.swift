@@ -95,7 +95,7 @@ class CombinePatternTests: XCTestCase {
         let _ = simplePublisher
             .catch { err in
                 // must return a Publisher
-                return Publishers.Just("replacement value")
+                return Just("replacement value")
             }
             .sink(receiveCompletion: { fini in
                 print(".sink() received the completion:", String(describing: fini))
@@ -305,7 +305,7 @@ class CombinePatternTests: XCTestCase {
 
         let _ = simpleControlledPublisher
             .flatMap { someValue in // takes a String in and returns a Publisher
-                return Publishers.Just<String>("Alternate data")
+                return Just<String>("Alternate data")
                 // flatMap returns a Publisher, where map returns <Input> - String in this case
             }
             .eraseToAnyPublisher()
@@ -417,10 +417,10 @@ class CombinePatternTests: XCTestCase {
 
         let _ = simpleControlledPublisher
             .flatMap { value in // takes a String in and returns a Publisher
-                return Publishers.Just<Data>(value)
+                return Just<Data>(value)
                 .decode(type: IPInfo.self, decoder: JSONDecoder())
                 .catch { _ in
-                    return Publishers.Just(IPInfo(ip: "8.8.8.8"))
+                    return Just(IPInfo(ip: "8.8.8.8"))
                 }
             }
             .sink(receiveCompletion: { fini in
@@ -455,7 +455,7 @@ class CombinePatternTests: XCTestCase {
 
         let _ = simpleControlledPublisher
             .flatMap { value in // takes a String in and returns a Publisher
-                return Publishers.Just(value)
+                return Just(value)
                 .decode(type: IPInfo.self, decoder: JSONDecoder())
 //                .catch { _ in
 //                    return Publishers.Just(IPInfo(ip: "8.8.8.8"))
@@ -561,7 +561,7 @@ class CombinePatternTests: XCTestCase {
 
     func testRetryWithOneShotJustPublisher() {
         // setup
-        let _ = Publishers.Just<String>("yo")
+        let _ = Just<String>("yo")
             .print("(1)>")
             .retry(3)
             .print("(2)>")
@@ -613,4 +613,19 @@ class CombinePatternTests: XCTestCase {
 
     }
 
+
+    func testFutureSignatureWithoutErasure() {
+        let x = PassthroughSubject<String, Never>()
+            .flatMap { name in
+                return Future<String, Error> { promise in
+                    promise(.success(""))
+                }.catch { _ in
+                    Just("No user found")
+                }.map { result in
+                    return "\(result) foo"
+                }
+        }
+        
+        print(x)
+    }
 }

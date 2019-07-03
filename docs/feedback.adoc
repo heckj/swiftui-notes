@@ -32,20 +32,6 @@ Jump down to <<getting-the-book>> for links and URL references to the content.
 Please send feedback to me at mailto:heckj@mac.com[heckj@mac.com]
 
 
-=== Describing code snippets/examples
-
-I'm showing sample code and describing it in a couple different formats.
-
-. https://heckj.github.io/swiftui-notes/#source-with-inline-comments[example of source with inline code comments]
-. https://heckj.github.io/swiftui-notes/#source-with-callouts[example of source with callouts]
-. https://heckj.github.io/swiftui-notes/#source-with-exterior-description[example with source with some comments and explanation after the source]
-
-**Q?**: Do any of these formats make it notably easier to understand the code?
-
-**Q?**: Any detract terribly?
-
-**Q?**: Do you prefer one way over the other?
-
 === Pattern/Recipe layout
 
 The patterns (1 through 3) are in reasonable first-draft shape:

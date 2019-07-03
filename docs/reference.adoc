@@ -60,13 +60,13 @@ __Details__::
 n/a
 
 [#reference-just]
-=== Publishers.Just
+=== Just
 
 __Summary__::
 
 `just` provides a single result and then terminates.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/just[`Publishers.Just`]
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/just[`Just`]
 
 __Usage__::
 
@@ -147,13 +147,13 @@ __Details__::
 n/a
 
 [#reference-future]
-=== Publishers.Future
+=== Future
 
 __Summary__::
 
 A future is initialized with a closure that eventually resolves to a value.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/future[Publishers.Future].
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/future[Future].
 
 __Usage__::
 
@@ -161,7 +161,7 @@ n/a
 
 __Details__::
 
-* you provide a closure that converts a callback/function of your own choosing into a https://developer.apple.com/documentation/combine/publishers/future/promise[Promise].
+* you provide a closure that converts a callback/function of your own choosing into a https://developer.apple.com/documentation/combine/future/promise[Promise].
 * in creating a Future publisher, you need to handle the logic of when you generate the relevant `Result<Output, Error>` with the asynchronous calls.
 
 [#reference-published]
@@ -658,7 +658,7 @@ let simplePublisher = PassthroughSubject<String, Error>()
 let _ = simplePublisher
     .catch { err in
         // must return a Publisher
-        return Publishers.Just("replacement value")
+        return Just("replacement value")
     }
     .sink(receiveCompletion: { fini in
         print(".sink() received the completion:", String(describing: fini))
@@ -687,7 +687,7 @@ The values you would see printed from our `.sink()` closures are:
 ----
 
 When the failure was sent through the pipeline, catch intercepts it and returns "replacement value" as expected.
-The replacement publisher it used (`Publishers.Just`) sends a single value and then sends a completion.
+The replacement publisher it used (`Just`) sends a single value and then sends a completion.
 If we want the pipeline to remain active, we need to change how we handle the errors.
 
 [#reference-retry]

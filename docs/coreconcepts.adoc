@@ -49,7 +49,7 @@ The compiler will enforce the matching types, so getting it wrong will result in
 A simple pipeline, using Combine, might look like:
 [source, swift]
 ----
-let _ = Publishers.Just(5) <1>
+let _ = Just(5) <1>
     .map { value -> String in <2>
         // do something with the incoming value here
         // and return a string
@@ -61,7 +61,7 @@ let _ = Publishers.Just(5) <1>
     }
 ----
 
-<1> The pipeline starts with the publisher `Just`, which responds with the value that its defined with (in this case, the Integer `5`). The output type is <Integer>, and the failure type is <Never>.
+<1> The pipeline starts with the publisher `Once`, which responds with the value that its defined with (in this case, the Integer `5`). The output type is <Integer>, and the failure type is <Never>.
 <2> the pipeline then has a `map` operator, which is transforming the value. In this example it is ignoring the published input and returning a string. This is also transforming the output type to <String>, and leaving the failure type still set as <Never>
 <3> The pipeline then ends with a `sink` subscriber.
 
@@ -82,12 +82,12 @@ The `map` operator allows for any combination of Output and Failure type and pas
 Operators like `map` allow you to define the output type being returned by infering the type based on what you return in a closure provided to the operator.
 In the example above, the `map` operator is returning a String output type since that it what the closure returns.
 
-To illustrate the the example of changing types more concretely, we expand upon the logic to use the values being passed. This example still starts with a publisher providing the types `<Int>`, `<Never>` and end with a subscription taking the types     `<String>`, `<Never>`.
+To illustrate the the example of changing types more concretely, we expand upon the logic to use the values being passed. This example still starts with a publisher providing the types `<Int>`, `<Never>` and end with a subscription taking the types `<String>`, `<Never>`.
 
-[#source-with-callouts]
+// NOTE: source in project at SwiftUI-NotesTests/CombinePatternTests.swift
 [source, swift]
 ----
-let _ = Publishers.Just(5) <1>
+let _ = Just(5) <1>
     .map { value -> String in <2>
         switch value {
         case _ where value < 1:
@@ -108,7 +108,7 @@ let _ = Publishers.Just(5) <1>
         print("The end result was \(receivedValue)")
     }
 ----
-<1> Just is a publisher that creates an `<Int>`, `<Never>` type combination and then completes.
+<1> Once is a publisher that creates an `<Int>`, `<Never>` type combination, provides a single value and then completes.
 <2> the closure provided to the `.map()` function takes in an `<Int>` and transforms it into a `<String>`. Since the failure type of <Never> is not changed, it is passed through.
 <3> `sink`, the subscriber, receives the `<String>`, `<Never>` combination.
 
@@ -117,7 +117,7 @@ let _ = Publishers.Just(5) <1>
 ****
 When you are creating pipelines in Xcode and don't match the types, the error message from Xcode may include a helpful _fixit_.
 In some cases, such as the example above, the compiler is unable to infer the return types of closure provided to `map` withpout specifying the return type.
-Xcode (11 beta 2) displays this as the error message: `Unable to infer complex closure return type; add explicit type to disambiguate`.
+Xcode (11 beta 2 and beta 3) displays this as the error message: `Unable to infer complex closure return type; add explicit type to disambiguate`.
 In the example above, we explicitly specified the type being returned with the line `value -> String in`.
 ****
 
@@ -194,7 +194,7 @@ A number of other Apple APIs provide publishers as well:
 
 * https://developer.apple.com/documentation/realitykit[`RealityKit`] https://developer.apple.com/documentation/realitykit/scene[`.Scene`] https://developer.apple.com/documentation/realitykit/scene/3254685-publisher[`.publisher()`]
 
-Combine also includes mechanisms to allow you to create your own publishers with `Publishers.Future`. A future is initialized with a closure that eventually resolves to a https://developer.apple.com/documentation/combine/publishers/future/promise[Promise]. This can be used to wrap any existing API (Apple or your own) that provides a completion closure to turn it into a publisher.
+Combine also includes mechanisms to allow you to create your own publishers with `Future`. A future is initialized with a closure that eventually resolves to a https://developer.apple.com/documentation/combine/future/promise[Promise]. This can be used to wrap any existing API (Apple or your own) that provides a completion closure to turn it into a publisher.
 
 [#core-operators]
 == Operators
@@ -457,14 +457,15 @@ If you expose a pipeline as a publisher, subscriber, or subject the exposed type
 
 For example, if you created a publisher from a PassthroughSubject such as:
 
+// Source for this at SwiftUI-NotesTests/CombinePatternTests.swift
 [source, swift]
 ----
 let x = PassthroughSubject<String, Never>()
     .flatMap { name in
-        return Publishers.Future<String, Error> { promise in
+        return Future<String, Error> { promise in
             promise(.success(""))
             }.catch { _ in
-                Publishers.Just("No user found")
+                Just("No user found")
             }.map { result in
                 return "\(result) foo"
         }
@@ -475,7 +476,7 @@ The resulting type would reflect that composition:
 
 [source, swift]
 ----
-Publishers.FlatMap<Publishers.Map<Publishers.Catch<Publishers.Future<String, Error>, Publishers.Just<String>>, String>, PassthroughSubject<String, Never>>
+Publishers.FlatMap<Publishers.Map<Publishers.Catch<Future<String, Error>, Just<String>>, String>, PassthroughSubject<String, Never>>
 ----
 
 When you want to expose the code, all of that composition detail can be very distracting and make your publisher, subject, or subscriber) harder to use.
@@ -494,10 +495,10 @@ If you updated the above code to add .eraseToAnyPublisher() at the end of the pi
 ----
 let x = PassthroughSubject<String, Never>()
     .flatMap { name in
-        return Publishers.Future<String, Error> { promise in
+        return Future<String, Error> { promise in
             promise(.success(""))
             }.catch { _ in
-                Publishers.Just("No user found")
+                Just("No user found")
             }.map { result in
                 return "\(result) foo"
         }
