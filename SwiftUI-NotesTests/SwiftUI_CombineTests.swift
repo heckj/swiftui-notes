@@ -15,10 +15,10 @@ class SwiftUI_CombineTests: XCTestCase {
 
         let x = PassthroughSubject<String, Never>()
             .flatMap { name in
-                return Publishers.Future<String, Error> { promise in
+                return Future<String, Error> { promise in
                     promise(.success(""))
                     }.catch { _ in
-                        Publishers.Just("No user found")
+                        Just("No user found")
                     }.map { result in
                         return "\(result) foo"
                 }
@@ -26,10 +26,10 @@ class SwiftUI_CombineTests: XCTestCase {
 
         let y = PassthroughSubject<String, Never>()
             .flatMap { name in
-                return Publishers.Future<String, Error> { promise in
+                return Future<String, Error> { promise in
                     promise(.success(""))
                     }.catch { _ in
-                        Publishers.Just("No user found")
+                        Just("No user found")
                     }.map { result in
                         return "\(result) foo"
                 }
@@ -43,7 +43,7 @@ class SwiftUI_CombineTests: XCTestCase {
 
     func testSimplePipeline() {
 
-        let _ = Publishers.Just(5)
+        let _ = Just(5)
             .map { value -> String in
                 switch value {
                 case _ where value < 1:
@@ -92,7 +92,7 @@ class SwiftUI_CombineTests: XCTestCase {
 
     func testAnyFuture_CreationAndUse() {
         // A generic Future that always returns <Any>"A result"
-        let goodPlace = Publishers.Future<Any, Error> { promise in
+        let goodPlace = Future<Any, Error> { promise in
             promise(.success("A result"))
         }
 
@@ -109,7 +109,7 @@ class SwiftUI_CombineTests: XCTestCase {
 
     func testStringFuture_CreationAndUse() {
         // A generic Future that always returns <Any>"A result"
-        let goodPlace = Publishers.Future<String, Error> { promise in
+        let goodPlace = Future<String, Error> { promise in
             promise(.success("A result"))
         }
 
@@ -192,7 +192,7 @@ class SwiftUI_CombineTests: XCTestCase {
         }
 
         // A generic Future that always returns a Failure
-        let badPlace = Publishers.Future<String, sampleError> { promise in
+        let badPlace = Future<String, sampleError> { promise in
             // promise is Result<Any, Error> and this is expect to return Void
             // you generally call promise with .success() or .failure() enclosing relevant information (or results)
             promise(.failure(sampleError.exampleError))
@@ -242,7 +242,7 @@ class SwiftUI_CombineTests: XCTestCase {
                 // while this is catching an error, I'm not entirely clear on if you can validate
                 // the kind and any details of the specifics of the instance of error - that is, which
                 // error happened...
-                return Publishers.Just("yo")
+                return Just("yo")
             })
             .sink(receiveValue: { placeholder in
                 XCTAssertEqual(placeholder, "yo")

@@ -1,6 +1,6 @@
 = Using Combine
 Joseph Heck
-v0.2, 2019-07-02
+v 0.3, 2019-07-03
 :doctype: book
 :creator: {author}
 :producer: Asciidoctor
