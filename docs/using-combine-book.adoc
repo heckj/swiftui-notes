@@ -23,7 +23,6 @@ v0.1, 2019-06-23
 ifndef::ebook-format[:leveloffset: 1]
 
 include::aboutthisbook.adoc[]
-
 include::introduction.adoc[]
 include::coreconcepts.adoc[]
 include::patterns.adoc[]

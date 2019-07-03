@@ -6,7 +6,7 @@ In Apple's words, Combine is:
 [quote]
 a declarative Swift API for processing values over time.
 
-Combine is Apple's take on a functional reactive library, akin to https://github.com/ReactiveX/RxSwift[RxSwift].
+Combine is Apple's take on a functional reactive programming library, akin to https://github.com/ReactiveX/RxSwift[RxSwift].
 RxSwift itself is a port of http://reactivex.io[ReactiveX].
 Apple's framework uses many of the same functional reactive concepts that can be found in other languages and libraries, applying the strongly-typed nature of Swift to their solution.
 
@@ -28,14 +28,16 @@ In addition, functional reactive programming includes functions to split streams
 
 There are many parts of the systems we program that can be viewed as asynchronous streams of information - events, objects, or pieces of data.
 Programming practices defined the Observer pattern for watching a single object, getting notified of changes and updates.
-As this happens over time, you can view the updates as a stream of objects.
+If you view this over time, these updates make up a stream of objects.
+Functional reactive programming, or Combine in this case, allows you to create code that describes what happens when getting data in a stream.
 
 You may want to create logic to watch more than one element that is changing.
 You may also want to include logic that does additional asynchronous operations, some of which may fail.
-You may also want to change the content of the streams based on timing.
-Handling the flow of all these event streams, the timing of all the various pieces, errors when they happen, and coordinating how a system responds to all those events is at the heart of this kind of programming.
+You may also want to change the content of the streams based on timing, or change the timing of the content.
+Handling the flow of these event streams, the timing, errors when they happen, and coordinating how a system responds to all those events is at the heart of this kind of programming.
 
-This solution is particularly effective when programming user interfaces, or for creating pipelines that process and transform data from external sources, or rely on asynchronous APIs.
+A solution based on functional reactive programming is particularly effective when programming user interfaces.
+Or more generally for creating pipelines that process data from external sources or rely on asynchronous APIs.
 
 == Combine specifics
 
@@ -43,10 +45,12 @@ Applying these concepts to a strongly typed language like swift is part of what 
 Combine embeds the concept of back-pressure, which allows the subscriber to control how much information it gets at once and needs to process.
 In addition, it supports efficient operation with the notion of streams that are cancellable and driven primarily by the subscriber.
 
-Combine was also set up to be composed, and Combine is explicitly supported by a couple of Apple's other frameworks.
+Combine is set up to be composed, and includes affordances to integrate existing code to incrementally support adoption.
+
+Combine is supported by a couple of Apple's other frameworks.
 SwiftUI is the obvious example that has the most attention, with both subscriber and publisher elements.
 RealityKit also has publishers that you can use to react to events.
-NotificationCenter, URLSession, and Timer in the Foundation also now include publishers.
+And Foundation has a number of Combine specific additions including NotificationCenter, URLSession, and Timer as publishers.
 
 Any asynchronous operation API _can_ be leveraged with Combine.
 For example, you could use some of the APIs in the Vision framework, composing data flowing to it, and from it, by leveraging Combine.
@@ -59,10 +63,13 @@ Pipeline is not a term that Apple is (yet?) using in its documentation.
 
 == When to use Combine
 
-Combine fits most naturally when you want to set up a system that is "immediately" reactive to a variety of inputs.
+Combine fits most naturally when you want to set up a something that is "immediately" reactive to a variety of inputs.
 User interfaces fit very naturally into this pattern.
 
-The classic examples revolve around the user experience with form validation, where the inputs are text fields and a button for submitting.
+The classic examples in functional reactive programming and user interfaces frequently show form validation, where user events such as changing text fields, taps, or mouse-clicks on UI elements make up the data being streamed.
+Combine takes this quite a bit further, enabling watching of properties, binding to objects, sending and receiving higher level events from UI controls, and supporting integration with almost all of Apple's existing API ecosystem.
+
+Some things you can do with Combine include:
 
 * You can set up pipelines to enable the button for submission only when values entered into the fields are valid.
 * A pipeline can also do asynchronous actions (such as checking with a network service) and using the values returned to choose how and what to update within a view.
@@ -90,7 +97,8 @@ Apple's developer documentation is hosted at https://developer.apple.com/documen
 
 === WWDC content
 
-Apple provides video, slides, and some sample code in sessions from https://developer.apple.com/videos/play/wwdc2019[WWDC 2019]
+Apple provides video, slides, and some sample code in sessions it's developer conferences.
+Details on Combine are primarily from https://developer.apple.com/videos/play/wwdc2019[WWDC 2019].
 
 A number of these introduce and go into some depth on Combine:
 
@@ -100,7 +108,7 @@ A number of these introduce and go into some depth on Combine:
 * https://developer.apple.com/videos/play/wwdc2019/721/[Combine in Practice]
 ** https://devstreaming-cdn.apple.com/videos/wwdc/2019/721ga0kflgr4ypfx/721/721_combine_in_practice.pdf?dl=1[PDF of presentation notes]
 
-A number of additional sessions mention Combine:
+A number of additional WWDC19 sessions mention Combine:
 
 * https://developer.apple.com/videos/play/wwdc2019/415/[Modern Swift API Design]
 * https://developer.apple.com/videos/play/wwdc2019/226[Data Flow Through SwiftUI]
