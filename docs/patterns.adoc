@@ -306,7 +306,7 @@ This means if you are creating a pipeline that reacts to a `@Published` property
 See <<reference.adoc#reference-catch>> for more detail and an example.
 
 [#patterns-retry]
-=== Pattern 3.2: Retrying in the event of a temporary failure
+== Pattern 3.2: Retrying in the event of a temporary failure
 
 __Goal__::
 
