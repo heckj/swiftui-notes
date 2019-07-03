@@ -158,9 +158,10 @@ A publisher should never send **more** than the demand requested.
 == Publishers
 
 The publisher is the provider of data.
-The https://developer.apple.com/documentation/combine/publisher[publisher protocol] has a strict contract returning values, or terminating with an explicit completion enumeration.
+The https://developer.apple.com/documentation/combine/publisher[publisher protocol] has a strict contract returning values when asked from subscribers, and possibly terminating with an explicit completion enumeration.
 
-Combine provides a number of convenience publishers:
+<<reference.adoc#reference-just>> and <<reference.adoc#reference-future>> are extremely common sources to start your own publisher from a value or function.
+Combine provides a number of additional convenience publishers:
 
 //TODO(heckj) - convert to xref to reference sections on these operators
 [cols="3*^"]
@@ -179,10 +180,8 @@ Combine provides a number of convenience publishers:
 
 |===
 
-A number of additional Apple APIs provide publishers as well.
+A number of Apple APIs outside of Combine provide publishers as well.
 // TODO(heckj): come back and map these to xref's to the reference section when created
-
-A number of other Apple APIs provide publishers as well:
 
 * SwiftUI provides https://developer.apple.com/documentation/swiftui/objectbinding[`@ObjectBinding`] which can be used to create a publisher.
 
@@ -193,8 +192,6 @@ A number of other Apple APIs provide publishers as well:
 * https://developer.apple.com/documentation/foundation/urlsession[`URLSession`] https://developer.apple.com/documentation/foundation/urlsession/3329707-datataskpublisher[`dataTaskPublisher`]
 
 * https://developer.apple.com/documentation/realitykit[`RealityKit`] https://developer.apple.com/documentation/realitykit/scene[`.Scene`] https://developer.apple.com/documentation/realitykit/scene/3254685-publisher[`.publisher()`]
-
-Combine also includes mechanisms to allow you to create your own publishers with `Future`. A future is initialized with a closure that eventually resolves to a https://developer.apple.com/documentation/combine/future/promise[Promise]. This can be used to wrap any existing API (Apple or your own) that provides a completion closure to turn it into a publisher.
 
 [#core-operators]
 == Operators
