@@ -1,13 +1,16 @@
 [#patterns-someName]
 == Pattern N: summary description
 
-summary
-* what the pattern does
+__Goal__::
 
-reference links
+* what the pattern does and why we want to use it
+
+__References__::
+
 * << link to reference pages>>
 
-see also:
+__See also__::
+
 * << link to other patterns>>
 
 explanation w/ code

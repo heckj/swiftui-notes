@@ -15,7 +15,20 @@ Please https://github.com/heckj/swiftui-notes/issues/new/choose[Open an issue] i
 [#patterns-creating-subscriber]
 == Pattern 1: Creating a subscriber with sink
 
-If you are creating the subscriber, you can use `.sink()`` to receive and process this information.
+__Goal__::
+
+* To create a subscriber to react to the results of a Combine pipeline, you can use `.sink()`` to receive the data run your code in reaction to it.
+
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+__Code and explanation__::
+
 The simplest form of `.sink()` takes a single closure - but by default this is the closure that receives data (if provided by the pipeline).
 If you don't also include a closure to get the completion, you will not receive any information about failures.
 
@@ -85,7 +98,20 @@ If you want to get to the error in the subscriber, you can `switch` on the retur
 [#patterns-dataTaskPublisher-decode]
 == Pattern 2: Making a network request with dataTaskPublisher
 
-One of the common use cases is requesting JSON data from a URL and decoding it.
+__Goal__::
+
+* One of the common use cases is requesting JSON data from a URL and decoding it.
+
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+__Code and explanation__::
+
 This can be readily accomplished with Combine using https://developer.apple.com/documentation/foundation/urlsession/3329708-datataskpublisher[dataTaskPublisher] on https://developer.apple.com/documentation/foundation/urlsession[URLSession].
 The data that is returns down the pipeline is a tuple: `(data: Data, response: URLResponse)`
 
@@ -180,6 +206,20 @@ Jump ahead to <<patterns-continual-error-handling>>.
 [#patterns-assertNoFailure]
 === converting to a Never failure type using assertNoFailure
 
+__Goal__::
+
+* Verify no error has occured within a pipeline
+
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+__Code and explanation__::
+
 A brutal way to handle this is to crash the application when an error happens.
 Combine provides the operator `assertNoFailure()` for this purpose.
 This is useful if you are sure you handled the errors and need to map a pipeline which technically can generate a failure type of `<Error>` to a subscriber that requires a failure type of `<Never>`.
@@ -208,7 +248,20 @@ It is far more likely that you want to handle the error and not have the applica
 [#patterns-oneshot-error-handling]
 == Pattern 3.1: Using catch to handle errors in a one-shot pipeline
 
-The `.catch()` operator is useful to recover from an error, but it can have unexpected side effects if you aren't familiar with how it works.
+__Goal__::
+
+* The `.catch()` operator is useful to recover from an error, but it can have unexpected side effects if you aren't familiar with how it works.
+
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+__Code and explanation__::
+
 `.catch()` handles errors by replacing the upstream publisher with another publisher that you provide as a return in a closure.
 This effectively terminates the earlier portion of the pipeline.
 If you're using a one-shot publisher (one that doesn't create more than a single event), then this is fine.
@@ -253,9 +306,22 @@ This means if you are creating a pipeline that reacts to a `@Published` property
 See <<reference.adoc#reference-catch>> for more detail and an example.
 
 [#patterns-retry]
-=== retrying in the event of a temporary failure
+=== Pattern 3.2: Retrying in the event of a temporary failure
 
-The `retry` operator can be included in a chain to retry a subscription when a `.failure` completion occurs.
+__Goal__::
+
+* The `retry` operator can be included in a chain to retry a subscription when a `.failure` completion occurs.
+
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+__Code and explanation__::
+
 When you specify this operator in a pipeline and it receives a subscription, it first tries to request a subscription from it's upstream publisher.
 If the response to that subscription fails, then it will retry the subscription to the same publisher.
 
@@ -302,7 +368,21 @@ Ideally such requests are be expected to be idempotent.
 <<<
 
 [#patterns-continual-error-handling]
-== Pattern 3.2: Using flatMap with catch to handle errors
+== Pattern 3.3: Using flatMap with catch to handle errors
+
+__Goal__::
+
+* The `flatMap` operator can be used with `catch` to continue to handle errors on new published values.
+
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+__Code and explanation__::
 
 The `flatMap()` operator is exactly what we need in this use case.
 
@@ -343,13 +423,25 @@ In swift, this looks like:
 
 == Pattern 4: Requesting data from an alternate URL when the network is constrained
 
-From Apple's WWDC 19 presentation https://developer.apple.com/videos/play/wwdc2019/712/[Advances in Networking, Part 1], a sample pattern was provided using `.tryCatch` and `.tryMap` operators to react to the specific error of having the network be constrained.
+__Goal__::
 
-[WARNING]
+* From Apple's WWDC 19 presentation https://developer.apple.com/videos/play/wwdc2019/712/[Advances in Networking, Part 1], a sample pattern was provided using `.tryCatch` and `.tryMap` operators to react to the specific error of having the network be constrained.
+
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+__Code and explanation__::
+
+
+[NOTE]
 ====
-This sample is originally from the WWDC session, but the API and example has evolved with the beta's of Combine since that presentation.
-`tryCatch` in particular appears to have been removed.
-I suspect `mapError` is an appropriate replacement, but that detail has yet to be confirmed.
+This sample is originally from the WWDC session, but the API and example is evolving with the beta releases of Combine since that presentation.
+`tryCatch` was missing in the Beta2 release, and has returned in beta3.
 ====
 
 [source, swift]
@@ -382,6 +474,20 @@ If the error is that the network is constrained, then the tryCatch operator crea
 
 [#patterns-update-interface-network-request]
 == Pattern 5: Update the status of your interface from a network request
+
+__Goal__::
+
+* Querying a web based API and returning the data to be displayed in your UI
+
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+__Code and explanation__::
 
 Below is a contrived example where you want to make a network to check for the username availability that you are watching with `@Published`.
 As the property `username` is updated, you want to check to see if the updated username is available.
@@ -424,16 +530,23 @@ In the example above, for every update into .flatMap() we are creating a request
 // force a page break - in HTML rendering is just a <HR>
 <<<
 
-[#patterns-sequencing-async]
-== Pattern 6: Coordinating a sequence of asynchronous operations
+[#patterns-future]
+== Pattern 6: Wrapping an asynchronous call with a Future
 
-There are a variety of ways to chain together asynchronous operations.
-Combine adds to this variety, and is effective when you want to use the data from one operation as the input to the next.
-If you are familiar with using Promises in another language, such as Javascript, this pattern is roughly the equivalent of https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises#Chaining[Promise chaining].
+__Goal__::
 
-The benefit to using Combine is that the sequencing can be relatively easy to parse visually.
+* Using Future to turn an an asynchronous call into publisher
 
-=== Using Future to turn an an asynchronous call into publisher
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+__Code and explanation__::
+
 
 [source, swift]
 ----
@@ -446,19 +559,57 @@ let myPublisher = Publishers.Future { promise in
 .eraseToAnyPublisher()
 ----
 
+This setup can be used to inline just about anything into a Combine pipeline.
+
+possible example:
+- take periodic frame updates from the camera and run them into the Vision framework to ask if there's a bar code, and if so, retrieve it and display its info
+
 // force a page break - in HTML rendering is just a <HR>
 <<<
 
-[#patterns-binding]
-== Pattern 8: binding
+[#patterns-sequencing-async]
+== Pattern 7: Coordinating a sequence of asynchronous operations
 
-* binding to SwiftUI
-** validating forms
-** UX responsiveness - live updates to view properties
-** handling error within property update
-** retry for remote service
+__Goal__::
 
-simple case - data validation with external service
+* There are a variety of ways to chain together asynchronous operations.
+
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+__Code and explanation__::
+
+Combine adds to this variety, and is effective when you want to use the data from one operation as the input to the next.
+If you are familiar with using Promises in another language, such as Javascript, this pattern is roughly the equivalent of https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises#Chaining[Promise chaining].
+
+The benefit to using Combine is that the sequencing can be relatively easy to parse visually.
+
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+
+[#patterns-published]
+== Pattern 8: Responding to updates in properties with @Published
+
+__Goal__::
+
+* @Published with properties and using read-only updates of those properties as publishing sources
+
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+__Code and explanation__::
+
 
 [source, swift]
 ----
@@ -531,19 +682,94 @@ override func viewDidLoad() {
 // force a page break - in HTML rendering is just a <HR>
 <<<
 
-[#patterns-testing]
-== Pattern N: Testing pipelines
+[#patterns-notificationcenter]
+== Pattern 9: Responding to updates from NotificationCenter
 
-a few test strategies...
+__Goal__::
 
-For testing what's happening in a pipeline:
+* The big "master bus" of events across a variety of Apple platforms, its where you can listen for updates and changes from controls and events across a variety of frameworks.
+
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+__Code and explanation__::
+
+https://www.caseyliss.com/2019/6/18/quick-notes-on-yesterdays-post[Casey Liss talks about about this (not entirely happily)] based on the apple documentation https://developer.apple.com/documentation/combine/receiving_and_handling_events_with_combine[Receiving and Handling Events with Combine].
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+
+[#patterns-bindableobject]
+== Pattern 10: Using BindableObject with SwiftUI models as a publisher source
+
+__Goal__::
+
+* SwiftUI includes @Binding and the BindableObject protocol, which provides a publishing source to alerts to model objects changing.
+
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+__Code and explanation__::
+
+// REF/EXAMPLE OF ANOTHER WRITER https://mecid.github.io/2019/06/19/building-forms-with-swiftui/
+// REF/EXAMPLE OF ANOTHER WRITER https://mecid.github.io/2019/07/03/managing-data-flow-in-swiftui/
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+
+[#patterns-testing-pipeline]
+== Pattern N.1: Testing pipelines
+
+__Goal__::
+
+* For testing what's happening in a pipeline
+
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+__Code and explanation__::
+
+
 
 * use a Subject -> pipeline -> sink()
 * set up a sink to collect value
 * drive values through the pipeline with Subject.send()
 * assert results after the sink has processed them
 
-For testing a publisher (and any pipeline attached)
+// force a page break - in HTML rendering is just a <HR>
+<<<
+
+[#patterns-testing-publisher]
+== Pattern N.2: Testing a publisher
+
+__Goal__::
+
+* For testing a publisher (and any pipeline attached)
+
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+__Code and explanation__::
 
 * set up an expectation (`XCTestExpectation`)
 * create your publisher & relevant pipeline if so desired
@@ -551,7 +777,25 @@ For testing a publisher (and any pipeline attached)
 ** this can be separate, or just chained to the pipeline, depending on what makes most sense to you
 * `wait` on the expectation to let the test "do it's thing" in the background
 
-For testing a subscriber (how it reacts):
+// force a page break - in HTML rendering is just a <HR>
+<<<
+
+[#patterns-testing-subscriber]
+== Pattern N.3: Testing a subscriber
+
+__Goal__::
+
+* For testing a subscriber (how it reacts):
+
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+__Code and explanation__::
 
 * set up your subscriber and any pipeline leading to it
 * use a Subject to "inject" values
@@ -565,8 +809,25 @@ __(Uncertain)__ Mocking or faking a publisher (such as dataTaskPublisher) to val
 * might be able to use a `Publishers.Future()`, expose as an AnyPublisher() (do the same with dataTaskPublisher) to make the the same - and in your setup, inject in the one you want to use.
 ** Instrument the Future() closure to record what gets called, and maybe set it up to return an explicit set of responses.
 
+// force a page break - in HTML rendering is just a <HR>
+<<<
+
 [#patterns-debugging]
 == Pattern N+1: Debugging pipelines
+
+__Goal__::
+
+* For testing a subscriber (how it reacts):
+
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+__Code and explanation__::
 
 . use print() and/or print("prefixValue") to get console output of what's happening in the pipeline lifecycle
   * create a .sink() to capture results, and drive it with a PassthroughSubject for specific control
