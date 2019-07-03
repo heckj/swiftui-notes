@@ -8,7 +8,7 @@ a declarative Swift API for processing values over time.
 
 Combine is Apple's take on a functional reactive programming library, akin to https://github.com/ReactiveX/RxSwift[RxSwift].
 RxSwift itself is a port of http://reactivex.io[ReactiveX].
-Apple's framework uses many of the same functional reactive concepts that can be found in other languages and libraries, applying the strongly-typed nature of Swift to their solution.
+Apple's framework uses many of the same functional reactive concepts that can be found in other languages and libraries, applying the staticly-typed nature of Swift to their solution.
 
 [NOTE]
 ====
