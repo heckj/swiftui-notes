@@ -61,7 +61,7 @@ let _ = Just(5) <1>
     }
 ----
 
-<1> The pipeline starts with the publisher `Once`, which responds with the value that its defined with (in this case, the Integer `5`). The output type is <Integer>, and the failure type is <Never>.
+<1> The pipeline starts with the publisher `Just`, which responds with the value that its defined with (in this case, the Integer `5`). The output type is <Integer>, and the failure type is <Never>.
 <2> the pipeline then has a `map` operator, which is transforming the value. In this example it is ignoring the published input and returning a string. This is also transforming the output type to <String>, and leaving the failure type still set as <Never>
 <3> The pipeline then ends with a `sink` subscriber.
 
@@ -108,7 +108,7 @@ let _ = Just(5) <1>
         print("The end result was \(receivedValue)")
     }
 ----
-<1> Once is a publisher that creates an `<Int>`, `<Never>` type combination, provides a single value and then completes.
+<1> Just is a publisher that creates an `<Int>`, `<Never>` type combination, provides a single value and then completes.
 <2> the closure provided to the `.map()` function takes in an `<Int>` and transforms it into a `<String>`. Since the failure type of <Never> is not changed, it is passed through.
 <3> `sink`, the subscriber, receives the `<String>`, `<Never>` combination.
 
