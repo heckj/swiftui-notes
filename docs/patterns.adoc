@@ -185,7 +185,7 @@ When an error is triggered on the pipeline, a `.failure` completion is sent with
 <<<
 
 [#patterns-general-error-handling]
-== Pattern 3: Handling errors within the pipline
+== Error Handling
 
 The examples above expected that the subscriber would handle the error conditions, if they occured.
 However, you are not always able to control the subscriber - as might be the case if you're using SwiftUI view properties as the subscriber, and you're providing the publisher.
@@ -204,7 +204,7 @@ If the pipeline is set up to continually update, the error handling needs to be 
 Jump ahead to <<patterns-continual-error-handling>>.
 
 [#patterns-assertNoFailure]
-=== converting to a Never failure type using assertNoFailure
+=== Pattern 3.1: converting to a Never failure type using assertNoFailure
 
 __Goal__::
 
@@ -246,7 +246,7 @@ It is far more likely that you want to handle the error and not have the applica
 <<<
 
 [#patterns-oneshot-error-handling]
-== Pattern 3.1: Using catch to handle errors in a one-shot pipeline
+=== Pattern 3.2: Using catch to handle errors in a one-shot pipeline
 
 __Goal__::
 
@@ -306,7 +306,7 @@ This means if you are creating a pipeline that reacts to a `@Published` property
 See <<reference.adoc#reference-catch>> for more detail and an example.
 
 [#patterns-retry]
-== Pattern 3.2: Retrying in the event of a temporary failure
+=== Pattern 3.3: Retrying in the event of a temporary failure
 
 __Goal__::
 
@@ -368,7 +368,7 @@ Ideally such requests are be expected to be idempotent.
 <<<
 
 [#patterns-continual-error-handling]
-== Pattern 3.3: Using flatMap with catch to handle errors
+=== Pattern 3.4: Using flatMap with catch to handle errors
 
 __Goal__::
 
