@@ -23,30 +23,13 @@ v1.0, 2019-06-23
 Thank you for taking a look and providing feedback.
 
 I am looking for feedback on several different topics, primarily around format and ease of use.
-The contents of the book are __very__ first draft, and no editing, spell checking, or grammar review has yet been done.
-While I'm happy to take feedback (or corrections) on those flaws, I'm more interesting in structural feedback for the overall "book".
-Jump down to <<getting-the-book>> for links and URL references to the content.
+The contents of the book are __very__ early draft, and minimal to no editing, spell checking, or grammar review has yet been done.
+While I'm happy to take feedback (or corrections) on those flaws, I'm more interesting in overall structural feedback.
+Jump down to <<getting-the-book>> for links and URL references to the content in its various formats.
 
 == Feedback Topics
 
 Please send feedback to me at mailto:heckj@mac.com[heckj@mac.com]
-
-
-=== Pattern/Recipe layout
-
-The patterns (1 through 3) are in reasonable first-draft shape:
-
-* https://heckj.github.io/swiftui-notes/#patterns-creating-subscriber
-* https://heckj.github.io/swiftui-notes/#patterns-dataTaskPublisher-decode
-* https://heckj.github.io/swiftui-notes/#patterns-general-error-handling
-
-I didn't take any specific formula to structure each one.
-
-**Q?**: Should I have (added a structure - if so, what would you like to see)?
-
-**Q?**: Are the code and tips understandable?
-
-**Q?**: Would you prefer a more structured format for each pattern (or recipe)?
 
 === Reference layout
 
