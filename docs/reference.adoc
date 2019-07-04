@@ -824,13 +824,63 @@ If we want the pipeline to remain active, we need to change how we handle the er
 [#reference-receive]
 ==== receive
 
-* receive(on:)
-** `.receive(on: RunLoop.main)`
+__Summary__::
 
+Receive defines the scheduler on which to receive elememts from the publisher.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publisher/3204743-receive[`receive`]
+
+__Usage__::
+
+* <<patterns.adoc#patterns-assign-subscriber>> shows an example of using assign to set an a boolean property on a UI element.
+
+__Details__::
+
+Receive is frequently used with <<#reference-assign>> to make sure any following pipeline invocations happen on a specific thread, such as `RunLoop.main` when updating user interface objects.
+
+[source, swift]
+----
+examplePublisher.receive(on: RunLoop.main)
+----
+
+Receive takes a single
 [#reference-subscribe]
 ==== subscribe
 
-* subscribe(on:)
+__Summary__::
+
+Subscribe defines the scheduler on which to run operators in a pipeline.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publisher/3204758-subscribe[`subscribe`]
+
+__Usage__::
+
+* <<patterns.adoc#patterns-assign-subscriber>> shows an example of using assign to set an a boolean property on a UI element.
+
+__Details__::
+
+Subscribe assigns a scheduler to any preceding pipeline invocations, and is often used to invoke a pipeline on a background thread or queue.
+It can be used to request a publisher on a background thread, and then use <<#reference-receive>> to transfer data to another thread (such as the main runloop) appropriate for updating user interface objects.
+
+[source, swift]
+----
+networkDataPublisher
+    .subscribe(on: backgroundQueue) <1>
+    .receive(on: RunLoop.main) <2>
+    .assign(to: \.text, on: yourLabel) <3>
+----
+
+<1> the `subscribe` call requests the publisher (and any pipeline invocations before this in a chain) be invoked on the backgroundQueue.
+<2> the `receive` call transfers the data to the main runloop, suitable for updating user interface elements
+<3> the `assign` call uses the <<#reference-assign>> subscriber to update the property `text` on a KVO compliant object, in this case `yourLabel`.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
@@ -879,18 +929,30 @@ If we want the pipeline to remain active, we need to change how we handle the er
 [#reference-subscribers]
 == Subscribers
 
-//NOTE(heckj) make xref link back to coreconcepts:subscribers
+For general information about subscribers and how they fit with publishers and operators, see <<coreconcepts.adoc#core-subscribers>>.
 
 [#reference-assign]
 === assign
 
-* https://developer.apple.com/documentation/combine/subscribers/assign[`assign`]
+__Summary__::
 
-key-path assignment
-** ex: `Subscribers.Assign(object: exampleObject, keyPath: \.someProperty)`
-** ex: `.assign(to: \.isEnabled, on: signupButton)`
-** Assigns the value of a KVO-compliant property from a publisher.
-** requires Failure to be `<Never>`
+Assign creates a subscriber used to update a property on a KVO compliant object.
+
+__Constraints on connected publisher__::
+
+* Failure type must be `<Never>`
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/subscribers/assign[`assign`]
+
+__Usage__::
+
+* <<patterns.adoc#patterns-assign-subscriber>> shows an example of using assign to set an a boolean property on a UI element.
+* tests illustrating assign: `UsingCombineTests/????.swift`
+
+__Details__::
+
+Assign only handles data, and expects all errors or failures to be handled in the pipeline before it is invoked.
+The return value from setting up assign can be cancelled, and is frequently used when disabling the pipeline, such as when a viewController is disabled or deallocated.
 
 [#reference-sink]
 === sink
@@ -909,6 +971,7 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/subscr
 __Usage__::
 
 * <<patterns.adoc#patterns-sink-subscriber>> shows an example of creating a sink that receives both completion messages as well as data from the publisher.
+* tests illustrating a sink: `UsingCombineTests/SinkSubscriberTests.swift`
 
 __Details__::
 
