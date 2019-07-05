@@ -17,6 +17,8 @@
 		1AC8C78522B1BED80064C1AE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1AC8C78322B1BED80064C1AE /* LaunchScreen.storyboard */; };
 		1AC8C79022B1BED90064C1AE /* SwiftUI_NotesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC8C78F22B1BED90064C1AE /* SwiftUI_NotesTests.swift */; };
 		1AEA9C2722CD5FE7006709F1 /* SinkSubscriberTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEA9C2622CD5FE7006709F1 /* SinkSubscriberTests.swift */; };
+		1AFF21DB22CFFF0C0039C303 /* SubscribeReceiveAssignTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFF21DA22CFFF0C0039C303 /* SubscribeReceiveAssignTests.swift */; };
+		1AFF21DD22D003D20039C303 /* XCTestCase+KVOExpectatio0n.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFF21DC22D003D20039C303 /* XCTestCase+KVOExpectatio0n.swift */; };
 		1AFF51C022B3087300058BAB /* SwiftUI_CombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFF51BF22B3087300058BAB /* SwiftUI_CombineTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -60,6 +62,8 @@
 		1AEA9C2422CD5FE7006709F1 /* UsingCombineTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UsingCombineTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AEA9C2622CD5FE7006709F1 /* SinkSubscriberTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SinkSubscriberTests.swift; sourceTree = "<group>"; };
 		1AEA9C2822CD5FE7006709F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1AFF21DA22CFFF0C0039C303 /* SubscribeReceiveAssignTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscribeReceiveAssignTests.swift; sourceTree = "<group>"; };
+		1AFF21DC22D003D20039C303 /* XCTestCase+KVOExpectatio0n.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+KVOExpectatio0n.swift"; sourceTree = "<group>"; };
 		1AFF51BF22B3087300058BAB /* SwiftUI_CombineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUI_CombineTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -152,7 +156,9 @@
 			isa = PBXGroup;
 			children = (
 				1AEA9C2622CD5FE7006709F1 /* SinkSubscriberTests.swift */,
+				1AFF21DA22CFFF0C0039C303 /* SubscribeReceiveAssignTests.swift */,
 				1AEA9C2822CD5FE7006709F1 /* Info.plist */,
+				1AFF21DC22D003D20039C303 /* XCTestCase+KVOExpectatio0n.swift */,
 			);
 			path = UsingCombineTests;
 			sourceTree = "<group>";
@@ -310,6 +316,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				1AEA9C2722CD5FE7006709F1 /* SinkSubscriberTests.swift in Sources */,
+				1AFF21DD22D003D20039C303 /* XCTestCase+KVOExpectatio0n.swift in Sources */,
+				1AFF21DB22CFFF0C0039C303 /* SubscribeReceiveAssignTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
