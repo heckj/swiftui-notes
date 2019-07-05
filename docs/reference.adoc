@@ -626,14 +626,11 @@ __Summary__::
 The operator `catch` handles errors (completion messages of type `.failure`) from an upstream publisher by replacing the failed publisher with another publisher.
 The operator also transforms the Failure type to `<Never>`.
 
-__Constraints on publisher__::
+__Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] Documentation reference__::
-
-
-* https://developer.apple.com/documentation/combine/publishers/catch[`Publishers.Catch`]
+__icon:apple[] Documentation reference__:: https://developer.apple.com/documentation/combine/publishers/catch[`Publishers.Catch`]
 
 __Usage__::
 
@@ -827,13 +824,76 @@ If we want the pipeline to remain active, we need to change how we handle the er
 [#reference-receive]
 ==== receive
 
-* receive(on:)
-** `.receive(on: RunLoop.main)`
+__Summary__::
 
+Receive defines the scheduler on which to receive elememts from the publisher.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publisher/3204743-receive[`receive`]
+
+__Usage__::
+
+* <<patterns.adoc#patterns-assign-subscriber>> shows an example of using assign to set an a boolean property on a UI element.
+* unit tests illustrating using an assign subscriber in a pipeline from a dataTaskPublisher with subscribe and receive: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SubscribeReceiveAssignTests.swift[`UsingCombineTests/SubscribeReceiveAssignTests.swift`]
+
+__Details__::
+
+Receive takes a single required parameter (`on:`) which accepts a scheduler, and an optional parameter (`optional:`) which can accept SchedulerOptions.
+https://developer.apple.com/documentation/combine/scheduler[Scheduler] is a protocol in Combine, with the conforming types that are commonly used of https://developer.apple.com/documentation/foundation/runloop[RunLoop], https://developer.apple.com/documentation/dispatch/dispatchqueue[DispatchQueue] and https://developer.apple.com/documentation/foundation/operationqueue[OperationQueue].
+Receive is frequently used with <<#reference-assign>> to make sure any following pipeline invocations happen on a specific thread, such as `RunLoop.main` when updating user interface objects.
+Receive effects itself and any opertors chained after it, but not previous operators.
+If you want to influence previously chained publishers (or operators) for where to run, use the <<#reference-subscribe>> operator.
+
+[source, swift]
+----
+examplePublisher.receive(on: RunLoop.main)
+----
+
+Receive takes a single
 [#reference-subscribe]
 ==== subscribe
 
-* subscribe(on:)
+__Summary__::
+
+Subscribe defines the scheduler on which to run operators in a pipeline.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/anypublisher/3204260-subscribe[`subscribe`]
+
+
+__Usage__::
+
+* <<patterns.adoc#patterns-assign-subscriber>> shows an example of using assign to set an a boolean property on a UI element.
+* unit tests illustrating using an assign subscriber in a pipeline from a dataTaskPublisher with subscribe and receive: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SubscribeReceiveAssignTests.swift[`UsingCombineTests/SubscribeReceiveAssignTests.swift`]
+
+__Details__::
+
+Subscribe assigns a scheduler to any preceding pipeline invocations, and is often used to invoke a publisher on a background thread or queue. When used in this fashion, it is often used in coordination with <<#reference-receive>> to transfer data to another thread (such as the main runloop) for following operators or the subscriber.
+
+Subscribe takes a single required parameter (`on:`) which accepts a scheduler, and an optional parameter (`optional:`) which can accept SchedulerOptions.
+https://developer.apple.com/documentation/combine/scheduler[Scheduler] is a protocol in Combine, with the conforming types that are commonly used of https://developer.apple.com/documentation/foundation/runloop[RunLoop], https://developer.apple.com/documentation/dispatch/dispatchqueue[DispatchQueue] and https://developer.apple.com/documentation/foundation/operationqueue[OperationQueue].
+
+Subscribe effects itself and any opertors chained before it, but not following operators.
+If you want to influence chained operators after subscribe for where to run, use the <<#reference-receive>> operator.
+The most comon example of this is receiving on `RunLoop.main`, critical when updating user interface objects.
+
+[source, swift]
+----
+networkDataPublisher
+    .subscribe(on: backgroundQueue) <1>
+    .receive(on: RunLoop.main) <2>
+    .assign(to: \.text, on: yourLabel) <3>
+----
+
+<1> the `subscribe` call requests the publisher (and any pipeline invocations before this in a chain) be invoked on the backgroundQueue.
+<2> the `receive` call transfers the data to the main runloop, suitable for updating user interface elements
+<3> the `assign` call uses the <<#reference-assign>> subscriber to update the property `text` on a KVO compliant object, in this case `yourLabel`.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
@@ -882,32 +942,107 @@ If we want the pipeline to remain active, we need to change how we handle the er
 [#reference-subscribers]
 == Subscribers
 
-//NOTE(heckj) make xref link back to coreconcepts:subscribers
+For general information about subscribers and how they fit with publishers and operators, see <<coreconcepts.adoc#core-subscribers>>.
 
 [#reference-assign]
 === assign
 
-* https://developer.apple.com/documentation/combine/subscribers/assign[`assign`]
+__Summary__::
 
-key-path assignment
-** ex: `Subscribers.Assign(object: exampleObject, keyPath: \.someProperty)`
-** ex: `.assign(to: \.isEnabled, on: signupButton)`
-** Assigns the value of a KVO-compliant property from a publisher.
-** requires Failure to be `<Never>`
+Assign creates a subscriber used to update a property on a KVO compliant object.
+
+__Constraints on connected publisher__::
+
+* Failure type must be `<Never>`
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/subscribers/assign[`assign`]
+
+__Usage__::
+
+* <<patterns.adoc#patterns-assign-subscriber>> shows an example of using assign to set an a boolean property on a UI element.
+* unit tests illustrating using an assign subscriber in a pipeline from a dataTaskPublisher with subscribe and receive: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SubscribeReceiveAssignTests.swift[`UsingCombineTests/SubscribeReceiveAssignTests.swift`]
+
+__Details__::
+
+Assign only handles data, and expects all errors or failures to be handled in the pipeline before it is invoked.
+The return value from setting up assign can be cancelled, and is frequently used when disabling the pipeline, such as when a viewController is disabled or deallocated.
+Assign is frequently used in conjunction with the <<#reference-receive>> operator to receive values on a specific scheduler, typically `RunLoop.main` when updating UI objects.
+
+[source, swift]
+----
+examplePublisher
+    .receive(on: RunLoop.main) <2>
+    .assign(to: \.text, on: yourLabel) <3>
+----
 
 [#reference-sink]
 === sink
 
-* https://developer.apple.com/documentation/combine/subscribers/sink[`sink`]
+__Summary__::
 
-** you provide a closure where you process the results
-** ex:
+Sink creates an all-purpose subscriber.
+At a minimum, you provide a closure to receive values, and optionally a closure that receives completions.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/subscribers/sink[`sink`]
+
+__Usage__::
+
+* <<patterns.adoc#patterns-sink-subscriber>> shows an example of creating a sink that receives both completion messages as well as data from the publisher.
+* unit tests illustrating a sink subscriber and how it works: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SinkSubscriberTests.swift[`UsingCombineTests/SinkSubscriberTests.swift`]
+
+__Details__::
+
+The simplest form of `.sink()` takes a single closure - by default this closure receives data (if provided by the attached publisher).
+
+[source, swift]
+----
+let examplePublisher = Just(5)
+
+let _ = examplePublisher.sink { value in
+    print(".sink() received \(String(describing: value))")
+}
+----
+
+The closure you provide is invoked for every update that the publisher passes down, up until the completion.
+Be aware that the single closure form may be called repeatedly.
+How often it is called depends on the pipeline to which it is subscribing.
+
+If you don't also include a closure to get the completion, you will not receive any information about failures.
+If an error or failure occurs and is handed down from the publisher the single closure form will not be called.
+
+If you are creating a subscriber and want to receive failures, or see the completion messages at the end of pipeline, create a sink with two closures.
+The more complete sink has the two closures named `receiveCompletion` and `receiveValue`:
+
+[source, swift]
+----
+let examplePublisher = Just(5)
+
+let _ = examplePublisher.sink(receiveCompletion: { err in
+    print(".sink() received the completion", String(describing: err))
+}, receiveValue: { value in
+    print(".sink() received \(String(describing: value))")
+})
+----
+
+The type that is passed into receiveCompletion is the enum https://developer.apple.com/documentation/combine/subscribers/completion[`Subscribers.Completion`].
+The completion `.failure` incudes an Error wrapped within it, providing access to the underlying cause of the failure.
+To get to the error within the `.failure` completion, `switch` on the returned completion to determine if it is `.finished` or `.failure`, and then pull out the error.
+
+When you chain a `.sink` subscriber onto a publisher (or pipeline), the result is cancellable.
+At any time before the publisher sends a completion, the subscriber can send a cancellation and invalidate the pipeline.
+After a cancel is sent, no further values will be received by either closure in the sink.
 
 [source,swift]
 ----
-let cancellablePublisher = somePublisher.sink { data in
+let simplePublisher = PassthroughSubject<String, Error>()
+let cancellablePipeline = simplePublisher.sink { data in
   // do what you need with the data...
 }
 
-cancellablePublisher.cancel() // to kill the stream before it's complete
+cancellablePublisher.cancel() // this invalidates the pipeline, no further data will be received by the sink
 ----
+

@@ -12,76 +12,50 @@ if you have a suggestion for a pattern or recipe, I'm happy to consider it.
 Please https://github.com/heckj/swiftui-notes/issues/new/choose[Open an issue] in GitHub to request something.
 ====
 
-[#patterns-creating-subscriber]
-== Pattern 1: Creating a subscriber with sink
+[#patterns-sink-subscriber]
+== Pattern 1.1: Creating a subscriber with sink
 
 __Goal__::
 
-* To create a subscriber to react to the results of a Combine pipeline, you can use `.sink()`` to receive the data run your code in reaction to it.
+* To receive the output, and the errors or completion messages, generated from a publisher or through a pipeline, you can create a subscriber with `sink`.
 
 __References__::
 
-* << link to reference pages>>
+* <<reference.adoc#reference-sink>>
 
 __See also__::
 
-* << link to other patterns>>
+* <<#patterns-assign-subscriber>>
+* <<#patterns-testing-publisher>>
+* <<#patterns-testing-pipeline>>
 
 __Code and explanation__::
 
-The simplest form of `.sink()` takes a single closure - but by default this is the closure that receives data (if provided by the pipeline).
-If you don't also include a closure to get the completion, you will not receive any information about failures.
+Sink creates an all-purpose subscriber to capture or react the data from a Combine pipeline, while also supporting cancellation and the <<coreconcepts.adoc#core-lifecycle,publisher subscriber lifecycle>>.
 
-[WARNING]
-====
-Remember that subscribers drive the execution of any Combine pipelines you create.
-If you end a pipeline with `.sink()` you are creating the subscriber and connecting it to the pipeline.
-By chaining it, it will implicitly start <<coreconcepts.adoc#core-lifecycle,the lifecycle>> with the `subscribe` and request for unlimited data.
-====
-
-
-A simple sink is created with a single closure:
-
+.simple sink
 [source, swift]
 ----
-let _ = remoteDataPublisher.sink { value in
-    print(".sink() received \(String(describing: value))")
-}
-----
-
-The closure gets invoked for every new update that the publisher creates, up until the completion.
-If an error or failure occurs, then the closure will simply never be called.
-
-When you write the closure for a `sink` subscriber, be aware that your receiveValue closure may be called repeatedly.
-How often it is called depends on the pipeline to which it is subscribing.
-
-If you are creating a subscriber and want to receive and handle failures, or see the completion messages at the end of pipeline, create a sink with two closures.
-The more complete sink has the two closures named`receiveCompletion` and `receiveValue`:
-
-[source, swift]
-----
-let _ = remoteDataPublisher.sink(receiveCompletion: { err in
-    print(".sink() received the completion", String(describing: err))
-}, receiveValue: { value in
-    print(".sink() received \(String(describing: value))")
+let cancellablePipeline = publishingSource.sink { someValue in <1>
+    // do what you want with the resulting value passed down
+    // be aware that depending on the data type being returned, you may get this closure invoked
+    // multiple times.
+    print(".sink() received \(someValue)")
 })
 ----
+<1> The simple version of a sink is very compact, with a single trailing closure that only receives data when presented through the pipeline.
 
-The type that is passed into receiveCompletion is the enum https://developer.apple.com/documentation/combine/subscribers/completion[`Subscribers.Completion`].
-The completion `.failure` incudes an Error within it, which provides access to the underlying cause of the failure.
-If you want to get to the error in the subscriber, you can `switch` on the returned completion to determine if it is `.finished` or `.failure`, and then pull out the error:
-
-[#source-with-inline-comments]
+.sink with completions and data
 [source, swift]
 ----
-.sink(receiveCompletion: { completion in
+let cancellablePipeline = publishingSource.sink(receiveCompletion: { completion in <1>
     switch completion {
     case .finished:
         // no associated data, but you can react to knowing the request has been completed
         break
     case .failure(let anError):
         // do what you want with the error details, presenting, logging, or hiding as appropriate
-        print("GOT THE ERROR: ", anError)
+        print("received the error: ", anError)
         break
     }
 }, receiveValue: { someValue in
@@ -90,11 +64,56 @@ If you want to get to the error in the subscriber, you can `switch` on the retur
     // multiple times.
     print(".sink() received \(someValue)")
 })
+
+cancellablePipeline.cancel() <2>
 ----
+
+<1> Sinks are created by chaining the code from a publisher or pipeline, and terminate the pipeline.
+When the sink is created or invoked on a publisher, it implicitly starts <<coreconcepts.adoc#core-lifecycle,the lifecycle>> with the `subscribe` and will request unlimited data.
+<2> Creating a sink is cancellable subscriber, so at any time you can take the reference that terminated with sink and invoke `.cancel()` on it to invalidate and shut down the pipeline.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
 
+[#patterns-assign-subscriber]
+== Pattern 1.2: Creating a subscriber with assign
+
+__Goal__::
+
+* To use the results of a pipeline to set a value, often a property on a user interface view or control, but any KVO compliant object can be the target
+
+__References__::
+
+* <<reference.adoc#reference-assign>>
+* <<reference.adoc#reference-receive>>
+
+__See also__::
+
+* <<#patterns-sink-subscriber>>
+
+__Code and explanation__::
+
+Assign is a subscriber that's specifically designed to apply data from a publisher or pipeline into a property, updating that property whenever it receives data.
+Like sink, it activates when created and requests an unlimited data updates.
+Assign requires the failure type to be specified as `<Never>`, so if your pipeline could fail (such as using an operator like tryMap) you will need to <<#patterns-general-error-handling,convert or handle the the failure cases>> before using `.assign`.
+
+.simple sink
+[source, swift]
+----
+let cancellablePipeline = publishingSource <1>
+    .receive(on: RunLoop.main) <2>
+    .assign(to: \.isEnabled, on: yourButton) <3>
+
+cancellablePipeline.cancel() <4>
+----
+
+<1> `.assign` is typically chained onto a publisher when you create it, and the return value is cancellable.
+<2> If `.assign` is being used to update a user interface element, you need to make sure that it is being updated on the main thread. This call makes sure the subscriber is received on the main thread.
+<3> Assign references the property being updated using a https://developer.apple.com/documentation/swift/referencewritablekeypath[key path], and a reference to the object being updated.
+<4> At any time you can can to terminate and invalidate pipelines with cancel(). Frequently, you cancel the pipelines when you deactivate the objects (such as a viewController) that are getting updated from the pipeline.
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
 [#patterns-dataTaskPublisher-decode]
 == Pattern 2: Making a network request with dataTaskPublisher
 
@@ -145,7 +164,6 @@ Likewise, if the returned data couldn't be decoded based on the structure, or wa
 To have more control over what is considered a failure in the URL response, use a `tryMap` operator on the tuple response from dataTaskPublisher.
 An example of that might look like:
 
-[#source-with-exterior-description]
 [source, swift]
 ----
 struct IPInfo: Codable {
@@ -289,14 +307,6 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
         return Publishers.Just(IPInfo(ip: "8.8.8.8"))
     }
     .eraseToAnyPublisher()
-----
-
-Now the `remoteDataPublisher` can be used with
-
-[source, swift]
-----
-.receive(on: RunLoop.main)
-.assign(to: \.isEnabled, on: yourButton)
 ----
 
 // NOTE(heckj): this next bit (until retry) might be better migrated to the reference section on how catch works.
