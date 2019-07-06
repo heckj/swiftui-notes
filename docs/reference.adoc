@@ -305,6 +305,8 @@ __Usage__::
 * <<patterns.adoc#patterns-dataTaskPublisher-decode>>
 * <<patterns.adoc#patterns-oneshot-error-handling>>
 * <<patterns.adoc#patterns-retry>>
+* unit tests illustrating using map with dataTaskPublisher: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DataTaskPublisherTests.swift[`UsingCombineTests/DataTaskPublisherTests.swift`]
+
 
 __Details__::
 
@@ -357,6 +359,7 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 __Usage__::
 
 * <<patterns.adoc#patterns-dataTaskPublisher-tryMap>>
+* unit tests illustrating using tryMap with dataTaskPublisher: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DataTaskPublisherTests.swift[`UsingCombineTests/DataTaskPublisherTests.swift`]
 
 __Details__::
 
