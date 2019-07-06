@@ -27,7 +27,9 @@ class DataTaskPublisherTests: XCTestCase {
 
     override func setUp() {
         self.testURL = URL(string: testUrlString)
-        self.myBackgroundQueue = DispatchQueue(label: "UsingCombineExample", attributes: .concurrent)
+        self.myBackgroundQueue = DispatchQueue(label: "UsingCombineExample")
+        // Apple recommends NOT using .concurrent queue when working with Combine pipelines:
+        // https://forums.swift.org/t/runloop-main-or-dispatchqueue-main-when-using-combine-scheduler/26635/4
     }
 
     func testDataTaskPublisher() {

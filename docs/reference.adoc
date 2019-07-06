@@ -897,7 +897,8 @@ networkDataPublisher
 
 [NOTE]
 ====
-When creating a DispatchQueue to use with Combine publishers on background threads, it is recommended that you use a `.serial` rather than `.concurrent` queue https://forums.swift.org/t/runloop-main-or-dispatchqueue-main-when-using-combine-scheduler/26635/4[to allow Combine to adhere to its contracts].
+When creating a DispatchQueue to use with Combine publishers on background threads, it is recommended that you use a regular serial queue rather than a concurrent queue https://forums.swift.org/t/runloop-main-or-dispatchqueue-main-when-using-combine-scheduler/26635/4[to allow Combine to adhere to its contracts].
+That is - don't create the queue with `attributes: .concurrent`.
 ====
 
 // force a page break - in HTML rendering is just a <HR>
