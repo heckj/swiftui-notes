@@ -867,10 +867,44 @@ If we want the pipeline to remain active, we need to change how we handle the er
 [#reference-encode]
 ==== encode
 
-* encode
+__Summary__::
 
-** Encodes the output from upstream using a specified TopLevelEncoder. For example, use JSONEncoder or PropertyListEncoder
-** Available when Output conforms to Encodable.
+Encode converts the output from upstream Encodable object using a specified TopLevelEncoder. For example, use JSONEncoder or PropertyListEncoder..
+
+__Constraints on connected publisher__::
+
+* Available when Output conforms to Encodable.
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/encode
+
+__Usage__::
+
+* unit tests illustrating using encode and decode: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/EncodeDecodeTests.swift[`UsingCombineTests/EncodeDecodeTests.swift`]
+
+
+__Details__::
+
+The encode operator takes a single parameters:
+
+* `encoder` an instance of an object conforming to https://developer.apple.com/documentation/combine/toplevelencoder[TopLevelEncoder], frequently an instance of https://developer.apple.com/documentation/foundation/jsonencoder[JSONEncoder]() or https://developer.apple.com/documentation/foundation/propertylistencoder[PropertyListEncoder]().
+
+[source, swift]
+----
+fileprivate struct PostmanEchoTimeStampCheckResponse: Codable {
+    let valid: Bool
+}
+
+let dataProvider = PassthroughSubject<PostmanEchoTimeStampCheckResponse, Never>()
+    .encode(encoder: JSONEncoder())
+    .sink { data in
+        print(".sink() data received \(data)")
+        let stringRepresentation = String(data: data, encoding: .utf8)
+        print(stringRepresentation)
+    })
+----
+
+Like the <<#reference-decode>> operator, the encode process can also fail and throw an error, so it returns a failure type of Error.
+With the compiler forcing type matching, the usual error condition is if you flow an optional value into the pipeline.
 
 [#reference-decode]
 ==== decode
@@ -891,6 +925,8 @@ __Usage__::
 * <<patterns.adoc#patterns-dataTaskPublisher-tryMap>>
 * <<patterns.adoc#patterns-oneshot-error-handling>>
 * <<patterns.adoc#patterns-retry>>
+* unit tests illustrating using encode and decode: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/EncodeDecodeTests.swift[`UsingCombineTests/EncodeDecodeTests.swift`]
+
 
 __Details__::
 
