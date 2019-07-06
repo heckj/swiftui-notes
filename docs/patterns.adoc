@@ -114,8 +114,10 @@ cancellablePipeline.cancel() <4>
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
+'''
+
 [#patterns-dataTaskPublisher-decode]
-== Pattern 2: Making a network request with dataTaskPublisher
+== Pattern 2.1: Making a network request with dataTaskPublisher
 
 __Goal__::
 
@@ -123,84 +125,142 @@ __Goal__::
 
 __References__::
 
-* << link to reference pages>>
+* <<reference.adoc#reference-dataTaskPublisher>>
+* <<reference.adoc#reference-map>>
+* <<reference.adoc#reference-decode>>
+* <<reference.adoc#reference-sink>>
+* <<reference.adoc#reference-subscribe>>
 
 __See also__::
 
-* << link to other patterns>>
+* <<#patterns-dataTaskPublisher-tryMap>>
+* <<#patterns-oneshot-error-handling>>
+* <<#patterns-retry>>
 
 __Code and explanation__::
 
-This can be readily accomplished with Combine using https://developer.apple.com/documentation/foundation/urlsession/3329708-datataskpublisher[dataTaskPublisher] on https://developer.apple.com/documentation/foundation/urlsession[URLSession].
-The data that is returns down the pipeline is a tuple: `(data: Data, response: URLResponse)`
+This can be readily accomplished with Combine using
+<<reference.adoc#reference-dataTaskPublisher>> followed by a series of operators that process the
+data.
+Minimally, this is <<reference.adoc#reference-map>> and <<reference.adoc#reference-decode>> before going into your subscriber.
+
+https://developer.apple.com/documentation/foundation/urlsession/3329708-datataskpublisher[dataTaskPublisher] on https://developer.apple.com/documentation/foundation/urlsession[URLSession].
 
 The simplest case of using this might be:
 
 [source, swift]
 ----
-struct IPInfo: Codable {
-    // matching the data structure returned from ip.jsontest.com
-    var ip: String
+let myURL = URL(string: "https://postman-echo.com/time/valid?timestamp=2016-10-10")
+// checks the validity of a timestamp - this one returns {"valid":true}
+// matching the data structure returned from https://postman-echo.com/time/valid
+fileprivate struct PostmanEchoTimeStampCheckResponse: Decodable, Hashable { <1>
+    let valid: Bool
 }
-let myURL = URL(string: "http://ip.jsontest.com")
-// NOTE(heckj): you'll need to enable insecure downloads in your Info.plist for this example
-// since the URL scheme is 'http'
 
-let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
+let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!) <2>
     // the dataTaskPublisher output combination is (data: Data, response: URLResponse)
-    .map({ (inputTuple) -> Data in
-        return inputTuple.data
+    .map { $0.data } <3>
+    .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder()) <4>
+
+let cancellableSink = remoteDataPublisher.sink
+    .sink(receiveCompletion: { completion in
+            print(".sink() received the completion", String(describing: completion))
+            switch completion {
+                case .finished: <5>
+                    break
+                case .failure(let anError): <6>
+                    print("received error: ", anError)
+            }
+    }, receiveValue: { someValue in <7>
+        print(".sink() received \(someValue)")
     })
-    .decode(type: IPInfo.self, decoder: JSONDecoder())
-    .eraseToAnyPublisher()
 ----
 
-With this example, the subscriber will get an instance of the struct IPInfo or will receive a completion notification with an error.
-The dataTaskPublisher makes a single request, and what you build in the pipeline will determine what the subscriber receives.
+<1> Commonly you'll have a struct defined that supports at least https://developer.apple.com/documentation/swift/decodable[Decodable] (if not the full https://developer.apple.com/documentation/swift/codable[Codable protocol]). This struct can be defined to only pull the pieces you're interested in from the JSON provided over the network.
+<2> dataTaskPublisher is instantiated from URLSession. You can configure your own options on URLSession, or use the general shared session as you require.
+<3> The data that is returns down the pipeline is a tuple: `(data: Data, response: URLResponse)`. The <<reference.adoc#reference-map>> operator is used to get the data and drop the URL response, returning just Data down the pipeline.
+<4> <<reference.adoc#reference-decode>> is used to load the data and attempt to transform it into the struct defined. Decode can throw an error itself if the decode fails. If it succeeds, the object passed down the pipeline will be the struct from the JSON data.
+<5> If the decoding happened without errors, the finished completion will be triggered, and the value will also be passed to the receiveValue closure.
+<6> If the a failure happened (either with the original network request or the decoding), the error will be passed into with the `.failure` completion.
+<7> Only if the data succeeded with request and decoding will this closure get invoked, and the data format received with be an instance of the struct `PostmanEchoTimeStampCheckResponse`.
 
-A failed URL request will result in a `.failure` completion with an encapsulated error.
-Likewise, if the returned data couldn't be decoded based on the structure, or wasn't JSON, then the result will be a `.failure` completion with an encapsulated decoding error from the decoder.
+[#patterns-dataTaskPublisher-tryMap]
+== Pattern 2.2: Stricter request processing with dataTaskPublisher
+
+__Goal__::
+
+* If URLSession is handing back a result that you want to intepret more strictly, for example, to trigger an error from a successful network request, you can use tryMap along with the decoding sequence.
+
+__References__::
+
+* <<reference.adoc#reference-dataTaskPublisher>>
+* <<reference.adoc#reference-tryMap>>
+* <<reference.adoc#reference-decode>>
+* <<reference.adoc#reference-sink>>
+* <<reference.adoc#reference-subscribe>>
+
+__See also__::
+
+* <<#patterns-dataTaskPublisher-decode>>
+* <<#patterns-oneshot-error-handling>>
+* <<#patterns-retry>>
+
+
+__Code and explanation__::
 
 To have more control over what is considered a failure in the URL response, use a `tryMap` operator on the tuple response from dataTaskPublisher.
 An example of that might look like:
 
 [source, swift]
 ----
-struct IPInfo: Codable {
-    // matching the data structure returned from ip.jsontest.com
-    var ip: String
+let myURL = URL(string: "https://postman-echo.com/time/valid?timestamp=2016-10-10")
+// checks the validity of a timestamp - this one returns {"valid":true}
+// matching the data structure returned from https://postman-echo.com/time/valid
+fileprivate struct PostmanEchoTimeStampCheckResponse: Decodable, Hashable {
+    let valid: Bool
 }
-let myURL = URL(string: "http://ip.jsontest.com")
-// NOTE(heckj): you'll need to enable insecure downloads in your Info.plist for this example
-// since the URL scheme is 'http'
-
 enum testFailureCondition: Error {
     case invalidServerResponse
 }
 
+
 let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
-    // the dataTaskPublisher output combination is (data: Data, response: URLResponse)
-    .tryMap { data, response -> Data in
-        // this give you the full capability to react to both the data and the HTTPURLResponse
-        // with the expectation that you will throw an error if a failure completion is warranted.
-        guard let httpResponse = response as? HTTPURLResponse,
-            // this will casue an .failure completion on anything other than a 200 response
-            httpResponse.statusCode == 200 else {
-                throw testFailureCondition.invalidServerResponse
-        }
-        return data
+    .tryMap { data, response -> Data in <1>
+                guard let httpResponse = response as? HTTPURLResponse, <2>
+                    httpResponse.statusCode == 200 else { <3>
+                        throw testFailureCondition.invalidServerResponse <4>
+                }
+                return data <5>
     }
-    .decode(type: IPInfo.self, decoder: JSONDecoder())
-    .eraseToAnyPublisher()
+    .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder())
+
+let cancellableSink = remoteDataPublisher.sink
+    .sink(receiveCompletion: { completion in
+            print(".sink() received the completion", String(describing: completion))
+            switch completion {
+                case .finished:
+                    break
+                case .failure(let anError):
+                    print("received error: ", anError)
+            }
+    }, receiveValue: { someValue in
+        print(".sink() received \(someValue)")
+    })
 ----
 
-The above example uses tryMap to allow for an error to be thrown within the closure.
-This lets you put in logic that inspects the specific status code, or you could inspect the data prior to sending it into `JSONDecoder`.
+Where the <<#patterns-dataTaskPublisher-decode, previous pattern>> used a <<reference.adoc#reference-map>> operator, this uses tryMap, which allows us to identify and throw errors in the pipeline based on what was returned.
+
+<1> <<reference.adoc#reference-tryMap>> still gets the tuple of `(data: Data, response: URLResponse)`, and is defined here as returning just the type of Data down the pipeline.
+<2> Within the closure for tryMap, we can cast the response to HTTPURLResponse and dig deeper into it, including looking at the specific status code.
+<3> In this case, we want to consider **anything** other than a 200 response code as a failure.
+<4> If the predicates aren't met, then we can throw an instance of an error of our choosing, `invalidServerResponse` in this case.
+<5> If no error has occured, then we simply pass down Data for further processing.
 
 When an error is triggered on the pipeline, a `.failure` completion is sent with the error encapsulated within it, regardless of where it happened in the pipeline.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
+'''
 
 [#patterns-general-error-handling]
 == Error Handling
@@ -262,6 +322,7 @@ It is far more likely that you want to handle the error and not have the applica
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
+'''
 
 [#patterns-oneshot-error-handling]
 === Pattern 3.2: Using catch to handle errors in a one-shot pipeline
@@ -314,6 +375,10 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
 A possible problem with this technique is that the if the original publisher generates more values to which you wish to react, the original pipeline has been ended.
 This means if you are creating a pipeline that reacts to a `@Published` property, then after any failed value that activates the catch operator, the pipeline will cease to react further.
 See <<reference.adoc#reference-catch>> for more detail and an example.
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''
 
 [#patterns-retry]
 === Pattern 3.3: Retrying in the event of a temporary failure
@@ -376,6 +441,7 @@ Ideally such requests are be expected to be idempotent.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
+'''
 
 [#patterns-continual-error-handling]
 === Pattern 3.4: Using flatMap with catch to handle errors
@@ -430,7 +496,9 @@ In swift, this looks like:
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
+'''
 
+[#patterns-constrained-network]
 == Pattern 4: Requesting data from an alternate URL when the network is constrained
 
 __Goal__::
@@ -481,6 +549,7 @@ If the error is that the network is constrained, then the tryCatch operator crea
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
+'''
 
 [#patterns-update-interface-network-request]
 == Pattern 5: Update the status of your interface from a network request
@@ -539,6 +608,7 @@ In the example above, for every update into .flatMap() we are creating a request
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
+'''
 
 [#patterns-future]
 == Pattern 6: Wrapping an asynchronous call with a Future
@@ -576,6 +646,7 @@ possible example:
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
+'''
 
 [#patterns-sequencing-async]
 == Pattern 7: Coordinating a sequence of asynchronous operations
@@ -599,9 +670,9 @@ If you are familiar with using Promises in another language, such as Javascript,
 
 The benefit to using Combine is that the sequencing can be relatively easy to parse visually.
 
-
 // force a page break - in HTML rendering is just a <HR>
 <<<
+'''
 
 [#patterns-published]
 == Pattern 8: Responding to updates in properties with @Published
@@ -691,6 +762,7 @@ override func viewDidLoad() {
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
+'''
 
 [#patterns-notificationcenter]
 == Pattern 9: Responding to updates from NotificationCenter
@@ -713,6 +785,7 @@ https://www.caseyliss.com/2019/6/18/quick-notes-on-yesterdays-post[Casey Liss ta
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
+'''
 
 [#patterns-bindableobject]
 == Pattern 10: Using BindableObject with SwiftUI models as a publisher source
@@ -789,6 +862,7 @@ __Code and explanation__::
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
+'''
 
 [#patterns-testing-subscriber]
 == Pattern N.3: Testing a subscriber
@@ -821,6 +895,7 @@ __(Uncertain)__ Mocking or faking a publisher (such as dataTaskPublisher) to val
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
+'''
 
 [#patterns-debugging]
 == Pattern N+1: Debugging pipelines
@@ -856,3 +931,4 @@ __Code and explanation__::
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
+'''
