@@ -212,16 +212,35 @@ n/a
 
 ** * https://developer.apple.com/documentation/foundation/timer/timerpublisher[TimerPublisher]
 
-* https://developer.apple.com/documentation/foundation/urlsession[`URLSession`] https://developer.apple.com/documentation/foundation/urlsession/3329707-datataskpublisher[`dataTaskPublisher`]
+[#reference-dataTaskPublisher]
+=== URLSession.dataTaskPublisher
 
-* part of URLSession
-** https://developer.apple.com/documentation/foundation/urlsession/3329707-datataskpublisher[dataTaskPublisher]
-** two versions, on taking a type `URL`, the other `URLSession
-** outputs https://developer.apple.com/documentation/foundation/urlsession/datataskpublisher[`URLSession.DataTaskPublisher`]
+__Summary__::
+
+Foundation's https://developer.apple.com/documentation/foundation/urlsession[`URLSession`] has a publisher specifically for requesting data from URLs: dataTaskPublisher
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/foundation/urlsession/datataskpublisher[`URLSession.DataTaskPublisher`]
+
+__Usage__::
+
+* <<patterns.adoc#patterns-dataTaskPublisher-decode>>
+* <<patterns.adoc#patterns-oneshot-error-handling>>
+* <<patterns.adoc#patterns-retry>>
+* <<patterns.adoc#patterns-constrained-network>>
+
+__Details__::
+
+`dataTaskPublisher`, on URLSession, has two variants for creating a publisher.
+The first takes an instance of https://developer.apple.com/documentation/foundation/url[URL], the second https://developer.apple.com/documentation/foundation/urlrequest[URLRequest].
+The data returned from the publisher is a tuple of `(data: Data, response: https://developer.apple.com/documentation/foundation/urlResponse[URLResponse])`.
 
 [source,swift]
 ----
-var request = URLRequest(url: regularURL)
+let request = URLRequest(url: regularURL)
 return URLSession.shared.dataTaskPublisher(for: request)
 ----
 
