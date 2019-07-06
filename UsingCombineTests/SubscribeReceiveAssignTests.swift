@@ -28,7 +28,7 @@ class SubscribeReceiveAssignTests: XCTestCase {
             return obj.boolValue
         }
         let sampleURL = URL(string: "https://postman-echo.com/time/valid?timestamp=2016-10-10")
-        // checks the validiry of a timestamp - this one should return {"valid":true}
+        // checks the validity of a timestamp - this one should return {"valid":true}
 
         //validate
         let _ = URLSession.shared.dataTaskPublisher(for: sampleURL!)
