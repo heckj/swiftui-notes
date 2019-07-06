@@ -150,14 +150,32 @@ class DataTaskPublisherTests: XCTestCase {
         wait(for: [expectation], timeout: 5.0)
     }
 
+
     func testDataTaskPublisherWithDelayedRetry() {
         // setup
+        let expectation = XCTestExpectation(description: "Download from \(String(describing: testURL))")
+
+        let configuration = URLSessionConfiguration.default
+        configuration.protocolClasses = [MockingURLProtocol.self]
+        let urlSession = URLSession(configuration: configuration)
+
+        var m = Mock(url: testURL!, ignoreQuery: false, dataType: .json,
+             statusCode: 200,
+             data: [.get : Data("{\"valid\":true}".utf8)],
+             additionalHeaders: ["newkey": "newvalue"])
+        m.delay = DispatchTimeInterval.milliseconds(500)
+        m.reportFailure = true
+        m.completion = {
+            print("REMOTE COMPLETION CALLED")
+        }
+        m.register()
+
         guard let backgroundQueue = self.myBackgroundQueue else {
             XCTFail()
             return
         }
-        let expectation = XCTestExpectation(description: "Download from \(String(describing: testURL))")
-        let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: self.testURL!)
+
+        let remoteDataPublisher = urlSession.dataTaskPublisher(for: self.testURL!)
             .delay(for: DispatchQueue.SchedulerTimeType.Stride(integerLiteral: Int.random(in: 1..<5)), scheduler: backgroundQueue)
             .retry(3)
             .timeout(15, scheduler: backgroundQueue) // max time of 15 seconds before failing
@@ -185,7 +203,7 @@ class DataTaskPublisherTests: XCTestCase {
             })
 
         XCTAssertNotNil(remoteDataPublisher)
-        wait(for: [expectation], timeout: 5.0)
+        wait(for: [expectation], timeout: 30.0)
     }
 
 }
