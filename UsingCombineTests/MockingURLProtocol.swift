@@ -13,7 +13,7 @@ public final class MockingURLProtocol: URLProtocol {
 
     enum Error: Swift.Error {
         case missingMockedData(url: String)
-        case explicitMockFailure
+        case explicitMockFailure(url: String)
     }
 
     /// Returns Mocked data based on the mocks register in the `Mocker`. Will end up in an error when no Mock data is found for the request.
@@ -36,7 +36,7 @@ public final class MockingURLProtocol: URLProtocol {
                 self.client?.urlProtocol(self, wasRedirectedTo: URLRequest(url: redirectLocation), redirectResponse: response)
             } else {
                 if mock.reportFailure {
-                    self.client?.urlProtocol(self, didFailWithError: Error.explicitMockFailure)
+                    self.client?.urlProtocol(self, didFailWithError: Error.explicitMockFailure(url: String(describing: self.request.url?.absoluteString)))
                 } else {
                     self.client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
                     self.client?.urlProtocol(self, didLoad: data)

@@ -154,6 +154,7 @@ class DataTaskPublisherTests: XCTestCase {
     func testDataTaskPublisherWithDelayedRetry() {
         // setup
         let expectation = XCTestExpectation(description: "Download from \(String(describing: testURL))")
+        var countOfMockURLRequests = 0
 
         let configuration = URLSessionConfiguration.default
         configuration.protocolClasses = [MockingURLProtocol.self]
@@ -166,6 +167,7 @@ class DataTaskPublisherTests: XCTestCase {
         m.delay = DispatchTimeInterval.milliseconds(500)
         m.reportFailure = true
         m.completion = {
+            countOfMockURLRequests += 1
             print("REMOTE COMPLETION CALLED")
         }
         m.register()
@@ -178,7 +180,8 @@ class DataTaskPublisherTests: XCTestCase {
         let remoteDataPublisher = urlSession.dataTaskPublisher(for: self.testURL!)
             .delay(for: DispatchQueue.SchedulerTimeType.Stride(integerLiteral: Int.random(in: 1..<5)), scheduler: backgroundQueue)
             .retry(3)
-            .timeout(15, scheduler: backgroundQueue) // max time of 15 seconds before failing
+//            .timeout(15, scheduler: backgroundQueue) // max time of 15 seconds before failing -
+        // if invoked, it will call completion rather than register as a failure
             .tryMap { data, response -> Data in
                 guard let httpResponse = response as? HTTPURLResponse,
                     httpResponse.statusCode == 200 else {
@@ -192,18 +195,17 @@ class DataTaskPublisherTests: XCTestCase {
 
             // validate
             .sink(receiveCompletion: { completion in
-                switch completion {
-                case .finished: expectation.fulfill()
-                case .failure(let anError):
-                    XCTFail(anError.localizedDescription)
-                }
+                print("COMPLETION: ", completion)
+                expectation.fulfill()
             }, receiveValue: { decodedResponse in
                 XCTAssertNotNil(decodedResponse)
                 XCTAssertTrue(decodedResponse.valid)
             })
 
+
         XCTAssertNotNil(remoteDataPublisher)
-        wait(for: [expectation], timeout: 30.0)
+        wait(for: [expectation], timeout: 20.0)
+        XCTAssertEqual(countOfMockURLRequests, 4)
     }
 
 }
