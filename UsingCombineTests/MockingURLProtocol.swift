@@ -29,8 +29,6 @@ public final class MockingURLProtocol: URLProtocol {
             return
         }
 
-        //                self.client?.urlProtocol(self, didFailWithError: <#T##Error#>)
-
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).asyncAfter(deadline: .now() + (mock.delay ?? DispatchTimeInterval.seconds(0))) {
             if let redirectLocation = data.redirectLocation {
                 self.client?.urlProtocol(self, wasRedirectedTo: URLRequest(url: redirectLocation), redirectResponse: response)

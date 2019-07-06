@@ -57,7 +57,10 @@ public struct Mock: Equatable {
     
     /// The type of the data which is returned.
     public let dataType: DataType
-    
+
+    /// Determines if the URLProtocol reports a failure to load rather than returning data from the mock
+    public var reportFailure: Bool
+
     /// The headers to send back with the response.
     public let headers: [String: String]
     
@@ -69,9 +72,6 @@ public struct Mock: Equatable {
 
     /// If `true`, checking the URL will ignore the query and match only for the scheme, host and path.
     public let ignoreQuery: Bool
-
-    /// If `true` will report failure through URLProtocol rather than return data
-    public var reportFailure: Bool
 
     /// The file extensions to match for.
     public let fileExtensions: [String]?
@@ -116,12 +116,13 @@ public struct Mock: Equatable {
     /// - Parameters:
     ///   - url: The URL to match for and to return the mocked data for.
     ///   - ignoreQuery: If `true`, checking the URL will ignore the query and match only for the scheme, host and path. Defaults to `false`.
+    ///   - reportFailure: if `true`, the URLsession will report an error loading the URL rather than returning data. Defaults to `false`.
     ///   - dataType: The type of the data which is returned.
     ///   - statusCode: The HTTP status code to return with the response.
     ///   - data: The data which will be returned as the response based on the HTTP Method.
     ///   - additionalHeaders: Additional headers to be added to the response.
-    public init(url: URL, ignoreQuery: Bool = false, dataType: DataType, statusCode: Int, data: [HTTPMethod: Data], additionalHeaders: [String: String] = [:]) {
-        self.init(url: url, ignoreQuery: ignoreQuery, dataType: dataType, statusCode: statusCode, data: data, additionalHeaders: additionalHeaders, fileExtensions: nil)
+    public init(url: URL, ignoreQuery: Bool = false, reportFailure: Bool = false, dataType: DataType, statusCode: Int, data: [HTTPMethod: Data], additionalHeaders: [String: String] = [:]) {
+        self.init(url: url, ignoreQuery: ignoreQuery, reportFailure: reportFailure, dataType: dataType, statusCode: statusCode, data: data, additionalHeaders: additionalHeaders, fileExtensions: nil)
     }
     
     /// Creates a `Mock` for the given file extensions. The mock will only be used for urls matching the extension.
