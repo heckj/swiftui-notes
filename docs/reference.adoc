@@ -895,6 +895,11 @@ networkDataPublisher
 <2> the `receive` call transfers the data to the main runloop, suitable for updating user interface elements
 <3> the `assign` call uses the <<#reference-assign>> subscriber to update the property `text` on a KVO compliant object, in this case `yourLabel`.
 
+[NOTE]
+====
+When creating a DispatchQueue to use with Combine publishers on background threads, it is recommended that you use a `.serial` rather than `.concurrent` queue https://forums.swift.org/t/runloop-main-or-dispatchqueue-main-when-using-combine-scheduler/26635/4[to allow Combine to adhere to its contracts].
+====
+
 // force a page break - in HTML rendering is just a <HR>
 <<<
 '''
