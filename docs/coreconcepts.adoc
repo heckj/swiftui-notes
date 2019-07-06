@@ -306,9 +306,13 @@ Operators can also help with error handling and retry logic, buffering and prefe
 [cols="3*^"]
 |===
 3+h| Handling errors
-| <<reference.adoc#reference-assertNoFailure>>
 | <<reference.adoc#reference-catch>>
+| <<reference.adoc#reference-tryCatch>>
+| <<reference.adoc#reference-assertNoFailure>>
+
 | <<reference.adoc#reference-retry>>
+| <<reference.adoc#reference-mapError>>
+|
 |===
 
 [cols="3*^"]

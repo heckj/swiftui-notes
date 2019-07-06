@@ -721,12 +721,6 @@ Just(5)
 
 See <<patterns.adoc#patterns-general-error-handling>> for more detail on how you can design error handling.
 
-[#reference-assertNoFailure]
-==== assertNoFailure
-
-* assertNoFailure
-** Raises a fatal error when its upstream publisher fails, and otherwise republishes all received input.
-
 [#reference-catch]
 ==== catch
 
@@ -795,6 +789,17 @@ The values you would see printed from our `.sink()` closures are:
 When the failure was sent through the pipeline, catch intercepts it and returns "replacement value" as expected.
 The replacement publisher it used (`Just`) sends a single value and then sends a completion.
 If we want the pipeline to remain active, we need to change how we handle the errors.
+
+[#reference-tryCatch]
+==== tryCatch
+
+Back in beta3!
+
+[#reference-assertNoFailure]
+==== assertNoFailure
+
+* assertNoFailure
+** Raises a fatal error when its upstream publisher fails, and otherwise republishes all received input.
 
 [#reference-retry]
 ==== retry
