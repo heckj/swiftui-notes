@@ -149,4 +149,43 @@ class DataTaskPublisherTests: XCTestCase {
         XCTAssertNotNil(remoteDataPublisher)
         wait(for: [expectation], timeout: 5.0)
     }
+
+    func testDataTaskPublisherWithDelayedRetry() {
+        // setup
+        guard let backgroundQueue = self.myBackgroundQueue else {
+            XCTFail()
+            return
+        }
+        let expectation = XCTestExpectation(description: "Download from \(String(describing: testURL))")
+        let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: self.testURL!)
+            .delay(for: DispatchQueue.SchedulerTimeType.Stride(integerLiteral: Int.random(in: 1..<5)), scheduler: backgroundQueue)
+            .retry(3)
+            .timeout(15, scheduler: backgroundQueue) // max time of 15 seconds before failing
+            .tryMap { data, response -> Data in
+                guard let httpResponse = response as? HTTPURLResponse,
+                    httpResponse.statusCode == 200 else {
+                        throw testFailureCondition.invalidServerResponse
+                }
+                return data
+            }
+            .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder())
+            .subscribe(on: backgroundQueue)
+            .eraseToAnyPublisher()
+
+            // validate
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished: expectation.fulfill()
+                case .failure(let anError):
+                    XCTFail(anError.localizedDescription)
+                }
+            }, receiveValue: { decodedResponse in
+                XCTAssertNotNil(decodedResponse)
+                XCTAssertTrue(decodedResponse.valid)
+            })
+
+        XCTAssertNotNil(remoteDataPublisher)
+        wait(for: [expectation], timeout: 5.0)
+    }
+
 }
