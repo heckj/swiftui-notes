@@ -288,14 +288,101 @@ Scene Publisher (from https://developer.apple.com/documentation/realitykit[Reali
 [#reference-map]
 ==== map
 
-* map
-** you provide a closure that gets the values and chooses what to publish
-** there's a variant `tryMap` that that transforms all elements from the upstream publisher with a provided error-throwing closure.
+__Summary__::
+
+map is most commonly used to convert one data type into another along a pipeline.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/map
+
+n/a
+
+__Usage__::
+
+* <<patterns.adoc#patterns-dataTaskPublisher-decode>>
+* <<patterns.adoc#patterns-oneshot-error-handling>>
+* <<patterns.adoc#patterns-retry>>
+
+__Details__::
+
+The map operator doesn't allow for any additional failures to be thrown, and doesn't transform the failure type.
+If you want to throw an error within your closure, then use the <<#reference-tryMap>> operator.
+
+map takes a single closure where you provide the logic for the map operation.
+
+For example, the <<#reference-dataTaskPublisher>> provides a tuple of `(data: Data, response: URLResponse)`` as its output.
+You can use map to pass along the data, for example to use with <<#reference-decode>>.
+
+[source, swift]
+----
+.map { $0.data } <1>
+----
+
+<1> the `$0` indicates to grab the first parameter passed in, which is a tuple of `data` and `response`.
+
+In some cases, the closure may not be able to infer what data type you are returning, so you may need to provide a definition to help the compiler.
+For example, if you have an object getting passed down that has a boolean property "isValid" on it, and you just want the boolean for your pipeline, you might set that up like:
+
+[source, swift]
+----
+struct myStruct {
+    isValid: bool = true
+}
+//
+Just(myStruct())
+.map { inValue -> Bool in <1>
+  inValue.isValid <2>
+}
+----
+
+<1> inValue is named as the parameter coming in, and the return type is being explicitly specified to `Bool`
+<2> A single line is an implicit return, in this case it's pulling the `isValid` property off the struct and passing it down the pipeline.
 
 [#reference-tryMap]
 ==== tryMap
 
-* tryMap
+__Summary__::
+
+tryMap is effectively the similiar to <<#reference-map>>, except that it also allows you to provide a closure that throws additional errors if your conversion logic is unsuccessful.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/trymap
+
+__Usage__::
+
+* <<patterns.adoc#patterns-dataTaskPublisher-tryMap>>
+
+__Details__::
+
+tryMap is useful when you have more complex business logic around your map and you want to indicate that the data passed in is an error, possibly handling that error later in the pipeline.
+If you are looking at tryMap to decode JSON, you may want to consider using the <<#reference-decode>> operator instead, which is set up for that common task.
+
+[source, swift]
+----
+enum myFailure: Error {
+    case notBigEnough
+}
+
+//
+Just(5)
+.tryMap {
+  if inValue < 5 { <1>
+      throw myFailure.notBigEnough <2>
+  }
+  return inValue <3>
+}
+----
+
+<1> You can specify whatever logic is relevant to your use case within tryMap
+<2> and throw an error, although throwing an Error isn't required.
+<3> If the error condition doesn't occur, you do need to pass down data for any further subscribers.
+
 
 [#reference-flatMap]
 ==== flatpMap
@@ -788,12 +875,47 @@ If we want the pipeline to remain active, we need to change how we handle the er
 [#reference-decode]
 ==== decode
 
-* decode
+__Summary__::
 
-** common operating where you hand in a type of decoder, and transform data (ex: JSON) into an object
-** can fail, so it returns an error type
-** Available when Output conforms to Decodable.
-** -> `<SomeType>`, `<Error>`
+A very common operation is to want to use decode (or <<#reference-encode>> data in a pipline, so Combine provides an operator specifically suited to that task.
+
+__Constraints on connected publisher__::
+
+* Available when Output conforms to Decodable.
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/decode
+
+__Usage__::
+
+* <<patterns.adoc#patterns-dataTaskPublisher-decode>>
+* <<patterns.adoc#patterns-dataTaskPublisher-tryMap>>
+* <<patterns.adoc#patterns-oneshot-error-handling>>
+* <<patterns.adoc#patterns-retry>>
+
+__Details__::
+
+The decode operator takes two parameters:
+
+* `type` which is typically a reference to a struct you've defined
+* `decoder` an instance of an object conforming to https://developer.apple.com/documentation/combine/topleveldecoder[TopLevelDecoder], frequently an instance of https://developer.apple.com/documentation/foundation/jsondecoder[JSONDecoder]() or https://developer.apple.com/documentation/foundation/propertylistdecoder[PropertyListDecoder]().
+
+Since decoding can fail, the operator will also return a failure type of Error.
+The data type returned by the operator is defined by the type you provided to decode.
+
+[source, swift]
+----
+let testUrlString = "https://postman-echo.com/time/valid?timestamp=2016-10-10"
+// checks the validity of a timestamp - this one should return {"valid":true}
+// matching the data structure returned from https://postman-echo.com/time/valid
+fileprivate struct PostmanEchoTimeStampCheckResponse: Decodable, Hashable {
+    let valid: Bool
+}
+
+let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: URL(string: testUrlString)!)
+    // the dataTaskPublisher output combination is (data: Data, response: URLResponse)
+    .map { $0.data }
+    .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder())
+----
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
