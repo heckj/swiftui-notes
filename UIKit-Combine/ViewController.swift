@@ -25,11 +25,14 @@ class ViewController: UIViewController {
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var repositoryCountLabel: UILabel!
 
+    // username from the github_id_entry field, updated via IBAction
     @Published var username: String = ""
+    // publisher reference for this is $username, of type <String, Never>
 
     var myBackgroundQueue: DispatchQueue = DispatchQueue(label: "viewControllerBackgroundQueue")
 
     var APIwarning: PassthroughSubject = PassthroughSubject<String, Never>()
+    var foo: AnyCancellable?
 
     private var githubUserData: AnyPublisher<GithubAPIUser, Never> {
         return $username
@@ -54,13 +57,32 @@ class ViewController: UIViewController {
                     return data
                 }
                 .decode(type: GithubAPIUser.self, decoder: JSONDecoder())
-                .catch { _ in
-                    Publishers.Empty()
+                .catch { err in
+                    // the following lines cause a compiler failure:
+                    /*
+                     /Users/heckj/src/swiftui-notes/UIKit-Combine/ViewController.swift:45:35: error: ambiguous reference to member 'dataTaskPublisher(for:)'
+                     return URLSession.shared.dataTaskPublisher(for: URL(string: assembledURL)!)
+                     ~~~~~~~~~~~^~~~~~
+                     Foundation.URLSession:3:17: note: found this candidate
+                     public func dataTaskPublisher(for url: URL) -> URLSession.DataTaskPublisher
+                     ^
+                     Foundation.URLSession:4:17: note: found this candidate
+                     public func dataTaskPublisher(for request: URLRequest) -> URLSession.DataTaskPublisher
+                     ^
+                     */
+//                    if let myError = err as APIFailureCondition {
+//                        APIwarning.send("No user with that name")
+//                    } else {
+//                        APIwarning.send("Unable to communicate with Github API")
+//                    }
+                    return Publishers.Empty()
                 }
                 .subscribe(on: self.myBackgroundQueue)
         }
         .eraseToAnyPublisher()
     }
+
+    // MARK - Actions
 
     @IBAction func githubIdChanged(_ sender: UITextField) {
         username = sender.text ?? ""
@@ -69,6 +91,22 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+
+        //NOTE(heckj):
+        // seems that if we use .sink() here to process the data, we can also capture and work on errors here
+        // at the sink, rather than filtering them in the stream.
+        _ = githubUserData
+            .receive(on: RunLoop.main)
+            .sink { user in
+                print(user)
+            }
+
+        // using .assign() on the other hand (which returns an AnyCancellable) *DOES* require a Failure type of <Never>
+        foo = githubUserData
+            .map {
+                String($0.public_repos)
+        }
+        .assign(to: \.text, on: repositoryCountLabel)
 
     }
 
