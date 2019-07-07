@@ -517,7 +517,7 @@ __References__::
 
 * <<reference.adoc#reference-dataTaskPublisher>>
 * <<reference.adoc#reference-tryCatch>>
-* <<reference.adoc#reference-tryMaph>>
+* <<reference.adoc#reference-tryMap>>
 
 __See also__::
 
@@ -526,34 +526,45 @@ __See also__::
 
 __Code and explanation__::
 
-
 [NOTE]
 ====
-This sample is originally from the WWDC session, but the API and example is evolving with the beta releases of Combine since that presentation.
-`tryCatch` was missing in the Beta2 release, and has returned in beta3.
+This sample is originally from the WWDC session.
+The API and example is evolving with the beta releases of Combine since that presentation.
+`tryCatch` was missing in the beta2 release, and has returned in beta3.
 ====
 
 [source, swift]
 ----
 // Generalized Publisher for Adaptive URL Loading
 func adaptiveLoader(regularURL: URL, lowDataURL: URL) -> AnyPublisher<Data, Error> {
-    var request = URLRequest(url: regularURL)
-    request.allowsConstrainedNetworkAccess = false
-    return URLSession.shared.dataTaskPublisher(for: request)
-        .tryCatch { error -> URLSession.DataTaskPublisher in
+    var request = URLRequest(url: regularURL) <1>
+    request.allowsConstrainedNetworkAccess = false <2>
+    return URLSession.shared.dataTaskPublisher(for: request) <3>
+        .tryCatch { error -> URLSession.DataTaskPublisher in <4>
             guard error.networkUnavailableReason == .constrained else {
                throw error
             }
-            return URLSession.shared.dataTaskPublisher(for: lowDataURL)
+            return URLSession.shared.dataTaskPublisher(for: lowDataURL) <5>
         .tryMap { data, response -> Data in
-            guard let httpResponse = response as? HTTPUrlResponse,
+            guard let httpResponse = response as? HTTPUrlResponse, <6>
                    httpResponse.status_code == 200 else {
                        throw MyNetworkingError.invalidServerResponse
             }
             return data
 }
-.eraseToAnyPublisher()
+.eraseToAnyPublisher() <7>
 ----
+
+This example, from Apple's WWDC, provides a function that takes two URLs - a primary and a fallback.
+It returns a publisher that will request data and fall back requesting a secondary URL when the network is constrained.
+
+<1> The request starts with an attempt requesting data.
+<2> Setting `request.allowsConstrainedNetworkAccess` will cause the dataTaskPublisher to error if the network is constrained.
+<3> Invoke the dataTaskPublisher to make the request.
+<4> tryCatch is used to capture the immediate error condition and check for a specific error (the constrained network).
+<5> If it finds an error, it creates a new one-shot publisher with the fall-back URL.
+<6> The resulting publisher can still fail, and tryMap can map this a failure by throwing an error on HTTP response codes that map to error conditions
+<7> eraseToAnyPublisher will do type erasure on the chain of operators so the resulting signature of the adaptiveLoader function is of type `AnyPublisher<Data, Error>`
 
 In the sample, if the error returned from the original request wasn't an issue of the network being constrained, it passes on the .failure completion down the pipeline.
 If the error is that the network is constrained, then the tryCatch operator creates a new request to an alternate URL.

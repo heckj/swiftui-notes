@@ -28,18 +28,17 @@ things to potentially include for each segment
 
 __Summary__::
 
-`just` provides a single result and then terminates.
+`Just` provides a single result and then terminates, providing a publisher with a failure type of `<Never>`
 
 __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/just[`Just`]
 
 __Usage__::
 
-n/a
+* <<patterns.adoc#patterns-continual-error-handling>>
 
 __Details__::
 
-* Just -> `<SomeType>`, `<Never>`
-** often used in error handling
+Often used within a closure to <<#reference-flatMap>> in error handling, it can see a one-shot pipeline for use in error handling of continuous values.
 
 [#reference-future]
 === Future
@@ -388,7 +387,6 @@ Just(5)
 <2> and throw an error, although throwing an Error isn't required.
 <3> If the error condition doesn't occur, you do need to pass down data for any further subscribers.
 
-
 [#reference-flatMap]
 ==== flatMap
 
@@ -404,7 +402,7 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 
 __Usage__::
 
-n/a
+* <<patterns.adoc#patterns-continual-error-handling>>
 
 __Details__::
 
@@ -434,7 +432,6 @@ In swift, this looks like:
     }
 }
 ----
-
 
 [#reference-setFailureType]
 ==== setFailureType
@@ -833,8 +830,6 @@ If we want the pipeline to remain active, we need to change how we handle the er
 [#reference-tryCatch]
 ==== tryCatch
 
-Back in beta3!
-
 __Summary__::
 
 A variant of the <<#reference-catch>> operator that also allows an `<Error>` failure type, and doesn't convert the failure type to `<Never>`.
@@ -851,7 +846,8 @@ __Usage__::
 
 __Details__::
 
-n/a
+`tryCatch` is a variant of <<#reference-catch>> that has a failure type of `<Error>` rather than catch's failure type of `<Never>`.
+This allows it to be used where you want to immediately react to an error by creating another publisher that may also produce a failure type.
 
 [#reference-assertNoFailure]
 ==== assertNoFailure
