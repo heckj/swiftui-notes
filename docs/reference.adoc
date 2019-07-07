@@ -985,6 +985,17 @@ __Usage__::
 
 __Details__::
 
+Timeout will force a resolution to a pipeline after a given amount of time, but does not guarantee either data or errors, only a completion.
+If a timeout does trigger and force a completion, it will not generate an failure completion with an error.
+
+Timeout is specified with two parameters, a time period and a scheduler.
+
+If you are using a specific background thread (for example, with the <<#reference-subscribe>> operator), then timeout should likely be using the same scheduler.
+
+The time period specified will take a literal integer, but otherwise needs to conform to the protocol https://developer.apple.com/documentation/combine/schedulertimeintervalconvertible[SchedulerTimeIntervalConvertible].
+If you want to set a number from a Float or Int, you need to create the relevant structure, as Int or Float directly doesn't conform.
+For example, if you're using a DispatchQueue, you could use https://developer.apple.com/documentation/dispatch/dispatchqueue/schedulertimetype/stride[DispatchQueue.SchedulerTimeType.Stride].
+
 [source, swift]
 ----
 let remoteDataPublisher = urlSession.dataTaskPublisher(for: self.mockURL!)
