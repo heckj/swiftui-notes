@@ -451,47 +451,56 @@ __Goal__::
 
 __References__::
 
-* << link to reference pages>>
+* <<reference.adoc#reference-flatmap>>
+* <<reference.adoc#reference-just>>
+* <<reference.adoc#reference-once>>
+* <<reference.adoc#reference-catch>>
 
 __See also__::
 
-* << link to other patterns>>
+* <<#patterns-oneshot-error-handling>>
+* <<#patterns-retry>>
 
 __Code and explanation__::
 
-The `flatMap()` operator is exactly what we need in this use case.
+The `flatMap` operator is the operator to use in handling errors on a continual flow of events.
 
-You can think of the `flatMap()` operator as a way to inject values into your pipeline from a temporary one-shot publisher.
-For every element `flatMap()` receives, it invokes it's closure to create a publisher.
-That publisher is then sending values to any downstream subscriber.
+You provide a closure to flatMap that can read in the value that was provided, and creates a one-shot closure that does the possibly failing work.
+An example of this is requesting data from a network and then decoding the returned data.
+You can include a <<reference.adoc#reference-catch>> operator to capture any errors and provide any appropriate value.
 
-This is a perfect mechanism for when you want to maintain updates up an upstream publisher, as it effectively creates one-shot publishers (or even small pipelines) that send a single value and then complete.
+This is a perfect mechanism for when you want to maintain updates up an upstream publisher, as it creates one-shot publisher or short pipelines that send a single value and then complete for every incoming value.
 The completion from the created one-shot publishers terminates in the flatMap and isn't passed to downstream subscribers.
-To use this with error handling, we can create a one-shot publisher, or pipeline, that starts with the value provided upstream.
-Then we create the pipeline to do any potentially failing work, and construct it with a `.catch` as we saw earlier to provide a fallback value.
 
-A diagram version of this pipelines might be:
-
-[source]
-----
-     one-shot-publisher(value) -> catch ( fallback )      // <- one-shot pipeline
-                          ^                        \
-                          |                         \
-publisher -> flatMap -> ( +                           +  ) -> subscriber
-----
-
-In swift, this looks like:
+An example of this with a dataTaskPublisher:
 
 [source, swift]
 ----
-.flatMap { data in
-    return Just(data)
-    .decode(YourType.self, JSONDecoder())
-    .catch {
-        return Just(YourType.placeholder)
+let remoteDataPublisher = Just(self.testURL!) <1>
+    .flatMap { url in <2>
+        URLSession.shared.dataTaskPublisher(for: url) <3>
+        .tryMap { data, response -> Data in <4>
+            guard let httpResponse = response as? HTTPURLResponse,
+                httpResponse.statusCode == 200 else {
+                    throw testFailureCondition.invalidServerResponse
+            }
+            return data
+        }
+        .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder()) <5>
+        .catch {_ in <6>
+            return Just(PostmanEchoTimeStampCheckResponse(valid: false))
+        }
     }
-}
+    .subscribe(on: self.myBackgroundQueue!)
+    .eraseToAnyPublisher()
 ----
+
+<1> Just starts this publisher as an example by passing in a URL.
+<2> flatMap takes the URL as input and the closure goes on to create a one-shot publisher chain.
+<3> dataTaskPublisher uses the input url
+<4> which flows to tryMap to parse for additional errors
+<5> and finally decode to attempt to refine the returned data into a local type
+<6> if any of these have failed, catch will convert the error into a placeholder sample, in this case an object with a preset `valid = false` property.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<

@@ -124,15 +124,17 @@ __Summary__::
 
 Generates an output to each subscriber exactly once then finishes or fails immediately.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/once[`Publishers.Once`]
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/once[`Once`]
 
 __Usage__::
 
-n/a
+TBD
 
 __Details__::
 
-n/a
+Used similiarly to <<#reference-just>>, it provides a value and then completes.
+It is often used with flatMap when you want to flow have flatMap return a publisher that returns a publisher with an error type.
+Where <<#reference-just>> returns a failure type of `<Never>`, `once` allows for a failure type of `<Error>`.
 
 [#reference-optional]
 === Publishers.Optional
@@ -388,13 +390,51 @@ Just(5)
 
 
 [#reference-flatMap]
-==== flatpMap
+==== flatMap
 
-* flatMap
+__Summary__::
 
-** collapses nil values out of a stream
-** used with error recovery or async operations that might fail (ex: Future)
-** requires Failure to be `<Never>`
+Used with error recovery or async operations that might fail (ex: Future), flatMap will replace any incoming values with another publisher.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/flatmap[`flatMap`]
+
+__Usage__::
+
+n/a
+
+__Details__::
+
+Most typically used in error handling scenarios, flatMap takes a closure that allows you to read the incoming data value, and provide a publisher that returns a value to the pipeline.
+
+In error handling, this is most frequently used to take the incoming value and create a one-shot pipeline that does some potentially failing operation, and then handling the error condition with a <<#reference-catch>> operator.
+
+A diagram version of this pipeline construct might be:
+
+[source]
+----
+     one-shot-publisher(value) -> catch ( fallback )      // <- one-shot pipeline
+                          ^                        \
+                          |                         \
+publisher -> flatMap -> ( +                           +  ) -> subscriber
+----
+
+In swift, this looks like:
+
+[source, swift]
+----
+.flatMap { data in
+    return Just(data)
+    .decode(YourType.self, JSONDecoder())
+    .catch {
+        return Just(YourType.placeholder)
+    }
+}
+----
+
 
 [#reference-setFailureType]
 ==== setFailureType

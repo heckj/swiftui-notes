@@ -449,4 +449,41 @@ class DataTaskPublisherTests: XCTestCase {
         // the timeout triggered.
         XCTAssertEqual(countOfMockURLRequests, 2)
     }
+
+    func testDataTaskPublisherWithTryMapAndFlatMap() {
+        // setup
+        let expectation = XCTestExpectation(description: "Download from \(String(describing: testURL))")
+
+        let remoteDataPublisher = Just(self.testURL!)
+            .flatMap { url in
+                URLSession.shared.dataTaskPublisher(for: url)
+                .tryMap { data, response -> Data in
+                        guard let httpResponse = response as? HTTPURLResponse,
+                            httpResponse.statusCode == 200 else {
+                                throw testFailureCondition.invalidServerResponse
+                        }
+                        return data
+                }
+                .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder())
+                    .catch {_ in
+                        return Just(PostmanEchoTimeStampCheckResponse(valid: false))
+                }
+            }
+            .subscribe(on: self.myBackgroundQueue!)
+            .eraseToAnyPublisher()
+            // validate
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished: expectation.fulfill()
+                case .failure(let anError):
+                    XCTFail(anError.localizedDescription)
+                }
+            }, receiveValue: { decodedResponse in
+                XCTAssertNotNil(decodedResponse)
+                XCTAssertTrue(decodedResponse.valid)
+            })
+
+        XCTAssertNotNil(remoteDataPublisher)
+        wait(for: [expectation], timeout: 5.0)
+    }
 }
