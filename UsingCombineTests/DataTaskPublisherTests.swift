@@ -19,6 +19,11 @@ class DataTaskPublisherTests: XCTestCase {
         case invalidServerResponse
     }
 
+    // heroku app that returns errors: https://github.com/heckj/barkshin
+    let test404UrlString = "https://barkshin.herokuapp.com/missing"
+    let test400UrlString = "https://barkshin.herokuapp.com/badRequest"
+    let test500UrlString = "https://barkshin.herokuapp.com/generalError"
+
     let testUrlString = "https://postman-echo.com/time/valid?timestamp=2016-10-10"
     // checks the validity of a timestamp - this one should return {"valid":true}
     // matching the data structure returned from https://postman-echo.com/time/valid
@@ -34,7 +39,177 @@ class DataTaskPublisherTests: XCTestCase {
         self.mockURL = URL(string: "https://fakeurl.com/response")
         // ignore the testURL and let it pass through and do it's thing
         Mocker.ignore(testURL!)
+        Mocker.ignore(URL(string: test400UrlString)!)
+        Mocker.ignore(URL(string: test404UrlString)!)
+        Mocker.ignore(URL(string: test500UrlString)!)
     }
+
+    func testDataTaskPublisherFailure400URL() {
+        // setup
+        let expectation = XCTestExpectation(description: "Download from \(String(describing: test400UrlString))")
+        let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: URL(string: test400UrlString)!)
+            // validate
+            .sink(receiveCompletion: { fini in
+                print(".sink() received the completion", String(describing: fini))
+                switch fini {
+                case .finished:
+                    break
+                case .failure(let anError):
+                    print("received error: ", anError)
+                }
+                expectation.fulfill()
+            }, receiveValue: { (data, response) in
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    XCTFail("Unable to parse response an HTTPURLResponse")
+                    return
+                }
+                let stringedData = String(data: data, encoding: .utf8)
+                print(".sink() data received \(data) as \(String(describing: stringedData))")
+                print(".sink() httpResponse received \(httpResponse)")
+            })
+
+        XCTAssertNotNil(remoteDataPublisher)
+        wait(for: [expectation], timeout: 5.0)
+
+        /*
+
+         .sink() data received 12 bytes as Optional("bad request!")
+         .sink() httpResponse received <NSHTTPURLResponse: 0x6000019351c0> { URL: https://barkshin.herokuapp.com/badRequest } { Status Code: 400, Headers {
+         Connection =     (
+         "keep-alive"
+         );
+         "Content-Length" =     (
+         12
+         );
+         "Content-Type" =     (
+         "text/html; charset=utf-8"
+         );
+         Date =     (
+         "Sun, 07 Jul 2019 00:45:18 GMT"
+         );
+         Server =     (
+         "gunicorn/19.9.0"
+         );
+         Via =     (
+         "1.1 vegur"
+         );
+         } }
+         .sink() received the completion finished
+
+         */
+    }
+
+    func testDataTaskPublisherFailure404URL() {
+        // setup
+        let expectation = XCTestExpectation(description: "Download from \(String(describing: test404UrlString))")
+        let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: URL(string: test404UrlString)!)
+            // validate
+            .sink(receiveCompletion: { fini in
+                print(".sink() received the completion", String(describing: fini))
+                switch fini {
+                case .finished:
+                    break
+                case .failure(let anError):
+                    print("received error: ", anError)
+                }
+                expectation.fulfill()
+            }, receiveValue: { (data, response) in
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    XCTFail("Unable to parse response an HTTPURLResponse")
+                    return
+                }
+                let stringedData = String(data: data, encoding: .utf8)
+                print(".sink() data received \(data) as \(String(describing: stringedData))")
+
+                print(".sink() httpResponse received \(httpResponse)")
+            })
+
+        XCTAssertNotNil(remoteDataPublisher)
+        wait(for: [expectation], timeout: 5.0)
+
+        /*
+
+         .sink() data received 232 bytes as Optional("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n<title>404 Not Found</title>\n<h1>Not Found</h1>\n<p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p>\n")
+         .sink() httpResponse received <NSHTTPURLResponse: 0x60000249bd40> { URL: https://barkshin.herokuapp.com/missing/ } { Status Code: 404, Headers {
+         Connection =     (
+         "keep-alive"
+         );
+         "Content-Length" =     (
+         232
+         );
+         "Content-Type" =     (
+         "text/html"
+         );
+         Date =     (
+         "Sun, 07 Jul 2019 00:38:33 GMT"
+         );
+         Server =     (
+         "gunicorn/19.9.0"
+         );
+         Via =     (
+         "1.1 vegur"
+         );
+         } }
+         .sink() received the completion finished
+
+         */
+    }
+
+    func testDataTaskPublisherFailure500URL() {
+        // setup
+        let expectation = XCTestExpectation(description: "Download from \(String(describing: test500UrlString))")
+        let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: URL(string: test500UrlString)!)
+            // validate
+            .sink(receiveCompletion: { fini in
+                print(".sink() received the completion", String(describing: fini))
+                switch fini {
+                case .finished:
+                    break
+                case .failure(let anError):
+                    print("received error: ", anError)
+                }
+                expectation.fulfill()
+            }, receiveValue: { (data, response) in
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    XCTFail("Unable to parse response an HTTPURLResponse")
+                    return
+                }
+                let stringedData = String(data: data, encoding: .utf8)
+                print(".sink() data received \(data) as \(String(describing: stringedData))")
+                print(".sink() httpResponse received \(httpResponse)")
+            })
+
+        XCTAssertNotNil(remoteDataPublisher)
+        wait(for: [expectation], timeout: 5.0)
+
+        /*
+
+         .sink() data received 6 bytes as Optional("error!")
+         .sink() httpResponse received <NSHTTPURLResponse: 0x600003d2ed20> { URL: https://barkshin.herokuapp.com/generalError } { Status Code: 500, Headers {
+         Connection =     (
+         "keep-alive"
+         );
+         "Content-Length" =     (
+         6
+         );
+         "Content-Type" =     (
+         "text/html; charset=utf-8"
+         );
+         Date =     (
+         "Sun, 07 Jul 2019 00:42:04 GMT"
+         );
+         Server =     (
+         "gunicorn/19.9.0"
+         );
+         Via =     (
+         "1.1 vegur"
+         );
+         } }
+         .sink() received the completion finished
+
+         */
+    }
+
 
     func testDataTaskPublisher() {
         // setup
@@ -273,5 +448,42 @@ class DataTaskPublisherTests: XCTestCase {
         // with a timeout of 5 seconds, and a 2 second delay, the retries should have only happened twice before
         // the timeout triggered.
         XCTAssertEqual(countOfMockURLRequests, 2)
+    }
+
+    func testDataTaskPublisherWithTryMapAndFlatMap() {
+        // setup
+        let expectation = XCTestExpectation(description: "Download from \(String(describing: testURL))")
+
+        let remoteDataPublisher = Just(self.testURL!)
+            .flatMap { url in
+                URLSession.shared.dataTaskPublisher(for: url)
+                .tryMap { data, response -> Data in
+                        guard let httpResponse = response as? HTTPURLResponse,
+                            httpResponse.statusCode == 200 else {
+                                throw testFailureCondition.invalidServerResponse
+                        }
+                        return data
+                }
+                .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder())
+                    .catch {_ in
+                        return Just(PostmanEchoTimeStampCheckResponse(valid: false))
+                }
+            }
+            .subscribe(on: self.myBackgroundQueue!)
+            .eraseToAnyPublisher()
+            // validate
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished: expectation.fulfill()
+                case .failure(let anError):
+                    XCTFail(anError.localizedDescription)
+                }
+            }, receiveValue: { decodedResponse in
+                XCTAssertNotNil(decodedResponse)
+                XCTAssertTrue(decodedResponse.valid)
+            })
+
+        XCTAssertNotNil(remoteDataPublisher)
+        wait(for: [expectation], timeout: 5.0)
     }
 }

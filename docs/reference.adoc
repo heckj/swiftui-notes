@@ -28,18 +28,17 @@ things to potentially include for each segment
 
 __Summary__::
 
-`just` provides a single result and then terminates.
+`Just` provides a single result and then terminates, providing a publisher with a failure type of `<Never>`
 
 __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/just[`Just`]
 
 __Usage__::
 
-n/a
+* <<patterns.adoc#patterns-continual-error-handling>>
 
 __Details__::
 
-* Just -> `<SomeType>`, `<Never>`
-** often used in error handling
+Often used within a closure to <<#reference-flatMap>> in error handling, it can see a one-shot pipeline for use in error handling of continuous values.
 
 [#reference-future]
 === Future
@@ -124,15 +123,17 @@ __Summary__::
 
 Generates an output to each subscriber exactly once then finishes or fails immediately.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/once[`Publishers.Once`]
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/once[`Once`]
 
 __Usage__::
 
-n/a
+TBD
 
 __Details__::
 
-n/a
+Used similiarly to <<#reference-just>>, it provides a value and then completes.
+It is often used with flatMap when you want to flow have flatMap return a publisher that returns a publisher with an error type.
+Where <<#reference-just>> returns a failure type of `<Never>`, `once` allows for a failure type of `<Error>`.
 
 [#reference-optional]
 === Publishers.Optional
@@ -386,15 +387,51 @@ Just(5)
 <2> and throw an error, although throwing an Error isn't required.
 <3> If the error condition doesn't occur, you do need to pass down data for any further subscribers.
 
-
 [#reference-flatMap]
-==== flatpMap
+==== flatMap
 
-* flatMap
+__Summary__::
 
-** collapses nil values out of a stream
-** used with error recovery or async operations that might fail (ex: Future)
-** requires Failure to be `<Never>`
+Used with error recovery or async operations that might fail (ex: Future), flatMap will replace any incoming values with another publisher.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/flatmap[`flatMap`]
+
+__Usage__::
+
+* <<patterns.adoc#patterns-continual-error-handling>>
+
+__Details__::
+
+Most typically used in error handling scenarios, flatMap takes a closure that allows you to read the incoming data value, and provide a publisher that returns a value to the pipeline.
+
+In error handling, this is most frequently used to take the incoming value and create a one-shot pipeline that does some potentially failing operation, and then handling the error condition with a <<#reference-catch>> operator.
+
+A diagram version of this pipeline construct might be:
+
+[source]
+----
+     one-shot-publisher(value) -> catch ( fallback )      // <- one-shot pipeline
+                          ^                        \
+                          |                         \
+publisher -> flatMap -> ( +                           +  ) -> subscriber
+----
+
+In swift, this looks like:
+
+[source, swift]
+----
+.flatMap { data in
+    return Just(data)
+    .decode(YourType.self, JSONDecoder())
+    .catch {
+        return Just(YourType.placeholder)
+    }
+}
+----
 
 [#reference-setFailureType]
 ==== setFailureType
@@ -721,12 +758,6 @@ Just(5)
 
 See <<patterns.adoc#patterns-general-error-handling>> for more detail on how you can design error handling.
 
-[#reference-assertNoFailure]
-==== assertNoFailure
-
-* assertNoFailure
-** Raises a fatal error when its upstream publisher fails, and otherwise republishes all received input.
-
 [#reference-catch]
 ==== catch
 
@@ -796,12 +827,130 @@ When the failure was sent through the pipeline, catch intercepts it and returns 
 The replacement publisher it used (`Just`) sends a single value and then sends a completion.
 If we want the pipeline to remain active, we need to change how we handle the errors.
 
+[#reference-tryCatch]
+==== tryCatch
+
+__Summary__::
+
+A variant of the <<#reference-catch>> operator that also allows an `<Error>` failure type, and doesn't convert the failure type to `<Never>`.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/trycatch
+
+__Usage__::
+
+* <<patterns.adoc#patterns-constrained-network>>
+
+__Details__::
+
+`tryCatch` is a variant of <<#reference-catch>> that has a failure type of `<Error>` rather than catch's failure type of `<Never>`.
+This allows it to be used where you want to immediately react to an error by creating another publisher that may also produce a failure type.
+
+[#reference-assertNoFailure]
+==== assertNoFailure
+
+__Summary__::
+
+Raises a fatal error when its upstream publisher fails, and otherwise republishes all received input and converts failure type to `<Never>`.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/assertnofailure
+
+__Usage__::
+
+* <<patterns.adoc#patterns-assertNoFailure>>
+
+__Details__::
+
+If you need to verify that no error has occured (treating the error output as an invariant), this is the operator to use.
+Like it's namesakes, it will cause the program to terminate if the assert is violated.
+
+Adding it into the pipeline requires no additional parameters, but you can include a string:
+
+[source, swift]
+----
+.assertNoFailure()
+// OR
+.assertNoFailure("What could possibly go wrong?")
+----
+
+[NOTE]
+====
+I'm not entirely clear on where that string would appear if you did include it.
+
+When trying out this code in unit tests, the tests invariably drop into a debugger at the assertion point when a .failure is processed through the pipeline.
+====
+
+If you want to convert an failure tyoe output of `<Error>` to `<Never>`, you probably want to look at the <<#reference-catch>> operator.
+
+Apple asserts this function should be primarily used for testing and verifying "internal sanity checks that are active during testing".
+
 [#reference-retry]
 ==== retry
 
-* retry
-** multiple variants - once or by a provided count
-** forces Failure type of Never on output
+__Summary__::
+
+The retry opeator is used to repeat requests to a previous publisher in the event of an error.
+
+__Constraints on connected publisher__::
+
+* failure type must be `<Error>`
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/retry
+
+__Usage__::
+
+* <<patterns.adoc#patterns-retry>>
+* unit tests illustrating using map with dataTaskPublisher: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DataTaskPublisherTests.swift[`UsingCombineTests/DataTaskPublisherTests.swift`]
+
+__Details__::
+
+When you specify this operator in a pipeline and it receives a subscription, it first tries to request a subscription from it's upstream publisher.
+If the response to that subscription fails, then it will retry the subscription to the same publisher.
+
+The retry operator accepts an optional (but recommended) single parameter that specifies a number of retries to attempt.
+If no number of retries is specified, it will attempt to retry indefinitely until it receives a .finished completion from it's subscriber.
+
+[NOTE]
+====
+Using retry without any specific count can result in your pipeline never resolving any data or completions.
+If you use retry without a count, you may also want to use the <<#reference-timeout>> operator to force a completion from the pipeline.
+====
+
+If the number of retries is specified and all requests fail, then the `.failure` completion is passed down to the subscriber of this operator.
+
+In practice, this is mostly commonly desired when attempting to request network resources with an unstable connection.
+If you use a retry operator, you should add a specific number of retries so that the subscription doesn't effectively get into an infinite loop.
+
+[source, swift]
+----
+struct IPInfo: Codable {
+    // matching the data structure returned from ip.jsontest.com
+    var ip: String
+}
+let myURL = URL(string: "http://ip.jsontest.com")
+// NOTE(heckj): you'll need to enable insecure downloads in your Info.plist for this example
+// since the URL scheme is 'http'
+
+let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
+    // the dataTaskPublisher output combination is (data: Data, response: URLResponse)
+    .retry(3)
+    // if the URLSession returns a .failure completion, try at most 3 times to get a successful response
+    .map({ (inputTuple) -> Data in
+        return inputTuple.data
+    })
+    .decode(type: IPInfo.self, decoder: JSONDecoder())
+    .catch { err in
+        return Publishers.Just(IPInfo(ip: "8.8.8.8"))
+    }
+    .eraseToAnyPublisher()
+----
 
 [#reference-mapError]
 ==== mapError
@@ -856,9 +1005,50 @@ If we want the pipeline to remain active, we need to change how we handle the er
 [#reference-timeout]
 ==== timeout
 
-* timeout
-** Terminates publishing if the upstream publisher exceeds the specified time interval without producing an element.
-** requires Failure to be `<Never>`
+__Summary__::
+
+Terminates publishing if the upstream publisher exceeds the specified time interval without producing an element.
+
+__Constraints on connected publisher__::
+
+* requires Failure to be `<Never>`
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/timeout
+
+__Usage__::
+
+* unit tests illustrating using retry and timeout with dataTaskPublisher: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DataTaskPublisherTests.swift[`UsingCombineTests/DataTaskPublisherTests.swift`]
+
+__Details__::
+
+Timeout will force a resolution to a pipeline after a given amount of time, but does not guarantee either data or errors, only a completion.
+If a timeout does trigger and force a completion, it will not generate an failure completion with an error.
+
+Timeout is specified with two parameters, a time period and a scheduler.
+
+If you are using a specific background thread (for example, with the <<#reference-subscribe>> operator), then timeout should likely be using the same scheduler.
+
+The time period specified will take a literal integer, but otherwise needs to conform to the protocol https://developer.apple.com/documentation/combine/schedulertimeintervalconvertible[SchedulerTimeIntervalConvertible].
+If you want to set a number from a Float or Int, you need to create the relevant structure, as Int or Float directly doesn't conform.
+For example, if you're using a DispatchQueue, you could use https://developer.apple.com/documentation/dispatch/dispatchqueue/schedulertimetype/stride[DispatchQueue.SchedulerTimeType.Stride].
+
+[source, swift]
+----
+let remoteDataPublisher = urlSession.dataTaskPublisher(for: self.mockURL!)
+    .delay(for: 2, scheduler: backgroundQueue)
+    .retry(5) // 5 retries, 2 seconds each ~ 10 seconds for this to fall through
+    .timeout(5, scheduler: backgroundQueue) // max time of 5 seconds before failing
+    .tryMap { data, response -> Data in
+        guard let httpResponse = response as? HTTPURLResponse,
+            httpResponse.statusCode == 200 else {
+                throw testFailureCondition.invalidServerResponse
+        }
+        return data
+    }
+    .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder())
+    .subscribe(on: backgroundQueue)
+    .eraseToAnyPublisher()
+----
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
