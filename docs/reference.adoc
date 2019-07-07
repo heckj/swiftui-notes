@@ -795,18 +795,126 @@ If we want the pipeline to remain active, we need to change how we handle the er
 
 Back in beta3!
 
+__Summary__::
+
+A variant of the <<#reference-catch>> operator that also allows an `<Error>` failure type, and doesn't convert the failure type to `<Never>`.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/trycatch
+
+__Usage__::
+
+* <<patterns.adoc#patterns-constrained-network>>
+
+__Details__::
+
+n/a
+
 [#reference-assertNoFailure]
 ==== assertNoFailure
 
-* assertNoFailure
-** Raises a fatal error when its upstream publisher fails, and otherwise republishes all received input.
+__Summary__::
+
+Raises a fatal error when its upstream publisher fails, and otherwise republishes all received input and converts failure type to `<Never>`.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/assertnofailure
+
+__Usage__::
+
+* <<patterns.adoc#patterns-assertNoFailure>>
+
+__Details__::
+
+If you need to verify that no error has occured (treating the error output as an invariant), this is the operator to use.
+Like it's namesakes, it will cause the program to terminate if the assert is violated.
+
+Adding it into the pipeline requires no additional parameters, but you can include a string:
+
+[source, swift]
+----
+.assertNoFailure()
+// OR
+.assertNoFailure("What could possibly go wrong?")
+----
+
+[NOTE]
+====
+I'm not entirely clear on where that string would appear if you did include it.
+
+When trying out this code in unit tests, the tests invariably drop into a debugger at the assertion point when a .failure is processed through the pipeline.
+====
+
+If you want to convert an failure tyoe output of `<Error>` to `<Never>`, you probably want to look at the <<#reference-catch>> operator.
+
+Apple asserts this function should be primarily used for testing and verifying "internal sanity checks that are active during testing".
 
 [#reference-retry]
 ==== retry
 
-* retry
-** multiple variants - once or by a provided count
-** forces Failure type of Never on output
+__Summary__::
+
+The retry opeator is used to repeat requests to a previous publisher in the event of an error.
+
+__Constraints on connected publisher__::
+
+* failure type must be `<Error>`
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/retry
+
+__Usage__::
+
+* <<patterns.adoc#patterns-retry>>
+* unit tests illustrating using map with dataTaskPublisher: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DataTaskPublisherTests.swift[`UsingCombineTests/DataTaskPublisherTests.swift`]
+
+__Details__::
+
+When you specify this operator in a pipeline and it receives a subscription, it first tries to request a subscription from it's upstream publisher.
+If the response to that subscription fails, then it will retry the subscription to the same publisher.
+
+The retry operator accepts an optional (but recommended) single parameter that specifies a number of retries to attempt.
+If no number of retries is specified, it will attempt to retry indefinitely until it receives a .finished completion from it's subscriber.
+
+[NOTE]
+====
+Using retry without any specific count can result in your pipeline never resolving any data or completions.
+If you use retry without a count, you may also want to use the <<#reference-timeout>> operator to force a completion from the pipeline.
+====
+
+If the number of retries is specified and all requests fail, then the `.failure` completion is passed down to the subscriber of this operator.
+
+In practice, this is mostly commonly desired when attempting to request network resources with an unstable connection.
+If you use a retry operator, you should add a specific number of retries so that the subscription doesn't effectively get into an infinite loop.
+
+[source, swift]
+----
+struct IPInfo: Codable {
+    // matching the data structure returned from ip.jsontest.com
+    var ip: String
+}
+let myURL = URL(string: "http://ip.jsontest.com")
+// NOTE(heckj): you'll need to enable insecure downloads in your Info.plist for this example
+// since the URL scheme is 'http'
+
+let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
+    // the dataTaskPublisher output combination is (data: Data, response: URLResponse)
+    .retry(3)
+    // if the URLSession returns a .failure completion, try at most 3 times to get a successful response
+    .map({ (inputTuple) -> Data in
+        return inputTuple.data
+    })
+    .decode(type: IPInfo.self, decoder: JSONDecoder())
+    .catch { err in
+        return Publishers.Just(IPInfo(ip: "8.8.8.8"))
+    }
+    .eraseToAnyPublisher()
+----
 
 [#reference-mapError]
 ==== mapError
@@ -861,9 +969,39 @@ Back in beta3!
 [#reference-timeout]
 ==== timeout
 
-* timeout
-** Terminates publishing if the upstream publisher exceeds the specified time interval without producing an element.
-** requires Failure to be `<Never>`
+__Summary__::
+
+Terminates publishing if the upstream publisher exceeds the specified time interval without producing an element.
+
+__Constraints on connected publisher__::
+
+* requires Failure to be `<Never>`
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/timeout
+
+__Usage__::
+
+* unit tests illustrating using retry and timeout with dataTaskPublisher: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DataTaskPublisherTests.swift[`UsingCombineTests/DataTaskPublisherTests.swift`]
+
+__Details__::
+
+[source, swift]
+----
+let remoteDataPublisher = urlSession.dataTaskPublisher(for: self.mockURL!)
+    .delay(for: 2, scheduler: backgroundQueue)
+    .retry(5) // 5 retries, 2 seconds each ~ 10 seconds for this to fall through
+    .timeout(5, scheduler: backgroundQueue) // max time of 5 seconds before failing
+    .tryMap { data, response -> Data in
+        guard let httpResponse = response as? HTTPURLResponse,
+            httpResponse.statusCode == 200 else {
+                throw testFailureCondition.invalidServerResponse
+        }
+        return data
+    }
+    .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder())
+    .subscribe(on: backgroundQueue)
+    .eraseToAnyPublisher()
+----
 
 // force a page break - in HTML rendering is just a <HR>
 <<<

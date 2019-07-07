@@ -284,7 +284,7 @@ If the pipeline is set up to continually update, the error handling needs to be 
 Jump ahead to <<patterns-continual-error-handling>>.
 
 [#patterns-assertNoFailure]
-=== Pattern 3.1: converting to a Never failure type using assertNoFailure
+=== Pattern 3.1: verifying a failure hasn't happened using assertNoFailure
 
 __Goal__::
 
@@ -292,7 +292,7 @@ __Goal__::
 
 __References__::
 
-* << link to reference pages>>
+* <<reference.adoc#reference-assertNoFailure>>
 
 __See also__::
 
@@ -300,27 +300,14 @@ __See also__::
 
 __Code and explanation__::
 
-A brutal way to handle this is to crash the application when an error happens.
-Combine provides the operator `assertNoFailure()` for this purpose.
-This is useful if you are sure you handled the errors and need to map a pipeline which technically can generate a failure type of `<Error>` to a subscriber that requires a failure type of `<Never>`.
+Useful in testing invariants in pipelines, the assertNoFailure operator also converts the failure type to `<Never>`.
+The operator will cause the application to terminate (and tests to crash to a debugger) if the assertion is triggered.
 
-Adding it into the pipeline requires no additional parameters, but you can include a string:
+This is useful for verifying the invariant of having dealt with an error.
+If you are sure you handled the errors and need to map a pipeline which technically can generate a failure type of `<Error>` to a subscriber that requires a failure type of `<Never>`.
 
-[source, swift]
-----
-.assertNoFailure()
-// OR
-.assertNoFailure("What could possibly go wrong?")
-----
-
-[NOTE]
-====
-I'm not entirely clear on where that string would appear if you did include it.
-
-When trying out this code in unit tests, the tests invariably drop into a debugger at the assertion point when a .failure is processed through the pipeline.
-====
-
-It is far more likely that you want to handle the error and not have the application crash.
+It is far more likely that you want to handle the error with and not have the application terminate.
+Look forward to <<#patterns-oneshot-error-handling>> and <<#patterns-continual-error-handling>> for patterns of how to provide logic to handle errors in a pipeline.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
@@ -331,23 +318,30 @@ It is far more likely that you want to handle the error and not have the applica
 
 __Goal__::
 
-* The `.catch()` operator is useful to recover from an error, but it can have unexpected side effects if you aren't familiar with how it works.
+* If you need to handle a failure within a pipeline, for example before using the `assign` operator or another operator that requires the failure type to be `<Never>`, you can use `catch` to provide the appropriate logic.
 
 __References__::
 
-* << link to reference pages>>
+* <<reference.adoc#reference-catch>>
+* <<reference.adoc#reference-just>>
 
 __See also__::
 
-* << link to other patterns>>
+* <<#patterns-retry>>
+* <<#patterns-continual-error-handling>>
+* <<#patterns-constrained-network>>
 
 __Code and explanation__::
 
-`.catch()` handles errors by replacing the upstream publisher with another publisher that you provide as a return in a closure.
-This effectively terminates the earlier portion of the pipeline.
-If you're using a one-shot publisher (one that doesn't create more than a single event), then this is fine.
+`catch` handles errors by replacing the upstream publisher with another publisher that you provide as a return in a closure.
 
-For example, dataTaskPublisher is a one-shot publisher, and you might use catch with it to ensure that you get a response, returning a placeholder in the event of an error.
+[WARNING]
+====
+Be aware that this effectively terminates the earlier portion of the pipeline.
+If you're using a one-shot publisher (one that doesn't create more than a single event), then this is fine.
+====
+
+For example, `dataTaskPublisher` is a one-shot publisher and you might use catch with it to ensure that you get a response, returning a placeholder in the event of an error.
 Extending our previous example to provide a default response:
 
 [source, swift]
@@ -365,18 +359,22 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
     .map({ (inputTuple) -> Data in
         return inputTuple.data
     })
-    .decode(type: IPInfo.self, decoder: JSONDecoder())
-    .catch { err in
-        return Publishers.Just(IPInfo(ip: "8.8.8.8"))
+    .decode(type: IPInfo.self, decoder: JSONDecoder()) <1>
+    .catch { err in <2>
+        return Publishers.Just(IPInfo(ip: "8.8.8.8"))<3>
     }
     .eraseToAnyPublisher()
 ----
 
-// NOTE(heckj): this next bit (until retry) might be better migrated to the reference section on how catch works.
+<1> Often, a catch operator will be placed after several operators that could fail, in order to provide a fallback or placeholder in the event that any of the possible previous operations failed.
+<2> When using catch, you get the error type in and can inspect it to chosoe how you provide a response.
+<3> The Just publisher is frequently used to either start another one-shot pipeline or to directly provide a placeholder response in the event of failure.
 
 A possible problem with this technique is that the if the original publisher generates more values to which you wish to react, the original pipeline has been ended.
-This means if you are creating a pipeline that reacts to a `@Published` property, then after any failed value that activates the catch operator, the pipeline will cease to react further.
-See <<reference.adoc#reference-catch>> for more detail and an example.
+If you are creating a pipeline that reacts to a `@Published` property, then after any failed value that activates the catch operator, the pipeline will cease to react further.
+See <<reference.adoc#reference-catch>> for more illustration and examples of how this works.
+
+If you want to continue to respond to errors and handle them, see <<#patterns-continual-error-handling>> for an example of how to do that using `flatMap`
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
@@ -387,15 +385,17 @@ See <<reference.adoc#reference-catch>> for more detail and an example.
 
 __Goal__::
 
-* The `retry` operator can be included in a chain to retry a subscription when a `.failure` completion occurs.
+* The `retry` operator can be included in a pipeline to retry a subscription when a `.failure` completion occurs.
 
 __References__::
 
-* << link to reference pages>>
+* <<reference.adoc#reference-catch>>
+* <<reference.adoc#reference-retry>>
 
 __See also__::
 
-* << link to other patterns>>
+* <<#patterns-oneshot-error-handling>>
+* <<#patterns-continual-error-handling>>
 
 __Code and explanation__::
 
@@ -409,31 +409,28 @@ If the number of retries is specified and all requests fail, then the `.failure`
 In practice, this is mostly commonly desired when attempting to request network resources with an unstable connection.
 If you use a retry operator, you should add a specific number of retries so that the subscription doesn't effectively get into an infinite loop.
 
-An example of the above example using retry:
+An example of the above example using retry in combination with a delay:
 
 [source, swift]
 ----
-struct IPInfo: Codable {
-    // matching the data structure returned from ip.jsontest.com
-    var ip: String
-}
-let myURL = URL(string: "http://ip.jsontest.com")
-// NOTE(heckj): you'll need to enable insecure downloads in your Info.plist for this example
-// since the URL scheme is 'http'
-
-let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
-    // the dataTaskPublisher output combination is (data: Data, response: URLResponse)
-    .retry(3)
-    // if the URLSession returns a .failure completion, try at most 3 times to get a successful response
-    .map({ (inputTuple) -> Data in
-        return inputTuple.data
-    })
-    .decode(type: IPInfo.self, decoder: JSONDecoder())
-    .catch { err in
-        return Publishers.Just(IPInfo(ip: "8.8.8.8"))
+let remoteDataPublisher = urlSession.dataTaskPublisher(for: self.mockURL!)
+    .delay(for: DispatchQueue.SchedulerTimeType.Stride(integerLiteral: Int.random(in: 1..<5)), scheduler: backgroundQueue) <1>
+    .retry(3) <2>
+    .tryMap { data, response -> Data in <3>
+        guard let httpResponse = response as? HTTPURLResponse,
+            httpResponse.statusCode == 200 else {
+                throw testFailureCondition.invalidServerResponse
+        }
+        return data
     }
+    .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder())
+    .subscribe(on: backgroundQueue)
     .eraseToAnyPublisher()
 ----
+
+<1> the delay operator will delay further processing on the pipeline, in this case for a random selection of 1 to 5 seconds. By adding delay here in the pipeline, it will always occur, even if the original request is successful.
+<2> retry is specified as trying 3 times. If you specify retry without any options, it will retry infinitely, and may cause your pipeline to never resolve any values or completions.
+<3> tryMap is being used to investigate errors after the retry so that retry will only re-attempt the request when the site didn't respond.
 
 [WARNING]
 ====
@@ -505,15 +502,18 @@ In swift, this looks like:
 
 __Goal__::
 
-* From Apple's WWDC 19 presentation https://developer.apple.com/videos/play/wwdc2019/712/[Advances in Networking, Part 1], a sample pattern was provided using `.tryCatch` and `.tryMap` operators to react to the specific error of having the network be constrained.
+* From Apple's WWDC 19 presentation https://developer.apple.com/videos/play/wwdc2019/712/[Advances in Networking, Part 1], a sample pattern was provided using `tryCatch` and `tryMap` operators to react to the specific error of having the network be constrained.
 
 __References__::
 
-* << link to reference pages>>
+* <<reference.adoc#reference-dataTaskPublisher>>
+* <<reference.adoc#reference-tryCatch>>
+* <<reference.adoc#reference-tryMaph>>
 
 __See also__::
 
-* << link to other patterns>>
+* <<#patterns-oneshot-error-handling>>
+* <<#patterns-retry>>
 
 __Code and explanation__::
 
