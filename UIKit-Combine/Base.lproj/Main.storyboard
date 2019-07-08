@@ -51,7 +51,7 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                         <connections>
-                                            <action selector="githubIdChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="5fG-i2-5BH"/>
+                                            <action selector="githubIdChanged:" destination="BYZ-38-t0r" eventType="editingChanged" id="tIw-rK-adc"/>
                                         </connections>
                                     </textField>
                                 </subviews>
