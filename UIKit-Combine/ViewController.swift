@@ -71,8 +71,10 @@ class ViewController: UIViewController {
     @IBOutlet weak var github_id_entry: UITextField!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var repositoryCountLabel: UILabel!
+    @IBOutlet weak var githubAvatarImageView: UIImageView!
 
     var repositoryCountSubscriber: AnyCancellable?
+//    var avatarViewSubscriber: AnyCancellable?
     var usernameSubscriber: AnyCancellable?
 
     // username from the github_id_entry field, updated via IBAction
@@ -123,10 +125,35 @@ class ViewController: UIViewController {
                     return String(userData.public_repos)
                 }
                 return "unknown"
-
             }
             .receive(on: RunLoop.main)
             .assign(to: \.text, on: repositoryCountLabel)
+
+        let _ = $githubUserData
+            .filter({ possibleUser -> Bool in
+                possibleUser != nil
+            })
+            .print("avatar image for user")
+            .map { userData -> AnyPublisher<UIImage, Never> in
+                guard let userData = userData else {
+                    return Just(UIImage()).eraseToAnyPublisher()
+                }
+                return URLSession.shared.dataTaskPublisher(for: URL(string: userData.avatar_url)!)
+                    .map { $0.data }
+                    .map { UIImage(data: $0)!}
+                    .subscribe(on: self.myBackgroundQueue)
+                    .catch { err in
+                        return Just(UIImage())
+                    }
+                    .eraseToAnyPublisher()
+            }
+            .switchToLatest()
+            .subscribe(on: myBackgroundQueue)
+            .receive(on: RunLoop.main)
+            // .assign(to: \.image, on: self.githubAvatarImageView) // getting compiler error: Type of expression is ambiguous without more context
+            .sink(receiveValue: { image in
+                self.githubAvatarImageView.image = image
+            })
     }
 
 }
