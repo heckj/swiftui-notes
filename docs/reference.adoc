@@ -1104,7 +1104,7 @@ With the compiler forcing type matching, the usual error condition is if you flo
 
 __Summary__::
 
-A very common operation is to want to use decode (or <<#reference-encode>> data in a pipline, so Combine provides an operator specifically suited to that task.
+A very common operation is to want to use decode (or <<#reference-encode>> data in a pipeline, so Combine provides an operator specifically suited to that task.
 
 __Constraints on connected publisher__::
 
