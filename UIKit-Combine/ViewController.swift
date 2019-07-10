@@ -26,10 +26,11 @@ private struct GithubAPI {
 
     /// creates a one-shot publisher that provides a GithubAPI User object as the end result
     /// - Parameter username: username to be retrieved from the Github API
-    static func retrieveGithubUser(username: String) -> AnyPublisher<GithubAPIUser, Never> {
+    static func retrieveGithubUser(username: String) -> AnyPublisher<[GithubAPIUser], Never> {
 
         if username.count < 3 {
-            return Publishers.Empty<GithubAPIUser, Never>().eraseToAnyPublisher()
+            return Just([]).eraseToAnyPublisher()
+//            return Publishers.Empty<GithubAPIUser, Never>().eraseToAnyPublisher()
         }
         let assembledURL = String("https://api.github.com/users/\(username)")
         let publisher = URLSession.shared.dataTaskPublisher(for: URL(string: assembledURL)!)
@@ -56,9 +57,12 @@ private struct GithubAPI {
                 return data
             }
             .decode(type: GithubAPIUser.self, decoder: JSONDecoder())
-//            if we wanted to make the return failure type exclude Error (e.g. <Never>) this is how we might do it
+            .map {
+                [$0]
+            }
             .catch { err in
-                return Publishers.Empty<GithubAPIUser, Never>()
+//                return Publishers.Empty<GithubAPIUser, Never>()
+                return Just([])
             }
             .eraseToAnyPublisher()
         return publisher
@@ -81,7 +85,7 @@ class ViewController: UIViewController {
     @Published var username: String = ""
 
     // github user retrieved from the API publisher. As it's updated, it is "wired" to update UI elements
-    @Published private var githubUserData: GithubAPIUser? = nil
+    @Published private var githubUserData: [GithubAPIUser] = []
 
     // publisher reference for this is $username, of type <String, Never>
     var myBackgroundQueue: DispatchQueue = DispatchQueue(label: "viewControllerBackgroundQueue")
@@ -103,7 +107,7 @@ class ViewController: UIViewController {
             .throttle(for: 0.5, scheduler: myBackgroundQueue, latest: true) // scheduler myBackGroundQueue publishes resulting elements into that queue...
             .removeDuplicates()
             .print("username pipeline: ")
-            .map { username -> AnyPublisher<GithubAPIUser, Never> in
+            .map { username -> AnyPublisher<[GithubAPIUser], Never> in
                 return GithubAPI.retrieveGithubUser(username: username)
             }
             // type returned in the pipeline is a Publisher, so we use switchToLatest to flatten the values out of that
@@ -121,8 +125,8 @@ class ViewController: UIViewController {
         repositoryCountSubscriber = $githubUserData
             .print("github user data: ")
             .map { userData -> String in
-                if let userData = userData {
-                    return String(userData.public_repos)
+                if let firstUser = userData.first {
+                    return String(firstUser.public_repos)
                 }
                 return "unknown"
             }
@@ -130,15 +134,15 @@ class ViewController: UIViewController {
             .assign(to: \.text, on: repositoryCountLabel)
 
         let _ = $githubUserData
-            .filter({ possibleUser -> Bool in
-                possibleUser != nil
-            })
+//            .filter({ possibleUser -> Bool in
+//                possibleUser != nil
+//            })
             .print("avatar image for user")
             .map { userData -> AnyPublisher<UIImage, Never> in
-                guard let userData = userData else {
+                guard let firstUser = userData.first else {
                     return Just(UIImage()).eraseToAnyPublisher()
                 }
-                return URLSession.shared.dataTaskPublisher(for: URL(string: userData.avatar_url)!)
+                return URLSession.shared.dataTaskPublisher(for: URL(string: firstUser.avatar_url)!)
                     .map { $0.data }
                     .map { UIImage(data: $0)!}
                     .subscribe(on: self.myBackgroundQueue)
