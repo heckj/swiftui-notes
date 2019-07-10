@@ -154,10 +154,11 @@ class ViewController: UIViewController {
             .switchToLatest()
             .subscribe(on: myBackgroundQueue)
             .receive(on: RunLoop.main)
-            // .assign(to: \.image, on: self.githubAvatarImageView) // getting compiler error: Type of expression is ambiguous without more context
-            .sink(receiveValue: { image in
-                self.githubAvatarImageView.image = image
-            })
+            // this next line is returning a compiler error: Type of expression is ambiguous without more context
+            .assign(to: \.image, on: self.githubAvatarImageView)
+//            .sink(receiveValue: { image in
+//                self.githubAvatarImageView.image = image
+//            })
     }
 
 }
