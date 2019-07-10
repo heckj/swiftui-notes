@@ -126,19 +126,46 @@ The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombin
 
 __Summary__::
 
-A property wrapper that adds a Combine publisher to any property
+Foundation added the ability to get a publisher on any Object that can be watched with Key Value Observing.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/published[Published]
+__icon:apple[] docs__:: __???__
+
+[NOTE]
+====
+As of beta3, I was unable to find the documentation on the extension of NSObject.
+In the generated swift declaration file, it's listed as an extension on NSObject - a struct named `KeyValueObservingPublisher`
+====
 
 __Usage__::
 
-* <<patterns.adoc#patterns-update-interface-network-request>>
+* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`]
 
 __Details__::
-KVO Publishers
 
-* extracts a property from an object and returns it
-** ex: `.publisher(for: \.name)`
+Any Key Value Observing instance can produce a publisher.
+To create this publisher, you call the function `publisher` on the object, providing it with a single (required) KeyPath value.
+
+For example:
+
+[source, swift]
+----
+private final class KVOAbleNSObject: NSObject {
+    @objc dynamic var intValue: Int = 0
+    @objc dynamic var boolValue: Bool = false
+}
+
+let foo = KVOAbleNSObject()
+
+let _ = foo.publisher(for: \.intValue)
+    .sink { someValue in
+        print("value updated to: >>\(someValue)<<")
+    }
+----
+
+[NOTE]
+====
+KVO publisher access implies that with MacOS 10.15 release, most of appkit UI elements will be accessible as publishers. UIKit controls, however, aren't KVO compatible.
+====
 
 [#reference-empty]
 === Publishers.Empty

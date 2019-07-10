@@ -23,8 +23,13 @@ class PublisherTests: XCTestCase {
         case selfDestruct
     }
 
+    private final class KVOAbleNSObject: NSObject {
+        @objc dynamic var intValue: Int = 0
+        @objc dynamic var boolValue: Bool = false
+    }
+
     func testPublishedOnStruct() {
-        let expectation = XCTestExpectation(description: "async sink test")
+        let expectation = XCTestExpectation(description: self.debugDescription)
         let foo = HoldingStruct()
 
         let _ = foo.$username
@@ -48,7 +53,7 @@ class PublisherTests: XCTestCase {
     }
 
     func testPublishedOnStructWithChange() {
-        let expectation = XCTestExpectation(description: "async sink test")
+        let expectation = XCTestExpectation(description: self.debugDescription)
         var foo = HoldingStruct()
         let q = DispatchQueue(label: self.debugDescription)
 
@@ -67,7 +72,7 @@ class PublisherTests: XCTestCase {
     }
 
     func testPublishedOnClassWithChange() {
-        let expectation = XCTestExpectation(description: "async sink test")
+        let expectation = XCTestExpectation(description: self.debugDescription)
         let foo = HoldingClass()
         let q = DispatchQueue(label: self.debugDescription)
 
@@ -86,7 +91,7 @@ class PublisherTests: XCTestCase {
     }
 
     func testPublishedOnClassWithTwoSubscribers() {
-        let expectation = XCTestExpectation(description: "async sink test")
+        let expectation = XCTestExpectation(description: self.debugDescription)
         let foo = HoldingClass()
         let q = DispatchQueue(label: self.debugDescription)
         var countOfHits = 0
@@ -123,7 +128,7 @@ class PublisherTests: XCTestCase {
     }
 
     func testPublishedSinkWithError() {
-        let expectation = XCTestExpectation(description: "async sink test")
+        let expectation = XCTestExpectation(description: self.debugDescription)
         let foo = HoldingClass()
         let q = DispatchQueue(label: self.debugDescription)
 
@@ -169,4 +174,24 @@ class PublisherTests: XCTestCase {
         wait(for: [expectation], timeout: 5.0)
         XCTAssertEqual(foo.username, "bluefish")
     }
+
+    func testKVOPublisher() {
+        let expectation = XCTestExpectation(description: self.debugDescription)
+        let foo = KVOAbleNSObject()
+        let q = DispatchQueue(label: self.debugDescription)
+
+        let _ = foo.publisher(for: \.intValue)
+            .print()
+            .sink { someValue in
+                print("value of intValue updated to: >>\(someValue)<<")
+            }
+
+        q.asyncAfter(deadline: .now() + 0.5, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.intValue = 5
+            expectation.fulfill()
+        })
+        wait(for: [expectation], timeout: 5.0)
+    }
+
 }
