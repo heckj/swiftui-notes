@@ -107,12 +107,15 @@ The publisher for the property is available at the same scope, and with the same
 This allows you represent an "Empty" result that is still a concrete result within combine pipelines, as <<#reference-assign>> and <<#reference-sink>> subscribers will only trigger updates on non-nil values.
 
 If the publisher generated from `@Published` receives a cancellation from any subscriber, it is expected to, and will cease, reporting property changes.
-Because of this protocol/lifecycle expectation, it is common to arrange pipelines from these publishers that have an error type of `<Never>` and do all error handling within the pipelines.
+Because of this expectation, it is common to arrange pipelines from these publishers that have an error type of `<Never>` and do all error handling within the pipelines.
+For example, if a <<#reference-sink>> subscriber is set up to capture errors from a pipeline originating from a @Published property, when the error is received, the sink will send a `cancel` message, causing the publisher to cease generating any updates on change.
+This is illustrated in the test `testPublishedSinkWithError` at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`]
+
 Additional examples of how to arrange error handling for a continous publisher like `@Published` can be found at  <<patterns.adoc#patterns-continual-error-handling>>.
 
 [WARNING]
 ====
-As of the beta3 release of Combine with the updated operating systems, Published doesn't always trigger when a struct is the holding variable, but it works within a class instance.
+As of the beta3 release of Combine with the updated operating systems, Published doesn't always trigger updates when a struct is the holding the @Published variable, but it works within a class instance.
 The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`] illustrate this with the tests:
 * `testPublishedOnStructWithChange`
 * `testPublishedOnClassWithChange`

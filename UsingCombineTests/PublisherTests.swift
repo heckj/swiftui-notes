@@ -19,6 +19,10 @@ class PublisherTests: XCTestCase {
         @Published var username: String = ""
     }
 
+    enum failureCondition: Error {
+        case selfDestruct
+    }
+
     func testPublishedOnStruct() {
         let expectation = XCTestExpectation(description: "async sink test")
         let foo = HoldingStruct()
@@ -116,5 +120,53 @@ class PublisherTests: XCTestCase {
         })
         wait(for: [expectation], timeout: 5.0)
         XCTAssertEqual(countOfHits, 2)
+    }
+
+    func testPublishedSinkWithError() {
+        let expectation = XCTestExpectation(description: "async sink test")
+        let foo = HoldingClass()
+        let q = DispatchQueue(label: self.debugDescription)
+
+        let _ = foo.$username
+            .print(self.debugDescription)
+            .tryMap({ myValue -> String in
+                if (myValue == "boom") {
+                    throw failureCondition.selfDestruct
+                }
+                return "mappedValue"
+            })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let anError):
+                    print("received error: ", anError)
+                    break
+                }
+            }, receiveValue: { postmanResponse in
+                XCTAssertNotNil(postmanResponse)
+                print(".sink() data received \(postmanResponse)")
+            })
+
+        q.async {
+            print("Updating to redfish on background queue")
+            foo.username = "redfish"
+        }
+        q.asyncAfter(deadline: .now() + 0.5, execute: {
+            print("Updating to boom on background queue")
+            foo.username = "boom"
+        })
+        // since the "boom" value will cause the error to be thrown with the
+        // tryMap in the pipeline attached to the sink, the sink will send a
+        // cancel message (visible in the test output for this test due to
+        // the .print() operator), and no further changes will be published.
+        q.asyncAfter(deadline: .now() + 1, execute: {
+            print("Updating to bluefish on background queue")
+            foo.username = "bluefish"
+            expectation.fulfill()
+        })
+        wait(for: [expectation], timeout: 5.0)
+        XCTAssertEqual(foo.username, "bluefish")
     }
 }
