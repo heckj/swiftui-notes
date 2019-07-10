@@ -229,6 +229,12 @@ class ViewController: UIViewController {
         // convert the .sink to an `AnyCancellable` object that we have
         // referenced from the implied initializers
         avatarViewSubscriber = AnyCancellable(avatarViewSub)
+
+        // KVO publisher of UIKit interface element
+        let _ = repositoryCountLabel.publisher(for: \.text)
+            .sink { someValue in
+                print("repositoryCountLabel Updated to \(String(describing: someValue))")
+        }
     }
 
 }

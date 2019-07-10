@@ -164,7 +164,9 @@ let _ = foo.publisher(for: \.intValue)
 
 [NOTE]
 ====
-KVO publisher access implies that with MacOS 10.15 release, most of appkit UI elements will be accessible as publishers. UIKit controls, however, aren't KVO compatible.
+KVO publisher access implies that with MacOS 10.15 release or IOS 13, most of Appkit and UIKit interface instances will be accessible as publishers.
+Relying on the interface element's state to trigger updates into pipelines can lead to your state being very tightly bound to the interface elements, rather than your model.
+You may be better served by explicitly creating your own state to react to from a <<#reference-published>> property wrapper.
 ====
 
 [#reference-empty]
