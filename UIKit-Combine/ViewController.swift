@@ -14,17 +14,22 @@ enum APIFailureCondition: Error {
 }
 
 private struct GithubAPIUser: Decodable {
+    // A very *small* subset of the content available about a github API user
+    // for example: https://api.github.com/users/heckj
     let login: String
     let public_repos: Int
     let avatar_url: String
 }
 
 private struct GithubAPI {
-    // I've also seen this kind of example setup with a class and func's on the class, rather than a struct...
+    // NOTE(heckj): I've also seen this kind of API access object set up with with a class and static methods on the class.
+    // I don't know that there's a specific benefit to make this a value type/struct with a function on it.
 
-    var activityIndicator: UIActivityIndicatorView?
-
-    /// creates a one-shot publisher that provides a GithubAPI User object as the end result
+    /// creates a one-shot publisher that provides a GithubAPI User object as the end result.
+    /// This method was specifically designed to return a list of 1 object, as opposed to the object itself to make it easier to distinguish a
+    /// "no user" result (empty list) representation that could be dealt with more easily in a Combine pipeline than an optional value.
+    /// The expected return types is a Publisher that returns either an empty list, or a list of one GithubAPUser, and with a failure return
+    /// type of Never, so it's suitable for recurring pipeline updates working with a @Published data source.
     /// - Parameter username: username to be retrieved from the Github API
     static func retrieveGithubUser(username: String) -> AnyPublisher<[GithubAPIUser], Never> {
 
@@ -61,7 +66,13 @@ private struct GithubAPI {
                 [$0]
             }
             .catch { err in
-//                return Publishers.Empty<GithubAPIUser, Never>()
+                // return Publishers.Empty<GithubAPIUser, Never>()
+                // ^^ when I originally wrote this method, I was returning a GithubAPIUser? optional,
+                // and then a GithubAPIUser without optional. I ended up converting this to return an empty
+                // list as the "error output replacement" so that I could represent that the current value
+                // requested didn't *have* a correct github API response.
+                // When I was returing a single specific type, using Publishers.Empty was a good way to do
+                // a "no data on failure" error capture scenario.
                 return Just([])
             }
             .eraseToAnyPublisher()
@@ -78,7 +89,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var githubAvatarImageView: UIImageView!
 
     var repositoryCountSubscriber: AnyCancellable?
-//    var avatarViewSubscriber: AnyCancellable?
+    var avatarViewSubscriber: AnyCancellable?
     var usernameSubscriber: AnyCancellable?
 
     // username from the github_id_entry field, updated via IBAction
@@ -133,32 +144,61 @@ class ViewController: UIViewController {
             .receive(on: RunLoop.main)
             .assign(to: \.text, on: repositoryCountLabel)
 
-        let _ = $githubUserData
-//            .filter({ possibleUser -> Bool in
-//                possibleUser != nil
-//            })
-            .print("avatar image for user")
+        let avatarViewSub = $githubUserData
+            // When I first wrote this publisher pipeline, the type I was aiming for was <GithubAPIUser?, Never>,
+            // where the value was an optional. The commented out .filter below was to prevent a `nil` GithubAPIUser
+            // object from propogating further and attempting to invoke the dataTaskPublisher which retrieves the
+            // avatar image.
+            //
+            // When I updated the type to be non-optional (<GithubAPIUser?, Never>) the filter expression was no
+            // longer needed, but possibly interesting.
+            // .filter({ possibleUser -> Bool in
+            //     possibleUser != nil
+            // })
+            // .print("avatar image for user") // debugging output showing me pipeline interactions
             .map { userData -> AnyPublisher<UIImage, Never> in
                 guard let firstUser = userData.first else {
+                    // my placeholder data being returned below is an empty UIImage() instance, which
+                    // simply clears the display. Your use case may be better served with an explicit
+                    // placeholder image in the event of this error condition.
                     return Just(UIImage()).eraseToAnyPublisher()
                 }
                 return URLSession.shared.dataTaskPublisher(for: URL(string: firstUser.avatar_url)!)
+                    // ^^ this hands back (Data, response) objects
                     .map { $0.data }
+                    // ^^ pare down to just the Data object
                     .map { UIImage(data: $0)!}
+                    // ^^ convert Data into a UIImage with its initializer
                     .subscribe(on: self.myBackgroundQueue)
+                    // ^^ do this work on a background Queue so we don't screw with the UI responsiveness
                     .catch { err in
                         return Just(UIImage())
                     }
+                    // ^^ deal the failure scenario and return my "replacement" image for when an avatar image
+                    // either isn't available or fails somewhere in the pipeline here.
                     .eraseToAnyPublisher()
+                    // ^^ match the return type here to the return type defined in the .map() wrapping this
+                    // because otherwise the return type would be terribly complex nested set of generics.
             }
             .switchToLatest()
+            // ^^ Take the returned publisher that's been passed down the chain and "subscribe it out" to the value
+            // within in, and then pass that further down.
             .subscribe(on: myBackgroundQueue)
+            // ^^ do the above processing as well on a background Queue rather than potentially impacting the UI responsiveness
             .receive(on: RunLoop.main)
-            // this next line is returning a compiler error: Type of expression is ambiguous without more context
-            .assign(to: \.image, on: self.githubAvatarImageView)
-//            .sink(receiveValue: { image in
-//                self.githubAvatarImageView.image = image
-//            })
+            // ^^ and then switch to receive and process the data on the main queue since we're messin with the UI
+
+            // .assign(to: \.image, on: self.githubAvatarImageView)
+            // this ^^^ line is returning a compiler error: Type of expression is ambiguous without more context
+            // I *thought* it would work, but it's having an issue with the keyPath that I'm trying to assign
+            // for the githubAvatarImageView.image.
+
+            // so instead we can use a sink to capture the data and set a value
+            .sink(receiveValue: { image in
+                self.githubAvatarImageView.image = image
+            })
+        // convert the .sink to an `AnyCancellable` object that we have referenced from the implied initializers
+        avatarViewSubscriber = AnyCancellable(avatarViewSub)
     }
 
 }
