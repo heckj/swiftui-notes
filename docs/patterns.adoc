@@ -684,7 +684,8 @@ private struct GithubAPI { <2>
     /// suitable for recurring pipeline updates working with a @Published
     /// data source.
     /// - Parameter username: username to be retrieved from the Github API
-    static func retrieveGithubUser(username: String) -> AnyPublisher<[GithubAPIUser], Never> {
+    static func retrieveGithubUser(username: String)
+        -> AnyPublisher<[GithubAPIUser], Never> {
 
         if username.count < 3 {
             return Just([]).eraseToAnyPublisher()
