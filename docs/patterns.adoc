@@ -587,7 +587,8 @@ __References__::
 * Publishers:
 <<reference.adoc#reference-published>>,
 <<reference.adoc#reference-dataTaskPublisher>>,
-<<reference.adoc#reference-just>>, <<reference.adoc#reference-empty>>
+<<reference.adoc#reference-just>>,
+<<reference.adoc#reference-empty>>
 * Operators:
 <<reference.adoc#reference-decode>>,
 <<reference.adoc#reference-catch>>,
@@ -599,7 +600,7 @@ __References__::
 <<reference.adoc#reference-subscribe>>,
 <<reference.adoc#reference-receive>>,
 <<reference.adoc#reference-throttle>>,
-<<reference.adoc#reference-removeDuplicates>>,
+<<reference.adoc#reference-removeDuplicates>>
 * Subscribers:
 <<reference.adoc#reference-sink>>,
 <<reference.adoc#reference-assign>>
