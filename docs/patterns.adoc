@@ -692,7 +692,8 @@ private struct GithubAPI { <2>
             //    .eraseToAnyPublisher()
         }
         let assembledURL = String("https://api.github.com/users/\(username)")
-        let publisher = URLSession.shared.dataTaskPublisher(for: URL(string: assembledURL)!)
+        let publisher = URLSession.shared.dataTaskPublisher(for:
+            URL(string: assembledURL)!)
 //            .handleEvents(receiveSubscription: { _ in <4>
 //                DispatchQueue.main.async {
 //                    self.activityIndicator.startAnimating()
@@ -754,7 +755,8 @@ class ViewController: UIViewController {
     @Published private var githubUserData: [GithubAPIUser] = [] <3>
 
     // publisher reference for this is $username, of type <String, Never>
-    var myBackgroundQueue: DispatchQueue = DispatchQueue(label: "viewControllerBackgroundQueue")
+    var myBackgroundQueue: DispatchQueue = DispatchQueue(
+        label: "viewControllerBackgroundQueue")
 
     // MARK - Actions
 
@@ -827,7 +829,8 @@ class ViewController: UIViewController {
                     // placeholder image in the event of this error condition.
                     return Just(UIImage()).eraseToAnyPublisher()
                 }
-                return URLSession.shared.dataTaskPublisher(for: URL(string: firstUser.avatar_url)!)
+                return URLSession.shared.dataTaskPublisher(
+                    for: URL(string: firstUser.avatar_url)!)
                     // ^^ this hands back (Data, response) objects
                     .map { $0.data }
                     // ^^ pare down to just the Data object
