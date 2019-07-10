@@ -34,7 +34,9 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/just[`
 
 __Usage__::
 
+* <<patterns.adoc#patterns-oneshot-error-handling>>
 * <<patterns.adoc#patterns-continual-error-handling>>
+* <<patterns.adoc#patterns-update-interface-network-request>>
 
 __Details__::
 
@@ -69,13 +71,68 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 
 __Usage__::
 
-n/a
+* <<patterns.adoc#patterns-update-interface-network-request>>
+* unit tests illustrating using Published: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`]
 
 __Details__::
 
-Output type is inferred from the property being wrapped.
+Published is part of combine, but allows you to wrap an property, enabling you to get a publisher that triggers data updates whenever the property is changed.
+The publisher's output type is inferred from the type of the property, and the error type of the provided publisher is <Never>.
 
-publisher -> `<SomeType>`, `<Never>`
+There are two examples of using Published in <<patterns.adoc#patterns-update-interface-network-request>>.
+
+A smaller examples of how it can be used:
+
+[source, swift]
+----
+@Published var username: String = "" <1>
+
+$username <2>
+    .sink { someString in
+        print("value of username updated to: ", someString)
+    }
+
+$username <3>
+    .assign(\.text, on: myLabel)
+
+@Published private var githubUserData: [GithubAPIUser] = [] <4>
+----
+
+<1> `@Published` wraps the property, username, and will generate events whenever the property is changed.
+If there is a subscriber at initialization time, the subscriber will also receive the initial value being set.
+The publisher for the property is available at the same scope, and with the same permissions, as the property itself.
+<2> The publisher is accessible as `$username`, of type `Published<String>.publisher`.
+<3> A Published property can have more than one subscriber pipeline triggering from it.
+<4> If you're publishing your own type, you may find it convenient to publish an array of that type as the property, even if you only reference a single value.
+This allows you represent an "Empty" result that is still a concrete result within combine pipelines, as <<#reference-assign>> and <<#reference-sink>> subscribers will only trigger updates on non-nil values.
+
+If the publisher generated from `@Published` receives a cancellation from any subscriber, it is expected to, and will cease, reporting property changes.
+Because of this protocol/lifecycle expectation, it is common to arrange pipelines from these publishers that have an error type of `<Never>` and do all error handling within the pipelines.
+Additional examples of how to arrange error handling for a continous publisher like `@Published` can be found at  <<patterns.adoc#patterns-continual-error-handling>>.
+
+[WARNING]
+====
+As of the beta3 release of Combine with the updated operating systems, Published doesn't always trigger when a struct is the holding variable, but it works within a class instance.
+The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`] illustrate this with the tests:
+* `testPublishedOnStructWithChange`
+* `testPublishedOnClassWithChange`
+====
+
+[#reference-kvo-publisher]
+=== publisher property on KVO references
+
+__Summary__::
+
+A property wrapper that adds a Combine publisher to any property
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/published[Published]
+
+__Usage__::
+
+* <<patterns.adoc#patterns-update-interface-network-request>>
+
+__Details__::
+KVO Publishers
 
 * extracts a property from an object and returns it
 ** ex: `.publisher(for: \.name)`
@@ -93,6 +150,7 @@ __Usage__::
 
 * <<patterns.adoc#patterns-oneshot-error-handling>> shows an example of using `catch` to handle errors with a one-shot publisher.
 * <<patterns.adoc#patterns-continual-error-handling>> shows an example of using `catch` with `flatMap` to handle errors with a continual publisher.
+* <<patterns.adoc#patterns-update-interface-network-request>>
 
 __Details__::
 
@@ -232,6 +290,7 @@ __Usage__::
 * <<patterns.adoc#patterns-oneshot-error-handling>>
 * <<patterns.adoc#patterns-retry>>
 * <<patterns.adoc#patterns-constrained-network>>
+* <<patterns.adoc#patterns-update-interface-network-request>>
 
 __Details__::
 
@@ -306,6 +365,7 @@ __Usage__::
 * <<patterns.adoc#patterns-dataTaskPublisher-decode>>
 * <<patterns.adoc#patterns-oneshot-error-handling>>
 * <<patterns.adoc#patterns-retry>>
+* <<patterns.adoc#patterns-update-interface-network-request>>
 * unit tests illustrating using map with dataTaskPublisher: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DataTaskPublisherTests.swift[`UsingCombineTests/DataTaskPublisherTests.swift`]
 
 
@@ -776,6 +836,7 @@ __Usage__::
 
 * <<patterns.adoc#patterns-oneshot-error-handling>> shows an example of using `catch` to handle errors with a one-shot publisher.
 * <<patterns.adoc#patterns-continual-error-handling>> shows an example of using `catch` with `flatMap` to handle errors with a continual publisher.
+* <<patterns.adoc#patterns-update-interface-network-request>>
 
 __Details__::
 
