@@ -47,7 +47,7 @@ Often used within a closure to <<#reference-flatmap>> in error handling, it can 
 
 __Summary__::
 
-A future is initialized with a closure that eventually resolves to a value.
+A future is initialized with a closure that eventually resolves to a single output value or failure completion.
 
 __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/future[Future].
 

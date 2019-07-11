@@ -106,22 +106,4 @@ class CombinePatternTests: XCTestCase {
 
     }
 
-
-
-
-
-    func testFutureSignatureWithoutErasure() {
-        let x = PassthroughSubject<String, Never>()
-            .flatMap { name in
-                return Future<String, Error> { promise in
-                    promise(.success(""))
-                }.catch { _ in
-                    Just("No user found")
-                }.map { result in
-                    return "\(result) foo"
-                }
-        }
-        
-        print(x)
-    }
 }

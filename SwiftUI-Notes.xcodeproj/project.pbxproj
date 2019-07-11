@@ -14,6 +14,7 @@
 		1A1C87C322D0EF6100128A5E /* Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1C87C022D0EF6100128A5E /* Mock.swift */; };
 		1A1C87C422D0EF6100128A5E /* MockingURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1C87C122D0EF6100128A5E /* MockingURLProtocol.swift */; };
 		1A1C87C522D0EF6100128A5E /* Mocker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1C87C222D0EF6100128A5E /* Mocker.swift */; };
+		1A2AA5E722D7EEE9000C1CA3 /* FuturePublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2AA5E622D7EEE9000C1CA3 /* FuturePublisherTests.swift */; };
 		1A4FB16722D1464F0009F228 /* EncodeDecodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4FB16622D1464F0009F228 /* EncodeDecodeTests.swift */; };
 		1A6006E122D267F10030A471 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006E022D267F10030A471 /* AppDelegate.swift */; };
 		1A6006E322D267F10030A471 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006E222D267F10030A471 /* SceneDelegate.swift */; };
@@ -73,6 +74,7 @@
 		1A1C87C022D0EF6100128A5E /* Mock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mock.swift; sourceTree = "<group>"; };
 		1A1C87C122D0EF6100128A5E /* MockingURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockingURLProtocol.swift; sourceTree = "<group>"; };
 		1A1C87C222D0EF6100128A5E /* Mocker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mocker.swift; sourceTree = "<group>"; };
+		1A2AA5E622D7EEE9000C1CA3 /* FuturePublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuturePublisherTests.swift; sourceTree = "<group>"; };
 		1A4FB16622D1464F0009F228 /* EncodeDecodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodeDecodeTests.swift; sourceTree = "<group>"; };
 		1A6006DE22D267F10030A471 /* UIKit-Combine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "UIKit-Combine.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A6006E022D267F10030A471 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -246,6 +248,14 @@
 			isa = PBXGroup;
 			children = (
 				1AEA9C2622CD5FE7006709F1 /* SinkSubscriberTests.swift */,
+				1ACB983122D795CE00180481 /* EmptyPublisherTests.swift */,
+				1A2AA5E622D7EEE9000C1CA3 /* FuturePublisherTests.swift */,
+				1ACB983322D79E7F00180481 /* FilterPublisherTests.swift */,
+				1A02E8A522D7C1B8008CCCAE /* SwitchAndFlatMapPublisherTests.swift */,
+				1A02E8A722D7C219008CCCAE /* RetryPublisherTests.swift */,
+				1A02E8A922D7C9BF008CCCAE /* debounceAndRemoveDuplicatesPublisherTests.swift */,
+				1A02E8AB22D7DE53008CCCAE /* handleEventsPublisherTests.swift */,
+				1AC8123E22D69C4C0044AAAB /* PublisherTests.swift */,
 				1AFF21DA22CFFF0C0039C303 /* SubscribeReceiveAssignTests.swift */,
 				1A4FB16622D1464F0009F228 /* EncodeDecodeTests.swift */,
 				1A7C604022D0155E00D7675C /* DataTaskPublisherTests.swift */,
@@ -254,13 +264,6 @@
 				1A1C87C022D0EF6100128A5E /* Mock.swift */,
 				1A1C87C222D0EF6100128A5E /* Mocker.swift */,
 				1A1C87C122D0EF6100128A5E /* MockingURLProtocol.swift */,
-				1AC8123E22D69C4C0044AAAB /* PublisherTests.swift */,
-				1ACB983122D795CE00180481 /* EmptyPublisherTests.swift */,
-				1ACB983322D79E7F00180481 /* FilterPublisherTests.swift */,
-				1A02E8A522D7C1B8008CCCAE /* SwitchAndFlatMapPublisherTests.swift */,
-				1A02E8A722D7C219008CCCAE /* RetryPublisherTests.swift */,
-				1A02E8A922D7C9BF008CCCAE /* debounceAndRemoveDuplicatesPublisherTests.swift */,
-				1A02E8AB22D7DE53008CCCAE /* handleEventsPublisherTests.swift */,
 			);
 			path = UsingCombineTests;
 			sourceTree = "<group>";
@@ -501,6 +504,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A1C87C522D0EF6100128A5E /* Mocker.swift in Sources */,
+				1A2AA5E722D7EEE9000C1CA3 /* FuturePublisherTests.swift in Sources */,
 				1A4FB16722D1464F0009F228 /* EncodeDecodeTests.swift in Sources */,
 				1A1C87C422D0EF6100128A5E /* MockingURLProtocol.swift in Sources */,
 				1A02E8A822D7C219008CCCAE /* RetryPublisherTests.swift in Sources */,
