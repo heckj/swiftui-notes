@@ -1071,7 +1071,49 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
 [#reference-switchToLatest]
 ==== switchToLatest
 
-* switchToLatest?
+__Summary__::
+
+A publisher that flattens any nested publishers, using the most recent provided publisher.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/switchtolatest
+
+__Usage__::
+
+* <<reference.adoc#patterns-update-interface-network-request>>
+
+__Details__::
+
+switchToLatest is akin to <<#reference-flatmap>>, taking in a publisher instance and returning it's value (or values).
+The primary different is in where it gets the publisher.
+In flatMap, the publisher is returned within the closure provided to flatMap, and the operator works upon that to subscribe and provide the relevant value down the pipeline.
+In switchToLatest, the publisher instance is provided *as the output type* from a previous publisher or operator.
+
+The most common form of using this is with a one-shot publisher such as <<#reference-just>>, <<#reference-once>>, or getting it's value as a result of a <<#reference-map>> transform.
+
+It is also commonly used when working with an API that provides a publisher.
+switchToLatest assists in taking the result of the publisher and sending that down the pipeline rather than sending the publisher itself down as the output type.
+
+The following snippet is part of the larger example <<reference.adoc#patterns-update-interface-network-request>>
+
+[source, swift]
+----
+.map { username -> AnyPublisher<[GithubAPIUser], Never> in <2>
+    return GithubAPI.retrieveGithubUser(username: username) <1>
+}
+// ^^ type returned in the pipeline is a Publisher, so we use
+// switchToLatest to flatten the values out of that
+// pipline to return down the chain, rather than returning a
+// publisher down the pipeline.
+.switchToLatest() <2>
+----
+
+<1> In this example, an API instance (GithubAPI) has a function that returns a publisher.
+<2> We are using <<#reference-map>> to take an earlier String output type and use that to invoke the API, which returns a publisher instance.
+<3> We want to use the value from that publisher, not the publisher itself, which is exactly what switchToLatest() provides.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
