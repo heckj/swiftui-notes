@@ -40,7 +40,7 @@ __Usage__::
 
 __Details__::
 
-Often used within a closure to <<#reference-flatMap>> in error handling, it can see a one-shot pipeline for use in error handling of continuous values.
+Often used within a closure to <<#reference-flatmap>> in error handling, it can see a one-shot pipeline for use in error handling of continuous values.
 
 [#reference-future]
 === Future
@@ -493,7 +493,7 @@ Just(5)
 <2> and throw an error, although throwing an Error isn't required.
 <3> If the error condition doesn't occur, you do need to pass down data for any further subscribers.
 
-[#reference-flatMap]
+[#reference-flatmap]
 ==== flatMap
 
 __Summary__::
