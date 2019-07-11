@@ -9,10 +9,23 @@
 import XCTest
 import Combine
 
+
 class FuturePublisherTests: XCTestCase {
 
     enum testFailureCondition: Error {
         case anErrorExample
+    }
+
+    // example of blocking function
+    func aBlockingFunction() -> String {
+        sleep(.random(in: 1...3))
+        return "Hello world!"
+    }
+    // example of a functional calling it with a completion closure
+    func asyncMethod(completion block: @escaping ((String) -> Void)) {
+        DispatchQueue.global(qos: .background).async {
+            block(self.aBlockingFunction())
+        }
     }
 
     func testFuturePublisher() {
@@ -22,6 +35,10 @@ class FuturePublisherTests: XCTestCase {
 
         // the creating the future publisher
         let sut = Future<String, Error> { promise in
+//            yourAPICallThatTakesAClosure(someParam) { resultData in
+//                // on successful resultData
+//                promise(.success("a success response"))
+//            }
             print("Setting up the future with an incoming promise: ", promise) // <-- initialized promise that we resolve
             promise(.success("a success response"))
             // or
