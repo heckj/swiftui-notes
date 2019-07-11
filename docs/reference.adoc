@@ -135,11 +135,25 @@ __Usage__::
 * <<patterns.adoc#patterns-oneshot-error-handling>> shows an example of using `catch` to handle errors with a one-shot publisher.
 * <<patterns.adoc#patterns-continual-error-handling>> shows an example of using `catch` with `flatMap` to handle errors with a continual publisher.
 * <<patterns.adoc#patterns-update-interface-network-request>>
+* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/EmptyPublisherTests.swift[`UsingCombineTests/EmptyPublisherTests.swift`]
 
 __Details__::
 
-* Empty -> `<SomeType>`, `<Error>`
-** `Empty(completeImmediately: false)`
+Empty is useful in error handling scenarios where with publishers where the value is an optional, or where you want to resolve an error by simply not sending anything.
+Empty can be invoked to be a publisher of any output and failure type combination.
+
+Empty is most commonly used where you need to return a publisher, but don't want to propogate any values (a possible error handling scenario).
+If you want a publisher that provides a single value, then look at <<#reference-just>>, <<#reference-once>>, or <<#reference-optional>> publishers as alternatives.
+
+When subscribed to, an instance of the Empty publisher will not return any values (or errors) and will immediately return a finished completion message to the subscriber.
+
+An example of using Empty
+[source, swift]
+----
+let myEmptyPublisher = Publishers.Empty<String, Never>() <1>
+----
+<1> Because the types are not be able to be inferred, expect to always define the types you want to return within the declaration.
+
 
 [#reference-fail]
 === Publishers.Fail
