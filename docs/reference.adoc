@@ -614,16 +614,74 @@ You can additionally throw an error during the evaluation of tryFilter, which wi
 [#reference-removeDuplicates]
 ==== removeDuplicates
 
-* removeDuplicates
+__Summary__::
 
-** `.removeDuplicates()`
-** remembers what was previously sent in the stream, and only passes forward new values
-** there's a variant `tryRemoveDuplicates` for use with a provided error-throwing closure.
+removeDuplicates remembers what was previously sent in the pipeline, and only passes forward values that don't match the current value.
 
-[#reference-tryRemoveDuplicates]
+__Constraints on connected publisher__::
+
+* Available when Output of the previous publisher conforms to Equatable.
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/removeduplicates[`removeDuplicates`]
+
+__Usage__::
+
+* unit tests illustrating using removeDuplicates: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift`]
+
+__Details__::
+
+The default usage of removeDuplicates doesn't require any parameters, and the operator will publish only elements that don't match the previously sent element.
+
+[source, swift]
+----
+.removeDuplicates()
+----
+
+A second usage of removeDuplicates takes a single parameter `by` that accepts a closure that allows you to determine the logic of what will be removed.
+The parameter version does not have the constraint on the Output type being equatable, but requires you to provide the relevant logic.
+If the closure returns true, the removeDuplicates predicate will consider the values matched and not forward a the duplicate value.
+
+[source, swift]
+----
+.removeDuplicates(by: { first, second -> Bool in
+    // your logic is required if the output type doesn't conform to equatable.
+    first.id == second.id
+})
+----
+
+A variation of removeDuplicates exists that allows the predicate closure to throw an Error exists: <<#reference-tryremoveduplicates>>
+
+[#reference-tryremoveduplicates]
 ==== tryRemoveDuplicates
 
-* tryRemoveDuplicates
+__Summary__::
+
+tryRemoveDuplicates is a variant of <<#reference-removeduplicates>> that allows the predicate testing equality to throw an Error, resulting in an Error completion type.
+
+__Constraints on connected publisher__::
+
+* none
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/tryremoveduplicates[`tryRemoveDuplicates`]
+
+__Usage__::
+
+* unit tests illustrating using tryRemoveDuplicates: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift`]
+
+__Details__::
+
+tryRemoveDuplicates is a variant of <<#reference-removeduplicates>> taking a single parameter that can throw an error.
+The parameter is a closure that allows you to determine the logic of what will be removed.
+If the closure returns true, tryRemoveDuplicates will consider the values matched and not forward a the duplicate value.
+If the closure throws an error, a failure completion will be propogated down the chain, and no value is sent.
+
+[source, swift]
+----
+.removeDuplicates(by: { first, second -> Bool throws in
+    // your logic is required if the output type doesn't conform to equatable.
+
+})
+----
 
 [#reference-replaceEmpty]
 ==== replaceEmpty
