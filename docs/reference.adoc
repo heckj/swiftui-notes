@@ -1277,12 +1277,17 @@ __Usage__::
 
 __Details__::
 
-Throttle is akin to the <<#reference-debounce>> operator in that it collapses values, but throttle defaults to returning the first value set within the time window specified rather than the last value, which debounce returns.
-
-The operator takes a minimum of two parameters, an amount of time over which to debounce the signal and a scheduler on which to apply the operations.
+Throttle is akin to the <<#reference-debounce>> operator in that it collapses values.
 The operator will collapse any values received within the timeframe provided to a single, last value received from the upstream publisher within the time window.
 
+The operator takes a minimum of three parameters, `for`: an amount of time over which to collapse the values received, `scheduler`: a scheduler on which to apply the operations, and `latest`: a boolean indicating if the first value or last value should be chosen and forwarded.
+
 This operator is frequently used with <<#reference-removeduplicates>> when the publishing source is bound to UI interactions, primarily to prevent an "edit and revert" style of interaction from triggering unnessecary work.
+
+[source, swift]
+----
+.throttle(for: 0.5, scheduler: RunLoop.main, latest: false)
+----
 
 [#reference-timeout]
 ==== timeout

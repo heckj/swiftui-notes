@@ -266,6 +266,7 @@ class debounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         let expectation = XCTestExpectation(description: self.debugDescription)
         let foo = HoldingClass()
         var receivedCount = 0
+        var lastReceivedSinkValue = -1
 
         let _ = foo.$intValue
             .throttle(for: 0.5, scheduler: q, latest: false)
@@ -273,19 +274,24 @@ class debounceAndRemoveDuplicatesPublisherTests: XCTestCase {
             .sink { someValue in
                 print("value updated to: ", someValue)
                 receivedCount += 1
+                lastReceivedSinkValue = someValue
         }
 
         q.asyncAfter(deadline: .now() + 0.1, execute: {
             print("Updating to foo.intValue on background queue")
             foo.intValue = 1
         })
-        q.asyncAfter(deadline: .now() + 0.2, execute: {
+        q.asyncAfter(deadline: .now() + 0.6, execute: {
             print("Updating to foo.intValue on background queue")
             foo.intValue = 2
         })
-        q.asyncAfter(deadline: .now() + 0.3, execute: {
+        q.asyncAfter(deadline: .now() + 1.1, execute: {
             print("Updating to foo.intValue on background queue")
             foo.intValue = 3
+        })
+        q.asyncAfter(deadline: .now() + 1.2, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.intValue = 4
         })
 
         q.asyncAfter(deadline: .now() + 2, execute: {
@@ -294,10 +300,11 @@ class debounceAndRemoveDuplicatesPublisherTests: XCTestCase {
 
         wait(for: [expectation], timeout: 5.0)
 
-        XCTAssertEqual(receivedCount, 1)
+        XCTAssertEqual(receivedCount, 3)
 
-        // I really expected this to be the first value, not the third with latest=false
-        XCTAssertEqual(foo.intValue, 3)
+        // of the values send at 1.1 and 1.2 seconds in, the first value is returned down the pipeline
+        XCTAssertEqual(lastReceivedSinkValue, 3)
+        XCTAssertEqual(foo.intValue, 4)
     }
 
     func testThrottleLatestTrue() {
@@ -310,6 +317,7 @@ class debounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         let expectation = XCTestExpectation(description: self.debugDescription)
         let foo = HoldingClass()
         var receivedCount = 0
+        var lastReceivedSinkValue = -1
 
         let _ = foo.$intValue
             .throttle(for: 0.5, scheduler: q, latest: true)
@@ -317,19 +325,24 @@ class debounceAndRemoveDuplicatesPublisherTests: XCTestCase {
             .sink { someValue in
                 print("value updated to: ", someValue)
                 receivedCount += 1
+                lastReceivedSinkValue = someValue
         }
 
         q.asyncAfter(deadline: .now() + 0.1, execute: {
             print("Updating to foo.intValue on background queue")
             foo.intValue = 1
         })
-        q.asyncAfter(deadline: .now() + 0.2, execute: {
+        q.asyncAfter(deadline: .now() + 0.6, execute: {
             print("Updating to foo.intValue on background queue")
             foo.intValue = 2
         })
-        q.asyncAfter(deadline: .now() + 0.3, execute: {
+        q.asyncAfter(deadline: .now() + 1.1, execute: {
             print("Updating to foo.intValue on background queue")
             foo.intValue = 3
+        })
+        q.asyncAfter(deadline: .now() + 1.2, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.intValue = 4
         })
 
         q.asyncAfter(deadline: .now() + 3, execute: {
@@ -338,7 +351,9 @@ class debounceAndRemoveDuplicatesPublisherTests: XCTestCase {
 
         wait(for: [expectation], timeout: 5.0)
 
-        XCTAssertEqual(receivedCount, 1)
-        XCTAssertEqual(foo.intValue, 3)
+        XCTAssertEqual(receivedCount, 3)
+        // of the values send at 1.1 and 1.2 seconds in, the second value is returned down the pipeline
+        XCTAssertEqual(foo.intValue, 4)
+        XCTAssertEqual(lastReceivedSinkValue, 4)
     }
 }
