@@ -509,6 +509,7 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 __Usage__::
 
 * <<patterns.adoc#patterns-continual-error-handling>>
+* unit tests illustrating flatMap: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SwitchAndFlatMapPublisherTests.swift[`UsingCombineTests/SwitchAndFlatMapPublisherTests.swift`]
 
 __Details__::
 
@@ -1052,6 +1053,7 @@ __Usage__::
 
 * <<patterns.adoc#patterns-retry>>
 * unit tests illustrating using map with dataTaskPublisher: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DataTaskPublisherTests.swift[`UsingCombineTests/DataTaskPublisherTests.swift`]
+* unit tests illustrating retry: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/RetryPublisherTests.swift[`UsingCombineTests/RetryPublisherTests.swift`]
 
 __Details__::
 
@@ -1121,6 +1123,7 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 __Usage__::
 
 * <<reference.adoc#patterns-update-interface-network-request>>
+* unit tests illustrating switchToLatest: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SwitchAndFlatMapPublisherTests.swift[`UsingCombineTests/SwitchAndFlatMapPublisherTests.swift`]
 
 __Details__::
 
