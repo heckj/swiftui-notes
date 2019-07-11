@@ -562,16 +562,53 @@ In swift, this looks like:
 [#reference-filter]
 ==== filter
 
-* filter
+__Summary__::
 
-** requires Failure to be `<Never>`
-** takes a closure where you can specify how/what gets filtered
-** there's a variant `tryFilter`for use with a provided error-throwing closure.
+Filter passes through all instances of the output type that match a provided closure, dropping any that don't match.
+
+__Constraints on connected publisher__::
+
+* requires Failure type to be `<Never>`
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/filter[`filter`]
+
+__Usage__::
+
+* <<reference.adoc#patterns-update-interface-network-request>>
+* unit tests illustrating using filter: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FilterPublisherTests.swift[`UsingCombineTests/FilterPublisherTests.swift`]
+
+__Details__::
+
+Filter takes a single closure as a parameter that is provided the value from the previous publisher and returns a Bool value.
+If the return from the closure is `true`, then the operator republishes the value further down the chain.
+If the return from the closure is `false`, then the operator drops the value.
+
+If you need a variation of this that will generate an error condition in the pipeline to be handled use the <<#reference-tryFilter>> operator, which allows the closure to throw an error in the evaluation.
 
 [#reference-tryFilter]
 ==== tryFilter
 
-* tryFilter
+__Summary__::
+
+tryFilter passes through all instances of the output type that match a provided closure, dropping any that don't match, and allows generating an error during the evaluation of that closure.
+
+__Constraints on connected publisher__::
+
+* none
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/tryfilter[`tryFilter`]
+
+__Usage__::
+
+* unit tests illustrating using tryFilter: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FilterPublisherTests.swift[`UsingCombineTests/FilterPublisherTests.swift`]
+
+
+__Details__::
+
+Like <<#reference-filter>>, tryFilter takes a single closure as a parameter that is provided the value from the previous publisher and returns a Bool value.
+If the return from the closure is `true`, then the operator republishes the value further down the chain.
+If the return from the closure is `false`, then the operator drops the value.
+You can additionally throw an error during the evaluation of tryFilter, which will then be propogated as the failure type down the pipeline.
 
 [#reference-removeDuplicates]
 ==== removeDuplicates

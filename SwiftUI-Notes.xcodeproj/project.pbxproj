@@ -30,6 +30,7 @@
 		1AC8C78522B1BED80064C1AE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1AC8C78322B1BED80064C1AE /* LaunchScreen.storyboard */; };
 		1AC8C79022B1BED90064C1AE /* SwiftUI_NotesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC8C78F22B1BED90064C1AE /* SwiftUI_NotesTests.swift */; };
 		1ACB983222D795CE00180481 /* EmptyPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACB983122D795CE00180481 /* EmptyPublisherTests.swift */; };
+		1ACB983422D79E7F00180481 /* FilterPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACB983322D79E7F00180481 /* FilterPublisherTests.swift */; };
 		1AEA9C2722CD5FE7006709F1 /* SinkSubscriberTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEA9C2622CD5FE7006709F1 /* SinkSubscriberTests.swift */; };
 		1AFF21DB22CFFF0C0039C303 /* SubscribeReceiveAssignTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFF21DA22CFFF0C0039C303 /* SubscribeReceiveAssignTests.swift */; };
 		1AFF21DD22D003D20039C303 /* XCTestCase+KVOExpectatio0n.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFF21DC22D003D20039C303 /* XCTestCase+KVOExpectatio0n.swift */; };
@@ -97,6 +98,7 @@
 		1AC8C78F22B1BED90064C1AE /* SwiftUI_NotesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUI_NotesTests.swift; sourceTree = "<group>"; };
 		1AC8C79122B1BED90064C1AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1ACB983122D795CE00180481 /* EmptyPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyPublisherTests.swift; sourceTree = "<group>"; };
+		1ACB983322D79E7F00180481 /* FilterPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPublisherTests.swift; sourceTree = "<group>"; };
 		1AD1154B22B2C7C6009CF36D /* SwiftUI_IOS_Playground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = SwiftUI_IOS_Playground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		1AEA9C2422CD5FE7006709F1 /* UsingCombineTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UsingCombineTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AEA9C2622CD5FE7006709F1 /* SinkSubscriberTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SinkSubscriberTests.swift; sourceTree = "<group>"; };
@@ -246,6 +248,7 @@
 				1A1C87C122D0EF6100128A5E /* MockingURLProtocol.swift */,
 				1AC8123E22D69C4C0044AAAB /* PublisherTests.swift */,
 				1ACB983122D795CE00180481 /* EmptyPublisherTests.swift */,
+				1ACB983322D79E7F00180481 /* FilterPublisherTests.swift */,
 			);
 			path = UsingCombineTests;
 			sourceTree = "<group>";
@@ -488,6 +491,7 @@
 				1A1C87C522D0EF6100128A5E /* Mocker.swift in Sources */,
 				1A4FB16722D1464F0009F228 /* EncodeDecodeTests.swift in Sources */,
 				1A1C87C422D0EF6100128A5E /* MockingURLProtocol.swift in Sources */,
+				1ACB983422D79E7F00180481 /* FilterPublisherTests.swift in Sources */,
 				1AEA9C2722CD5FE7006709F1 /* SinkSubscriberTests.swift in Sources */,
 				1ACB983222D795CE00180481 /* EmptyPublisherTests.swift in Sources */,
 				1A7C604122D0155E00D7675C /* DataTaskPublisherTests.swift in Sources */,
