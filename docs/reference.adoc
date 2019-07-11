@@ -1176,7 +1176,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/switchtolatest
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/switchtolatest['switchToLatest']
 
 __Usage__::
 
@@ -1223,10 +1223,26 @@ The following snippet is part of the larger example <<reference.adoc#patterns-up
 [#reference-debounce]
 ==== debounce
 
-* debounce
-** `.debounce(for: 0.5, scheduler: RunLoop.main)`
-** collapses multiple values within a specified time window into a single value
-** often used with `.removeDuplicates()`
+__Summary__::
+
+debounce collapses multiple values within a specified time window into a single value
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/debounce['debounce']
+
+__Usage__::
+
+* unit tests illustrating using debounce: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift`]
+
+__Details__::
+
+The operator takes a minimum of two parameters, an amount of time over which to debounce the signal and a scheduler on which to apply the operations.
+The operator will collapse any values received within the timeframe provided to a single, last value received from the upstream publisher within the time window.
+
+This operator is frequently used with <<#reference-removeduplicates>> when the publishing source is bound to UI interactions, primarily to prevent an "edit and revert" style of interaction from triggering unnessecary work.
 
 [#reference-delay]
 ==== delay
@@ -1245,9 +1261,28 @@ The following snippet is part of the larger example <<reference.adoc#patterns-up
 [#reference-throttle]
 ==== throttle
 
-* throttle
-** Publishes either the most-recent or first element published by the upstream publisher in the specified time interval.
-** requires Failure to be `<Never>`
+__Summary__::
+
+Publishes either the most-recent or first element published by the upstream publisher in the specified time interval.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/throttle['throttle']
+
+__Usage__::
+
+* unit tests illustrating using throttle: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift`]
+
+__Details__::
+
+Throttle is akin to the <<#reference-debounce>> operator in that it collapses values, but throttle defaults to returning the first value set within the time window specified rather than the last value, which debounce returns.
+
+The operator takes a minimum of two parameters, an amount of time over which to debounce the signal and a scheduler on which to apply the operations.
+The operator will collapse any values received within the timeframe provided to a single, last value received from the upstream publisher within the time window.
+
+This operator is frequently used with <<#reference-removeduplicates>> when the publishing source is bound to UI interactions, primarily to prevent an "edit and revert" style of interaction from triggering unnessecary work.
 
 [#reference-timeout]
 ==== timeout

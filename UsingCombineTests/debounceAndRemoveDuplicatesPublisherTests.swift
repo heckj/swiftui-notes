@@ -208,4 +208,137 @@ class debounceAndRemoveDuplicatesPublisherTests: XCTestCase {
 
         simplePublisher.send(completion: Subscribers.Completion.finished)
     }
+
+    func testDebounce() {
+
+        class HoldingClass {
+            @Published var intValue: Int = -1
+        }
+
+        let q = DispatchQueue(label: self.debugDescription)
+        let expectation = XCTestExpectation(description: self.debugDescription)
+        let foo = HoldingClass()
+        var receivedCount = 0
+
+        let _ = foo.$intValue
+            .debounce(for: 0.5, scheduler: q)
+            .print(self.debugDescription)
+            .sink { someValue in
+                print("value updated to: ", someValue)
+                receivedCount += 1
+            }
+
+        q.asyncAfter(deadline: .now() + 0.1, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.intValue = 1
+        })
+        q.asyncAfter(deadline: .now() + 0.2, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.intValue = 2
+        })
+        q.asyncAfter(deadline: .now() + 0.3, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.intValue = 3
+        })
+
+        q.asyncAfter(deadline: .now() + 1, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.intValue = 10
+        })
+
+        q.asyncAfter(deadline: .now() + 3, execute: {
+            expectation.fulfill()
+        })
+
+        wait(for: [expectation], timeout: 5.0)
+
+        XCTAssertEqual(receivedCount, 2)
+        XCTAssertEqual(foo.intValue, 10)
+    }
+
+    func testThrottleLatestFalse() {
+
+        class HoldingClass {
+            @Published var intValue: Int = -1
+        }
+
+        let q = DispatchQueue(label: self.debugDescription)
+        let expectation = XCTestExpectation(description: self.debugDescription)
+        let foo = HoldingClass()
+        var receivedCount = 0
+
+        let _ = foo.$intValue
+            .throttle(for: 0.5, scheduler: q, latest: false)
+            .print(self.debugDescription)
+            .sink { someValue in
+                print("value updated to: ", someValue)
+                receivedCount += 1
+        }
+
+        q.asyncAfter(deadline: .now() + 0.1, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.intValue = 1
+        })
+        q.asyncAfter(deadline: .now() + 0.2, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.intValue = 2
+        })
+        q.asyncAfter(deadline: .now() + 0.3, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.intValue = 3
+        })
+
+        q.asyncAfter(deadline: .now() + 2, execute: {
+            expectation.fulfill()
+        })
+
+        wait(for: [expectation], timeout: 5.0)
+
+        XCTAssertEqual(receivedCount, 1)
+
+        // I really expected this to be the first value, not the third with latest=false
+        XCTAssertEqual(foo.intValue, 3)
+    }
+
+    func testThrottleLatestTrue() {
+
+        class HoldingClass {
+            @Published var intValue: Int = -1
+        }
+
+        let q = DispatchQueue(label: self.debugDescription)
+        let expectation = XCTestExpectation(description: self.debugDescription)
+        let foo = HoldingClass()
+        var receivedCount = 0
+
+        let _ = foo.$intValue
+            .throttle(for: 0.5, scheduler: q, latest: true)
+            .print(self.debugDescription)
+            .sink { someValue in
+                print("value updated to: ", someValue)
+                receivedCount += 1
+        }
+
+        q.asyncAfter(deadline: .now() + 0.1, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.intValue = 1
+        })
+        q.asyncAfter(deadline: .now() + 0.2, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.intValue = 2
+        })
+        q.asyncAfter(deadline: .now() + 0.3, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.intValue = 3
+        })
+
+        q.asyncAfter(deadline: .now() + 3, execute: {
+            expectation.fulfill()
+        })
+
+        wait(for: [expectation], timeout: 5.0)
+
+        XCTAssertEqual(receivedCount, 1)
+        XCTAssertEqual(foo.intValue, 3)
+    }
 }
