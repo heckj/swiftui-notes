@@ -121,54 +121,6 @@ The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombin
 * `testPublishedOnClassWithChange`
 ====
 
-[#reference-kvo-publisher]
-=== publisher property on KVO references
-
-__Summary__::
-
-Foundation added the ability to get a publisher on any Object that can be watched with Key Value Observing.
-
-__icon:apple[] docs__:: __???__
-
-[NOTE]
-====
-As of beta3, I was unable to find the documentation on the extension of NSObject.
-In the generated swift declaration file, it's listed as an extension on NSObject - a struct named `KeyValueObservingPublisher`
-====
-
-__Usage__::
-
-* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`]
-
-__Details__::
-
-Any Key Value Observing instance can produce a publisher.
-To create this publisher, you call the function `publisher` on the object, providing it with a single (required) KeyPath value.
-
-For example:
-
-[source, swift]
-----
-private final class KVOAbleNSObject: NSObject {
-    @objc dynamic var intValue: Int = 0
-    @objc dynamic var boolValue: Bool = false
-}
-
-let foo = KVOAbleNSObject()
-
-let _ = foo.publisher(for: \.intValue)
-    .sink { someValue in
-        print("value updated to: >>\(someValue)<<")
-    }
-----
-
-[NOTE]
-====
-KVO publisher access implies that with MacOS 10.15 release or IOS 13, most of Appkit and UIKit interface instances will be accessible as publishers.
-Relying on the interface element's state to trigger updates into pipelines can lead to your state being very tightly bound to the interface elements, rather than your model.
-You may be better served by explicitly creating your own state to react to from a <<#reference-published>> property wrapper.
-====
-
 [#reference-empty]
 === Publishers.Empty
 
@@ -303,7 +255,55 @@ n/a
 
 ** * https://developer.apple.com/documentation/foundation/timer/timerpublisher[TimerPublisher]
 
-[#reference-dataTaskPublisher]
+[#reference-kvo-publisher]
+=== .publisher on KVO instance
+
+__Summary__::
+
+Foundation added the ability to get a publisher on any Object that can be watched with Key Value Observing.
+
+__icon:apple[] docs__:: __???__
+
+[NOTE]
+====
+As of beta3, I was unable to find the documentation on the extension of NSObject.
+In the generated swift declaration file, it's listed as an extension on NSObject - a struct named `KeyValueObservingPublisher`
+====
+
+__Usage__::
+
+* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`]
+
+__Details__::
+
+Any Key Value Observing instance can produce a publisher.
+To create this publisher, you call the function `publisher` on the object, providing it with a single (required) KeyPath value.
+
+For example:
+
+[source, swift]
+----
+private final class KVOAbleNSObject: NSObject {
+    @objc dynamic var intValue: Int = 0
+    @objc dynamic var boolValue: Bool = false
+}
+
+let foo = KVOAbleNSObject()
+
+let _ = foo.publisher(for: \.intValue)
+    .sink { someValue in
+        print("value updated to: >>\(someValue)<<")
+    }
+----
+
+[NOTE]
+====
+KVO publisher access implies that with MacOS 10.15 release or IOS 13, most of Appkit and UIKit interface instances will be accessible as publishers.
+Relying on the interface element's state to trigger updates into pipelines can lead to your state being very tightly bound to the interface elements, rather than your model.
+You may be better served by explicitly creating your own state to react to from a <<#reference-published>> property wrapper.
+====
+
+[#reference-datataskpublisher]
 === URLSession.dataTaskPublisher
 
 __Summary__::
@@ -408,7 +408,7 @@ If you want to throw an error within your closure, then use the <<#reference-try
 
 map takes a single closure where you provide the logic for the map operation.
 
-For example, the <<#reference-dataTaskPublisher>> provides a tuple of `(data: Data, response: URLResponse)`` as its output.
+For example, the <<#reference-datataskpublisher>> provides a tuple of `(data: Data, response: URLResponse)`` as its output.
 You can use map to pass along the data, for example to use with <<#reference-decode>>.
 
 [source, swift]
