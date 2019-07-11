@@ -34,11 +34,13 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/just[`
 
 __Usage__::
 
+* <<patterns.adoc#patterns-oneshot-error-handling>>
 * <<patterns.adoc#patterns-continual-error-handling>>
+* <<patterns.adoc#patterns-update-interface-network-request>>
 
 __Details__::
 
-Often used within a closure to <<#reference-flatMap>> in error handling, it can see a one-shot pipeline for use in error handling of continuous values.
+Often used within a closure to <<#reference-flatmap>> in error handling, it can see a one-shot pipeline for use in error handling of continuous values.
 
 [#reference-future]
 === Future
@@ -69,16 +71,55 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 
 __Usage__::
 
-n/a
+* <<patterns.adoc#patterns-update-interface-network-request>>
+* unit tests illustrating using Published: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`]
 
 __Details__::
 
-Output type is inferred from the property being wrapped.
+Published is part of combine, but allows you to wrap an property, enabling you to get a publisher that triggers data updates whenever the property is changed.
+The publisher's output type is inferred from the type of the property, and the error type of the provided publisher is <Never>.
 
-publisher -> `<SomeType>`, `<Never>`
+There are two examples of using Published in <<patterns.adoc#patterns-update-interface-network-request>>.
 
-* extracts a property from an object and returns it
-** ex: `.publisher(for: \.name)`
+A smaller examples of how it can be used:
+
+[source, swift]
+----
+@Published var username: String = "" <1>
+
+$username <2>
+    .sink { someString in
+        print("value of username updated to: ", someString)
+    }
+
+$username <3>
+    .assign(\.text, on: myLabel)
+
+@Published private var githubUserData: [GithubAPIUser] = [] <4>
+----
+
+<1> `@Published` wraps the property, username, and will generate events whenever the property is changed.
+If there is a subscriber at initialization time, the subscriber will also receive the initial value being set.
+The publisher for the property is available at the same scope, and with the same permissions, as the property itself.
+<2> The publisher is accessible as `$username`, of type `Published<String>.publisher`.
+<3> A Published property can have more than one subscriber pipeline triggering from it.
+<4> If you're publishing your own type, you may find it convenient to publish an array of that type as the property, even if you only reference a single value.
+This allows you represent an "Empty" result that is still a concrete result within combine pipelines, as <<#reference-assign>> and <<#reference-sink>> subscribers will only trigger updates on non-nil values.
+
+If the publisher generated from `@Published` receives a cancellation from any subscriber, it is expected to, and will cease, reporting property changes.
+Because of this expectation, it is common to arrange pipelines from these publishers that have an error type of `<Never>` and do all error handling within the pipelines.
+For example, if a <<#reference-sink>> subscriber is set up to capture errors from a pipeline originating from a @Published property, when the error is received, the sink will send a `cancel` message, causing the publisher to cease generating any updates on change.
+This is illustrated in the test `testPublishedSinkWithError` at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`]
+
+Additional examples of how to arrange error handling for a continous publisher like `@Published` can be found at  <<patterns.adoc#patterns-continual-error-handling>>.
+
+[WARNING]
+====
+As of the beta3 release of Combine with the updated operating systems, Published doesn't always trigger updates when a struct is the holding the @Published variable, but it works within a class instance.
+The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`] illustrate this with the tests:
+* `testPublishedOnStructWithChange`
+* `testPublishedOnClassWithChange`
+====
 
 [#reference-empty]
 === Publishers.Empty
@@ -93,11 +134,26 @@ __Usage__::
 
 * <<patterns.adoc#patterns-oneshot-error-handling>> shows an example of using `catch` to handle errors with a one-shot publisher.
 * <<patterns.adoc#patterns-continual-error-handling>> shows an example of using `catch` with `flatMap` to handle errors with a continual publisher.
+* <<patterns.adoc#patterns-update-interface-network-request>>
+* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/EmptyPublisherTests.swift[`UsingCombineTests/EmptyPublisherTests.swift`]
 
 __Details__::
 
-* Empty -> `<SomeType>`, `<Error>`
-** `Empty(completeImmediately: false)`
+Empty is useful in error handling scenarios where with publishers where the value is an optional, or where you want to resolve an error by simply not sending anything.
+Empty can be invoked to be a publisher of any output and failure type combination.
+
+Empty is most commonly used where you need to return a publisher, but don't want to propogate any values (a possible error handling scenario).
+If you want a publisher that provides a single value, then look at <<#reference-just>>, <<#reference-once>>, or <<#reference-optional>> publishers as alternatives.
+
+When subscribed to, an instance of the Empty publisher will not return any values (or errors) and will immediately return a finished completion message to the subscriber.
+
+An example of using Empty
+[source, swift]
+----
+let myEmptyPublisher = Publishers.Empty<String, Never>() <1>
+----
+<1> Because the types are not be able to be inferred, expect to always define the types you want to return within the declaration.
+
 
 [#reference-fail]
 === Publishers.Fail
@@ -213,7 +269,55 @@ n/a
 
 ** * https://developer.apple.com/documentation/foundation/timer/timerpublisher[TimerPublisher]
 
-[#reference-dataTaskPublisher]
+[#reference-kvo-publisher]
+=== .publisher on KVO instance
+
+__Summary__::
+
+Foundation added the ability to get a publisher on any Object that can be watched with Key Value Observing.
+
+__icon:apple[] docs__:: __???__
+
+[NOTE]
+====
+As of beta3, I was unable to find the documentation on the extension of NSObject.
+In the generated swift declaration file, it's listed as an extension on NSObject - a struct named `KeyValueObservingPublisher`
+====
+
+__Usage__::
+
+* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`]
+
+__Details__::
+
+Any Key Value Observing instance can produce a publisher.
+To create this publisher, you call the function `publisher` on the object, providing it with a single (required) KeyPath value.
+
+For example:
+
+[source, swift]
+----
+private final class KVOAbleNSObject: NSObject {
+    @objc dynamic var intValue: Int = 0
+    @objc dynamic var boolValue: Bool = false
+}
+
+let foo = KVOAbleNSObject()
+
+let _ = foo.publisher(for: \.intValue)
+    .sink { someValue in
+        print("value updated to: >>\(someValue)<<")
+    }
+----
+
+[NOTE]
+====
+KVO publisher access implies that with MacOS 10.15 release or IOS 13, most of Appkit and UIKit interface instances will be accessible as publishers.
+Relying on the interface element's state to trigger updates into pipelines can lead to your state being very tightly bound to the interface elements, rather than your model.
+You may be better served by explicitly creating your own state to react to from a <<#reference-published>> property wrapper.
+====
+
+[#reference-datataskpublisher]
 === URLSession.dataTaskPublisher
 
 __Summary__::
@@ -232,6 +336,7 @@ __Usage__::
 * <<patterns.adoc#patterns-oneshot-error-handling>>
 * <<patterns.adoc#patterns-retry>>
 * <<patterns.adoc#patterns-constrained-network>>
+* <<patterns.adoc#patterns-update-interface-network-request>>
 
 __Details__::
 
@@ -306,6 +411,7 @@ __Usage__::
 * <<patterns.adoc#patterns-dataTaskPublisher-decode>>
 * <<patterns.adoc#patterns-oneshot-error-handling>>
 * <<patterns.adoc#patterns-retry>>
+* <<patterns.adoc#patterns-update-interface-network-request>>
 * unit tests illustrating using map with dataTaskPublisher: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DataTaskPublisherTests.swift[`UsingCombineTests/DataTaskPublisherTests.swift`]
 
 
@@ -316,7 +422,7 @@ If you want to throw an error within your closure, then use the <<#reference-try
 
 map takes a single closure where you provide the logic for the map operation.
 
-For example, the <<#reference-dataTaskPublisher>> provides a tuple of `(data: Data, response: URLResponse)`` as its output.
+For example, the <<#reference-datataskpublisher>> provides a tuple of `(data: Data, response: URLResponse)`` as its output.
 You can use map to pass along the data, for example to use with <<#reference-decode>>.
 
 [source, swift]
@@ -387,7 +493,7 @@ Just(5)
 <2> and throw an error, although throwing an Error isn't required.
 <3> If the error condition doesn't occur, you do need to pass down data for any further subscribers.
 
-[#reference-flatMap]
+[#reference-flatmap]
 ==== flatMap
 
 __Summary__::
@@ -403,6 +509,7 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 __Usage__::
 
 * <<patterns.adoc#patterns-continual-error-handling>>
+* unit tests illustrating flatMap: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SwitchAndFlatMapPublisherTests.swift[`UsingCombineTests/SwitchAndFlatMapPublisherTests.swift`]
 
 __Details__::
 
@@ -456,30 +563,125 @@ In swift, this looks like:
 [#reference-filter]
 ==== filter
 
-* filter
+__Summary__::
 
-** requires Failure to be `<Never>`
-** takes a closure where you can specify how/what gets filtered
-** there's a variant `tryFilter`for use with a provided error-throwing closure.
+Filter passes through all instances of the output type that match a provided closure, dropping any that don't match.
+
+__Constraints on connected publisher__::
+
+* requires Failure type to be `<Never>`
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/filter[`filter`]
+
+__Usage__::
+
+* <<reference.adoc#patterns-update-interface-network-request>>
+* unit tests illustrating using filter: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FilterPublisherTests.swift[`UsingCombineTests/FilterPublisherTests.swift`]
+
+__Details__::
+
+Filter takes a single closure as a parameter that is provided the value from the previous publisher and returns a Bool value.
+If the return from the closure is `true`, then the operator republishes the value further down the chain.
+If the return from the closure is `false`, then the operator drops the value.
+
+If you need a variation of this that will generate an error condition in the pipeline to be handled use the <<#reference-tryFilter>> operator, which allows the closure to throw an error in the evaluation.
 
 [#reference-tryFilter]
 ==== tryFilter
 
-* tryFilter
+__Summary__::
+
+tryFilter passes through all instances of the output type that match a provided closure, dropping any that don't match, and allows generating an error during the evaluation of that closure.
+
+__Constraints on connected publisher__::
+
+* none
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/tryfilter[`tryFilter`]
+
+__Usage__::
+
+* unit tests illustrating using tryFilter: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FilterPublisherTests.swift[`UsingCombineTests/FilterPublisherTests.swift`]
+
+
+__Details__::
+
+Like <<#reference-filter>>, tryFilter takes a single closure as a parameter that is provided the value from the previous publisher and returns a Bool value.
+If the return from the closure is `true`, then the operator republishes the value further down the chain.
+If the return from the closure is `false`, then the operator drops the value.
+You can additionally throw an error during the evaluation of tryFilter, which will then be propogated as the failure type down the pipeline.
 
 [#reference-removeDuplicates]
 ==== removeDuplicates
 
-* removeDuplicates
+__Summary__::
 
-** `.removeDuplicates()`
-** remembers what was previously sent in the stream, and only passes forward new values
-** there's a variant `tryRemoveDuplicates` for use with a provided error-throwing closure.
+removeDuplicates remembers what was previously sent in the pipeline, and only passes forward values that don't match the current value.
 
-[#reference-tryRemoveDuplicates]
+__Constraints on connected publisher__::
+
+* Available when Output of the previous publisher conforms to Equatable.
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/removeduplicates[`removeDuplicates`]
+
+__Usage__::
+
+* unit tests illustrating using removeDuplicates: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift`]
+
+__Details__::
+
+The default usage of removeDuplicates doesn't require any parameters, and the operator will publish only elements that don't match the previously sent element.
+
+[source, swift]
+----
+.removeDuplicates()
+----
+
+A second usage of removeDuplicates takes a single parameter `by` that accepts a closure that allows you to determine the logic of what will be removed.
+The parameter version does not have the constraint on the Output type being equatable, but requires you to provide the relevant logic.
+If the closure returns true, the removeDuplicates predicate will consider the values matched and not forward a the duplicate value.
+
+[source, swift]
+----
+.removeDuplicates(by: { first, second -> Bool in
+    // your logic is required if the output type doesn't conform to equatable.
+    first.id == second.id
+})
+----
+
+A variation of removeDuplicates exists that allows the predicate closure to throw an Error exists: <<#reference-tryremoveduplicates>>
+
+[#reference-tryremoveduplicates]
 ==== tryRemoveDuplicates
 
-* tryRemoveDuplicates
+__Summary__::
+
+tryRemoveDuplicates is a variant of <<#reference-removeduplicates>> that allows the predicate testing equality to throw an Error, resulting in an Error completion type.
+
+__Constraints on connected publisher__::
+
+* none
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/tryremoveduplicates[`tryRemoveDuplicates`]
+
+__Usage__::
+
+* unit tests illustrating using tryRemoveDuplicates: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift`]
+
+__Details__::
+
+tryRemoveDuplicates is a variant of <<#reference-removeduplicates>> taking a single parameter that can throw an error.
+The parameter is a closure that allows you to determine the logic of what will be removed.
+If the closure returns true, tryRemoveDuplicates will consider the values matched and not forward a the duplicate value.
+If the closure throws an error, a failure completion will be propogated down the chain, and no value is sent.
+
+[source, swift]
+----
+.removeDuplicates(by: { first, second -> Bool throws in
+    // your logic is required if the output type doesn't conform to equatable.
+
+})
+----
 
 [#reference-replaceEmpty]
 ==== replaceEmpty
@@ -776,6 +978,7 @@ __Usage__::
 
 * <<patterns.adoc#patterns-oneshot-error-handling>> shows an example of using `catch` to handle errors with a one-shot publisher.
 * <<patterns.adoc#patterns-continual-error-handling>> shows an example of using `catch` with `flatMap` to handle errors with a continual publisher.
+* <<patterns.adoc#patterns-update-interface-network-request>>
 
 __Details__::
 
@@ -908,6 +1111,7 @@ __Usage__::
 
 * <<patterns.adoc#patterns-retry>>
 * unit tests illustrating using map with dataTaskPublisher: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DataTaskPublisherTests.swift[`UsingCombineTests/DataTaskPublisherTests.swift`]
+* unit tests illustrating retry: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/RetryPublisherTests.swift[`UsingCombineTests/RetryPublisherTests.swift`]
 
 __Details__::
 
@@ -964,7 +1168,50 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
 [#reference-switchToLatest]
 ==== switchToLatest
 
-* switchToLatest?
+__Summary__::
+
+A publisher that flattens any nested publishers, using the most recent provided publisher.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/switchtolatest['switchToLatest']
+
+__Usage__::
+
+* <<reference.adoc#patterns-update-interface-network-request>>
+* unit tests illustrating switchToLatest: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SwitchAndFlatMapPublisherTests.swift[`UsingCombineTests/SwitchAndFlatMapPublisherTests.swift`]
+
+__Details__::
+
+switchToLatest is akin to <<#reference-flatmap>>, taking in a publisher instance and returning it's value (or values).
+The primary different is in where it gets the publisher.
+In flatMap, the publisher is returned within the closure provided to flatMap, and the operator works upon that to subscribe and provide the relevant value down the pipeline.
+In switchToLatest, the publisher instance is provided *as the output type* from a previous publisher or operator.
+
+The most common form of using this is with a one-shot publisher such as <<#reference-just>>, <<#reference-once>>, or getting it's value as a result of a <<#reference-map>> transform.
+
+It is also commonly used when working with an API that provides a publisher.
+switchToLatest assists in taking the result of the publisher and sending that down the pipeline rather than sending the publisher itself down as the output type.
+
+The following snippet is part of the larger example <<reference.adoc#patterns-update-interface-network-request>>
+
+[source, swift]
+----
+.map { username -> AnyPublisher<[GithubAPIUser], Never> in <2>
+    return GithubAPI.retrieveGithubUser(username: username) <1>
+}
+// ^^ type returned in the pipeline is a Publisher, so we use
+// switchToLatest to flatten the values out of that
+// pipline to return down the chain, rather than returning a
+// publisher down the pipeline.
+.switchToLatest() <2>
+----
+
+<1> In this example, an API instance (GithubAPI) has a function that returns a publisher.
+<2> We are using <<#reference-map>> to take an earlier String output type and use that to invoke the API, which returns a publisher instance.
+<3> We want to use the value from that publisher, not the publisher itself, which is exactly what switchToLatest() provides.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
@@ -976,10 +1223,28 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
 [#reference-debounce]
 ==== debounce
 
-* debounce
-** `.debounce(for: 0.5, scheduler: RunLoop.main)`
-** collapses multiple values within a specified time window into a single value
-** often used with `.removeDuplicates()`
+__Summary__::
+
+debounce collapses multiple values within a specified time window into a single value
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/debounce['debounce']
+
+__Usage__::
+
+* unit tests illustrating using debounce: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift`]
+
+__Details__::
+
+The operator takes a minimum of two parameters, an amount of time over which to debounce the signal and a scheduler on which to apply the operations.
+The operator will collapse any values received within the timeframe provided to a single, last value received from the upstream publisher within the time window.
+
+This operator is frequently used with <<#reference-removeduplicates>> when the publishing source is bound to UI interactions, primarily to prevent an "edit and revert" style of interaction from triggering unnessecary work.
+
+If you wish to control the value returned within the timewindow provided, you may prefer to use <<#reference-throttle>>, which allows you to choose the first or last value provided.
 
 [#reference-delay]
 ==== delay
@@ -998,9 +1263,33 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
 [#reference-throttle]
 ==== throttle
 
-* throttle
-** Publishes either the most-recent or first element published by the upstream publisher in the specified time interval.
-** requires Failure to be `<Never>`
+__Summary__::
+
+Publishes either the most-recent or first element published by the upstream publisher in the specified time interval.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/throttle['throttle']
+
+__Usage__::
+
+* unit tests illustrating using throttle: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift`]
+
+__Details__::
+
+Throttle is akin to the <<#reference-debounce>> operator in that it collapses values.
+The operator will collapse any values received within the timeframe provided to a single, last value received from the upstream publisher within the time window.
+
+The operator takes a minimum of three parameters, `for`: an amount of time over which to collapse the values received, `scheduler`: a scheduler on which to apply the operations, and `latest`: a boolean indicating if the first value or last value should be chosen and forwarded.
+
+This operator is frequently used with <<#reference-removeduplicates>> when the publishing source is bound to UI interactions, primarily to prevent an "edit and revert" style of interaction from triggering unnessecary work.
+
+[source, swift]
+----
+.throttle(for: 0.5, scheduler: RunLoop.main, latest: false)
+----
 
 [#reference-timeout]
 ==== timeout
@@ -1173,17 +1462,96 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: URL(string: t
 * breakpointOnError
 ** Raises a debugger signal upon receiving a failure.
 
-[#reference-handleEvents]
+[#reference-handleevents]
 ==== handleEvents
 
-* handleEvents
+__Summary__::
+
+handleEvents is an all purpose operator that allow you to specify closures be invoked when publisher events occur.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/handleevents
+
+__Usage__::
+
+* unit tests illustrating using handleEvents: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/handleEventsPublisherTests.swift[`UsingCombineTests/handleEventsPublisherTests.swift`]
+
+__Details__::
+
+handleEvents doesn't require any parameters, allowing you to specify what publisher events to which you'd like to respond.
+Optional closures can be provided for the following events:
+
+* receiveSubscription
+* receiveOutput
+* receiveCompletion
+* receiveCancel
+* receiveRequest
+
+All of the closures are expected to return Void, which makes handleEvents useful for intentionally creating side effects based on what is happening in the pipeline.
+
+You could, for example, use handleEvents to update an activityIndicator UI element, triggering it on with the receipt of the the subscription, and terminating with the receipt of either cancel or completion.
+
+If you only want to view the information of what's happening, you might consider using the <<#reference-print>> operator instead.
+
+[source, swift]
+----
+.handleEvents(receiveSubscription: { _ in
+    DispatchQueue.main.async {
+        self.activityIndicator.startAnimating()
+    }
+}, receiveCompletion: { _ in
+    DispatchQueue.main.async {
+        self.activityIndicator.stopAnimating()
+    }
+}, receiveCancel: {
+    DispatchQueue.main.async {
+        self.activityIndicator.stopAnimating()
+    }
+})
+----
+
 
 [#reference-print]
 ==== print
 
-* print
-** Prints log messages for all publishing events.
-** requires Failure to be `<Never>`
+__Summary__::
+
+Prints log messages for all publishing events.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/print
+
+__Usage__::
+
+* unit tests illustrating using print: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`]
+
+__Details__::
+
+The print operator doesn't require a parameter, but if provided will preprend any console output with the string provided.
+
+The print is incredibly useful to see "what's happening" within a pipeline, and can be used as "printf" debugging within the pipeline to see events.
+
+Most of the example tests illustrating the operators within this reference use a print operator to provide additional text output within the tests to show what's happening.
+
+The print operator isn't directly integrated with Apple's OSLog unified logging, although there is an optional `to` parameter that lets you specific an instance conforming to https://developer.apple.com/documentation/swift/textoutputstream[TextOutputStream] to which it will send the output.
+
+[source, swift]
+----
+let _ = foo.$username
+    .print(self.debugDescription)
+    .tryMap({ myValue -> String in
+        if (myValue == "boom") {
+            throw failureCondition.selfDestruct
+        }
+        return "mappedValue"
+    })
+----
 
 // force a page break - in HTML rendering is just a <HR>
 <<<

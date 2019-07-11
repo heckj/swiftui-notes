@@ -185,11 +185,13 @@ A number of Apple APIs outside of Combine provide publishers as well.
 
 * SwiftUI provides https://developer.apple.com/documentation/swiftui/objectbinding[`@ObjectBinding`] which can be used to create a publisher.
 
-* https://developer.apple.com/documentation/foundation/notificationcenter[`NoticationCenter`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publisher`]
+* Foundation
+** <<reference.adoc#reference-datataskpublisher>>
+** <<reference.adoc#reference-kvo-publisher>>
 
-* https://developer.apple.com/documentation/foundation/timer[`Timer`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publish`] and https://developer.apple.com/documentation/foundation/timer/timerpublisher[`Timer.TimerPublisher`]
+** https://developer.apple.com/documentation/foundation/notificationcenter[`NoticationCenter`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publisher`]
 
-* https://developer.apple.com/documentation/foundation/urlsession[`URLSession`] https://developer.apple.com/documentation/foundation/urlsession/3329707-datataskpublisher[`dataTaskPublisher`]
+** https://developer.apple.com/documentation/foundation/timer[`Timer`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publish`] and https://developer.apple.com/documentation/foundation/timer/timerpublisher[`Timer.TimerPublisher`]
 
 * https://developer.apple.com/documentation/realitykit[`RealityKit`] https://developer.apple.com/documentation/realitykit/scene[`.Scene`] https://developer.apple.com/documentation/realitykit/scene/3254685-publisher[`.publisher()`]
 
