@@ -1462,17 +1462,96 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: URL(string: t
 * breakpointOnError
 ** Raises a debugger signal upon receiving a failure.
 
-[#reference-handleEvents]
+[#reference-handleevents]
 ==== handleEvents
 
-* handleEvents
+__Summary__::
+
+handleEvents is an all purpose operator that allow you to specify closures be invoked when publisher events occur.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/handleevents
+
+__Usage__::
+
+* unit tests illustrating using handleEvents: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/handleEventsPublisherTests.swift[`UsingCombineTests/handleEventsPublisherTests.swift`]
+
+__Details__::
+
+handleEvents doesn't require any parameters, allowing you to specify what publisher events to which you'd like to respond.
+Optional closures can be provided for the following events:
+
+* receiveSubscription
+* receiveOutput
+* receiveCompletion
+* receiveCancel
+* receiveRequest
+
+All of the closures are expected to return Void, which makes handleEvents useful for intentionally creating side effects based on what is happening in the pipeline.
+
+You could, for example, use handleEvents to update an activityIndicator UI element, triggering it on with the receipt of the the subscription, and terminating with the receipt of either cancel or completion.
+
+If you only want to view the information of what's happening, you might consider using the <<#reference-print>> operator instead.
+
+[source, swift]
+----
+.handleEvents(receiveSubscription: { _ in
+    DispatchQueue.main.async {
+        self.activityIndicator.startAnimating()
+    }
+}, receiveCompletion: { _ in
+    DispatchQueue.main.async {
+        self.activityIndicator.stopAnimating()
+    }
+}, receiveCancel: {
+    DispatchQueue.main.async {
+        self.activityIndicator.stopAnimating()
+    }
+})
+----
+
 
 [#reference-print]
 ==== print
 
-* print
-** Prints log messages for all publishing events.
-** requires Failure to be `<Never>`
+__Summary__::
+
+Prints log messages for all publishing events.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/print
+
+__Usage__::
+
+* unit tests illustrating using print: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`]
+
+__Details__::
+
+The print operator doesn't require a parameter, but if provided will preprend any console output with the string provided.
+
+The print is incredibly useful to see "what's happening" within a pipeline, and can be used as "printf" debugging within the pipeline to see events.
+
+Most of the example tests illustrating the operators within this reference use a print operator to provide additional text output within the tests to show what's happening.
+
+The print operator isn't directly integrated with Apple's OSLog unified logging, although there is an optional `to` parameter that lets you specific an instance conforming to https://developer.apple.com/documentation/swift/textoutputstream[TextOutputStream] to which it will send the output.
+
+[source, swift]
+----
+let _ = foo.$username
+    .print(self.debugDescription)
+    .tryMap({ myValue -> String in
+        if (myValue == "boom") {
+            throw failureCondition.selfDestruct
+        }
+        return "mappedValue"
+    })
+----
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
