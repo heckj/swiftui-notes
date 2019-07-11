@@ -1244,6 +1244,8 @@ The operator will collapse any values received within the timeframe provided to 
 
 This operator is frequently used with <<#reference-removeduplicates>> when the publishing source is bound to UI interactions, primarily to prevent an "edit and revert" style of interaction from triggering unnessecary work.
 
+If you wish to control the value returned within the timewindow provided, you may prefer to use <<#reference-throttle>>, which allows you to choose the first or last value provided.
+
 [#reference-delay]
 ==== delay
 
