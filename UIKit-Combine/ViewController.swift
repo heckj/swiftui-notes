@@ -8,7 +8,7 @@
 
 import UIKit
 import Combine
-import Contacts
+import CoreLocation
 
 enum APIFailureCondition: Error {
     case invalidServerResponse
@@ -95,6 +95,38 @@ private struct GithubAPI {
 
 }
 
+class ExampleCoreLocationHeadingProxy: CLLocationManagerDelegate {
+
+    private let mgr: CLLocationManager
+    var publisher: AnyPublisher
+    override init() {
+        mgr = CLLocationManager()
+        mgr.delegate = self
+        publisher = PassthroughSubject<CLHeading, Error>().eraseToAnyPublisher()
+    }
+
+    // MARK - delegate methods
+    
+    /*
+     *  locationManager:didUpdateHeading:
+     *
+     *  Discussion:
+     *    Invoked when a new heading is available.
+     */
+    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+        subject.send(newHeading)
+    }
+
+    /*
+     *  locationManager:didFailWithError:
+     *  Discussion:
+     *    Invoked when an error has occurred. Error types are defined in "CLError.h".
+     */
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        subject.send(completion: Subscribers.Completion.failure(error))
+    }
+}
+
 class ViewController: UIViewController {
 
     @IBOutlet weak var github_id_entry: UITextField!
@@ -105,6 +137,7 @@ class ViewController: UIViewController {
     var repositoryCountSubscriber: AnyCancellable?
     var avatarViewSubscriber: AnyCancellable?
     var usernameSubscriber: AnyCancellable?
+    var headingSubscriber: AnyCancellable?
 
     // username from the github_id_entry field, updated via IBAction
     @Published var username: String = ""
@@ -115,6 +148,7 @@ class ViewController: UIViewController {
 
     // publisher reference for this is $username, of type <String, Never>
     var myBackgroundQueue: DispatchQueue = DispatchQueue(label: "viewControllerBackgroundQueue")
+    let coreLocationProxy = ExampleCoreLocationHeadingProxy()
 
     // MARK - Actions
 
@@ -129,13 +163,13 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
 
-        //      CNContactStore.requestAccess(for entityType: CNEntityType, completionHandler: @escaping (Bool, Error?) -> Void)
-        let x = CNContactStore()
-        x.requestAccess(for: .contacts) { grantedAccess, err in
-            // err is an optional
+        let corelocationsub = coreLocationProxy
+            .publisher
+            .sink { someValue in
+                self.githubUserData = someValue
+            }
+        headingSubscriber = AnyCancellable(corelocationsub)
 
-        }
-        
         let usernameSub = $username
             .throttle(for: 0.5, scheduler: myBackgroundQueue, latest: true)
             // ^^ scheduler myBackGroundQueue publishes resulting elements
