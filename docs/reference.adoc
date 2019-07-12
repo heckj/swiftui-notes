@@ -21,7 +21,8 @@ things to potentially include for each segment
 [#reference-publishers]
 == Publishers
 
-//NOTE(heckj) make xref link back to coreconcepts:publishers
+For general information about Publishers, see <<coreconcepts.adoc#core-publishers>> and
+<<coreconcepts.adoc#core-lifecycle>>.
 
 [#reference-just]
 === Just
@@ -53,12 +54,43 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/future
 
 __Usage__::
 
-n/a
+* unit tests illustrating using Future: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FuturePublisherTests.swift[`UsingCombineTests/FuturePublisherTests.swift`]
 
 __Details__::
 
-* you provide a closure that converts a callback/function of your own choosing into a https://developer.apple.com/documentation/combine/future/promise[Promise].
-* in creating a Future publisher, you need to handle the logic of when you generate the relevant `Result<Output, Error>` with the asynchronous calls.
+Future is a publisher that let's you combine in any asynchronous call and us that call to generate a value or a completion as a Publisher.
+It's ideal for when you want to make a single request, or get a single response, where the API you are using has a completion handler closure.
+
+The obvious example that everyone immediately thinks about is URLSession.
+Fortunately, <<#reference-datataskpublisher>> exists to make a call with a URLSession and return a publisher.
+However, if you already have an API object that wraps the direct calls to URLSession, then making a single request using Future can great way to integrate the result into a Combine pipeline.
+
+There are a number of other APIs that exist in the Apple frameworks that use a completion closure.
+An example of one is requesting permission to access the contacts store in Contacts.
+An example of wrapping that request for access into a publisher using Future might be:
+
+[source, swift]
+----
+import Contacts
+let futureAsyncPublisher = Future<Bool, Error> { promise in <1>
+    CNContactStore().requestAccess(for: .contacts) { grantedAccess, err in <2>
+        // err is an optional
+        if let err = err { <3>
+            promise(.failure(err))
+        }
+        return promise(.success(grantedAccess)) <4>
+    }
+}
+----
+
+<1> Future itself has you define the return types and takes a closure.
+It hands in a Result object matching the type description, which you interact.
+<2> You can invoke the async API however is relevant, including passing in it's required closure.
+<3> Within the completion handler, you determine what would cause a failure or a success. A call to `promise(.failure(<FailureType>))` returns the failure.
+<4> Or a call to `promise(.success(<OutputType>))` returns a value.
+
+If you want to wrap an async API that could return many values over time, Future probably isn't what you want, as it only returns a single value.
+Instead, you should consider creating your own publisher based on <<#reference-passthroughsubject>> or <<#reference-currentvaluesubject>>.
 
 [#reference-published]
 === Published
@@ -1674,7 +1706,7 @@ That is - don't create the queue with `attributes: .concurrent`.
 
 * https://developer.apple.com/documentation/combine/currentvaluesubject[`CurrentValueSubject`]
 
-[#reference-passthroughSubject]
+[#reference-passthroughsubject]
 === PassthroughSubject
 
 * https://developer.apple.com/documentation/combine/passthroughsubject[`PassthroughSubject`]

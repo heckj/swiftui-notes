@@ -9,41 +9,36 @@
 import XCTest
 import Combine
 
-
 class FuturePublisherTests: XCTestCase {
 
     enum testFailureCondition: Error {
         case anErrorExample
     }
 
-    // example of blocking function
-    func aBlockingFunction() -> String {
-        sleep(.random(in: 1...3))
-        return "Hello world!"
-    }
     // example of a functional calling it with a completion closure
-    func asyncMethod(completion block: @escaping ((String) -> Void)) {
+    func asyncAPICall(sabotage: Bool, completion completionBlock: @escaping ((Bool, Error?) -> Void)) {
         DispatchQueue.global(qos: .background).async {
-            let result = self.aBlockingFunction()
-            block(result)
+            sleep(.random(in: 1...3))
+            if sabotage {
+                completionBlock(false, testFailureCondition.anErrorExample)
+            }
+            completionBlock(true, nil)
         }
     }
 
     func testFuturePublisher() {
         // setup
-        var outputValue: String? = nil
+        var outputValue: Bool = false
         let expectation = XCTestExpectation(description: self.debugDescription)
 
         // the creating the future publisher
-        let sut = Future<String, Error> { promise in
-//            yourAPICallThatTakesAClosure(someParam) { resultData in
-//                // on successful resultData
-//                promise(.success("a success response"))
-//            }
-            print("Setting up the future with an incoming promise: ", promise) // <-- initialized promise that we resolve
-            promise(.success("a success response"))
-            // or
-            promise(.failure(testFailureCondition.anErrorExample))
+        let sut = Future<Bool, Error> { promise in
+            self.asyncAPICall(sabotage: false) { (grantedAccess, err) in
+                if let err = err {
+                    promise(.failure(err))
+                }
+                promise(.success(grantedAccess))
+            }
         }
 
         // driving it by attaching it to .sink
@@ -56,7 +51,34 @@ class FuturePublisherTests: XCTestCase {
         })
 
         wait(for: [expectation], timeout: 5.0)
-        XCTAssertEqual(outputValue, "a success response")
+        XCTAssertTrue(outputValue)
+    }
+
+    func testFuturePublisherShowingFailure() {
+        // setup
+        let expectation = XCTestExpectation(description: self.debugDescription)
+
+        // the creating the future publisher
+        let sut = Future<Bool, Error> { promise in
+            self.asyncAPICall(sabotage: true) { (grantedAccess, err) in
+                if let err = err {
+                    promise(.failure(err))
+                }
+                promise(.success(grantedAccess))
+            }
+        }
+
+        // driving it by attaching it to .sink
+        let _ = sut.sink(receiveCompletion: { err in
+            print(".sink() received the completion: ", String(describing: err))
+            XCTAssertNotNil(err)
+            expectation.fulfill()
+        }, receiveValue: { value in
+            print(".sink() received value: ", value)
+            XCTFail("no value should be returned")
+        })
+
+        wait(for: [expectation], timeout: 5.0)
     }
 
     func testFutureWithinAFlatMap() {

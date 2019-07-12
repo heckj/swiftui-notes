@@ -8,6 +8,7 @@
 
 import UIKit
 import Combine
+import Contacts
 
 enum APIFailureCondition: Error {
     case invalidServerResponse
@@ -128,6 +129,13 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
 
+        //      CNContactStore.requestAccess(for entityType: CNEntityType, completionHandler: @escaping (Bool, Error?) -> Void)
+        let x = CNContactStore()
+        x.requestAccess(for: .contacts) { grantedAccess, err in
+            // err is an optional
+
+        }
+        
         let usernameSub = $username
             .throttle(for: 0.5, scheduler: myBackgroundQueue, latest: true)
             // ^^ scheduler myBackGroundQueue publishes resulting elements
