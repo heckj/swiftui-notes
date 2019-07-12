@@ -24,7 +24,8 @@ class FuturePublisherTests: XCTestCase {
     // example of a functional calling it with a completion closure
     func asyncMethod(completion block: @escaping ((String) -> Void)) {
         DispatchQueue.global(qos: .background).async {
-            block(self.aBlockingFunction())
+            let result = self.aBlockingFunction()
+            block(result)
         }
     }
 
