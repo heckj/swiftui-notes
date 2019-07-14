@@ -1744,6 +1744,15 @@ Assign only handles data, and expects all errors or failures to be handled in th
 The return value from setting up assign can be cancelled, and is frequently used when disabling the pipeline, such as when a viewController is disabled or deallocated.
 Assign is frequently used in conjunction with the <<#reference-receive>> operator to receive values on a specific scheduler, typically `RunLoop.main` when updating UI objects.
 
+The type of KeyPath required for the assign operator is important.
+It requires a ReferenceWritableKeyPath, which is different from both WritableKeyPath and KeyPath.
+In particular, ReferencxeWritableKeyPath requires that the object you're writing to is a reference type (an instance of a class), as well as being publicly writable.
+A WritableKeyPath is one that's a mutable value reference (a mutable struct), and KeyPath reflects that the object is simply readable by keypath, but not mutable.
+
+It's not always clear (for example, while using code-completion from the editor) what a property may reflect.
+
+If you try to assign to a property keypath and receive an error such as `Cannot convert value of type 'KeyPath<SomeObject, Bool>' to specified type 'ReferenceWritableKeyPath<SomeObject, Bool>'`, the error is because you're attempting to write to a property that is read-only.
+
 [source, swift]
 ----
 examplePublisher
@@ -1822,3 +1831,34 @@ let cancellablePipeline = simplePublisher.sink { data in
 cancellablePublisher.cancel() // this invalidates the pipeline, no further data will be received by the sink
 ----
 
+[#reference-anycancellable]
+=== AnyCancellable
+
+__Summary__::
+
+AnyCancellable type erases a subscriber to the general form of https://developer.apple.com/documentation/combine/cancellable[Cancellable].
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/anycancellable
+
+__Usage__::
+
+* <<patterns.adoc#patterns-update-interface-network-request>>
+* <<patterns.adoc#patterns-subject>>
+
+__Details__::
+
+This is used to provide a reference to a subscriber that allows the use of `cancel` without access to the subscription itself to request items.
+This is most typically used when you want a reference to a subscriber to clean it up on deallocation.
+Since the <<#reference-assign>> returns an AnyCancellable, this is often used when you want to save the reference to a <<#reference-sink>> an AnyCancellable.
+
+[source, swift]
+----
+
+var mySubscriber: AnyCancellable?
+
+let mySinkSubscriber = remotePublisher
+    .sink { data in
+        print("received ", data)
+    }
+mySubscriber = AnyCancellable(mySinkSubscriber)
+----

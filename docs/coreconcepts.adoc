@@ -404,7 +404,7 @@ Both CurrentValueSubject and PassthroughSubject are also useful for creating pub
 
 While https://developer.apple.com/documentation/combine/subscriber[`subscriber`] is the protocol used to receive data throughout a pipeline, _the Subscriber_ typically refers to the end of a pipeline.
 
-There are two subscribers built-in to Combine: assign and sink.
+There are two subscribers built-in to Combine: <<reference.adoc#reference-assign>> and <<reference.adoc#reference-sink>>.
 
 Subscribers can support cancellation, which terminates a subscription and shuts down all the stream processing prior to any Completion sent by the publisher.
 Both `Assign` and `Sink` conform to the https://developer.apple.com/documentation/combine/cancellable[cancellable protocol].
@@ -451,6 +451,9 @@ struct MyView : View {
 ----
 
 For any type of UI object (UIKit, AppKit, or SwiftUI), `.assign` can be used with pipelines to manipulate properties.
+
+When you are storing a reference to your own subscriber in order to clean up later, you generally want a reference to cancel the subscription.
+<<reference.adoc#reference-anycancellable>> provides a type-erased reference that converts any subscriber to the type AnyCancellable, allowing the use of `.cancel()` on that reference, but not access to the subscription itself (which could, for instance, request more data).
 
 [#core-types]
 == Swift types and exposing pipelines or subscribers

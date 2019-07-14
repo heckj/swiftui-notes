@@ -53,6 +53,7 @@ class ViewController: UIViewController {
             }
         headingSubscriber = AnyCancellable(corelocationsub)
 
+
         let apiActivitySub = GithubAPI.networkActivityPublisher
         .receive(on: RunLoop.main)
             .sink { doingSomethingNow in
@@ -64,7 +65,7 @@ class ViewController: UIViewController {
         }
         apiNetworkActivitySubscriber = AnyCancellable(apiActivitySub)
 
-        let usernameSub = $username
+        usernameSubscriber = $username
             .throttle(for: 0.5, scheduler: myBackgroundQueue, latest: true)
             // ^^ scheduler myBackGroundQueue publishes resulting elements
             // into that queue, resulting on this processing moving off the
@@ -82,11 +83,7 @@ class ViewController: UIViewController {
             // using a sink to get the results from the API search lets us
             // get not only the user, but also any errors attempting to get it.
             .receive(on: RunLoop.main)
-            .sink { someValue in
-                print("assigning to githubUserData ", someValue)
-                self.githubUserData = someValue
-            }
-        usernameSubscriber = AnyCancellable(usernameSub)
+            .assign(to: \.githubUserData, on: self)
 
         // using .assign() on the other hand (which returns an
         // AnyCancellable) *DOES* require a Failure type of <Never>
