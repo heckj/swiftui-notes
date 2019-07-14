@@ -851,8 +851,6 @@ The functions on the API struct return publishers, and are then mixed and merged
 <4> I first created the pipelines to return an optional GithubAPIUser instance, but found that there wasn't a convenient way to propogate "nil" or empty objects on failure conditions.
 The code was then recreated to return a list, even though only a single instance was ever expected, to conveniently represent an "empty" object.
 This was important for the use case of wanting to erase existing values in following pipelines reacting to the GithubAPIUser object "disappearing" - removing the repository count and avatar images in this case.
-<4> The handleEvents operator wasn't originally in the viewController, and I left it here as an example.
-This particular example shows how you can leverage handleEvents to trigger events to update UI elements. The commented out example shows a reference to an activityIndicator being turned on or off, depending on the event being processed.
 <5> The logic here is simply to prevent extraneous network requests, returning an empty result if the username being requested has less than 3 characters.
 The commented out code is a bit of legacy from when I wanted to return nothing instead of an empty list.
 <6> the <<reference.adoc#reference-handleevents>> operator here is how we are triggering updates for the network activity publisher.
