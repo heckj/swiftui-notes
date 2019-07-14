@@ -9,91 +9,6 @@
 import UIKit
 import Combine
 
-enum APIFailureCondition: Error {
-    case invalidServerResponse
-}
-
-private struct GithubAPIUser: Decodable {
-    // A very *small* subset of the content available about
-    //  a github API user for example:
-    // https://api.github.com/users/heckj
-    let login: String
-    let public_repos: Int
-    let avatar_url: String
-}
-
-private struct GithubAPI {
-    // NOTE(heckj): I've also seen this kind of API access
-    // object set up with with a class and static methods on the class.
-    // I don't know that there's a specific benefit to make this a value
-    // type/struct with a function on it.
-
-    /// creates a one-shot publisher that provides a GithubAPI User
-    /// object as the end result. This method was specifically designed to
-    /// return a list of 1 object, as opposed to the object itself to make
-    /// it easier to distinguish a "no user" result (empty list)
-    /// representation that could be dealt with more easily in a Combine
-    /// pipeline than an optional value. The expected return types is a
-    /// Publisher that returns either an empty list, or a list of one
-    /// GithubAPUser, and with a failure return type of Never, so it's
-    /// suitable for recurring pipeline updates working with a @Published
-    /// data source.
-    /// - Parameter username: username to be retrieved from the Github API
-    static func retrieveGithubUser(username: String) -> AnyPublisher<[GithubAPIUser], Never> {
-
-        if username.count < 3 {
-            return Just([]).eraseToAnyPublisher()
-            // return Publishers.Empty<GithubAPIUser, Never>()
-            //    .eraseToAnyPublisher()
-        }
-        let assembledURL = String("https://api.github.com/users/\(username)")
-        let publisher = URLSession.shared.dataTaskPublisher(for: URL(string: assembledURL)!)
-            //Instance method 'flatMap(maxPublishers:_:)' requires the types
-            // 'Published<Value>.Publisher.Failure' (aka 'Never') and
-            //'URLSession.DataTaskPublisher.Failure' (aka 'URLError')
-            // be equivalent
-//            .handleEvents(receiveSubscription: { _ in
-//                DispatchQueue.main.async {
-//                    self.activityIndicator.startAnimating()
-//                }
-//            }, receiveCompletion: { _ in
-//                DispatchQueue.main.async {
-//                    self.activityIndicator.stopAnimating()
-//                }
-//            }, receiveCancel: {
-//                DispatchQueue.main.async {
-//                    self.activityIndicator.stopAnimating()
-//                }
-//            })
-            .tryMap { data, response -> Data in
-                guard let httpResponse = response as? HTTPURLResponse,
-                    httpResponse.statusCode == 200 else {
-                        throw APIFailureCondition.invalidServerResponse
-                }
-                return data
-            }
-            .decode(type: GithubAPIUser.self, decoder: JSONDecoder())
-            .map {
-                [$0]
-            }
-            .catch { err in
-                // return Publishers.Empty<GithubAPIUser, Never>()
-                // ^^ when I originally wrote this method, I was returning
-                // a GithubAPIUser? optional, and then a GithubAPIUser without
-                // optional. I ended up converting this to return an empty
-                // list as the "error output replacement" so that I could
-                // represent that the current value requested didn't *have* a
-                // correct github API response. When I was returing a single
-                // specific type, using Publishers.Empty was a good way to do a
-                // "no data on failure" error capture scenario.
-                return Just([])
-            }
-            .eraseToAnyPublisher()
-        return publisher
-    }
-
-}
-
 class ViewController: UIViewController {
 
     @IBOutlet weak var github_id_entry: UITextField!
@@ -104,6 +19,8 @@ class ViewController: UIViewController {
     var repositoryCountSubscriber: AnyCancellable?
     var avatarViewSubscriber: AnyCancellable?
     var usernameSubscriber: AnyCancellable?
+    var headingSubscriber: AnyCancellable?
+    var apiNetworkActivitySubscriber: AnyCancellable?
 
     // username from the github_id_entry field, updated via IBAction
     @Published var username: String = ""
@@ -114,6 +31,7 @@ class ViewController: UIViewController {
 
     // publisher reference for this is $username, of type <String, Never>
     var myBackgroundQueue: DispatchQueue = DispatchQueue(label: "viewControllerBackgroundQueue")
+    let coreLocationProxy = LocationHeadingProxy()
 
     // MARK - Actions
 
@@ -128,7 +46,26 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
 
-        let usernameSub = $username
+        let corelocationsub = coreLocationProxy
+            .publisher
+            .sink { someValue in
+                //self.githubUserData = someValue
+            }
+        headingSubscriber = AnyCancellable(corelocationsub)
+
+
+        let apiActivitySub = GithubAPI.networkActivityPublisher
+        .receive(on: RunLoop.main)
+            .sink { doingSomethingNow in
+                if (doingSomethingNow) {
+                    self.activityIndicator.startAnimating()
+                } else {
+                    self.activityIndicator.stopAnimating()
+                }
+        }
+        apiNetworkActivitySubscriber = AnyCancellable(apiActivitySub)
+
+        usernameSubscriber = $username
             .throttle(for: 0.5, scheduler: myBackgroundQueue, latest: true)
             // ^^ scheduler myBackGroundQueue publishes resulting elements
             // into that queue, resulting on this processing moving off the
@@ -146,10 +83,7 @@ class ViewController: UIViewController {
             // using a sink to get the results from the API search lets us
             // get not only the user, but also any errors attempting to get it.
             .receive(on: RunLoop.main)
-            .sink { someValue in
-                self.githubUserData = someValue
-            }
-        usernameSubscriber = AnyCancellable(usernameSub)
+            .assign(to: \.githubUserData, on: self)
 
         // using .assign() on the other hand (which returns an
         // AnyCancellable) *DOES* require a Failure type of <Never>
@@ -187,6 +121,19 @@ class ViewController: UIViewController {
                 }
                 return URLSession.shared.dataTaskPublisher(for: URL(string: firstUser.avatar_url)!)
                     // ^^ this hands back (Data, response) objects
+                    .handleEvents(receiveSubscription: { _ in
+                        DispatchQueue.main.async {
+                            self.activityIndicator.startAnimating()
+                        }
+                    }, receiveCompletion: { _ in
+                        DispatchQueue.main.async {
+                            self.activityIndicator.stopAnimating()
+                        }
+                    }, receiveCancel: {
+                        DispatchQueue.main.async {
+                            self.activityIndicator.stopAnimating()
+                        }
+                    })
                     .map { $0.data }
                     // ^^ pare down to just the Data object
                     .map { UIImage(data: $0)!}

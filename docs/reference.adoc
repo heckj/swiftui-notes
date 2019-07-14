@@ -21,7 +21,8 @@ things to potentially include for each segment
 [#reference-publishers]
 == Publishers
 
-//NOTE(heckj) make xref link back to coreconcepts:publishers
+For general information about Publishers, see <<coreconcepts.adoc#core-publishers>> and
+<<coreconcepts.adoc#core-lifecycle>>.
 
 [#reference-just]
 === Just
@@ -36,7 +37,8 @@ __Usage__::
 
 * <<patterns.adoc#patterns-oneshot-error-handling>>
 * <<patterns.adoc#patterns-continual-error-handling>>
-* <<patterns.adoc#patterns-update-interface-network-request>>
+* <<patterns.adoc#patterns-update-interface-userinput>>
+* <<patterns.adoc#patterns-cascading-update-interface>>
 
 __Details__::
 
@@ -47,18 +49,49 @@ Often used within a closure to <<#reference-flatmap>> in error handling, it can 
 
 __Summary__::
 
-A future is initialized with a closure that eventually resolves to a value.
+A future is initialized with a closure that eventually resolves to a single output value or failure completion.
 
 __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/future[Future].
 
 __Usage__::
 
-n/a
+* unit tests illustrating using Future: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FuturePublisherTests.swift[`UsingCombineTests/FuturePublisherTests.swift`]
 
 __Details__::
 
-* you provide a closure that converts a callback/function of your own choosing into a https://developer.apple.com/documentation/combine/future/promise[Promise].
-* in creating a Future publisher, you need to handle the logic of when you generate the relevant `Result<Output, Error>` with the asynchronous calls.
+Future is a publisher that let's you combine in any asynchronous call and us that call to generate a value or a completion as a Publisher.
+It's ideal for when you want to make a single request, or get a single response, where the API you are using has a completion handler closure.
+
+The obvious example that everyone immediately thinks about is URLSession.
+Fortunately, <<#reference-datataskpublisher>> exists to make a call with a URLSession and return a publisher.
+However, if you already have an API object that wraps the direct calls to URLSession, then making a single request using Future can great way to integrate the result into a Combine pipeline.
+
+There are a number of other APIs that exist in the Apple frameworks that use a completion closure.
+An example of one is requesting permission to access the contacts store in Contacts.
+An example of wrapping that request for access into a publisher using Future might be:
+
+[source, swift]
+----
+import Contacts
+let futureAsyncPublisher = Future<Bool, Error> { promise in <1>
+    CNContactStore().requestAccess(for: .contacts) { grantedAccess, err in <2>
+        // err is an optional
+        if let err = err { <3>
+            promise(.failure(err))
+        }
+        return promise(.success(grantedAccess)) <4>
+    }
+}
+----
+
+<1> Future itself has you define the return types and takes a closure.
+It hands in a Result object matching the type description, which you interact.
+<2> You can invoke the async API however is relevant, including passing in it's required closure.
+<3> Within the completion handler, you determine what would cause a failure or a success. A call to `promise(.failure(<FailureType>))` returns the failure.
+<4> Or a call to `promise(.success(<OutputType>))` returns a value.
+
+If you want to wrap an async API that could return many values over time, Future probably isn't what you want, as it only returns a single value.
+Instead, you should consider creating your own publisher based on <<#reference-passthroughsubject>> or <<#reference-currentvaluesubject>>.
 
 [#reference-published]
 === Published
@@ -71,15 +104,14 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 
 __Usage__::
 
-* <<patterns.adoc#patterns-update-interface-network-request>>
+* <<patterns.adoc#patterns-update-interface-userinput>>
+* <<patterns.adoc#patterns-cascading-update-interface>>
 * unit tests illustrating using Published: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`]
 
 __Details__::
 
 Published is part of combine, but allows you to wrap an property, enabling you to get a publisher that triggers data updates whenever the property is changed.
 The publisher's output type is inferred from the type of the property, and the error type of the provided publisher is <Never>.
-
-There are two examples of using Published in <<patterns.adoc#patterns-update-interface-network-request>>.
 
 A smaller examples of how it can be used:
 
@@ -134,7 +166,8 @@ __Usage__::
 
 * <<patterns.adoc#patterns-oneshot-error-handling>> shows an example of using `catch` to handle errors with a one-shot publisher.
 * <<patterns.adoc#patterns-continual-error-handling>> shows an example of using `catch` with `flatMap` to handle errors with a continual publisher.
-* <<patterns.adoc#patterns-update-interface-network-request>>
+* <<patterns.adoc#patterns-update-interface-userinput>>
+* <<patterns.adoc#patterns-cascading-update-interface>>
 * The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/EmptyPublisherTests.swift[`UsingCombineTests/EmptyPublisherTests.swift`]
 
 __Details__::
@@ -247,7 +280,7 @@ n/a
 <<<
 '''
 
-[#reference-swiftUI]
+[#reference-swiftui]
 === SwiftUI
 
 * @ObjectBinding (swiftUI)
@@ -332,11 +365,12 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/foundation/url
 
 __Usage__::
 
-* <<patterns.adoc#patterns-dataTaskPublisher-decode>>
+* <<patterns.adoc#patterns-datataskpublisher-decode>>
 * <<patterns.adoc#patterns-oneshot-error-handling>>
 * <<patterns.adoc#patterns-retry>>
 * <<patterns.adoc#patterns-constrained-network>>
-* <<patterns.adoc#patterns-update-interface-network-request>>
+* <<patterns.adoc#patterns-update-interface-userinput>>
+* <<patterns.adoc#patterns-cascading-update-interface>>
 
 __Details__::
 
@@ -386,7 +420,7 @@ Scene Publisher (from https://developer.apple.com/documentation/realitykit[Reali
 
 * scan
 
-[#reference-tryScan]
+[#reference-tryscan]
 ==== tryScan
 
 * tryScan
@@ -408,17 +442,19 @@ n/a
 
 __Usage__::
 
-* <<patterns.adoc#patterns-dataTaskPublisher-decode>>
+* <<patterns.adoc#patterns-datataskpublisher-decode>>
 * <<patterns.adoc#patterns-oneshot-error-handling>>
 * <<patterns.adoc#patterns-retry>>
-* <<patterns.adoc#patterns-update-interface-network-request>>
+* <<patterns.adoc#patterns-update-interface-userinput>>
+* <<patterns.adoc#patterns-cascading-update-interface>>
+
 * unit tests illustrating using map with dataTaskPublisher: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DataTaskPublisherTests.swift[`UsingCombineTests/DataTaskPublisherTests.swift`]
 
 
 __Details__::
 
 The map operator doesn't allow for any additional failures to be thrown, and doesn't transform the failure type.
-If you want to throw an error within your closure, then use the <<#reference-tryMap>> operator.
+If you want to throw an error within your closure, then use the <<#reference-trymap>> operator.
 
 map takes a single closure where you provide the logic for the map operation.
 
@@ -450,7 +486,7 @@ Just(myStruct())
 <1> inValue is named as the parameter coming in, and the return type is being explicitly specified to `Bool`
 <2> A single line is an implicit return, in this case it's pulling the `isValid` property off the struct and passing it down the pipeline.
 
-[#reference-tryMap]
+[#reference-trymap]
 ==== tryMap
 
 __Summary__::
@@ -465,7 +501,7 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 
 __Usage__::
 
-* <<patterns.adoc#patterns-dataTaskPublisher-tryMap>>
+* <<patterns.adoc#patterns-datataskpublisher-trymap>>
 * unit tests illustrating using tryMap with dataTaskPublisher: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DataTaskPublisherTests.swift[`UsingCombineTests/DataTaskPublisherTests.swift`]
 
 __Details__::
@@ -540,7 +576,7 @@ In swift, this looks like:
 }
 ----
 
-[#reference-setFailureType]
+[#reference-setfailuretype]
 ==== setFailureType
 
 * setFailureType
@@ -548,14 +584,14 @@ In swift, this looks like:
 [#reference-operators-filtering]
 === Filtering elements
 
-[#reference-compactMap]
+[#reference-compactmap]
 ==== compactMap
 
 * compactMap
 ** republishes all non-nil results of calling a closure with each received element.
 ** there's a variant `tryCompactMap` for use with a provided error-throwing closure.
 
-[#reference-tryCompactMap]
+[#reference-trycompactmap]
 ==== tryCompactMap
 
 * tryCompactMap
@@ -575,7 +611,8 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 
 __Usage__::
 
-* <<reference.adoc#patterns-update-interface-network-request>>
+* <<patterns.adoc#patterns-update-interface-userinput>>
+* <<patterns.adoc#patterns-cascading-update-interface>>
 * unit tests illustrating using filter: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FilterPublisherTests.swift[`UsingCombineTests/FilterPublisherTests.swift`]
 
 __Details__::
@@ -584,9 +621,9 @@ Filter takes a single closure as a parameter that is provided the value from the
 If the return from the closure is `true`, then the operator republishes the value further down the chain.
 If the return from the closure is `false`, then the operator drops the value.
 
-If you need a variation of this that will generate an error condition in the pipeline to be handled use the <<#reference-tryFilter>> operator, which allows the closure to throw an error in the evaluation.
+If you need a variation of this that will generate an error condition in the pipeline to be handled use the <<#reference-tryfilter>> operator, which allows the closure to throw an error in the evaluation.
 
-[#reference-tryFilter]
+[#reference-tryfilter]
 ==== tryFilter
 
 __Summary__::
@@ -611,7 +648,7 @@ If the return from the closure is `true`, then the operator republishes the valu
 If the return from the closure is `false`, then the operator drops the value.
 You can additionally throw an error during the evaluation of tryFilter, which will then be propogated as the failure type down the pipeline.
 
-[#reference-removeDuplicates]
+[#reference-removeduplicates]
 ==== removeDuplicates
 
 __Summary__::
@@ -683,19 +720,19 @@ If the closure throws an error, a failure completion will be propogated down the
 })
 ----
 
-[#reference-replaceEmpty]
+[#reference-replaceempty]
 ==== replaceEmpty
 
 * replaceEmpty
 ** requires Failure to be `<Never>`
 
-[#reference-replaceError]
+[#reference-replaceerror]
 ==== replaceError
 
 * replaceError
 ** requires Failure to be `<Never>`
 
-[#reference-replaceNil]
+[#reference-replacenil]
 ==== replaceNil
 
 * replaceNil
@@ -718,17 +755,17 @@ If the closure throws an error, a failure completion will be propogated down the
 *** `collect(Int)` collects N elements and emits as an array
 *** `collect(.byTime)` or `collect(.byTimeOrCount)`
 
-[#reference-collectByCount]
+[#reference-collectbycount]
 ==== collectByCount
 
 * collectByCount
 
-[#reference-collectByTime]
+[#reference-collectbytime]
 ==== collectByTime
 
 * collectByTime
 
-[#reference-ignoreOutput]
+[#reference-ignoreoutput]
 ==== ignoreOutput
 
 * ignoreOutput
@@ -742,7 +779,7 @@ If the closure throws an error, a failure completion will be propogated down the
 ** there's a varient `tryReduce` for use with a provided error-throwing closure.
 
 
-[#reference-tryReduce]
+[#reference-tryreduce]
 ==== tryReduce
 
 * tryReduce
@@ -774,7 +811,7 @@ If the closure throws an error, a failure completion will be propogated down the
 ** republishes items from another publisher only if each new item is in increasing order from the previously-published item.
 ** there's a variant `tryComparson` which fails if the ordering logic throws an error
 
-[#reference-tryComparison]
+[#reference-trycomparison]
 ==== tryComparison
 
 * tryComparison
@@ -792,14 +829,14 @@ If the closure throws an error, a failure completion will be propogated down the
 [#reference-operators-criteria]
 === Applying matching criteria to elements
 
-[#reference-allSatisfy]
+[#reference-allsatisfy]
 ==== allSatisfy
 
 * allSatisfy
 ** Publishes a single Boolean value that indicates whether all received elements pass a given predicate.
 ** there's a variant `tryAllSatisfy` when the predicate can throw errors
 
-[#reference-tryAllSatisfy]
+[#reference-tryallsatisfy]
 ==== tryAllSatisfy
 
 * tryAllSatisfy
@@ -812,12 +849,12 @@ If the closure throws an error, a failure completion will be propogated down the
 ** variant `containsWhere` when a provided predicate is satisfied
 ** variant `tryContainsWhere` when a provided predicate is satisfied but could throw errors
 
-[#reference-containsWhere]
+[#reference-containswhere]
 ==== containsWhere
 
 * containsWhere
 
-[#reference-tryContainsWhere]
+[#reference-trycontainswhere]
 ==== tryContainsWhere
 
 * tryContainsWhere
@@ -836,12 +873,12 @@ If the closure throws an error, a failure completion will be propogated down the
 ** requires Failure to be `<Never>`
 ** publishes the first element to satisfy a provided predicate
 
-[#reference-firstWhere]
+[#reference-firstwhere]
 ==== firstWhere
 
 * firstWhere
 
-[#reference-tryFirstWhere]
+[#reference-tryfirstwhere]
 ==== tryFirstWhere
 
 * tryFirstWhere
@@ -853,26 +890,26 @@ If the closure throws an error, a failure completion will be propogated down the
 ** requires Failure to be `<Never>`
 ** publishes the last element to satisfy a provided predicate
 
-[#reference-lastWhere]
+[#reference-lastwhere]
 ==== lastWhere
 * lastWhere
 
-[#reference-tryLastWhere]
+[#reference-trylastwhere]
 ==== tryLastWhere
 
 * tryLastWhere
 
-[#reference-dropUntilOutput]
+[#reference-dropuntiloutput]
 ==== dropUntilOutput
 
 * dropUntilOutput
 
-[#reference-dropWhile]
+[#reference-dropwhile]
 ==== dropWhile
 
 * dropWhile
 
-[#reference-tryDropWhile]
+[#reference-trydropwhile]
 ==== tryDropWhile
 
 * tryDropWhile
@@ -890,21 +927,21 @@ If the closure throws an error, a failure completion will be propogated down the
 ** Ignores elements from the upstream publisher until it receives an element from a second publisher.
 ** or `drop(while: {})`
 
-[#reference-prefixUntilOutput]
+[#reference-prefixuntiloutput]
 ==== prefixUntilOutput
 
 * prefixUntilOutput
 ** Republishes elements until another publisher emits an element.
 ** requires Failure to be `<Never>`
 
-[#reference-prefixWhile]
+[#reference-prefixwhile]
 ==== prefixWhile
 
 * prefixWhile
 ** Republishes elements until another publisher emits an element.
 ** requires Failure to be `<Never>`
 
-[#reference-tryPrefixWhile]
+[#reference-tryprefixwhile]
 ==== tryPrefixWhile
 
 * tryPrefixWhile
@@ -923,14 +960,14 @@ If the closure throws an error, a failure completion will be propogated down the
 [#reference-operators-combinepublishers]
 === Combining elements from multiple publishers
 
-[#reference-combineLatest]
+[#reference-combinelatest]
 ==== combineLatest
 
 * combineLatest
 ** brings inputs from 2 (or more) streams together
 ** you provide a closure that gets the values and chooses what to publish
 
-[#reference-tryCombineLatest]
+[#reference-trycombinelatest]
 ==== tryCombineLatest
 
 * tryCombineLatest
@@ -955,7 +992,7 @@ If the closure throws an error, a failure completion will be propogated down the
 <<<
 '''
 
-[#reference-operators-handlingErrors]
+[#reference-operators-handlingerrors]
 === Handling errors
 
 See <<patterns.adoc#patterns-general-error-handling>> for more detail on how you can design error handling.
@@ -978,7 +1015,9 @@ __Usage__::
 
 * <<patterns.adoc#patterns-oneshot-error-handling>> shows an example of using `catch` to handle errors with a one-shot publisher.
 * <<patterns.adoc#patterns-continual-error-handling>> shows an example of using `catch` with `flatMap` to handle errors with a continual publisher.
-* <<patterns.adoc#patterns-update-interface-network-request>>
+* <<patterns.adoc#patterns-update-interface-userinput>>
+* <<patterns.adoc#patterns-cascading-update-interface>>
+
 
 __Details__::
 
@@ -1030,7 +1069,7 @@ When the failure was sent through the pipeline, catch intercepts it and returns 
 The replacement publisher it used (`Just`) sends a single value and then sends a completion.
 If we want the pipeline to remain active, we need to change how we handle the errors.
 
-[#reference-tryCatch]
+[#reference-trycatch]
 ==== tryCatch
 
 __Summary__::
@@ -1052,7 +1091,7 @@ __Details__::
 `tryCatch` is a variant of <<#reference-catch>> that has a failure type of `<Error>` rather than catch's failure type of `<Never>`.
 This allows it to be used where you want to immediately react to an error by creating another publisher that may also produce a failure type.
 
-[#reference-assertNoFailure]
+[#reference-assertnofailure]
 ==== assertNoFailure
 
 __Summary__::
@@ -1156,16 +1195,16 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
     .eraseToAnyPublisher()
 ----
 
-[#reference-mapError]
+[#reference-maperror]
 ==== mapError
 
 * mapError
 ** Converts any failure from the upstream publisher into a new error.
 
-[#reference-operators-adaptingTypes]
+[#reference-operators-adaptingtypes]
 === Adapting publisher types
 
-[#reference-switchToLatest]
+[#reference-switchtolatest]
 ==== switchToLatest
 
 __Summary__::
@@ -1180,7 +1219,8 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 
 __Usage__::
 
-* <<reference.adoc#patterns-update-interface-network-request>>
+* <<patterns.adoc#patterns-update-interface-userinput>>
+* <<patterns.adoc#patterns-cascading-update-interface>>
 * unit tests illustrating switchToLatest: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SwitchAndFlatMapPublisherTests.swift[`UsingCombineTests/SwitchAndFlatMapPublisherTests.swift`]
 
 __Details__::
@@ -1195,7 +1235,7 @@ The most common form of using this is with a one-shot publisher such as <<#refer
 It is also commonly used when working with an API that provides a publisher.
 switchToLatest assists in taking the result of the publisher and sending that down the pipeline rather than sending the publisher itself down as the output type.
 
-The following snippet is part of the larger example <<reference.adoc#patterns-update-interface-network-request>>
+The following snippet is part of the larger example <<patterns.adoc#patterns-update-interface-userinput>>
 
 [source, swift]
 ----
@@ -1206,7 +1246,7 @@ The following snippet is part of the larger example <<reference.adoc#patterns-up
 // switchToLatest to flatten the values out of that
 // pipline to return down the chain, rather than returning a
 // publisher down the pipeline.
-.switchToLatest() <2>
+.switchToLatest() <3>
 ----
 
 <1> In this example, an API instance (GithubAPI) has a function that returns a publisher.
@@ -1253,7 +1293,7 @@ If you wish to control the value returned within the timewindow provided, you ma
 ** Delays delivery of all output to the downstream receiver by a specified amount of time on a particular scheduler.
 ** requires Failure to be `<Never>`
 
-[#reference-measureInterval]
+[#reference-measureinterval]
 ==== measureInterval
 
 * measureInterval
@@ -1403,8 +1443,8 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 
 __Usage__::
 
-* <<patterns.adoc#patterns-dataTaskPublisher-decode>>
-* <<patterns.adoc#patterns-dataTaskPublisher-tryMap>>
+* <<patterns.adoc#patterns-datataskpublisher-decode>>
+* <<patterns.adoc#patterns-datataskpublisher-trymap>>
 * <<patterns.adoc#patterns-oneshot-error-handling>>
 * <<patterns.adoc#patterns-retry>>
 * unit tests illustrating using encode and decode: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/EncodeDecodeTests.swift[`UsingCombineTests/EncodeDecodeTests.swift`]
@@ -1439,7 +1479,7 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: URL(string: t
 <<<
 '''
 
-[#reference-operators-multipleSubscribers]
+[#reference-operators-multiplesubscribers]
 === Working with multiple subscribers
 
 [#reference-multicast]
@@ -1456,7 +1496,7 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: URL(string: t
 * breakpoint
 ** Raises a debugger signal when a provided closure needs to stop the process in the debugger.
 
-[#reference-breakpointOnError]
+[#reference-breakpointonerror]
 ==== breakpointOnError
 
 * breakpointOnError
@@ -1645,7 +1685,7 @@ That is - don't create the queue with `attributes: .concurrent`.
 
 === Type erasure operators
 
-[#reference-eraseToAnyPublisher]
+[#reference-erasetoanypublisher]
 ==== eraseToAnyPublisher
 
 ** when you chain operators together in swift, the object's type signature accumulates all the various types, and it gets ugly pretty quickly.
@@ -1654,10 +1694,10 @@ That is - don't create the queue with `attributes: .concurrent`.
 ** `.eraseToAnyPublisher()`
 ** often at the end of chains of operators, and cleans up the type signature of the property getting asigned to the chain of operators
 
-[#reference-eraseToAnySubscriber]
+[#reference-erasetoanysubscriber]
 ==== eraseToAnySubscriber
 
-[#reference-eraseToAnySubject]
+[#reference-erasetoanysubject]
 ==== eraseToAnySubject
 
 // force a page break - in HTML rendering is just a <HR>
@@ -1667,17 +1707,56 @@ That is - don't create the queue with `attributes: .concurrent`.
 [#reference-subjects]
 == Subjects
 
-//xref to coreconcepts - subjects
+General information on <<coreconcepts.adoc#core-subjects>> can be found in the Core Concepts section.
 
-[#reference-currentValueSubject]
+[#reference-currentvaluesubject]
 === currentValueSubject
 
-* https://developer.apple.com/documentation/combine/currentvaluesubject[`CurrentValueSubject`]
+__Summary__::
 
-[#reference-passthroughSubject]
+CurrentValue creates an object that can be used to integrate imperative code into a Combine pipeline, starting with an initial value.
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/currentvaluesubject[`CurrentValueSubject`]
+
+__Usage__::
+
+* <<patterns.adoc#patterns-cascading-update-interface>>
+
+__Details__::
+
+currentValueSubject creates an instance to which you can attach multiple subscribers.
+When creating a currentValueSubject, you do so with an initial value of the relevant output type for the Subject.
+
+CurrentValue remembers the current value so that when a subscriber is attached, it immediately receives the current value.
+When a subscriber is connected to it and requests data, the initial value is sent.
+Further calls to `.send()` afterwards will then send those values to any subscribers.
+
+[#reference-passthroughsubject]
 === PassthroughSubject
 
-* https://developer.apple.com/documentation/combine/passthroughsubject[`PassthroughSubject`]
+__Summary__::
+
+PassthroughSubject creates an object that can be used to integrate imperative code into a Combine pipeline.
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/passthroughsubject[`PassthroughSubject`]
+
+__Usage__::
+
+* <<patterns.adoc#patterns-cascading-update-interface>>
+
+__Details__::
+
+PassthroughSubject creates an instance to which you can attach multiple subscribers.
+When it is created, only the types are defined.
+
+When a subscriber is connected and requests data, it will not receive any values until a `.send()` call is invoked.
+Passthrough doesn't maintain any state, it only passes through provided values.
+Calls to `.send()` will then send values to any subscribers.
+
+PassthroughSubject is commonly used in scenarios where you want to create a publisher from imperative code.
+One example of this might be a publisher from a delegate-callback structure, common in Apple's APIs.
+Another common use is to test subscribers and pipelines, providing you with imperative control of when events are sent within a pipeline.
+When creating tests, you can send data (or a failure) is under test control.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
@@ -1711,6 +1790,15 @@ __Details__::
 Assign only handles data, and expects all errors or failures to be handled in the pipeline before it is invoked.
 The return value from setting up assign can be cancelled, and is frequently used when disabling the pipeline, such as when a viewController is disabled or deallocated.
 Assign is frequently used in conjunction with the <<#reference-receive>> operator to receive values on a specific scheduler, typically `RunLoop.main` when updating UI objects.
+
+The type of KeyPath required for the assign operator is important.
+It requires a ReferenceWritableKeyPath, which is different from both WritableKeyPath and KeyPath.
+In particular, ReferencxeWritableKeyPath requires that the object you're writing to is a reference type (an instance of a class), as well as being publicly writable.
+A WritableKeyPath is one that's a mutable value reference (a mutable struct), and KeyPath reflects that the object is simply readable by keypath, but not mutable.
+
+It's not always clear (for example, while using code-completion from the editor) what a property may reflect.
+
+If you try to assign to a property keypath and receive an error such as `Cannot convert value of type 'KeyPath<SomeObject, Bool>' to specified type 'ReferenceWritableKeyPath<SomeObject, Bool>'`, the error is because you're attempting to write to a property that is read-only.
 
 [source, swift]
 ----
@@ -1790,3 +1878,35 @@ let cancellablePipeline = simplePublisher.sink { data in
 cancellablePublisher.cancel() // this invalidates the pipeline, no further data will be received by the sink
 ----
 
+[#reference-anycancellable]
+=== AnyCancellable
+
+__Summary__::
+
+AnyCancellable type erases a subscriber to the general form of https://developer.apple.com/documentation/combine/cancellable[Cancellable].
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/anycancellable
+
+__Usage__::
+
+* <<patterns.adoc#patterns-update-interface-userinput>>
+* <<patterns.adoc#patterns-cascading-update-interface>>
+* <<patterns.adoc#patterns-subject>>
+
+__Details__::
+
+This is used to provide a reference to a subscriber that allows the use of `cancel` without access to the subscription itself to request items.
+This is most typically used when you want a reference to a subscriber to clean it up on deallocation.
+Since the <<#reference-assign>> returns an AnyCancellable, this is often used when you want to save the reference to a <<#reference-sink>> an AnyCancellable.
+
+[source, swift]
+----
+
+var mySubscriber: AnyCancellable?
+
+let mySinkSubscriber = remotePublisher
+    .sink { data in
+        print("received ", data)
+    }
+mySubscriber = AnyCancellable(mySinkSubscriber)
+----
