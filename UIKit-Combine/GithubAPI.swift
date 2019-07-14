@@ -51,10 +51,6 @@ struct GithubAPI {
         }
         let assembledURL = String("https://api.github.com/users/\(username)")
         let publisher = URLSession.shared.dataTaskPublisher(for: URL(string: assembledURL)!)
-            //Instance method 'flatMap(maxPublishers:_:)' requires the types
-            // 'Published<Value>.Publisher.Failure' (aka 'Never') and
-            //'URLSession.DataTaskPublisher.Failure' (aka 'URLError')
-            // be equivalent
             .handleEvents(receiveSubscription: { _ in
                 networkActivityPublisher.send(true)
             }, receiveCompletion: { _ in
