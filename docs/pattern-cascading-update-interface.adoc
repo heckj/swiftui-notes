@@ -7,7 +7,7 @@ __Goal__::
 
 __References__::
 
-* The ViewController with this code is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/ViewController.swift[UIKit-Combine/ViewController.swift]
+* The ViewController with this code is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubViewController.swift[UIKit-Combine/GithubViewController.swift]
 * The GithubAPI is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubAPI.swift[UIKit-Combine/GithubAPI.swift]
 
 * Publishers:
@@ -179,7 +179,7 @@ This is an example of how we can provide metadata about a pipeline's operation a
 <10> <<reference.adoc#reference-catch>> operator captures the error conditions within this pipeline, and returns an empty list on failure while also converting the failure type to `Never`.
 <11> <<reference.adoc#reference-erasetoanypublisher>> collapses the complex types of all the chained operators and exposes the whole pipeline as an instance of `AnyPublisher`.
 
-.https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/ViewController.swift[UIKit-Combine/ViewController.swift]
+.https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubViewController.swift[UIKit-Combine/GithubViewController.swift]
 [source, swift]
 ----
 
