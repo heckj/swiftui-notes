@@ -18,7 +18,7 @@
 		1A4FB16722D1464F0009F228 /* EncodeDecodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4FB16622D1464F0009F228 /* EncodeDecodeTests.swift */; };
 		1A6006E122D267F10030A471 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006E022D267F10030A471 /* AppDelegate.swift */; };
 		1A6006E322D267F10030A471 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006E222D267F10030A471 /* SceneDelegate.swift */; };
-		1A6006E522D267F10030A471 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006E422D267F10030A471 /* ViewController.swift */; };
+		1A6006E522D267F10030A471 /* GithubViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006E422D267F10030A471 /* GithubViewController.swift */; };
 		1A6006E822D267F10030A471 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1A6006E622D267F10030A471 /* Main.storyboard */; };
 		1A6006EA22D267F20030A471 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A6006E922D267F20030A471 /* Assets.xcassets */; };
 		1A6006ED22D267F20030A471 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1A6006EB22D267F20030A471 /* LaunchScreen.storyboard */; };
@@ -81,7 +81,7 @@
 		1A6006DE22D267F10030A471 /* UIKit-Combine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "UIKit-Combine.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A6006E022D267F10030A471 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1A6006E222D267F10030A471 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		1A6006E422D267F10030A471 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		1A6006E422D267F10030A471 /* GithubViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GithubViewController.swift; sourceTree = "<group>"; };
 		1A6006E722D267F10030A471 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1A6006E922D267F20030A471 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1A6006EC22D267F20030A471 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -166,7 +166,7 @@
 			children = (
 				1A6006E022D267F10030A471 /* AppDelegate.swift */,
 				1A6006E222D267F10030A471 /* SceneDelegate.swift */,
-				1A6006E422D267F10030A471 /* ViewController.swift */,
+				1A6006E422D267F10030A471 /* GithubViewController.swift */,
 				1AA801E722DAA93F00702286 /* GithubAPI.swift */,
 				1AA801E522DAA8CD00702286 /* LocationHeadingProxy.swift */,
 				1A6006E622D267F10030A471 /* Main.storyboard */,
@@ -472,7 +472,7 @@
 			files = (
 				1AA801E622DAA8CD00702286 /* LocationHeadingProxy.swift in Sources */,
 				1AA801E822DAA93F00702286 /* GithubAPI.swift in Sources */,
-				1A6006E522D267F10030A471 /* ViewController.swift in Sources */,
+				1A6006E522D267F10030A471 /* GithubViewController.swift in Sources */,
 				1A6006E122D267F10030A471 /* AppDelegate.swift in Sources */,
 				1A6006E322D267F10030A471 /* SceneDelegate.swift in Sources */,
 			);
