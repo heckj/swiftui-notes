@@ -1,0 +1,22 @@
+[#patterns-notificationcenter]
+== Responding to updates from NotificationCenter
+
+__Goal__::
+
+* The big "master bus" of events across a variety of Apple platforms, its where you can listen for updates and changes from controls and events across a variety of frameworks.
+
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+__Code and explanation__::
+
+https://www.caseyliss.com/2019/6/18/quick-notes-on-yesterdays-post[Casey Liss talks about about this (not entirely happily)] based on the apple documentation https://developer.apple.com/documentation/combine/receiving_and_handling_events_with_combine[Receiving and Handling Events with Combine].
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

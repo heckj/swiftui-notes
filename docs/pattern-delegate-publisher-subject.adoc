@@ -1,0 +1,28 @@
+[#patterns-delegate-publisher-subject]
+== Wrapping an delegate based API using PassthroughSubject to create a repeating publisher
+
+__Goal__::
+
+* To use one of the Apple delegate APIs to provide values to be used in a combine pipeline.
+
+__References__::
+
+* <<reference.adoc#reference-passthroughsubject>>
+* <<reference.adoc#reference-currentvaluesubject>>
+
+__See also__::
+
+* <<#patterns-future>>
+
+__Code and explanation__::
+
+[source, swift]
+----
+
+.eraseToAnyPublisher()
+----
+
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

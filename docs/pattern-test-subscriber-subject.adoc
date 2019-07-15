@@ -1,0 +1,32 @@
+[#patterns-testing-subscriber]
+== Testing a subscriber with a PassthroughSubject
+
+__Goal__::
+
+* For testing a subscriber (how it reacts):
+
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+__Code and explanation__::
+
+* set up your subscriber and any pipeline leading to it
+* use a Subject to "inject" values
+* test the results after the value is sent
+* if the updates include some async/background work before data is available, use an expectation
+** add a callback to the async pieces where you can trigger the expectation, and do your asserts just prior to fulfilling the expectation
+
+& of course you can always test using UITesting - spinning up your whole app, initializing state, and then driving and verifying the results.
+
+__(Uncertain)__ Mocking or faking a publisher (such as dataTaskPublisher) to validate things like using `retry()` operator
+* might be able to use a `Publishers.Future()`, expose as an AnyPublisher() (do the same with dataTaskPublisher) to make the the same - and in your setup, inject in the one you want to use.
+** Instrument the Future() closure to record what gets called, and maybe set it up to return an explicit set of responses.
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

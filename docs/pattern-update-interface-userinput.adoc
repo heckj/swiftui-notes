@@ -1,0 +1,111 @@
+[#patterns-update-interface-userinput]
+== Declarative UI updates from user input
+
+__Goal__::
+
+* Querying a web based API and returning the data to be displayed in your UI
+
+__References__::
+
+* The Xcode project ViewController with this code is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/ViewController.swift[`UIKit-Combine/ViewController.swift`]
+
+* Publishers:
+<<reference.adoc#reference-published>>,
+<<reference.adoc#reference-datataskpublisher>>,
+* Operators:
+<<reference.adoc#reference-map>>,
+<<reference.adoc#reference-switchtolatest>>,
+<<reference.adoc#reference-receive>>,
+<<reference.adoc#reference-throttle>>,
+<<reference.adoc#reference-removeduplicates>>
+* Subscribers:
+<<reference.adoc#reference-assign>>
+
+__See also__::
+
+* <<#patterns-continual-error-handling>>
+* <<#patterns-oneshot-error-handling>>
+* <<#patterns-datataskpublisher-trymap>>
+
+__Code and explanation__::
+
+One of the primary benefits of a framework like Combine is setting up a declarative structure that defines how an interface will update to user input.
+
+A pattern for integrating UIKit is setting up a variable which will hold a reference to the updated state, and then linking that with existing UIKit or AppKit controls within IBAction.
+
+The sample here is a portion of the code at in a larger ViewController implementation.
+
+This example overlaps with the next pattern <<#patterns-cascading-update-interface>>, which builds upon the initial publisher.
+
+.https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubAPI.swift[UIKit-Combine/GithubAPI.swift]
+[source, swift]
+----
+import UIKit
+import Combine
+
+class ViewController: UIViewController {
+
+    @IBOutlet weak var github_id_entry: UITextField! <1>
+
+    var usernameSubscriber: AnyCancellable?
+
+    // username from the github_id_entry field, updated via IBAction
+    @Published var username: String = "" <2>
+
+    // github user retrieved from the API publisher. As it's updated, it
+    // is "wired" to update UI elements
+    @Published private var githubUserData: [GithubAPIUser] = []
+
+    // MARK - Actions
+
+    @IBAction func githubIdChanged(_ sender: UITextField) {
+        username = sender.text ?? "" <3>
+        print("Set username to ", username)
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+
+        usernameSubscriber = $username <4>
+            .throttle(for: 0.5, scheduler: myBackgroundQueue, latest: true) <5>
+            // ^^ scheduler myBackGroundQueue publishes resulting elements
+            // into that queue, resulting on this processing moving off the
+            // main runloop.
+            .removeDuplicates() <6>
+            .print("username pipeline: ") // debugging output for pipeline
+            .map { username -> AnyPublisher<[GithubAPIUser], Never> in <7>
+                return GithubAPI.retrieveGithubUser(username: username)
+            }
+            // ^^ type returned in the pipeline is a Publisher, so we use
+            // switchToLatest to flatten the values out of that
+            // pipline to return down the chain, rather than returning a
+            // publisher down the pipeline.
+            .switchToLatest() <8>
+            // using a sink to get the results from the API search lets us
+            // get not only the user, but also any errors attempting to get it.
+            .receive(on: RunLoop.main)
+            .assign(to: \.githubUserData, on: self) <9>
+----
+
+<1> The UITextField is the interface element which is driving the updates from user interaction.
+<2> We defined a <<reference.adoc#reference-published> property to both hold the updates.
+Because its a Published property, it provides a publisher reference that we can use to attach additional combine pipelines to update other variables or elements of the interface.
+<3> We set the variable `username` from within an IBAction, which in turn triggers a data flow if the publisher `$username` has any subscribers.
+<4> We in turn set up a subscriber on the publisher `$username` that does further actions. In this case the overall flow retrives an instance of a GithubAPIUser from Github's REST API.
+<5> The <<reference.adoc#reference-throttle>> is there to keep from triggering a network request on ever request.
+The throttle keeps it to a maximum of 1 request every half-second.
+<6> <<reference.adoc#reference-removeduplicates>> is there to collapse events from the changing username so that API requests aren't made on rapidly changing values.
+The removeDuplicates prevents redundant requests from being made, should the user edit and the return the previous value.
+<7> map is used similiarly to flatMap in error handling here, returning an instance of a publisher.
+The API object returns a publisher, which this map is invoking.
+This doesn't return the value from the call, but the calling publisher itself.
+<8> <<reference.adoc#reference-switchtolatest>> operator takes the instance of the publisher that is the element passed down the pipeline, and pulls out the data to push the elements further down the pipeline.
+switchToLatest resolves that publisher into a value and passes that value down the pipeline, in this case an instance of `[GithubAPIUser]`.
+<9> And assign at the end up the pipeline is the subscriber, which assigns the value into another variable
+
+Continue on to <<#patterns-cascading-update-interface>> to expand this into multiple cascading updates of various UI elements.
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''
