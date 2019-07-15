@@ -1,5 +1,5 @@
 [#patterns-delegate-publisher-subject]
-== Wrapping an delegate based API using PassthroughSubject to create a repeating publisher
+== Creating a repeating publisher by wrapping a delegate based API
 
 __Goal__::
 
