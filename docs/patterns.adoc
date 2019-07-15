@@ -36,11 +36,14 @@ If the pipeline is set up to return a single result and terminate, continue to <
 If the pipeline is set up to continually update, the error handling needs to be a little more complex.
 Jump ahead to <<patterns-continual-error-handling>>.
 
+:leveloffset: +1
 include::pattern-assertnofailure.adoc[]
 include::pattern-oneshot-error-handling.adoc[]
 include::pattern-retry.adoc[]
 include::pattern-continual-error-handling.adoc[]
 include::pattern-constrained-network.adoc[]
+:leveloffset: -1
+
 include::pattern-update-interface-userinput.adoc[]
 include::pattern-cascading-update-interface.adoc[]
 include::pattern-future.adoc[]

@@ -1,5 +1,5 @@
 [#patterns-oneshot-error-handling]
-=== Using catch to handle errors in a one-shot pipeline
+== Using catch to handle errors in a one-shot pipeline
 
 __Goal__::
 

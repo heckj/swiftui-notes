@@ -1,5 +1,5 @@
 [#patterns-assertnofailure]
-=== Verifying a failure hasn't happened using assertNoFailure
+== Verifying a failure hasn't happened using assertNoFailure
 
 __Goal__::
 

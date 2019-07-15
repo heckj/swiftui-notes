@@ -1,5 +1,5 @@
 [#patterns-retry]
-=== Retrying in the event of a temporary failure
+== Retrying in the event of a temporary failure
 
 __Goal__::
 

@@ -1,5 +1,5 @@
 [#patterns-continual-error-handling]
-=== Using flatMap with catch to handle errors
+== Using flatMap with catch to handle errors
 
 __Goal__::
 
