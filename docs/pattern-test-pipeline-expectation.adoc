@@ -1,0 +1,27 @@
+
+[#patterns-testing-publisher]
+== Testing a publisher with XCTestExpectation
+
+__Goal__::
+
+* For testing a publisher (and any pipeline attached)
+
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+__Code and explanation__::
+
+* set up an expectation (`XCTestExpectation`)
+* create your publisher & relevant pipeline if so desired
+* create a sink to capture the results that works on both completions and values
+** this can be separate, or just chained to the pipeline, depending on what makes most sense to you
+* `wait` on the expectation to let the test "do it's thing" in the background
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

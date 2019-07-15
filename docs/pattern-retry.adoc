@@ -1,0 +1,61 @@
+[#patterns-retry]
+== Retrying in the event of a temporary failure
+
+__Goal__::
+
+* The `retry` operator can be included in a pipeline to retry a subscription when a `.failure` completion occurs.
+
+__References__::
+
+* <<reference.adoc#reference-catch>>
+* <<reference.adoc#reference-retry>>
+
+__See also__::
+
+* <<#patterns-oneshot-error-handling>>
+* <<#patterns-continual-error-handling>>
+
+__Code and explanation__::
+
+When you specify this operator in a pipeline and it receives a subscription, it first tries to request a subscription from it's upstream publisher.
+If the response to that subscription fails, then it will retry the subscription to the same publisher.
+
+The retry operator can be specified with a number of retries to attempt.
+If no number of retries is specified, it will attempt to retry indefinitely until it receives a .finished completion from it's subscriber.
+If the number of retries is specified and all requests fail, then the `.failure` completion is passed down to the subscriber of this operator.
+
+In practice, this is mostly commonly desired when attempting to request network resources with an unstable connection.
+If you use a retry operator, you should add a specific number of retries so that the subscription doesn't effectively get into an infinite loop.
+
+An example of the above example using retry in combination with a delay:
+
+[source, swift]
+----
+let remoteDataPublisher = urlSession.dataTaskPublisher(for: self.mockURL!)
+    .delay(for: DispatchQueue.SchedulerTimeType.Stride(integerLiteral: Int.random(in: 1..<5)), scheduler: backgroundQueue) <1>
+    .retry(3) <2>
+    .tryMap { data, response -> Data in <3>
+        guard let httpResponse = response as? HTTPURLResponse,
+            httpResponse.statusCode == 200 else {
+                throw testFailureCondition.invalidServerResponse
+        }
+        return data
+    }
+    .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder())
+    .subscribe(on: backgroundQueue)
+    .eraseToAnyPublisher()
+----
+
+<1> the delay operator will delay further processing on the pipeline, in this case for a random selection of 1 to 5 seconds. By adding delay here in the pipeline, it will always occur, even if the original request is successful.
+<2> retry is specified as trying 3 times. If you specify retry without any options, it will retry infinitely, and may cause your pipeline to never resolve any values or completions.
+<3> tryMap is being used to investigate errors after the retry so that retry will only re-attempt the request when the site didn't respond.
+
+[WARNING]
+====
+When using the `retry()` operator with `dataTaskPublisher`, verify that the URL you are requesting isn't going to have negative side effects if requested repeatedly or with a retry.
+Ideally such requests are be expected to be idempotent.
+====
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

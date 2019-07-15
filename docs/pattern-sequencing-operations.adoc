@@ -1,0 +1,25 @@
+[#patterns-sequencing-operations]
+== Sequencing operations with Combine
+
+__Goal__::
+
+* To explicitly order asynchronous operations with a Combine pipeline
+
+__References__::
+
+* <<reference.adoc#reference-future>>
+
+__See also__::
+
+* <<#patterns-delegate-publisher-subject>>
+
+__Code and explanation__::
+
+[source, swift]
+----
+----
+
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

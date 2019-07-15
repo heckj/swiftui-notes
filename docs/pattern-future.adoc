@@ -1,0 +1,40 @@
+[#patterns-future]
+== Wrapping an asynchronous call with a Future to create a one-shot publisher
+
+__Goal__::
+
+* Using Future to turn an an asynchronous call into publisher to use the result in a combine pipeline.
+
+__References__::
+
+* <<reference.adoc#reference-future>>
+
+__See also__::
+
+* <<#patterns-delegate-publisher-subject>>
+
+__Code and explanation__::
+
+[source, swift]
+----
+import Contacts
+let futureAsyncPublisher = Future<Bool, Error> { promise in <1>
+    CNContactStore().requestAccess(for: .contacts) { grantedAccess, err in <2>
+        // err is an optional
+        if let err = err { <3>
+            promise(.failure(err))
+        }
+        return promise(.success(grantedAccess)) <4>
+    }
+}.eraseToAnyPublisher()
+----
+
+<1> Future itself has you define the return types and takes a closure.
+It hands in a Result object matching the type description, which you interact.
+<2> You can invoke the async API however is relevant, including passing in it's required closure.
+<3> Within the completion handler, you determine what would cause a failure or a success. A call to `promise(.failure(<FailureType>))` returns the failure.
+<4> Or a call to `promise(.success(<OutputType>))` returns a value.
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

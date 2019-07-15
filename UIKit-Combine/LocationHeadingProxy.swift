@@ -22,6 +22,7 @@ class LocationHeadingProxy: NSObject, CLLocationManagerDelegate {
 
         super.init()
         mgr.delegate = self
+        mgr.startUpdatingHeading()
     }
 
     // MARK - delegate methods

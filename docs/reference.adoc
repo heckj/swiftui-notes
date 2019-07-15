@@ -1106,7 +1106,7 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 
 __Usage__::
 
-* <<patterns.adoc#patterns-assertNoFailure>>
+* <<patterns.adoc#patterns-assertnofailure>>
 
 __Details__::
 
@@ -1891,7 +1891,7 @@ __Usage__::
 
 * <<patterns.adoc#patterns-update-interface-userinput>>
 * <<patterns.adoc#patterns-cascading-update-interface>>
-* <<patterns.adoc#patterns-subject>>
+* <<patterns.adoc#patterns-delegate-publisher-subject>>
 
 __Details__::
 

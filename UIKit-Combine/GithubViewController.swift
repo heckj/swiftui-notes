@@ -9,7 +9,7 @@
 import UIKit
 import Combine
 
-class ViewController: UIViewController {
+class GithubViewController: UIViewController {
 
     @IBOutlet weak var github_id_entry: UITextField!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
@@ -30,7 +30,7 @@ class ViewController: UIViewController {
     @Published private var githubUserData: [GithubAPIUser] = []
 
     // publisher reference for this is $username, of type <String, Never>
-    var myBackgroundQueue: DispatchQueue = DispatchQueue(label: "viewControllerBackgroundQueue")
+    var myBackgroundQueue: DispatchQueue = DispatchQueue(label: "myBackgroundQueue")
     let coreLocationProxy = LocationHeadingProxy()
 
     // MARK - Actions

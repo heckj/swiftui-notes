@@ -1,0 +1,90 @@
+
+[#patterns-merging-streams-interface]
+== Responding to updates in properties with @Published
+
+__Goal__::
+
+* @Published with properties and using read-only updates of those properties as publishing sources
+
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+__Code and explanation__::
+
+
+[source, swift]
+----
+@Published var username: String = ""
+
+var validatedUsername: AnyPublisher<String?, Never> {
+    return $username
+        .debounce(for: 0.5, scheduler: RunLoop.main)
+           //  <String?>|<Never>
+        .removeDuplicates()
+           //  <String?>|<Never>
+        .flatMap { username in
+            return Future { promise in
+                self.usernameAvailable(username) { available in
+                   promise(.success(available ? username : nil))
+                }
+          //    <Result<Output, Failure>>
+            }
+        }
+          // <String?>|<Never>
+        .eraseToAnyPublisher()
+}
+----
+
+validation - listening for changes to validate them together
+
+[source, swift]
+----
+@Published var password: String = ""
+@Published var passwordAgain: String = ""
+
+var validatedPassword: AnyPublisher<String?, Never> {
+    return CombineLatest($password, $passwordAgain) { password, passwordAgain in
+        guard password == passwordAgain, password.count > 8 else { return nil }
+        return password
+    }
+      //  <String?>|<Never>
+    .map { $0 == password1 ? nil : $0 }
+      //  <String?>|<Never>
+    .eraseToAnyPublisher()
+      //  <String?>|<Never>
+}
+----
+
+more complex validation - bringing together substreams
+
+[source, swift]
+----
+var validatedCredentials: AnyPublisher<(String, String)?, Never> {
+    return CombineLatest(validatedUsername, validatedPassword) { username, password in
+        guard let uname = username, let pwd = password else { return nil }
+        return (uname, pwd)
+    }
+    .eraseToAnyPublisher()
+}
+
+@IBOutlet var signupButton: UIButton!
+
+var signupButtonStream: AnyCancellable?
+
+override func viewDidLoad() {
+    super.viewDidLoad()
+    self.signupButtonStream = self.validatedCredentials
+        .map { $0 != nil }
+        .receive(on: RunLoop.main)
+        .assign(to: \.isEnabled, on: signupButton)
+}
+----
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''
