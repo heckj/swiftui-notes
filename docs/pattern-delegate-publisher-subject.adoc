@@ -91,7 +91,7 @@ Most publishers are set up to subscribe and drive consumption based on subscript
 We implement the callbacks we want for this wrapped object, and within them we use <<reference.adoc#reference-passthroughsubject>> `.send()` to forward the information to any existing subscribers.
 <7> While not strictly required, the delegate provided an Error reporting callback, so we included that as an example of forwarding an error through <<reference.adoc#reference-passthroughsubject>>.
 
-.https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/HeadingViewController.swft[UIKit-Combine/HeadingViewController.swift]
+.https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/HeadingViewController.swift[UIKit-Combine/HeadingViewController.swift]
 [source, swift]
 ----
 import UIKit
