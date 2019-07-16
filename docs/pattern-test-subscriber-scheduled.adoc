@@ -1,0 +1,123 @@
+[#patterns-testing-subscriber-scheduled]
+== Testing a subscriber with scheduled sends from PassthroughSubject
+
+__Goal__::
+
+* For testing a pipeline, or subscriber, when part of what you want to test is the timing of the pipeline.
+
+__References__::
+
+* https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[UsingCombineTests/PublisherTests.swift]
+
+* https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FuturePublisherTests.swift[UsingCombineTests/FuturePublisherTests.swift]
+
+* https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SinkSubscriberTests.swift[UsingCombineTests/SinkSubscriberTests.swift]
+
+* https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SwitchAndFlatMapPublisherTests.swift[UsingCombineTests/SwitchAndFlatMapPublisherTests.swift]
+
+* https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift[UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift]
+
+__See also__::
+
+* <<#patterns-testing-publisher>>
+* <<#patterns-testing-subscriber>>
+* <<reference.adoc#reference-passthroughsubject>>
+
+__Code and explanation__::
+
+There are a number of operators in Combine that are specific to the timing of data, including <<reference.adoc#reference-debounce>>, <<reference.adoc#reference-throttle>>, and <<reference.adoc#reference-delay>>.
+You may want to test that your pipeline timing is having the desired impact, indepedently of doing UI testing.
+
+One way of handling this leverages the both https://developer.apple.com/documentation/xctest/xctestexpectation[XCTestExpectation] and a <<reference.adoc#reference-passthroughsubject>>, combining the two.
+Building on both <<#patterns-testing-publisher>> and <<#patterns-testing-subscriber>>, add https://developer.apple.com/documentation/dispatch/dispatchqueue[DispatchQueue] in the test to schedule invocations of PassthroughSubject's `.send()` method.
+
+An example of this:
+
+.https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift#L178[UsingCombineTests/PublisherTests.swift - testKVOPublisher]
+[source, swift]
+----
+func testKVOPublisher() {
+    let expectation = XCTestExpectation(description: self.debugDescription)
+    let foo = KVOAbleNSObject()
+    let q = DispatchQueue(label: self.debugDescription) <1>
+
+    let _ = foo.publisher(for: \.intValue)
+        .print()
+        .sink { someValue in
+            print("value of intValue updated to: >>\(someValue)<<")
+        }
+
+    q.asyncAfter(deadline: .now() + 0.5, execute: { <2>
+        print("Updating to foo.intValue on background queue")
+        foo.intValue = 5
+        expectation.fulfill() <3>
+    })
+    wait(for: [expectation], timeout: 5.0) <4>
+}
+----
+
+<1> This adds a DispatchQueue to your test, conveniently naming the queue after the test itself.
+This really only shows when debugging test failures, and is convenient as a reminder of what's happening in the test code vs. any other background queues that might be in use.
+<2> `.asyncAfter` is used along with the deadline parameter to define when a call gets made.
+<3> The simplest form embeds any relevant assertions into the subscriber or around the subscriber. Additionally, invoking the `.fulfill()` on your expectation as the last queued entry you send lets the test know that it is now complete.
+<4> Make sure that when you set up the wait that allow for sufficient time for your queue'd calls to be invoked.
+
+A definite downside to this technique is that it forces the test to take a minimum amount of time matching the maximum queue delay in the test.
+
+Another option is a 3rd party library named EntwineTest, which was inspired by the RxTest library.
+EntwineTest is part of Entwine, a swift library that expands on Combine with some helpers.
+The library can be found on Github at https://github.com/tcldr/Entwine.git, available under the MIT license.
+
+One of the key elements included in EnwtineTest is a virtual time scheduler, as well as additional classes that schedule (TestablePublisher) and collect and record (TestableSubscriber) the timing of results while using this scheduler.
+
+An example of this from the EntwineTest project README is included:
+
+.https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/EntwineTestExampleTests.swift[UsingCombineTests/EntwineTestExampleTests.swift]
+[source, swift]
+----
+import XCTest
+import EntwineTest
+// library loaded from https://github.com/tcldr/Entwine/blob/master/Assets/EntwineTest/README.md
+// as a swift package https://github.com/tcldr/Entwine.git : 0.4.0, Next Major Version
+
+class EntwineTestExampleTests: XCTestCase {
+
+    func testMap() {
+
+        let testScheduler = TestScheduler(initialClock: 0)
+
+        // creates a publisher that will schedule it's elements relatively, at the point of subscription
+        let testablePublisher: TestablePublisher<String, Never> = testScheduler.createRelativeTestablePublisher([ <1>
+            (100, .input("a")),
+            (200, .input("b")),
+            (300, .input("c")),
+        ])
+
+        // a publisher that maps strings to uppercase
+        let subjectUnderTest = testablePublisher.map { $0.uppercased() }
+
+        // uses the method described above (schedules a subscription at 200, to be cancelled at 900)
+        let results = testScheduler.start { subjectUnderTest } <2>
+
+        XCTAssertEqual(results.sequence, [ <3>
+            (200, .subscription),           // subscribed at 200
+            (300, .input("A")),             // received uppercased input @ 100 + subscription time
+            (400, .input("B")),             // received uppercased input @ 200 + subscription time
+            (500, .input("C")),             // received uppercased input @ 300 + subscription time
+        ])
+    }
+}
+----
+
+<1> The TestablePublisher lets you set up a publisher that returns specific values at specific times.
+In this case, it's returning 3 items at consistent intervals.
+<2> When you use the virtual time scheduler, it is important to make sure to invoke it with start.
+This runs the virtual time scheduler, which can run faster than a clock since it only needs to increment the virtual time and not wait for elapsed time.
+<3> `results` is a TestableSubscriber object, and includes a sequence property which provides  an ordered list of all the data and combine control path interactions with their timing.
+
+If this test sequence had been done with asyncAfter, then the test would have taken a minimum of 500ms to complete.
+When I ran this test on my laptop, it was recording 0.0121 seconds to complete the test (12.1ms).
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

@@ -25,6 +25,7 @@ __See also__::
 
 * <<#patterns-testing-publisher>>
 * <<reference.adoc#reference-passthroughsubject>>
+* <<#patterns-testing-subscriber-scheduled>>
 
 __Code and explanation__::
 

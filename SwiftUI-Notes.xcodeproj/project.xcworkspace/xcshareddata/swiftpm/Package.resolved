@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Entwine",
+        "repositoryURL": "https://github.com/tcldr/Entwine.git",
+        "state": {
+          "branch": null,
+          "revision": "820b528827663a9abead8642498129b2e02aa3fa",
+          "version": "0.4.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

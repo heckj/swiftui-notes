@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,6 +16,8 @@
 		1A1C87C422D0EF6100128A5E /* MockingURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1C87C122D0EF6100128A5E /* MockingURLProtocol.swift */; };
 		1A1C87C522D0EF6100128A5E /* Mocker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1C87C222D0EF6100128A5E /* Mocker.swift */; };
 		1A2AA5E722D7EEE9000C1CA3 /* FuturePublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2AA5E622D7EEE9000C1CA3 /* FuturePublisherTests.swift */; };
+		1A416E1E22DE8A2700C95DCB /* EntwineTest in Frameworks */ = {isa = PBXBuildFile; productRef = 1A416E1D22DE8A2700C95DCB /* EntwineTest */; };
+		1A416E2022DE8A5B00C95DCB /* EntwineTestExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A416E1F22DE8A5B00C95DCB /* EntwineTestExampleTests.swift */; };
 		1A4FB16722D1464F0009F228 /* EncodeDecodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4FB16622D1464F0009F228 /* EncodeDecodeTests.swift */; };
 		1A6006E122D267F10030A471 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006E022D267F10030A471 /* AppDelegate.swift */; };
 		1A6006E322D267F10030A471 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006E222D267F10030A471 /* SceneDelegate.swift */; };
@@ -79,6 +81,7 @@
 		1A1C87C122D0EF6100128A5E /* MockingURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockingURLProtocol.swift; sourceTree = "<group>"; };
 		1A1C87C222D0EF6100128A5E /* Mocker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mocker.swift; sourceTree = "<group>"; };
 		1A2AA5E622D7EEE9000C1CA3 /* FuturePublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuturePublisherTests.swift; sourceTree = "<group>"; };
+		1A416E1F22DE8A5B00C95DCB /* EntwineTestExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntwineTestExampleTests.swift; sourceTree = "<group>"; };
 		1A4FB16622D1464F0009F228 /* EncodeDecodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodeDecodeTests.swift; sourceTree = "<group>"; };
 		1A6006DE22D267F10030A471 /* UIKit-Combine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "UIKit-Combine.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A6006E022D267F10030A471 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -157,6 +160,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A416E1E22DE8A2700C95DCB /* EntwineTest in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,6 +260,7 @@
 		1AEA9C2522CD5FE7006709F1 /* UsingCombineTests */ = {
 			isa = PBXGroup;
 			children = (
+				1A416E1F22DE8A5B00C95DCB /* EntwineTestExampleTests.swift */,
 				1AEA9C2622CD5FE7006709F1 /* SinkSubscriberTests.swift */,
 				1ACB983122D795CE00180481 /* EmptyPublisherTests.swift */,
 				1A2AA5E622D7EEE9000C1CA3 /* FuturePublisherTests.swift */,
@@ -365,6 +370,7 @@
 			);
 			name = UsingCombineTests;
 			packageProductDependencies = (
+				1A416E1D22DE8A2700C95DCB /* EntwineTest */,
 			);
 			productName = UsingCombineTests;
 			productReference = 1AEA9C2422CD5FE7006709F1 /* UsingCombineTests.xctest */;
@@ -410,6 +416,7 @@
 			);
 			mainGroup = 1AC8C76C22B1BED80064C1AE;
 			packageReferences = (
+				1A416E1C22DE8A2600C95DCB /* XCRemoteSwiftPackageReference "Entwine" */,
 			);
 			productRefGroup = 1AC8C77622B1BED80064C1AE /* Products */;
 			projectDirPath = "";
@@ -525,6 +532,7 @@
 				1ACB983222D795CE00180481 /* EmptyPublisherTests.swift in Sources */,
 				1A02E8A622D7C1B8008CCCAE /* SwitchAndFlatMapPublisherTests.swift in Sources */,
 				1A7C604122D0155E00D7675C /* DataTaskPublisherTests.swift in Sources */,
+				1A416E2022DE8A5B00C95DCB /* EntwineTestExampleTests.swift in Sources */,
 				1A02E8AC22D7DE53008CCCAE /* handleEventsPublisherTests.swift in Sources */,
 				1AC8123F22D69C4C0044AAAB /* PublisherTests.swift in Sources */,
 				1AFF21DD22D003D20039C303 /* XCTestCase+KVOExpectatio0n.swift in Sources */,
@@ -944,6 +952,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1A416E1C22DE8A2600C95DCB /* XCRemoteSwiftPackageReference "Entwine" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tcldr/Entwine.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.4.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1A416E1D22DE8A2700C95DCB /* EntwineTest */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A416E1C22DE8A2600C95DCB /* XCRemoteSwiftPackageReference "Entwine" */;
+			productName = EntwineTest;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1AC8C76D22B1BED80064C1AE /* Project object */;
 }
