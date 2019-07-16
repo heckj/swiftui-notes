@@ -10,8 +10,8 @@ import Foundation
 import Combine
 import CoreLocation
 
-class LocationHeadingProxy: NSObject, CLLocationManagerDelegate {
-    private let mgr: CLLocationManager
+final class LocationHeadingProxy: NSObject, CLLocationManagerDelegate {
+    let mgr: CLLocationManager
     private let headingPublisher: PassthroughSubject<CLHeading, Error>
     var publisher: AnyPublisher<CLHeading, Error>
 
@@ -22,9 +22,15 @@ class LocationHeadingProxy: NSObject, CLLocationManagerDelegate {
 
         super.init()
         mgr.delegate = self
+    }
+
+    func enable() {
         mgr.startUpdatingHeading()
     }
 
+    func disable() {
+        mgr.stopUpdatingHeading()
+    }
     // MARK - delegate methods
 
     /*

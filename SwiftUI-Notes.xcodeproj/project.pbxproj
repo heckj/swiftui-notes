@@ -11,6 +11,7 @@
 		1A02E8A822D7C219008CCCAE /* RetryPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A02E8A722D7C219008CCCAE /* RetryPublisherTests.swift */; };
 		1A02E8AA22D7C9BF008CCCAE /* debounceAndRemoveDuplicatesPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A02E8A922D7C9BF008CCCAE /* debounceAndRemoveDuplicatesPublisherTests.swift */; };
 		1A02E8AC22D7DE53008CCCAE /* handleEventsPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A02E8AB22D7DE53008CCCAE /* handleEventsPublisherTests.swift */; };
+		1A087A7B22DD3AB400D23779 /* HeadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A087A7A22DD3AB400D23779 /* HeadingViewController.swift */; };
 		1A1C87C322D0EF6100128A5E /* Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1C87C022D0EF6100128A5E /* Mock.swift */; };
 		1A1C87C422D0EF6100128A5E /* MockingURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1C87C122D0EF6100128A5E /* MockingURLProtocol.swift */; };
 		1A1C87C522D0EF6100128A5E /* Mocker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1C87C222D0EF6100128A5E /* Mocker.swift */; };
@@ -73,6 +74,7 @@
 		1A02E8A722D7C219008CCCAE /* RetryPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetryPublisherTests.swift; sourceTree = "<group>"; };
 		1A02E8A922D7C9BF008CCCAE /* debounceAndRemoveDuplicatesPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = debounceAndRemoveDuplicatesPublisherTests.swift; sourceTree = "<group>"; };
 		1A02E8AB22D7DE53008CCCAE /* handleEventsPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = handleEventsPublisherTests.swift; sourceTree = "<group>"; };
+		1A087A7A22DD3AB400D23779 /* HeadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadingViewController.swift; sourceTree = "<group>"; };
 		1A1C87C022D0EF6100128A5E /* Mock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mock.swift; sourceTree = "<group>"; };
 		1A1C87C122D0EF6100128A5E /* MockingURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockingURLProtocol.swift; sourceTree = "<group>"; };
 		1A1C87C222D0EF6100128A5E /* Mocker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mocker.swift; sourceTree = "<group>"; };
@@ -167,6 +169,7 @@
 				1A6006E022D267F10030A471 /* AppDelegate.swift */,
 				1A6006E222D267F10030A471 /* SceneDelegate.swift */,
 				1A6006E422D267F10030A471 /* GithubViewController.swift */,
+				1A087A7A22DD3AB400D23779 /* HeadingViewController.swift */,
 				1AA801E722DAA93F00702286 /* GithubAPI.swift */,
 				1AA801E522DAA8CD00702286 /* LocationHeadingProxy.swift */,
 				1A6006E622D267F10030A471 /* Main.storyboard */,
@@ -475,6 +478,7 @@
 				1A6006E522D267F10030A471 /* GithubViewController.swift in Sources */,
 				1A6006E122D267F10030A471 /* AppDelegate.swift in Sources */,
 				1A6006E322D267F10030A471 /* SceneDelegate.swift in Sources */,
+				1A087A7B22DD3AB400D23779 /* HeadingViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

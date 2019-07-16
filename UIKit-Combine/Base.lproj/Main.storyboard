@@ -89,10 +89,10 @@
             </objects>
             <point key="canvasLocation" x="-1394.2028985507247" y="324.77678571428572"/>
         </scene>
-        <!--View Controller-->
+        <!--Heading View Controller-->
         <scene sceneID="UU2-61-4Vk">
             <objects>
-                <viewController id="nO0-Ce-iMY" sceneMemberID="viewController">
+                <viewController id="nO0-Ce-iMY" customClass="HeadingViewController" customModule="UIKit_Combine" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="u4D-xC-w4G">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -100,6 +100,42 @@
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Using Combine Examples" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xYj-ui-dCe">
                                 <rect key="frame" x="20" y="44" width="374" height="36"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="QmX-ac-gra">
+                                <rect key="frame" x="20" y="207" width="51" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <action selector="trackingToggled:" destination="nO0-Ce-iMY" eventType="valueChanged" id="FqD-3M-f7w"/>
+                                </connections>
+                            </switch>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Track Heading" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cU8-JM-ZoY">
+                                <rect key="frame" x="77" y="209" width="111" height="26"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="-" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mWd-zi-3hU">
+                                <rect key="frame" x="194" y="214" width="200" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QKh-uF-yT0">
+                                <rect key="frame" x="20" y="140" width="75" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Permission"/>
+                                <connections>
+                                    <action selector="requestPermission:" destination="nO0-Ce-iMY" eventType="touchUpInside" id="vh3-p8-L0n"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z1w-QE-flH">
+                                <rect key="frame" x="103" y="145" width="291" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -113,6 +149,12 @@
                         <viewLayoutGuide key="safeArea" id="RDm-Eb-dC7"/>
                     </view>
                     <tabBarItem key="tabBarItem" systemItem="bookmarks" id="ajZ-aW-8aa"/>
+                    <connections>
+                        <outlet property="activateTrackingSwitch" destination="QmX-ac-gra" id="VT5-w6-lvC"/>
+                        <outlet property="headingLabel" destination="mWd-zi-3hU" id="Drq-1I-a64"/>
+                        <outlet property="locationPermissionLabel" destination="Z1w-QE-flH" id="dKC-h0-49a"/>
+                        <outlet property="permissionButton" destination="QKh-uF-yT0" id="a7b-Uj-HHg"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="esN-io-8fC" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

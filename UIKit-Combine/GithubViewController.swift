@@ -19,7 +19,6 @@ class GithubViewController: UIViewController {
     var repositoryCountSubscriber: AnyCancellable?
     var avatarViewSubscriber: AnyCancellable?
     var usernameSubscriber: AnyCancellable?
-    var headingSubscriber: AnyCancellable?
     var apiNetworkActivitySubscriber: AnyCancellable?
 
     // username from the github_id_entry field, updated via IBAction
@@ -29,7 +28,6 @@ class GithubViewController: UIViewController {
     // is "wired" to update UI elements
     @Published private var githubUserData: [GithubAPIUser] = []
 
-    // publisher reference for this is $username, of type <String, Never>
     var myBackgroundQueue: DispatchQueue = DispatchQueue(label: "myBackgroundQueue")
     let coreLocationProxy = LocationHeadingProxy()
 
@@ -45,14 +43,6 @@ class GithubViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-
-        let corelocationsub = coreLocationProxy
-            .publisher
-            .sink { someValue in
-                //self.githubUserData = someValue
-            }
-        headingSubscriber = AnyCancellable(corelocationsub)
-
 
         let apiActivitySub = GithubAPI.networkActivityPublisher
         .receive(on: RunLoop.main)
