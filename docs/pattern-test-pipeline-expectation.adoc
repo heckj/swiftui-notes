@@ -9,7 +9,6 @@ __Goal__::
 __References__::
 
 * https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DataTaskPublisherTests.swift[UsingCombineTests/DataTaskPublisherTests.swift]
-
 * https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/EmptyPublisherTests.swift[UsingCombineTests/EmptyPublisherTests.swift]
 * https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FuturePublisherTests.swift[UsingCombineTests/FuturePublisherTests.swift]
 * https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[UsingCombineTests/PublisherTests.swift]
