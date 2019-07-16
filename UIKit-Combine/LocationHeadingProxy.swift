@@ -10,7 +10,7 @@ import Foundation
 import Combine
 import CoreLocation
 
-class LocationHeadingProxy: NSObject, CLLocationManagerDelegate {
+final class LocationHeadingProxy: NSObject, CLLocationManagerDelegate {
     let mgr: CLLocationManager
     private let headingPublisher: PassthroughSubject<CLHeading, Error>
     var publisher: AnyPublisher<CLHeading, Error>

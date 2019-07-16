@@ -1289,9 +1289,30 @@ If you wish to control the value returned within the timewindow provided, you ma
 [#reference-delay]
 ==== delay
 
-* delay
-** Delays delivery of all output to the downstream receiver by a specified amount of time on a particular scheduler.
-** requires Failure to be `<Never>`
+__Summary__::
+
+Delays delivery of all output to the downstream receiver by a specified amount of time on a particular scheduler.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/delay['delay']
+
+__Usage__::
+
+* <<patterns.adoc#patterns-delegate-publisher-subject>>
+* <<patterns.adoc#patterns-retry>>
+
+__Details__::
+
+The delay operator passes through the data after a delay defined to the operator.
+The delay operator also requires a scheduler, where the delay is explicitly invoked.
+
+[source, swift]
+----
+.delay(for: 2.0, scheduler: headingBackgroundQueue)
+----
 
 [#reference-measureinterval]
 ==== measureInterval
