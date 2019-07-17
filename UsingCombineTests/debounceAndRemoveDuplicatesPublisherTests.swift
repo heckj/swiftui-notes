@@ -17,7 +17,7 @@ class debounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         var mostRecentlyReceivedValue: String? = nil
         var receivedValueCount = 0
 
-        let _ = simplePublisher
+        let cancellable = simplePublisher
             .removeDuplicates()
             .print(self.debugDescription)
             .sink(receiveCompletion: { completion in
@@ -65,6 +65,7 @@ class debounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         XCTAssertEqual(receivedValueCount, 3)
 
         simplePublisher.send(completion: Subscribers.Completion.finished)
+        XCTAssertNotNil(cancellable)
     }
 
 
@@ -78,7 +79,7 @@ class debounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         var mostRecentlyReceivedValue: AnExampleStruct? = nil
         var receivedValueCount = 0
 
-        let _ = simplePublisher
+        let cancellable = simplePublisher
             .removeDuplicates(by: { first, second -> Bool in
                 first.id == second.id
             })
@@ -128,6 +129,7 @@ class debounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         XCTAssertEqual(receivedValueCount, 3)
 
         simplePublisher.send(completion: Subscribers.Completion.finished)
+        XCTAssertNotNil(cancellable)
     }
 
     func testTryRemoveDuplicates() {
@@ -145,7 +147,7 @@ class debounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         var receivedValueCount = 0
         var receivedError = false
 
-        let _ = simplePublisher
+        let cancellable = simplePublisher
             .tryRemoveDuplicates(by: { first, second -> Bool in
                 if (first.id == 5 || second.id == 5) {
                     // a contrived example showing the exception
@@ -207,6 +209,7 @@ class debounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         XCTAssertTrue(receivedError)
 
         simplePublisher.send(completion: Subscribers.Completion.finished)
+        XCTAssertNotNil(cancellable)
     }
 
     func testDebounce() {
@@ -220,7 +223,7 @@ class debounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         let foo = HoldingClass()
         var receivedCount = 0
 
-        let _ = foo.$intValue
+        let cancellable = foo.$intValue
             .debounce(for: 0.5, scheduler: q)
             .print(self.debugDescription)
             .sink { someValue in
@@ -254,6 +257,7 @@ class debounceAndRemoveDuplicatesPublisherTests: XCTestCase {
 
         XCTAssertEqual(receivedCount, 2)
         XCTAssertEqual(foo.intValue, 10)
+        XCTAssertNotNil(cancellable)
     }
 
     func testThrottleLatestFalse() {
@@ -268,7 +272,7 @@ class debounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         var receivedCount = 0
         var lastReceivedSinkValue = -1
 
-        let _ = foo.$intValue
+        let cancellable = foo.$intValue
             .throttle(for: 0.5, scheduler: q, latest: false)
             .print(self.debugDescription)
             .sink { someValue in
@@ -305,6 +309,7 @@ class debounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         // of the values send at 1.1 and 1.2 seconds in, the first value is returned down the pipeline
         XCTAssertEqual(lastReceivedSinkValue, 3)
         XCTAssertEqual(foo.intValue, 4)
+        XCTAssertNotNil(cancellable)
     }
 
     func testThrottleLatestTrue() {

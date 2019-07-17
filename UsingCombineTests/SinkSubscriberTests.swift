@@ -52,7 +52,7 @@ class SinkSubscriberTests: XCTestCase {
         // setup
         let simplePublisher = PassthroughSubject<String, Error>()
 
-        let _ = simplePublisher
+        let cancellable = simplePublisher
             .sink(receiveCompletion: { completion in
                 countCompletionsReceived += 1
                 switch completion {
@@ -79,6 +79,7 @@ class SinkSubscriberTests: XCTestCase {
             })
 
         // validate
+        XCTAssertNotNil(cancellable)
         XCTAssertEqual(countValuesReceived, 0)
         XCTAssertEqual(countCompletionsReceived, 0)
 

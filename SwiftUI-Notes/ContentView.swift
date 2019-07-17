@@ -37,11 +37,11 @@ struct ContentView : View {
         VStack {
             Text(model.foo)
                 .font(.title)
-                .color(.blue)
+                .foregroundColor(.blue)
 
             Text("so here's something simpler")
                 .font(.caption)
-                .color(.black)
+                .foregroundColor(.black)
 
             Spacer()
 
