@@ -290,13 +290,7 @@ __Summary__::
 
 Foundation added the ability to get a publisher on any Object that can be watched with Key Value Observing.
 
-__icon:apple[] docs__:: __???__
-
-[NOTE]
-====
-As of beta3, I was unable to find the documentation on the extension of NSObject.
-In the generated swift declaration file, it's listed as an extension on NSObject - a struct named `KeyValueObservingPublisher`
-====
+__icon:apple[] docs__:: https://developer.apple.com/documentation/objectivec/nsobject/keyvalueobservingpublisher['KeyValueObservingPublisher']
 
 __Usage__::
 
