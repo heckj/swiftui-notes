@@ -266,6 +266,7 @@ class debounceAndRemoveDuplicatesPublisherTests: XCTestCase {
             @Published var intValue: Int = -1
         }
 
+        print("testing queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
         let q = DispatchQueue(label: self.debugDescription)
         let expectation = XCTestExpectation(description: self.debugDescription)
         let foo = HoldingClass()
@@ -276,25 +277,26 @@ class debounceAndRemoveDuplicatesPublisherTests: XCTestCase {
             .throttle(for: 0.5, scheduler: q, latest: false)
             .print(self.debugDescription)
             .sink { someValue in
+                print("sink invoked on queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
                 print("value updated to: ", someValue)
                 receivedCount += 1
                 lastReceivedSinkValue = someValue
         }
 
         q.asyncAfter(deadline: .now() + 0.1, execute: {
-            print("Updating to foo.intValue on background queue")
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
             foo.intValue = 1
         })
         q.asyncAfter(deadline: .now() + 0.6, execute: {
-            print("Updating to foo.intValue on background queue")
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
             foo.intValue = 2
         })
         q.asyncAfter(deadline: .now() + 1.1, execute: {
-            print("Updating to foo.intValue on background queue")
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
             foo.intValue = 3
         })
         q.asyncAfter(deadline: .now() + 1.2, execute: {
-            print("Updating to foo.intValue on background queue")
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
             foo.intValue = 4
         })
 

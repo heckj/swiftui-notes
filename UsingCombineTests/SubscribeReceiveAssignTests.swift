@@ -75,4 +75,63 @@ class SubscribeReceiveAssignTests: XCTestCase {
     XCTAssertEqual(downstreamName, downstreamResult ?? nil)
   }
 
+    func testMixedQueuesSubscribeReceiveDelayPipeline() {
+
+        // setup
+        let simplePublisher = PassthroughSubject<String, Never>()
+        let expectation = XCTestExpectation(description: self.debugDescription)
+
+        let firstQueue = DispatchQueue(label: "firstQueue")
+        let secondQueue = DispatchQueue(label: "secondQueue")
+        let thirdQueue = DispatchQueue(label: "thirdQueue")
+        let sendQueue = DispatchQueue(label: "sendQueue")
+        // checks the validity of a timestamp - this one should return {"valid":true}
+
+        //validate
+        let cancellable = simplePublisher
+            .map { someValue -> String in
+                print("map after publisher on queue:", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+                // NOTE(heckj): I expected this would be modified by the subscribe operator following, but it remains on the queue
+                // from which the send originated (sendQueue in this case)
+                // XCTAssertEqual(String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!, "firstQueue")
+                return someValue
+            }
+            .subscribe(on: firstQueue) // should impact this and previous operators
+            .map { someValue -> String in
+                print("map after subscribe on queue:", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+                // NOTE(heckj): I expected this would *also* be modified by the subscribe operator, leaving all following operators on
+                // the same queue, however it it remains on the queue from which the publisher originated (sendQueue in this case)
+                // XCTAssertEqual(String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!, "firstQueue")
+                return someValue
+            }
+            .delay(for: 1.0, scheduler: secondQueue)
+            .map { someValue -> String in
+                print("map after delay on queue:", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+                // delay changes the queue for following operations
+                XCTAssertEqual(String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!, "secondQueue")
+                return someValue
+            }
+            .throttle(for: 1.0, scheduler: thirdQueue, latest: true)
+            .map { someValue -> String in
+                // throttle changes the queue for following operations as well
+                print("map after throttle on queue:", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+                XCTAssertEqual(String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!, "thirdQueue")
+                return someValue
+            }
+            .receive(on: RunLoop.main)
+            .sink { _ in
+                // explicitly shifting to the main thread from the receive operator
+                print("sink invoked on queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+                XCTAssertEqual(String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!, "com.apple.main-thread")
+                expectation.fulfill()
+            }
+
+        XCTAssertNotNil(cancellable)
+        sendQueue.asyncAfter(deadline: .now() + 0.1, execute: {
+            print("sending data on queue:", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+            simplePublisher.send("something in")
+        })
+
+        wait(for: [expectation], timeout: 5)
+    }
 }
