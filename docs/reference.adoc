@@ -282,6 +282,7 @@ n/a
 * https://developer.apple.com/documentation/foundation/timer[`Timer`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publish`] and https://developer.apple.com/documentation/foundation/timer/timerpublisher[`Timer.TimerPublisher`]
 
 ** * https://developer.apple.com/documentation/foundation/timer/timerpublisher[TimerPublisher]
+** StackOverflow Q&A: https://stackoverflow.com/questions/56998702/swift-combine-repeat
 
 [#reference-kvo-publisher]
 === .publisher on KVO instance
