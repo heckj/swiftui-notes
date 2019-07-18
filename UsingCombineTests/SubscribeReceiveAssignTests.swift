@@ -96,6 +96,7 @@ class SubscribeReceiveAssignTests: XCTestCase {
                 // NOTE(heckj): I expected this would be modified by the subscribe operator following, but it remains on the queue
                 // from which the send originated (sendQueue in this case)
                 // XCTAssertEqual(String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!, "firstQueue")
+                // beta4: ❌
                 return someValue
             }
             .subscribe(on: firstQueue) // should impact this and previous operators
@@ -104,6 +105,7 @@ class SubscribeReceiveAssignTests: XCTestCase {
                 // NOTE(heckj): I expected this would *also* be modified by the subscribe operator, leaving all following operators on
                 // the same queue, however it it remains on the queue from which the publisher originated (sendQueue in this case)
                 // XCTAssertEqual(String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!, "firstQueue")
+                // beta4: ❌
                 return someValue
             }
             .delay(for: 1.0, scheduler: secondQueue)
@@ -138,7 +140,7 @@ class SubscribeReceiveAssignTests: XCTestCase {
     }
 
     func testSubscribeAndDataTaskQueueHandling() {
-
+        // NOTE(heckj): Documented the unpexected feedback here at FB6727976
         // setup
         let expectation = XCTestExpectation(description: self.debugDescription)
 
@@ -151,6 +153,7 @@ class SubscribeReceiveAssignTests: XCTestCase {
             .map {
                 print("map after dataTask on queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
                 // XCTAssertEqual(String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!, "firstQueue")
+                // beta4: ❌
                 return $0.data
             }
             .subscribe(on: firstQueue)
@@ -158,6 +161,48 @@ class SubscribeReceiveAssignTests: XCTestCase {
             .map {
                 print("map after decode on queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
                 // XCTAssertEqual(String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!, "firstQueue")
+                // beta4: ❌
+                return $0.valid
+            }
+            .eraseToAnyPublisher()
+            .replaceError(with: false)
+            .receive(on: RunLoop.main)
+            .sink { _ in
+                // explicitly shifting to the main thread from the receive operator
+                print("sink invoked on queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+                XCTAssertEqual(String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!, "com.apple.main-thread")
+                expectation.fulfill()
+            }
+
+        // checks the validity of a timestamp - this one should return {"valid":true}
+        XCTAssertNotNil(cancellable)
+        wait(for: [expectation], timeout: 5)
+    }
+
+    func testSubscribeAndDataTaskQueueHandling_differentOrdering() {
+        // NOTE(heckj): Documented the unpexected feedback here at FB6727976
+        // setup
+        let expectation = XCTestExpectation(description: self.debugDescription)
+
+        let firstQueue = DispatchQueue(label: "firstQueue")
+        let sampleURL = URL(string: "https://postman-echo.com/time/valid?timestamp=2016-10-10")
+        // checks the validity of a timestamp - this one should return {"valid":true}
+
+        //validate
+        let cancellable = URLSession.shared.dataTaskPublisher(for: sampleURL!)
+            // just changed the ordering to see if subscribe only impacted the publisher just prior
+            .subscribe(on: firstQueue)
+            .map {
+                print("map after dataTask on queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+                // XCTAssertEqual(String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!, "firstQueue")
+                // beta4: ❌
+                return $0.data
+            }
+            .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder())
+            .map {
+                print("map after decode on queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+                // XCTAssertEqual(String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!, "firstQueue")
+                // beta4: ❌
                 return $0.valid
             }
             .eraseToAnyPublisher()
