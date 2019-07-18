@@ -55,6 +55,11 @@ class PublisherTests: XCTestCase {
     }
 
     func testPublishedOnStructWithChange() {
+        // NOTE(heckj) this test succeeded on beta 2, but fails on beta3 and beta4.
+        // documented to Apple as FB6608729
+        // beta2: ✅
+        // beta3: ❌
+        // beta4: ❌
         let expectation = XCTestExpectation(description: self.debugDescription)
         var foo = HoldingStruct()
         let q = DispatchQueue(label: self.debugDescription)
