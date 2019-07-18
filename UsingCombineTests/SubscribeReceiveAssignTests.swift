@@ -43,4 +43,36 @@ class SubscribeReceiveAssignTests: XCTestCase {
 
         wait(for: [sut], timeout: 5)
     }
+  
+  func testJustSubscribeOnReceiveOn() {
+    // setup
+    let upstreamName = "upstream"
+    let upstreamScheduler = DispatchQueue(label: upstreamName)
+
+    let downstreamName = "downstream"
+    let downstreamScheduler = DispatchQueue(label: downstreamName)
+    
+    var upstreamResult: String?
+    var downstreamResult: String?
+    let exp = self.expectation(description: #function)
+
+    // validate
+    _ = Just<Void>(())
+      .subscribe(on: upstreamScheduler)
+      .map({ _ in
+        let name = __dispatch_queue_get_label(nil)
+        upstreamResult = String(cString: name, encoding: .utf8)
+      })
+      .receive(on: downstreamScheduler)
+      .sink(receiveValue: { _ in
+        let name = __dispatch_queue_get_label(nil)
+        downstreamResult = String(cString: name, encoding: .utf8)
+        exp.fulfill()
+    })
+    
+    waitForExpectations(timeout: 1)
+    XCTAssertEqual(upstreamName, upstreamResult ?? nil)
+    XCTAssertEqual(downstreamName, downstreamResult ?? nil)
+  }
+
 }
