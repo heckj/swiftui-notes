@@ -154,13 +154,13 @@ The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombin
 ====
 
 [#reference-empty]
-=== Publishers.Empty
+=== Empty
 
 __Summary__::
 
 `empty` never publishes any values, and optionally finishes immediately.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/empty[`Publishers.Empty`]
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/empty[`Empty`]
 
 __Usage__::
 
@@ -176,26 +176,26 @@ Empty is useful in error handling scenarios where with publishers where the valu
 Empty can be invoked to be a publisher of any output and failure type combination.
 
 Empty is most commonly used where you need to return a publisher, but don't want to propogate any values (a possible error handling scenario).
-If you want a publisher that provides a single value, then look at <<#reference-just>>, <<#reference-once>>, or <<#reference-optional>> publishers as alternatives.
+If you want a publisher that provides a single value, then look at <<#reference-just>> or <<#reference-optional>> publishers as alternatives.
 
 When subscribed to, an instance of the Empty publisher will not return any values (or errors) and will immediately return a finished completion message to the subscriber.
 
 An example of using Empty
 [source, swift]
 ----
-let myEmptyPublisher = Publishers.Empty<String, Never>() <1>
+let myEmptyPublisher = Empty<String, Never>() <1>
 ----
 <1> Because the types are not be able to be inferred, expect to always define the types you want to return within the declaration.
 
 
 [#reference-fail]
-=== Publishers.Fail
+=== Fail
 
 __Summary__::
 
 `fail` immediately terminates publishing with the specified failure.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/fail[`Publishers.Fail`]
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/fail[`Fail`]
 
 __Usage__::
 
@@ -204,25 +204,6 @@ n/a
 __Details__::
 
 n/a
-
-[#reference-once]
-=== Publishers.Once
-
-__Summary__::
-
-Generates an output to each subscriber exactly once then finishes or fails immediately.
-
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/once[`Once`]
-
-__Usage__::
-
-TBD
-
-__Details__::
-
-Used similiarly to <<#reference-just>>, it provides a value and then completes.
-It is often used with flatMap when you want to flow have flatMap return a publisher that returns a publisher with an error type.
-Where <<#reference-just>> returns a failure type of `<Never>`, `once` allows for a failure type of `<Error>`.
 
 [#reference-optional]
 === Publishers.Optional
@@ -260,13 +241,13 @@ n/a
 
 
 [#reference-deferred]
-=== Publishers.Deferred
+=== Deferred
 
 __Summary__::
 
 Publisher waits for a subscriber before running the provided closure to create values for the subscriber.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/deferred[`Publishers.Deferred`]
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/deferred[`Deferred`]
 
 __Usage__::
 
@@ -1230,7 +1211,7 @@ The primary different is in where it gets the publisher.
 In flatMap, the publisher is returned within the closure provided to flatMap, and the operator works upon that to subscribe and provide the relevant value down the pipeline.
 In switchToLatest, the publisher instance is provided *as the output type* from a previous publisher or operator.
 
-The most common form of using this is with a one-shot publisher such as <<#reference-just>>, <<#reference-once>>, or getting it's value as a result of a <<#reference-map>> transform.
+The most common form of using this is with a one-shot publisher such as <<#reference-just>> getting it's value as a result of a <<#reference-map>> transform.
 
 It is also commonly used when working with an API that provides a publisher.
 switchToLatest assists in taking the result of the publisher and sending that down the pipeline rather than sending the publisher itself down as the output type.

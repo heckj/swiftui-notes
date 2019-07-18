@@ -170,13 +170,13 @@ Combine provides a number of additional convenience publishers:
 | <<reference.adoc#reference-future>>
 | <<reference.adoc#reference-published>>
 
-| <<reference.adoc#reference-once>>
+| <<reference.adoc#reference-empty>>
 | <<reference.adoc#reference-optional>>
 | <<reference.adoc#reference-sequence>>
 
-| <<reference.adoc#reference-empty>>
 | <<reference.adoc#reference-fail>>
 | <<reference.adoc#reference-deferred>>
+|
 
 |===
 
