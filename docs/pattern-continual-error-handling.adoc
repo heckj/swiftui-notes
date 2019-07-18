@@ -9,7 +9,6 @@ __References__::
 
 * <<reference.adoc#reference-flatmap>>
 * <<reference.adoc#reference-just>>
-* <<reference.adoc#reference-once>>
 * <<reference.adoc#reference-catch>>
 
 __See also__::
