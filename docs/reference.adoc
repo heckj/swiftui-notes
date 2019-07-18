@@ -1849,32 +1849,55 @@ __Usage__::
 
 __Details__::
 
-The simplest form of `.sink()` takes a single closure - by default this closure receives data (if provided by the attached publisher).
+There are two forms of the sink operator.
+The first is the simplest form, taking a single closure, receiving only the values from the pipeline (if and when provided by the publisher).
+Using the simpler version comes with a constraint: the failure type of the pipeline must be `<Never>`.
+If you are working with a pipeline that has a failure type other than `<Never>`, you need to use the two closure version, or add error handling into the pipeline itself.
+
+An example of the simple form of sink:
 
 [source, swift]
 ----
 let examplePublisher = Just(5)
 
+let cancellable = examplePublisher.sink { value in
+    print(".sink() received \(String(describing: value))")
+}
+----
+
+Be aware that the closure may be called repeatedly.
+How often it is called depends on the pipeline to which it is subscribing.
+The closure you provide is invoked for every update that the publisher passes down, up until the completion, and prior to any cancellation.
+
+[WARNING]
+====
+It may be tempting to ignore the cancellable you get returned from sink.
+For example, the code:
+
+[source, swift]
+----
 let _ = examplePublisher.sink { value in
     print(".sink() received \(String(describing: value))")
 }
 ----
 
-The closure you provide is invoked for every update that the publisher passes down, up until the completion.
-Be aware that the single closure form may be called repeatedly.
-How often it is called depends on the pipeline to which it is subscribing.
+However, this has the side effect that the as soon as the function returns, the ignore variable is deallocated, causing the pipeline to be cancelled.
+If you want the pipeline to operate beyond the scope of the function (you probably do), then assign it to a longer lived variable that doesn't get deallocated until much later.
+Simple including a variable declaration in the enclosing object is often a good solution.
+====
 
-If you don't also include a closure to get the completion, you will not receive any information about failures.
-If an error or failure occurs and is handed down from the publisher the single closure form will not be called.
+The second form of sink takes two closures, the first of which receives the data from the pipeline, and the second receives pipeline completion messages.
+te a sink with two closures.
+The closures parameters are  `receiveCompletion` and `receiveValue`:
+The .failure completion may also encapsulate an error.
 
-If you are creating a subscriber and want to receive failures, or see the completion messages at the end of pipeline, create a sink with two closures.
-The more complete sink has the two closures named `receiveCompletion` and `receiveValue`:
+An example of the two-closure sink:
 
 [source, swift]
 ----
 let examplePublisher = Just(5)
 
-let _ = examplePublisher.sink(receiveCompletion: { err in
+let cancellable = examplePublisher.sink(receiveCompletion: { err in
     print(".sink() received the completion", String(describing: err))
 }, receiveValue: { value in
     print(".sink() received \(String(describing: value))")
@@ -1891,13 +1914,16 @@ After a cancel is sent, no further values will be received by either closure in 
 
 [source,swift]
 ----
-let simplePublisher = PassthroughSubject<String, Error>()
+let simplePublisher = PassthroughSubject<String, Never>()
 let cancellablePipeline = simplePublisher.sink { data in
   // do what you need with the data...
 }
 
-cancellablePublisher.cancel() // this invalidates the pipeline, no further data will be received by the sink
+cancellablePublisher.cancel() // when invoked, this invalidates the pipeline
+// no further data will be received by the sink
 ----
+
+<<#reference-anycancellable>> is often used with the result of sink to convert the resulting type into AnyCancellable.
 
 [#reference-anycancellable]
 === AnyCancellable

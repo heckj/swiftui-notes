@@ -78,9 +78,11 @@ class HeadingViewController: UIViewController {
             .publisher
             .print("headingSubscriber")
             .receive(on: RunLoop.main)
-            .sink { someValue in
-                self.headingLabel.text = String(someValue.trueHeading)
-        }
+            .sink(receiveCompletion: { completion in },
+                  receiveValue: { someValue in
+                    self.headingLabel.text = String(someValue.trueHeading)
+            })
+
         headingSubscriber = AnyCancellable(corelocationsub)
     }
 
