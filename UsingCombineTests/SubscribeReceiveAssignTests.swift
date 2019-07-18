@@ -31,7 +31,7 @@ class SubscribeReceiveAssignTests: XCTestCase {
         // checks the validity of a timestamp - this one should return {"valid":true}
 
         //validate
-        let _ = URLSession.shared.dataTaskPublisher(for: sampleURL!)
+        let cancellable = URLSession.shared.dataTaskPublisher(for: sampleURL!)
             .subscribe(on: myBackgroundQueue)
             .map { $0.data }
             .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder())
@@ -42,6 +42,7 @@ class SubscribeReceiveAssignTests: XCTestCase {
             .assign(to: \.boolValue, on: canary)
 
         wait(for: [sut], timeout: 5)
+        XCTAssertNotNil(cancellable)
     }
   
   func testJustSubscribeOnReceiveOn() {
@@ -57,7 +58,7 @@ class SubscribeReceiveAssignTests: XCTestCase {
     let exp = self.expectation(description: #function)
 
     // validate
-    _ = Just<Void>(())
+    let cancellable = Just<Void>(())
       .subscribe(on: upstreamScheduler)
       .map({ _ in
         let name = __dispatch_queue_get_label(nil)
@@ -73,6 +74,7 @@ class SubscribeReceiveAssignTests: XCTestCase {
     waitForExpectations(timeout: 1)
     XCTAssertEqual(upstreamName, upstreamResult ?? nil)
     XCTAssertEqual(downstreamName, downstreamResult ?? nil)
+    XCTAssertNotNil(cancellable)
   }
 
     func testMixedQueuesSubscribeReceiveDelayPipeline() {
@@ -132,6 +134,44 @@ class SubscribeReceiveAssignTests: XCTestCase {
             simplePublisher.send("something in")
         })
 
+        wait(for: [expectation], timeout: 5)
+    }
+
+    func testSubscribeAndDataTaskQueueHandling() {
+
+        // setup
+        let expectation = XCTestExpectation(description: self.debugDescription)
+
+        let firstQueue = DispatchQueue(label: "firstQueue")
+        let sampleURL = URL(string: "https://postman-echo.com/time/valid?timestamp=2016-10-10")
+        // checks the validity of a timestamp - this one should return {"valid":true}
+
+        //validate
+        let cancellable = URLSession.shared.dataTaskPublisher(for: sampleURL!)
+            .map {
+                print("map after dataTask on queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+                // XCTAssertEqual(String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!, "firstQueue")
+                return $0.data
+            }
+            .subscribe(on: firstQueue)
+            .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder())
+            .map {
+                print("map after decode on queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+                // XCTAssertEqual(String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!, "firstQueue")
+                return $0.valid
+            }
+            .eraseToAnyPublisher()
+            .replaceError(with: false)
+            .receive(on: RunLoop.main)
+            .sink { _ in
+                // explicitly shifting to the main thread from the receive operator
+                print("sink invoked on queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+                XCTAssertEqual(String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!, "com.apple.main-thread")
+                expectation.fulfill()
+            }
+
+        // checks the validity of a timestamp - this one should return {"valid":true}
+        XCTAssertNotNil(cancellable)
         wait(for: [expectation], timeout: 5)
     }
 }
