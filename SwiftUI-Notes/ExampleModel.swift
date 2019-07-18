@@ -10,10 +10,11 @@ import SwiftUI
 import Combine
 
 class ExampleModel : BindableObject {
+    typealias PublisherType = PassthroughSubject<Void, Never>
+
+    var willChange = PassthroughSubject<Void, Never>()
+    var didChange = PassthroughSubject<Void, Never>()
 
     var foo: String = "Ola, world!" // { didSet { didChange.send() }}
     var bar: Int = 3 // { didSet { didChange.send() }}
-
-    var didChange = PassthroughSubject<Void, Never>()
-    
 }

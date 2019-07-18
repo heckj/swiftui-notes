@@ -258,7 +258,7 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
         var countOfResponses = 0
         let simpleSubjectPublisher = PassthroughSubject<String, Never>()
 
-        let _ = simpleSubjectPublisher
+        let cancellable = simpleSubjectPublisher
             .map { stringValue in
                 return APIDifferentProxyExample()
             }
@@ -279,6 +279,8 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
                 countOfResponses += 1
             })
 
+        XCTAssertNotNil(cancellable)
+        
         XCTAssertEqual(countOfResponses, 0)
         simpleSubjectPublisher.send("trigger")
         XCTAssertEqual(countOfResponses, 2)

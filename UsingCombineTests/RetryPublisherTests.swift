@@ -115,7 +115,8 @@ class RetryPublisherTests: XCTestCase {
 
     func testRetryWithOneShotFailPublisher() {
         // setup
-        let _ = Publishers.Fail(outputType: String.self, failure: testFailureCondition.invalidServerResponse)
+
+        let _ = Fail(outputType: String.self, failure: testFailureCondition.invalidServerResponse)
             .print("(1)>")
             .retry(3)
             .print("(2)>")

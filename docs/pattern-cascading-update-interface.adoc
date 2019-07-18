@@ -59,8 +59,7 @@ Because they are defined on the class instance, the swift compiler creates initi
 
 [NOTE]
 ====
-I *think* the above statement is true related to memory management and cancelling the pipelines, but I have not confirmed it.
-Additionally, a lot of folks comfortable with RxSwift operators are using a "CancelBag" object to collect cancellable references, and cancel the pipelines on tear down.
+A number of developers comfortable with RxSwift are using a "CancelBag" object to collect cancellable references, and cancel the pipelines on tear down.
 An example of this can be seen at https://github.com/tailec/CombineExamples/blob/master/CombineExamples/Shared/CancellableBag.swift
 ====
 

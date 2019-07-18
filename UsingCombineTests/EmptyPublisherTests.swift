@@ -14,7 +14,7 @@ class EmptyPublisherTests: XCTestCase {
     func testEmptyPublisher() {
         let expectation = XCTestExpectation(description: self.debugDescription)
 
-        let _ = Publishers.Empty<String, Never>()
+        let _ = Empty<String, Never>()
             .sink(receiveCompletion: { completion in
                 print(".sink() received the completion", String(describing: completion))
                 switch completion {
