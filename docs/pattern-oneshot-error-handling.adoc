@@ -52,7 +52,7 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
 ----
 
 <1> Often, a catch operator will be placed after several operators that could fail, in order to provide a fallback or placeholder in the event that any of the possible previous operations failed.
-<2> When using catch, you get the error type in and can inspect it to chosoe how you provide a response.
+<2> When using catch, you get the error type in and can inspect it to choose how you provide a response.
 <3> The Just publisher is frequently used to either start another one-shot pipeline or to directly provide a placeholder response in the event of failure.
 
 A possible problem with this technique is that the if the original publisher generates more values to which you wish to react, the original pipeline has been ended.
