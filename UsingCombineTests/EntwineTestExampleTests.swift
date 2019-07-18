@@ -5,7 +5,7 @@
 //  Originally from the EntwineTest project README:
 //  https://github.com/tcldr/Entwine/blob/master/Assets/EntwineTest/README.md
 
-
+import Combine
 import XCTest
 import EntwineTest
 // library loaded from https://github.com/tcldr/Entwine/blob/master/Assets/EntwineTest/README.md
@@ -36,5 +36,22 @@ class EntwineTestExampleTests: XCTestCase {
             (400, .input("B")),             // received uppercased input @ 200 + subscription time
             (500, .input("C")),             // received uppercased input @ 300 + subscription time
         ])
+    }
+
+    func testExampleUsingVirtualTimeScheduler() {
+        let scheduler = TestScheduler(initialClock: 0)
+        var didSink = false
+        let cancellable = Just(1)
+            .delay(for: 1, scheduler: scheduler)
+            .sink { _ in
+                didSink = true
+            }
+
+        XCTAssertNotNil(cancellable)
+        // where a real scheduler would have triggered when .sink() was invoked
+        // the virtual time scheduler requires resume() to commence and runs to
+        // completion.
+        scheduler.resume()
+        XCTAssertTrue(didSink)
     }
 }

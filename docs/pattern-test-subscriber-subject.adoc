@@ -26,6 +26,7 @@ __See also__::
 * <<#patterns-testing-publisher>>
 * <<reference.adoc#reference-passthroughsubject>>
 * <<#patterns-testing-subscriber-scheduled>>
+* <<#patterns-testable-publisher-subscriber>>
 
 __Code and explanation__::
 
@@ -104,7 +105,7 @@ func testSinkReceiveDataThenError() {
     XCTAssertEqual(countValuesReceived, 2)
     XCTAssertEqual(countCompletionsReceived, 0)
 
-    simplePublisher.send(completion: Subscribers.Completion.failure <9>(testFailureCondition.anErrorExample))
+    simplePublisher.send(completion: Subscribers.Completion.failure(testFailureCondition.anErrorExample))  <9>
     XCTAssertEqual(countValuesReceived, 2)
     XCTAssertEqual(countCompletionsReceived, 1)
 
