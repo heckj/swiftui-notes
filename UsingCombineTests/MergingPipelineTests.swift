@@ -7,6 +7,7 @@
 //
 
 import Combine
+import Entwine // to get access to Signal as a public enum
 import EntwineTest
 // library loaded from https://github.com/tcldr/Entwine/blob/master/Assets/EntwineTest/README.md
 // as a swift package https://github.com/tcldr/Entwine.git : 0.6.0, Next Major Version
@@ -62,26 +63,45 @@ class MergingPipelineTests: XCTestCase {
         print(outputSignals)
         // TestSequence<(String, Int), Never>(contents: [(300, .input(("a", 1))), (400, .input(("b", 1))), (450, .input(("b", 2))), (500, .input(("b", 3))), (550, .input(("c", 3)))])
 
-//        let foo = outputSignals[0]
-        //XCTAssertEqual(foo, .input(("a", 1))) // not equatable, so the compiler blows this up...
-        /*
-         Global function 'XCTAssertEqual(_:_:_:file:line:)' requires that '(VirtualTime, Signal<(String, Int), Never>)' conform to 'Equatable'
-         */
+        // NOTE(heckj) - well this is an ugly hack, but it works
+        // normally Signal would be equatable, as it's defined in Entwine, but when the resulting type it's enclosing is a tuple,
+        // it can't rely on the underlying type's equality - as swift tuples aren't allowed to conform to protocols, which means they
+        // can't ever be equatable.
+        let _ = outputSignals[0] // a tuple instance of (VirtualTime, Signal<(String, Int)>)
+        let _ = outputSignals[0].1 // the signal itself: type Signal<(String, Int)>)
+        let foo = outputSignals[0].1.debugDescription // converts the signal into a string using debugDescription
+        let expected = Signal<(String, Int), Never>.input(("a", 1)).debugDescription
+        XCTAssertEqual(foo, expected)
 
-        let expectedSequence = TestSequence<(String, Int), Never>([
-            (300, .input(("a", 1))),
-            (400, .input(("b", 1))),
-            (450, .input(("b", 2))),
-            (500, .input(("b", 3))),
-            (550, .input(("c", 3)))
-        ])
+        // since I'm screwed on using the built in equatable with a tuple response type from the operator I'm testing
+        // we'll make a one-off checking function to validate the expected virtualtime and resulting values all match up.
+        // Global function 'XCTAssertEqual(_:_:_:file:line:)' requires that '(VirtualTime, Signal<(String, Int), Never>)' conform to 'Equatable'
 
-        // XCTAssertEqual(outputSignals, expectedSequence) // compiler error
-        /*
-         Global function 'XCTAssertEqual(_:_:_:file:line:)' requires that '(String, Int)' conform to 'Equatable'
-         -> Requirement from conditional conformance of 'TestSequence<(String, Int), Never>' to 'Equatable' (EntwineTest.TestSequence<τ_0_0, τ_0_1>)
-         */
-
-
+        func testSequenceMatch(sequenceItem: (VirtualTime, Signal<(String, Int), Never>),
+                               time: VirtualTime,
+                               inputvalues: (String, Int)) -> Bool {
+            if sequenceItem.0 != time {
+                return false
+            }
+            if sequenceItem.1.debugDescription != Signal<(String, Int), Never>.input(inputvalues).debugDescription {
+                return false
+            }
+            return true
+        }
+        XCTAssertTrue(
+            testSequenceMatch(sequenceItem: outputSignals[0], time: 300, inputvalues: ("a", 1))
+        )
+        XCTAssertTrue(
+            testSequenceMatch(sequenceItem: outputSignals[1], time: 400, inputvalues: ("b", 1))
+        )
+        XCTAssertTrue(
+            testSequenceMatch(sequenceItem: outputSignals[2], time: 450, inputvalues: ("b", 2))
+        )
+        XCTAssertTrue(
+            testSequenceMatch(sequenceItem: outputSignals[3], time: 500, inputvalues: ("b", 3))
+        )
+        XCTAssertTrue(
+            testSequenceMatch(sequenceItem: outputSignals[4], time: 550, inputvalues: ("c", 3))
+        )
     }
 }
