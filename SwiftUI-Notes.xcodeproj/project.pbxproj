@@ -27,6 +27,7 @@
 		1A6006F822D267F30030A471 /* UIKit_CombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006F722D267F30030A471 /* UIKit_CombineTests.swift */; };
 		1A65598722E2213F00FEFBF5 /* EntwineTest in Frameworks */ = {isa = PBXBuildFile; productRef = 1A65598622E2213F00FEFBF5 /* EntwineTest */; };
 		1A65598922E2227F00FEFBF5 /* FormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A65598822E2227F00FEFBF5 /* FormViewController.swift */; };
+		1A65598B22E2421F00FEFBF5 /* MergingPipelineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A65598A22E2421F00FEFBF5 /* MergingPipelineTests.swift */; };
 		1A7C604122D0155E00D7675C /* DataTaskPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C604022D0155E00D7675C /* DataTaskPublisherTests.swift */; };
 		1AA72DB022B5536200FB8297 /* ExampleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA72DAF22B5536200FB8297 /* ExampleModel.swift */; };
 		1AA801E622DAA8CD00702286 /* LocationHeadingProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA801E522DAA8CD00702286 /* LocationHeadingProxy.swift */; };
@@ -96,6 +97,7 @@
 		1A6006F722D267F30030A471 /* UIKit_CombineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKit_CombineTests.swift; sourceTree = "<group>"; };
 		1A6006F922D267F30030A471 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1A65598822E2227F00FEFBF5 /* FormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormViewController.swift; sourceTree = "<group>"; };
+		1A65598A22E2421F00FEFBF5 /* MergingPipelineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MergingPipelineTests.swift; sourceTree = "<group>"; };
 		1A7C604022D0155E00D7675C /* DataTaskPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTaskPublisherTests.swift; sourceTree = "<group>"; };
 		1AA72DAF22B5536200FB8297 /* ExampleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleModel.swift; sourceTree = "<group>"; };
 		1AA801E522DAA8CD00702286 /* LocationHeadingProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHeadingProxy.swift; sourceTree = "<group>"; };
@@ -281,6 +283,7 @@
 				1A1C87C022D0EF6100128A5E /* Mock.swift */,
 				1A1C87C222D0EF6100128A5E /* Mocker.swift */,
 				1A1C87C122D0EF6100128A5E /* MockingURLProtocol.swift */,
+				1A65598A22E2421F00FEFBF5 /* MergingPipelineTests.swift */,
 			);
 			path = UsingCombineTests;
 			sourceTree = "<group>";
@@ -545,6 +548,7 @@
 				1AFF21DB22CFFF0C0039C303 /* SubscribeReceiveAssignTests.swift in Sources */,
 				1A1C87C322D0EF6100128A5E /* Mock.swift in Sources */,
 				1A02E8AA22D7C9BF008CCCAE /* debounceAndRemoveDuplicatesPublisherTests.swift in Sources */,
+				1A65598B22E2421F00FEFBF5 /* MergingPipelineTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
