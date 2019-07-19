@@ -16,7 +16,6 @@
 		1A1C87C422D0EF6100128A5E /* MockingURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1C87C122D0EF6100128A5E /* MockingURLProtocol.swift */; };
 		1A1C87C522D0EF6100128A5E /* Mocker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1C87C222D0EF6100128A5E /* Mocker.swift */; };
 		1A2AA5E722D7EEE9000C1CA3 /* FuturePublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2AA5E622D7EEE9000C1CA3 /* FuturePublisherTests.swift */; };
-		1A416E1E22DE8A2700C95DCB /* EntwineTest in Frameworks */ = {isa = PBXBuildFile; productRef = 1A416E1D22DE8A2700C95DCB /* EntwineTest */; };
 		1A416E2022DE8A5B00C95DCB /* EntwineTestExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A416E1F22DE8A5B00C95DCB /* EntwineTestExampleTests.swift */; };
 		1A4FB16722D1464F0009F228 /* EncodeDecodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4FB16622D1464F0009F228 /* EncodeDecodeTests.swift */; };
 		1A6006E122D267F10030A471 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006E022D267F10030A471 /* AppDelegate.swift */; };
@@ -26,6 +25,7 @@
 		1A6006EA22D267F20030A471 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A6006E922D267F20030A471 /* Assets.xcassets */; };
 		1A6006ED22D267F20030A471 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1A6006EB22D267F20030A471 /* LaunchScreen.storyboard */; };
 		1A6006F822D267F30030A471 /* UIKit_CombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006F722D267F30030A471 /* UIKit_CombineTests.swift */; };
+		1A65598722E2213F00FEFBF5 /* EntwineTest in Frameworks */ = {isa = PBXBuildFile; productRef = 1A65598622E2213F00FEFBF5 /* EntwineTest */; };
 		1A7C604122D0155E00D7675C /* DataTaskPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C604022D0155E00D7675C /* DataTaskPublisherTests.swift */; };
 		1AA72DB022B5536200FB8297 /* ExampleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA72DAF22B5536200FB8297 /* ExampleModel.swift */; };
 		1AA801E622DAA8CD00702286 /* LocationHeadingProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA801E522DAA8CD00702286 /* LocationHeadingProxy.swift */; };
@@ -146,6 +146,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A65598722E2213F00FEFBF5 /* EntwineTest in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,7 +161,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1A416E1E22DE8A2700C95DCB /* EntwineTest in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -333,6 +333,9 @@
 			dependencies = (
 			);
 			name = "SwiftUI-Notes";
+			packageProductDependencies = (
+				1A65598622E2213F00FEFBF5 /* EntwineTest */,
+			);
 			productName = "SwiftUI-Notes";
 			productReference = 1AC8C77522B1BED80064C1AE /* SwiftUI-Notes.app */;
 			productType = "com.apple.product-type.application";
@@ -370,7 +373,6 @@
 			);
 			name = UsingCombineTests;
 			packageProductDependencies = (
-				1A416E1D22DE8A2700C95DCB /* EntwineTest */,
 			);
 			productName = UsingCombineTests;
 			productReference = 1AEA9C2422CD5FE7006709F1 /* UsingCombineTests.xctest */;
@@ -416,7 +418,7 @@
 			);
 			mainGroup = 1AC8C76C22B1BED80064C1AE;
 			packageReferences = (
-				1A416E1C22DE8A2600C95DCB /* XCRemoteSwiftPackageReference "Entwine" */,
+				1A65598522E2213F00FEFBF5 /* XCRemoteSwiftPackageReference "Entwine" */,
 			);
 			productRefGroup = 1AC8C77622B1BED80064C1AE /* Products */;
 			projectDirPath = "";
@@ -954,20 +956,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		1A416E1C22DE8A2600C95DCB /* XCRemoteSwiftPackageReference "Entwine" */ = {
+		1A65598522E2213F00FEFBF5 /* XCRemoteSwiftPackageReference "Entwine" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tcldr/Entwine.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.4.0;
+				minimumVersion = 0.6.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		1A416E1D22DE8A2700C95DCB /* EntwineTest */ = {
+		1A65598622E2213F00FEFBF5 /* EntwineTest */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1A416E1C22DE8A2600C95DCB /* XCRemoteSwiftPackageReference "Entwine" */;
+			package = 1A65598522E2213F00FEFBF5 /* XCRemoteSwiftPackageReference "Entwine" */;
 			productName = EntwineTest;
 		};
 /* End XCSwiftPackageProductDependency section */
