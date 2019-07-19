@@ -60,13 +60,18 @@ class MergingPipelineTests: XCTestCase {
             }
         }
         XCTAssertEqual(outputSignals.count, 5)
-        print(outputSignals)
+        // print(outputSignals)
         // TestSequence<(String, Int), Never>(contents: [(300, .input(("a", 1))), (400, .input(("b", 1))), (450, .input(("b", 2))), (500, .input(("b", 3))), (550, .input(("c", 3)))])
 
         // NOTE(heckj) - well this is an ugly hack, but it works
-        // normally Signal would be equatable, as it's defined in Entwine, but when the resulting type it's enclosing is a tuple,
-        // it can't rely on the underlying type's equality - as swift tuples aren't allowed to conform to protocols, which means they
-        // can't ever be equatable.
+        // normally an Entwine Signal would be equatable because the enumeration includes equatable conformance.
+        // However, that equatable conformance relies on the underlying type being passed around to be equatable.
+        // When we're working with one of this oeprators that merge streams, the output type in question is a
+        // tuple, which can not provide equatable conformance.
+        // Swift tuples aren't allowed to conform to protocols, which means they can't ever be equatable.
+        // the hack that I'm using to get around this conformance ick is utilizing debugDescription to create a
+        // string from the Signal reference, and then comparing that to a Signal instance created as the expected
+        // value.
         let _ = outputSignals[0] // a tuple instance of (VirtualTime, Signal<(String, Int)>)
         let _ = outputSignals[0].1 // the signal itself: type Signal<(String, Int)>)
         let foo = outputSignals[0].1.debugDescription // converts the signal into a string using debugDescription
@@ -76,7 +81,6 @@ class MergingPipelineTests: XCTestCase {
         // since I'm screwed on using the built in equatable with a tuple response type from the operator I'm testing
         // we'll make a one-off checking function to validate the expected virtualtime and resulting values all match up.
         // Global function 'XCTAssertEqual(_:_:_:file:line:)' requires that '(VirtualTime, Signal<(String, Int), Never>)' conform to 'Equatable'
-
         func testSequenceMatch(sequenceItem: (VirtualTime, Signal<(String, Int), Never>),
                                time: VirtualTime,
                                inputvalues: (String, Int)) -> Bool {
@@ -103,5 +107,9 @@ class MergingPipelineTests: XCTestCase {
         XCTAssertTrue(
             testSequenceMatch(sequenceItem: outputSignals[4], time: 550, inputvalues: ("c", 3))
         )
+
+        // In hindsight, I don't know that I really care about the timing of all these results, aside
+        // from the fact that it makes for an illuminating record of how combineLatest() itself
+        // functions.
     }
 }
