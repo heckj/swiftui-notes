@@ -297,12 +297,8 @@ Operators can also help with error handling and retry logic, buffering and prefe
 |===
 3+h| Combining elements from multiple publishers
 | <<reference.adoc#reference-combinelatest>>
-| <<reference.adoc#reference-trycombinelatest>>
 | <<reference.adoc#reference-merge>>
-
 | <<reference.adoc#reference-zip>>
-|
-|
 |===
 
 [cols="3*^"]

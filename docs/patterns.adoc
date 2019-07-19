@@ -16,6 +16,7 @@ include::pattern-sink.adoc[]
 include::pattern-assign.adoc[]
 include::pattern-datataskpublisher-decode.adoc[]
 include::pattern-datataskpublisher-trymap.adoc[]
+include::pattern-future.adoc[]
 
 [#patterns-general-error-handling]
 == Error Handling
@@ -44,14 +45,24 @@ include::pattern-continual-error-handling.adoc[]
 include::pattern-constrained-network.adoc[]
 :leveloffset: -1
 
+[#patterns-uikit-integration]
+== UIKit (or AppKit) Integration
+
+:leveloffset: +1
 include::pattern-update-interface-userinput.adoc[]
 include::pattern-cascading-update-interface.adoc[]
-include::pattern-future.adoc[]
+include::pattern-merging-streams-interface.adoc[]
 include::pattern-sequencing-operations.adoc[]
 include::pattern-delegate-publisher-subject.adoc[]
-include::pattern-merging-streams-interface.adoc[]
 include::pattern-notificationcenter.adoc[]
+:leveloffset: -1
+
+[#patterns-swiftui-integration]
+== SwiftUI Integration
+
+:leveloffset: +1
 include::pattern-bindableobject.adoc[]
+:leveloffset: -1
 
 [#patterns-testing-and-debugging]
 == Testing and Debugging

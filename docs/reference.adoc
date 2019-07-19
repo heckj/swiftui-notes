@@ -939,14 +939,37 @@ If the closure throws an error, a failure completion will be propogated down the
 [#reference-combinelatest]
 ==== combineLatest
 
-* combineLatest
-** brings inputs from 2 (or more) streams together
-** you provide a closure that gets the values and chooses what to publish
+__Summary__::
 
-[#reference-trycombinelatest]
-==== tryCombineLatest
+CombineLatest merges two pipelines into a single output, converting the output type to a tuple of values from the upstream pipelines, and providing an update when any of the upstream publishers provide a new value.
 
-* tryCombineLatest
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__::
+
+* https://developer.apple.com/documentation/combine/publishers/combinelatest[`combineLatest`]
+* https://developer.apple.com/documentation/combine/publishers/combinelatest3[`combineLatest3`]
+* https://developer.apple.com/documentation/combine/publishers/combinelatest4[`combineLatest4`]
+
+__Usage__::
+
+<<patterns.adoc#patterns-merging-streams-interface>>
+
+__Details__::
+
+CombineLatest, and it's variants of combineLatest3 and combineLatest4, take multiple upstream publishers and create a single output stream, merging the streams together.
+CombineLatest merges two upstream publishers.
+ComineLatest3 merges three upstream publishers, and combineLatest4 merges four upstream publishers.
+
+The output type of the operator is a tuple of the output types of each of the publishers.
+For example, if combineLatest was used to merge a publisher with the output type of `<String>` and another with the output type of `<Int>`, the resulting output type would be a tuple of `(<String>,<Int>)`.
+
+CombineLatest is most often used with continual publishers, and it "remembers" the last output value provided from each publisher.
+In turn, when any of the upstream publishers sends an updated value, the operator makes a new combined tuple of all previous "current" values, adds in the new value in the correct place, and sends that new combined value down the pipeline.
+
+Other operators that merge multiple upstream pipelines include <<#reference-merge>> and <<#reference-zip>>.
 
 [#reference-merge]
 ==== merge
