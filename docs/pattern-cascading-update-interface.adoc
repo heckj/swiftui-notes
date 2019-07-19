@@ -1,5 +1,5 @@
 [#patterns-cascading-update-interface]
-== Update the multiple pieces of your interface from a publisher update
+== Cascading UI updates including a network request
 
 __Goal__::
 
