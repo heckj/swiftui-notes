@@ -18,6 +18,7 @@
 		1A2AA5E722D7EEE9000C1CA3 /* FuturePublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2AA5E622D7EEE9000C1CA3 /* FuturePublisherTests.swift */; };
 		1A416E2022DE8A5B00C95DCB /* EntwineTestExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A416E1F22DE8A5B00C95DCB /* EntwineTestExampleTests.swift */; };
 		1A4FB16722D1464F0009F228 /* EncodeDecodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4FB16622D1464F0009F228 /* EncodeDecodeTests.swift */; };
+		1A534E1D22E3DF20005E6868 /* InterimTestingStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A534E1C22E3DF20005E6868 /* InterimTestingStructs.swift */; };
 		1A6006E122D267F10030A471 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006E022D267F10030A471 /* AppDelegate.swift */; };
 		1A6006E322D267F10030A471 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006E222D267F10030A471 /* SceneDelegate.swift */; };
 		1A6006E522D267F10030A471 /* GithubViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006E422D267F10030A471 /* GithubViewController.swift */; };
@@ -85,6 +86,7 @@
 		1A2AA5E622D7EEE9000C1CA3 /* FuturePublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuturePublisherTests.swift; sourceTree = "<group>"; };
 		1A416E1F22DE8A5B00C95DCB /* EntwineTestExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntwineTestExampleTests.swift; sourceTree = "<group>"; };
 		1A4FB16622D1464F0009F228 /* EncodeDecodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodeDecodeTests.swift; sourceTree = "<group>"; };
+		1A534E1C22E3DF20005E6868 /* InterimTestingStructs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterimTestingStructs.swift; sourceTree = "<group>"; };
 		1A6006DE22D267F10030A471 /* UIKit-Combine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "UIKit-Combine.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A6006E022D267F10030A471 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1A6006E222D267F10030A471 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -284,6 +286,7 @@
 				1A1C87C222D0EF6100128A5E /* Mocker.swift */,
 				1A1C87C122D0EF6100128A5E /* MockingURLProtocol.swift */,
 				1A65598A22E2421F00FEFBF5 /* MergingPipelineTests.swift */,
+				1A534E1C22E3DF20005E6868 /* InterimTestingStructs.swift */,
 			);
 			path = UsingCombineTests;
 			sourceTree = "<group>";
@@ -536,6 +539,7 @@
 				1A4FB16722D1464F0009F228 /* EncodeDecodeTests.swift in Sources */,
 				1A1C87C422D0EF6100128A5E /* MockingURLProtocol.swift in Sources */,
 				1A02E8A822D7C219008CCCAE /* RetryPublisherTests.swift in Sources */,
+				1A534E1D22E3DF20005E6868 /* InterimTestingStructs.swift in Sources */,
 				1ACB983422D79E7F00180481 /* FilterPublisherTests.swift in Sources */,
 				1AEA9C2722CD5FE7006709F1 /* SinkSubscriberTests.swift in Sources */,
 				1ACB983222D795CE00180481 /* EmptyPublisherTests.swift in Sources */,
