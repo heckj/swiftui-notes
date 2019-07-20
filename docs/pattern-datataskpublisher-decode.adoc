@@ -44,7 +44,7 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!) <2>
     .map { $0.data } <3>
     .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder()) <4>
 
-let cancellableSink = remoteDataPublisher.sink
+let cancellableSink = remoteDataPublisher
     .sink(receiveCompletion: { completion in
             print(".sink() received the completion", String(describing: completion))
             switch completion {
