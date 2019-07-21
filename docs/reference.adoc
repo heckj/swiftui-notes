@@ -639,7 +639,7 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 
 __Usage__::
 
-* unit tests illustrating using removeDuplicates: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift`]
+* unit tests illustrating using removeDuplicates: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift`]
 
 __Details__::
 
@@ -679,7 +679,7 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 
 __Usage__::
 
-* unit tests illustrating using tryRemoveDuplicates: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift`]
+* unit tests illustrating using tryRemoveDuplicates: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift`]
 
 __Details__::
 
@@ -1351,7 +1351,7 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 
 __Usage__::
 
-* unit tests illustrating using debounce: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift`]
+* unit tests illustrating using debounce: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift`]
 
 __Details__::
 
@@ -1412,7 +1412,7 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 
 __Usage__::
 
-* unit tests illustrating using throttle: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift`]
+* unit tests illustrating using throttle: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift`]
 
 __Details__::
 
@@ -1614,7 +1614,7 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 
 __Usage__::
 
-* unit tests illustrating using handleEvents: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/handleEventsPublisherTests.swift[`UsingCombineTests/handleEventsPublisherTests.swift`]
+* unit tests illustrating using handleEvents: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/HandleEventsPublisherTests.swift[`UsingCombineTests/HandleEventsPublisherTests.swift`]
 
 __Details__::
 

@@ -1,5 +1,5 @@
 //
-//  debounceAndRemoveDuplicatesPublisherTests.swift
+//  DebounceAndRemoveDuplicatesPublisherTests.swift
 //  UsingCombineTests
 //
 //  Created by Joseph Heck on 7/11/19.
@@ -9,7 +9,7 @@
 import XCTest
 import Combine
 
-class debounceAndRemoveDuplicatesPublisherTests: XCTestCase {
+class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
 
     func testRemoveDuplicates() {
         let simplePublisher = PassthroughSubject<String, Error>()
