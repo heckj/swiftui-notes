@@ -15,7 +15,21 @@ import XCTest
 
 class MergingPipelineTests: XCTestCase {
 
-    // tests for combineLatest, merge, and zip
+    // since I'm screwed on using the built in equatable with a tuple response type from the operator I'm testing
+    // we'll make a one-off checking function to validate the expected virtualtime and resulting values all match up.
+    // Global function 'XCTAssertEqual(_:_:_:file:line:)' requires that '(VirtualTime, Signal<(String, Int), Never>)' conform to 'Equatable'
+    func testSequenceMatch<T0, T1, F0>(sequenceItem: (VirtualTime, Signal<(T0, T1), F0>),
+                           time: VirtualTime,
+                           inputvalues: (T0, T1)) -> Bool {
+        if sequenceItem.0 != time {
+            return false
+        }
+        if sequenceItem.1.debugDescription != Signal<(T0, T1), F0>.input(inputvalues).debugDescription {
+            return false
+        }
+        return true
+    }
+
     func testCombineLatest() {
         // setup
         let testScheduler = TestScheduler(initialClock: 0)
@@ -42,7 +56,7 @@ class MergingPipelineTests: XCTestCase {
         // check the collected results
         XCTAssertEqual(testableSubscriber.recordedOutput.count, 6)
 
-        print(testableSubscriber.recordedOutput)
+        // print(testableSubscriber.recordedOutput)
         // TestSequence<(String, Int), Never>(contents: [(200, .subscribe), (300, .input(("a", 1))), (400, .input(("b", 1))), (450, .input(("b", 2))), (500, .input(("b", 3))), (550, .input(("c", 3)))])
 
         let firstInSequence = testableSubscriber.recordedOutput[0]
@@ -78,20 +92,6 @@ class MergingPipelineTests: XCTestCase {
         let expected = Signal<(String, Int), Never>.input(("a", 1)).debugDescription
         XCTAssertEqual(foo, expected)
 
-        // since I'm screwed on using the built in equatable with a tuple response type from the operator I'm testing
-        // we'll make a one-off checking function to validate the expected virtualtime and resulting values all match up.
-        // Global function 'XCTAssertEqual(_:_:_:file:line:)' requires that '(VirtualTime, Signal<(String, Int), Never>)' conform to 'Equatable'
-        func testSequenceMatch(sequenceItem: (VirtualTime, Signal<(String, Int), Never>),
-                               time: VirtualTime,
-                               inputvalues: (String, Int)) -> Bool {
-            if sequenceItem.0 != time {
-                return false
-            }
-            if sequenceItem.1.debugDescription != Signal<(String, Int), Never>.input(inputvalues).debugDescription {
-                return false
-            }
-            return true
-        }
         XCTAssertTrue(
             testSequenceMatch(sequenceItem: outputSignals[0], time: 300, inputvalues: ("a", 1))
         )
@@ -107,6 +107,80 @@ class MergingPipelineTests: XCTestCase {
         XCTAssertTrue(
             testSequenceMatch(sequenceItem: outputSignals[4], time: 550, inputvalues: ("c", 3))
         )
+
+        // In hindsight, I don't know that I really care about the timing of all these results, aside
+        // from the fact that it makes for an illuminating record of how combineLatest() itself
+        // functions.
+    }
+
+    func testCombineLatestWithFailure() {
+        // setup
+        enum testFailureCondition: Error {
+            case example
+        }
+
+        let testScheduler = TestScheduler(initialClock: 0)
+
+        // set up the inputs and timing
+        let testablePublisher1: TestablePublisher<String, Error> = testScheduler.createRelativeTestablePublisher([
+            (100, .input("a")),
+            (200, .input("b")),
+            (350, .input("c")),
+            (400, .completion(.failure(testFailureCondition.example)))
+        ])
+        let testablePublisher2: TestablePublisher<Int, Error> = testScheduler.createRelativeTestablePublisher([
+            (100, .input(1)),
+            (250, .input(2)),
+            (300, .input(3)),
+            (450, .input(4)),
+        ])
+
+        let merged = Publishers.CombineLatest(testablePublisher1, testablePublisher2)
+
+        // validate
+
+        // run the virtual time scheduler
+        let testableSubscriber = testScheduler.start { return merged }
+
+        // check the collected results
+        XCTAssertEqual(testableSubscriber.recordedOutput.count, 7)
+        print(testableSubscriber.recordedOutput)
+
+//        TestSequence<(String, Int), Error>(contents:
+//            [(200, .subscribe),
+//             (300, .input(("a", 1))),
+//             (400, .input(("b", 1))),
+//             (450, .input(("b", 2))),
+//             (500, .input(("b", 3))),
+//             (550, .input(("c", 3))),
+//             (600, .completion(failure(UsingCombineTests.MergingPipelineTests.(unknown context at $108734d68).(unknown context at $108734dd8).testFailureCondition.example)))
+//            ])
+
+        // verify the virtual time of the subscription signal
+        XCTAssertEqual(testableSubscriber.recordedOutput[0].0, 200)
+        // verify that the first signal was a subscription
+        XCTAssertEqual(testableSubscriber.recordedOutput[0].1.debugDescription, ".subscribe")
+
+        XCTAssertTrue(
+            testSequenceMatch(sequenceItem: testableSubscriber.recordedOutput[1], time: 300, inputvalues: ("a", 1))
+        )
+        XCTAssertTrue(
+            testSequenceMatch(sequenceItem: testableSubscriber.recordedOutput[2], time: 400, inputvalues: ("b", 1))
+        )
+        XCTAssertTrue(
+            testSequenceMatch(sequenceItem: testableSubscriber.recordedOutput[3], time: 450, inputvalues: ("b", 2))
+        )
+        XCTAssertTrue(
+            testSequenceMatch(sequenceItem: testableSubscriber.recordedOutput[4], time: 500, inputvalues: ("b", 3))
+        )
+        XCTAssertTrue(
+            testSequenceMatch(sequenceItem: testableSubscriber.recordedOutput[5], time: 550, inputvalues: ("c", 3))
+        )
+
+        // verify the virtual time of the completion signal
+        XCTAssertEqual(testableSubscriber.recordedOutput[6].0, 600)
+        // verify that the final signal was a completion
+        XCTAssertTrue(testableSubscriber.recordedOutput[6].1.isCompletion)
 
         // In hindsight, I don't know that I really care about the timing of all these results, aside
         // from the fact that it makes for an illuminating record of how combineLatest() itself
