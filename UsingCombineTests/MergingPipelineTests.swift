@@ -66,7 +66,7 @@ class MergingPipelineTests: XCTestCase {
         // NOTE(heckj) - well this is an ugly hack, but it works
         // normally an Entwine Signal would be equatable because the enumeration includes equatable conformance.
         // However, that equatable conformance relies on the underlying type being passed around to be equatable.
-        // When we're working with one of this oeprators that merge streams, the output type in question is a
+        // When we're working with one of this operators that merge streams, the output type in question is a
         // tuple, which can not provide equatable conformance.
         // Swift tuples aren't allowed to conform to protocols, which means they can't ever be equatable.
         // the hack that I'm using to get around this conformance ick is utilizing debugDescription to create a
