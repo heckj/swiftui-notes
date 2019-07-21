@@ -6,15 +6,14 @@
 //  https://github.com/tcldr/Entwine/blob/master/Assets/EntwineTest/README.md
 
 import Combine
-import XCTest
 import EntwineTest
 // library loaded from https://github.com/tcldr/Entwine/blob/master/Assets/EntwineTest/README.md
 // as a swift package https://github.com/tcldr/Entwine.git : 0.6.0, Next Major Version
+import XCTest
 
 class EntwineTestExampleTests: XCTestCase {
 
     func testMap() {
-
         let testScheduler = TestScheduler(initialClock: 0)
 
         // creates a publisher that will schedule it's elements relatively, at the point of subscription
