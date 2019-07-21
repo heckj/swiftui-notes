@@ -223,6 +223,7 @@ class MergingPipelineTests: XCTestCase {
             (500, .input(("b", 3, "y"))),
             (550, .input(("c", 3, "y"))),
             (550, .input(("c", 3, "z"))),
+            // pipeline 1 terminated at 600 - notice that we don't see an overall termination here due to that
             (650, .input(("c", 4, "z"))),
         ]
         // using the latest hotness of Entwine - post 0.6.0 release (part of master branch, as of 20 July 2019)
@@ -231,5 +232,82 @@ class MergingPipelineTests: XCTestCase {
         let mappedExpected = expected.mapInput(Tuple3.init)
         let mappedResults = testableSubscriber.recordedOutput.mapInput(Tuple3.init)
         XCTAssertEqual(mappedResults, mappedExpected)
+    }
+
+    func testZip() {
+        // setup
+        let testScheduler = TestScheduler(initialClock: 0)
+
+        // set up the inputs and timing
+        let testablePublisher1: TestablePublisher<String, Never> = testScheduler.createRelativeTestablePublisher([
+            (100, .input("a")),
+            (200, .input("b")),
+            (350, .input("c")),
+            (400, .completion(.finished))
+        ])
+        let testablePublisher2: TestablePublisher<Int, Never> = testScheduler.createRelativeTestablePublisher([
+            (100, .input(1)),
+            (250, .input(2)),
+            (300, .input(3)),
+            (450, .input(4)),
+        ])
+
+        let mergedPipeline = Publishers.Zip(testablePublisher1, testablePublisher2)
+        // validate
+
+        // run the virtual time scheduler
+        let testableSubscriber = testScheduler.start { return mergedPipeline }
+
+        print(testableSubscriber.recordedOutput)
+
+        let expected: TestSequence<(String, Int), Never> = [
+            (200, .subscription),
+            (300, .input(("a", 1))),
+            (450, .input(("b", 2))),
+            (550, .input(("c", 3))),
+            (600, .completion(.finished))
+        ]
+        // using the latest hotness of Entwine - post 0.6.0 release (part of master branch, as of 20 July 2019)
+        // mapInput does the transformation from tuple to struct, with the struct's defined in
+        // InterimTestingStructs.swift
+        let mappedExpected = expected.mapInput(Tuple2.init)
+        let mappedResults = testableSubscriber.recordedOutput.mapInput(Tuple2.init)
+        XCTAssertEqual(mappedResults, mappedExpected)
+    }
+
+    func testMerge() {
+        // setup
+        let testScheduler = TestScheduler(initialClock: 0)
+
+        // set up the inputs and timing
+        let testablePublisher1: TestablePublisher<String, Never> = testScheduler.createRelativeTestablePublisher([
+            (100, .input("a")),
+            (200, .input("b")),
+            (350, .input("c")),
+            (400, .completion(.finished))
+        ])
+        let testablePublisher2: TestablePublisher<String, Never> = testScheduler.createRelativeTestablePublisher([
+            (100, .input("x")),
+            (200, .input("y")),
+            (300, .input("z")),
+        ])
+
+        let mergedPipeline = Publishers.Merge(testablePublisher1, testablePublisher2)
+        // validate
+
+        // run the virtual time scheduler
+        let testableSubscriber = testScheduler.start { return mergedPipeline }
+        // print(testableSubscriber.recordedOutput)
+        
+        let expected: TestSequence<(String), Never> = [
+            (200, .subscription),
+            (300, .input("a")),
+            (300, .input("x")),
+            (400, .input("b")),
+            (400, .input("y")),
+            (500, .input("z")),
+            (550, .input("c")),
+        ]
+        XCTAssertEqual(testableSubscriber.recordedOutput, expected)
     }
 }
