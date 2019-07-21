@@ -67,14 +67,16 @@ class AsyncCoordinatorViewController: UIViewController {
                 return true
             }
         .flatMap { _ in
+
+            let step2_1 = self.createFuturePublisher()
+                .receive(on: RunLoop.main)
+                .map { _ -> Bool in
+                    // intentially side effecting here to show progress of pipeline
+                    self.markStepDone(button: self.step2_1_button)
+                    return true
+                }.eraseToAnyPublisher()
+
             return self.createFuturePublisher()
-            //            let step2_1 = self.createFuturePublisher()
-//                .receive(on: RunLoop.main) // convenience to make it easy to tweak the UI to display progress
-//                .map {
-//                    // intentially side effecting here to show progress of pipeline
-//                    self.markStepDone(button: self.step2_1_button)
-//                    return $0
-//                }
 //
 //            let step2_2 = self.createFuturePublisher()
 //                .receive(on: RunLoop.main) // convenience to make it easy to tweak the UI to display progress
