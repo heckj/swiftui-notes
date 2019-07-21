@@ -17,6 +17,8 @@ __References__::
 __See also__::
 
 * <<#patterns-testing-subscriber>>
+* <<#patterns-testing-subscriber-scheduled>>
+* <<#patterns-testable-publisher-subscriber>>
 
 __Code and explanation__::
 

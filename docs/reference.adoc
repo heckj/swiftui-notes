@@ -154,13 +154,13 @@ The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombin
 ====
 
 [#reference-empty]
-=== Publishers.Empty
+=== Empty
 
 __Summary__::
 
 `empty` never publishes any values, and optionally finishes immediately.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/empty[`Publishers.Empty`]
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/empty[`Empty`]
 
 __Usage__::
 
@@ -176,26 +176,26 @@ Empty is useful in error handling scenarios where with publishers where the valu
 Empty can be invoked to be a publisher of any output and failure type combination.
 
 Empty is most commonly used where you need to return a publisher, but don't want to propogate any values (a possible error handling scenario).
-If you want a publisher that provides a single value, then look at <<#reference-just>>, <<#reference-once>>, or <<#reference-optional>> publishers as alternatives.
+If you want a publisher that provides a single value, then look at <<#reference-just>> or <<#reference-optional>> publishers as alternatives.
 
 When subscribed to, an instance of the Empty publisher will not return any values (or errors) and will immediately return a finished completion message to the subscriber.
 
 An example of using Empty
 [source, swift]
 ----
-let myEmptyPublisher = Publishers.Empty<String, Never>() <1>
+let myEmptyPublisher = Empty<String, Never>() <1>
 ----
 <1> Because the types are not be able to be inferred, expect to always define the types you want to return within the declaration.
 
 
 [#reference-fail]
-=== Publishers.Fail
+=== Fail
 
 __Summary__::
 
 `fail` immediately terminates publishing with the specified failure.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/fail[`Publishers.Fail`]
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/fail[`Fail`]
 
 __Usage__::
 
@@ -204,25 +204,6 @@ n/a
 __Details__::
 
 n/a
-
-[#reference-once]
-=== Publishers.Once
-
-__Summary__::
-
-Generates an output to each subscriber exactly once then finishes or fails immediately.
-
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/once[`Once`]
-
-__Usage__::
-
-TBD
-
-__Details__::
-
-Used similiarly to <<#reference-just>>, it provides a value and then completes.
-It is often used with flatMap when you want to flow have flatMap return a publisher that returns a publisher with an error type.
-Where <<#reference-just>> returns a failure type of `<Never>`, `once` allows for a failure type of `<Error>`.
 
 [#reference-optional]
 === Publishers.Optional
@@ -260,13 +241,13 @@ n/a
 
 
 [#reference-deferred]
-=== Publishers.Deferred
+=== Deferred
 
 __Summary__::
 
 Publisher waits for a subscriber before running the provided closure to create values for the subscriber.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/deferred[`Publishers.Deferred`]
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/deferred[`Deferred`]
 
 __Usage__::
 
@@ -301,6 +282,7 @@ n/a
 * https://developer.apple.com/documentation/foundation/timer[`Timer`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publish`] and https://developer.apple.com/documentation/foundation/timer/timerpublisher[`Timer.TimerPublisher`]
 
 ** * https://developer.apple.com/documentation/foundation/timer/timerpublisher[TimerPublisher]
+** StackOverflow Q&A: https://stackoverflow.com/questions/56998702/swift-combine-repeat
 
 [#reference-kvo-publisher]
 === .publisher on KVO instance
@@ -309,13 +291,7 @@ __Summary__::
 
 Foundation added the ability to get a publisher on any Object that can be watched with Key Value Observing.
 
-__icon:apple[] docs__:: __???__
-
-[NOTE]
-====
-As of beta3, I was unable to find the documentation on the extension of NSObject.
-In the generated swift declaration file, it's listed as an extension on NSObject - a struct named `KeyValueObservingPublisher`
-====
+__icon:apple[] docs__:: https://developer.apple.com/documentation/objectivec/nsobject/keyvalueobservingpublisher['KeyValueObservingPublisher']
 
 __Usage__::
 
@@ -963,14 +939,37 @@ If the closure throws an error, a failure completion will be propogated down the
 [#reference-combinelatest]
 ==== combineLatest
 
-* combineLatest
-** brings inputs from 2 (or more) streams together
-** you provide a closure that gets the values and chooses what to publish
+__Summary__::
 
-[#reference-trycombinelatest]
-==== tryCombineLatest
+CombineLatest merges two pipelines into a single output, converting the output type to a tuple of values from the upstream pipelines, and providing an update when any of the upstream publishers provide a new value.
 
-* tryCombineLatest
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__::
+
+* https://developer.apple.com/documentation/combine/publishers/combinelatest[`combineLatest`]
+* https://developer.apple.com/documentation/combine/publishers/combinelatest3[`combineLatest3`]
+* https://developer.apple.com/documentation/combine/publishers/combinelatest4[`combineLatest4`]
+
+__Usage__::
+
+<<patterns.adoc#patterns-merging-streams-interface>>
+
+__Details__::
+
+CombineLatest, and it's variants of combineLatest3 and combineLatest4, take multiple upstream publishers and create a single output stream, merging the streams together.
+CombineLatest merges two upstream publishers.
+ComineLatest3 merges three upstream publishers, and combineLatest4 merges four upstream publishers.
+
+The output type of the operator is a tuple of the output types of each of the publishers.
+For example, if combineLatest was used to merge a publisher with the output type of `<String>` and another with the output type of `<Int>`, the resulting output type would be a tuple of `(<String>,<Int>)`.
+
+CombineLatest is most often used with continual publishers, and it "remembers" the last output value provided from each publisher.
+In turn, when any of the upstream publishers sends an updated value, the operator makes a new combined tuple of all previous "current" values, adds in the new value in the correct place, and sends that new combined value down the pipeline.
+
+Other operators that merge multiple upstream pipelines include <<#reference-merge>> and <<#reference-zip>>.
 
 [#reference-merge]
 ==== merge
@@ -1230,7 +1229,7 @@ The primary different is in where it gets the publisher.
 In flatMap, the publisher is returned within the closure provided to flatMap, and the operator works upon that to subscribe and provide the relevant value down the pipeline.
 In switchToLatest, the publisher instance is provided *as the output type* from a previous publisher or operator.
 
-The most common form of using this is with a one-shot publisher such as <<#reference-just>>, <<#reference-once>>, or getting it's value as a result of a <<#reference-map>> transform.
+The most common form of using this is with a one-shot publisher such as <<#reference-just>> getting it's value as a result of a <<#reference-map>> transform.
 
 It is also commonly used when working with an API that provides a publisher.
 switchToLatest assists in taking the result of the publisher and sending that down the pipeline rather than sending the publisher itself down as the output type.
@@ -1849,32 +1848,55 @@ __Usage__::
 
 __Details__::
 
-The simplest form of `.sink()` takes a single closure - by default this closure receives data (if provided by the attached publisher).
+There are two forms of the sink operator.
+The first is the simplest form, taking a single closure, receiving only the values from the pipeline (if and when provided by the publisher).
+Using the simpler version comes with a constraint: the failure type of the pipeline must be `<Never>`.
+If you are working with a pipeline that has a failure type other than `<Never>`, you need to use the two closure version, or add error handling into the pipeline itself.
+
+An example of the simple form of sink:
 
 [source, swift]
 ----
 let examplePublisher = Just(5)
 
+let cancellable = examplePublisher.sink { value in
+    print(".sink() received \(String(describing: value))")
+}
+----
+
+Be aware that the closure may be called repeatedly.
+How often it is called depends on the pipeline to which it is subscribing.
+The closure you provide is invoked for every update that the publisher passes down, up until the completion, and prior to any cancellation.
+
+[WARNING]
+====
+It may be tempting to ignore the cancellable you get returned from sink.
+For example, the code:
+
+[source, swift]
+----
 let _ = examplePublisher.sink { value in
     print(".sink() received \(String(describing: value))")
 }
 ----
 
-The closure you provide is invoked for every update that the publisher passes down, up until the completion.
-Be aware that the single closure form may be called repeatedly.
-How often it is called depends on the pipeline to which it is subscribing.
+However, this has the side effect that the as soon as the function returns, the ignore variable is deallocated, causing the pipeline to be cancelled.
+If you want the pipeline to operate beyond the scope of the function (you probably do), then assign it to a longer lived variable that doesn't get deallocated until much later.
+Simple including a variable declaration in the enclosing object is often a good solution.
+====
 
-If you don't also include a closure to get the completion, you will not receive any information about failures.
-If an error or failure occurs and is handed down from the publisher the single closure form will not be called.
+The second form of sink takes two closures, the first of which receives the data from the pipeline, and the second receives pipeline completion messages.
+te a sink with two closures.
+The closures parameters are  `receiveCompletion` and `receiveValue`:
+The .failure completion may also encapsulate an error.
 
-If you are creating a subscriber and want to receive failures, or see the completion messages at the end of pipeline, create a sink with two closures.
-The more complete sink has the two closures named `receiveCompletion` and `receiveValue`:
+An example of the two-closure sink:
 
 [source, swift]
 ----
 let examplePublisher = Just(5)
 
-let _ = examplePublisher.sink(receiveCompletion: { err in
+let cancellable = examplePublisher.sink(receiveCompletion: { err in
     print(".sink() received the completion", String(describing: err))
 }, receiveValue: { value in
     print(".sink() received \(String(describing: value))")
@@ -1891,13 +1913,16 @@ After a cancel is sent, no further values will be received by either closure in 
 
 [source,swift]
 ----
-let simplePublisher = PassthroughSubject<String, Error>()
+let simplePublisher = PassthroughSubject<String, Never>()
 let cancellablePipeline = simplePublisher.sink { data in
   // do what you need with the data...
 }
 
-cancellablePublisher.cancel() // this invalidates the pipeline, no further data will be received by the sink
+cancellablePublisher.cancel() // when invoked, this invalidates the pipeline
+// no further data will be received by the sink
 ----
+
+<<#reference-anycancellable>> is often used with the result of sink to convert the resulting type into AnyCancellable.
 
 [#reference-anycancellable]
 === AnyCancellable

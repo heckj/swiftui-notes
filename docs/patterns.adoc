@@ -16,6 +16,7 @@ include::pattern-sink.adoc[]
 include::pattern-assign.adoc[]
 include::pattern-datataskpublisher-decode.adoc[]
 include::pattern-datataskpublisher-trymap.adoc[]
+include::pattern-future.adoc[]
 
 [#patterns-general-error-handling]
 == Error Handling
@@ -44,14 +45,48 @@ include::pattern-continual-error-handling.adoc[]
 include::pattern-constrained-network.adoc[]
 :leveloffset: -1
 
+[#patterns-uikit-integration]
+== UIKit (or AppKit) Integration
+
+:leveloffset: +1
 include::pattern-update-interface-userinput.adoc[]
 include::pattern-cascading-update-interface.adoc[]
-include::pattern-future.adoc[]
+include::pattern-merging-streams-interface.adoc[]
 include::pattern-sequencing-operations.adoc[]
 include::pattern-delegate-publisher-subject.adoc[]
-include::pattern-merging-streams-interface.adoc[]
 include::pattern-notificationcenter.adoc[]
+:leveloffset: -1
+
+[#patterns-swiftui-integration]
+== SwiftUI Integration
+
+:leveloffset: +1
 include::pattern-bindableobject.adoc[]
+:leveloffset: -1
+
+[#patterns-testing-and-debugging]
+== Testing and Debugging
+
+The Publisher/Subscriber interface in combine is beautifully suited to be an easily testable interface.
+
+With the composability of Combine, you can use this to your advantage, creating APIs that present, or consume, code that conforms to https://developer.apple.com/documentation/combine/publisher[Publisher].
+
+With the https://developer.apple.com/documentation/combine/publisher[publisher protocol] as the key interface, you can replace either side to validate your code in isolation.
+
+For example, if your code was focused on providing it's data from external web services through Combine, you might make the interface to this conform to `AnyPublisher<Data, Error>`.
+You could then use that interface to test either side of that pipeline independently.
+
+* You could mock data responses that emulate the underlying API calls and possible responses, including various error conditions.
+This might include returning data from a publisher created with <<reference.adoc#reference-just>> or <<reference.adoc#reference-fail>>, or something more complex using <<reference.adoc#reference-future>>.
+None of these options require you to make actual network interface calls.
+
+* Likewise you can isolate the testing of making the publisher do the API calls and verify the various success and failure conditions expected.
+
+:leveloffset: +1
 include::pattern-test-pipeline-expectation.adoc[]
 include::pattern-test-subscriber-subject.adoc[]
+include::pattern-test-subscriber-scheduled.adoc[]
+include::pattern-test-entwine.adoc[]
 include::pattern-debugging-pipelines.adoc[]
+:leveloffset: -1
+

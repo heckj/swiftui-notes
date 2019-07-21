@@ -170,13 +170,13 @@ Combine provides a number of additional convenience publishers:
 | <<reference.adoc#reference-future>>
 | <<reference.adoc#reference-published>>
 
-| <<reference.adoc#reference-once>>
+| <<reference.adoc#reference-empty>>
 | <<reference.adoc#reference-optional>>
 | <<reference.adoc#reference-sequence>>
 
-| <<reference.adoc#reference-empty>>
 | <<reference.adoc#reference-fail>>
 | <<reference.adoc#reference-deferred>>
+|
 
 |===
 
@@ -189,7 +189,7 @@ A number of Apple APIs outside of Combine provide publishers as well.
 ** <<reference.adoc#reference-datataskpublisher>>
 ** <<reference.adoc#reference-kvo-publisher>>
 
-** https://developer.apple.com/documentation/foundation/notificationcenter[`NoticationCenter`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publisher`]
+** https://developer.apple.com/documentation/foundation/notificationcenter[`NotificationCenter`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publisher`]
 
 ** https://developer.apple.com/documentation/foundation/timer[`Timer`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publish`] and https://developer.apple.com/documentation/foundation/timer/timerpublisher[`Timer.TimerPublisher`]
 
@@ -297,12 +297,8 @@ Operators can also help with error handling and retry logic, buffering and prefe
 |===
 3+h| Combining elements from multiple publishers
 | <<reference.adoc#reference-combinelatest>>
-| <<reference.adoc#reference-trycombinelatest>>
 | <<reference.adoc#reference-merge>>
-
 | <<reference.adoc#reference-zip>>
-|
-|
 |===
 
 [cols="3*^"]
@@ -509,8 +505,25 @@ You may see this in code as an operator, for example:
 
 [source, swift]
 ----
-    .receive(on: RunLoop.main)
+.receive(on: RunLoop.main)
 ----
+
+A number of operators can impact what thread or queue is being used to do the relevant processing.
+<<reference.adoc#reference-receive>> and <<reference.adoc#reference-subscribe>> are the two most common, explicitly moving execution of operators after and prior to their invocation respectively.
+
+A number of additional operators have parameters that include a scheduler.
+Examples include <<reference.adoc#reference-delay>>, <<reference.adoc#reference-throttle>>, and <<reference.adoc#reference-throttle>>, and these also have an impact on the queue executing the work - both for themselves and following operators in a pipeline.
+These are explicitly invoked on the scheduler provided to their `scheduler` parameter.
+Any operators following them will also be invoked on their scheduler, giving them an impact somewhat like <<reference.adoc#reference-receive>>.
+
+[NOTE]
+====
+As of beta4, the <<reference.adoc#reference-subscribe>> operator is not quite working as documented.
+According to the documentation, it should be effecting the operator just prior to it in a pipeline.
+However, it appears that other factors can significantly impact what queue is being used.
+You can see some examples of this in exploratory tests, annotated with feedback to Apple, at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SubscribeReceiveAssignTests.swift[UsingCombineTests/SubscribeReceiveAssignTests.swift]
+====
 
 // force a page break - ignored in HTML rendering
 <<<
+'''

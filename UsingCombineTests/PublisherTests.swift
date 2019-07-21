@@ -32,32 +32,39 @@ class PublisherTests: XCTestCase {
         let expectation = XCTestExpectation(description: self.debugDescription)
         let foo = HoldingStruct()
 
-        let _ = foo.$username
+        let cancellable = foo.$username
             .sink { someString in
                 print("value of username updated to: >>\(someString)<<")
                 expectation.fulfill()
         }
         wait(for: [expectation], timeout: 5.0)
+        XCTAssertNotNil(cancellable)
     }
 
     func testPublishedOnClassInstance() {
         let expectation = XCTestExpectation(description: "async sink test")
         let foo = HoldingClass()
 
-        let _ = foo.$username
+        let cancellable = foo.$username
             .sink { someString in
                 print("value of username updated to: >>\(someString)<<")
                 expectation.fulfill()
         }
         wait(for: [expectation], timeout: 5.0)
+        XCTAssertNotNil(cancellable)
     }
 
     func testPublishedOnStructWithChange() {
+        // NOTE(heckj) this test succeeded on beta 2, but fails on beta3 and beta4.
+        // documented to Apple as FB6608729
+        // beta2: ✅
+        // beta3: ❌
+        // beta4: ❌
         let expectation = XCTestExpectation(description: self.debugDescription)
         var foo = HoldingStruct()
         let q = DispatchQueue(label: self.debugDescription)
 
-        let _ = foo.$username
+        let cancellable = foo.$username
             .sink { someString in
                 print("value of username updated to: >>\(someString)<<")
                 if someString == "redfish" {
@@ -69,6 +76,7 @@ class PublisherTests: XCTestCase {
             foo.username = "redfish"
         }
         wait(for: [expectation], timeout: 5.0)
+        XCTAssertNotNil(cancellable)
     }
 
     func testPublishedOnClassWithChange() {
@@ -76,7 +84,7 @@ class PublisherTests: XCTestCase {
         let foo = HoldingClass()
         let q = DispatchQueue(label: self.debugDescription)
 
-        let _ = foo.$username
+        let cancellable = foo.$username
             .sink { someString in
                 print("value of username updated to: >>\(someString)<<")
                 if someString == "redfish" {
@@ -88,6 +96,7 @@ class PublisherTests: XCTestCase {
             foo.username = "redfish"
         }
         wait(for: [expectation], timeout: 5.0)
+        XCTAssertNotNil(cancellable)
     }
 
     func testPublishedOnClassWithTwoSubscribers() {
@@ -132,7 +141,7 @@ class PublisherTests: XCTestCase {
         let foo = HoldingClass()
         let q = DispatchQueue(label: self.debugDescription)
 
-        let _ = foo.$username
+        let cancellable = foo.$username
             .print(self.debugDescription)
             .tryMap({ myValue -> String in
                 if (myValue == "boom") {
@@ -173,6 +182,7 @@ class PublisherTests: XCTestCase {
         })
         wait(for: [expectation], timeout: 5.0)
         XCTAssertEqual(foo.username, "bluefish")
+        XCTAssertNotNil(cancellable)
     }
 
     func testKVOPublisher() {
@@ -180,7 +190,7 @@ class PublisherTests: XCTestCase {
         let foo = KVOAbleNSObject()
         let q = DispatchQueue(label: self.debugDescription)
 
-        let _ = foo.publisher(for: \.intValue)
+        let cancellable = foo.publisher(for: \.intValue)
             .print()
             .sink { someValue in
                 print("value of intValue updated to: >>\(someValue)<<")
@@ -192,6 +202,7 @@ class PublisherTests: XCTestCase {
             expectation.fulfill()
         })
         wait(for: [expectation], timeout: 5.0)
+        XCTAssertNotNil(cancellable)
     }
 
 }

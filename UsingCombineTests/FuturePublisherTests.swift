@@ -42,7 +42,7 @@ class FuturePublisherTests: XCTestCase {
         }
 
         // driving it by attaching it to .sink
-        let _ = sut.sink(receiveCompletion: { err in
+        let cancellable = sut.sink(receiveCompletion: { err in
             print(".sink() received the completion: ", String(describing: err))
             expectation.fulfill()
         }, receiveValue: { value in
@@ -52,6 +52,7 @@ class FuturePublisherTests: XCTestCase {
 
         wait(for: [expectation], timeout: 5.0)
         XCTAssertTrue(outputValue)
+        XCTAssertNotNil(cancellable)
     }
 
     func testFuturePublisherShowingFailure() {
@@ -69,7 +70,7 @@ class FuturePublisherTests: XCTestCase {
         }
 
         // driving it by attaching it to .sink
-        let _ = sut.sink(receiveCompletion: { err in
+        let cancellable = sut.sink(receiveCompletion: { err in
             print(".sink() received the completion: ", String(describing: err))
             XCTAssertNotNil(err)
             expectation.fulfill()
@@ -79,13 +80,14 @@ class FuturePublisherTests: XCTestCase {
         })
 
         wait(for: [expectation], timeout: 5.0)
+        XCTAssertNotNil(cancellable)
     }
 
     func testFutureWithinAFlatMap() {
         let simplePublisher = PassthroughSubject<String, Never>()
         var outputValue: String? = nil
 
-        let _ = simplePublisher
+        let cancellable = simplePublisher
             .print(self.debugDescription)
             .flatMap { name in
                 return Future<String, Error> { promise in
@@ -106,6 +108,7 @@ class FuturePublisherTests: XCTestCase {
         XCTAssertNil(outputValue)
         simplePublisher.send("one")
         XCTAssertEqual(outputValue, "one foo")
+        XCTAssertNotNil(cancellable)
     }
 
 

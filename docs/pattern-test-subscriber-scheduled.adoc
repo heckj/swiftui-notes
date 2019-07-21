@@ -1,0 +1,107 @@
+[#patterns-testing-subscriber-scheduled]
+== Testing a subscriber with scheduled sends from PassthroughSubject
+
+__Goal__::
+
+* For testing a pipeline, or subscriber, when part of what you want to test is the timing of the pipeline.
+
+__References__::
+
+* https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[UsingCombineTests/PublisherTests.swift]
+
+* https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FuturePublisherTests.swift[UsingCombineTests/FuturePublisherTests.swift]
+
+* https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SinkSubscriberTests.swift[UsingCombineTests/SinkSubscriberTests.swift]
+
+* https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SwitchAndFlatMapPublisherTests.swift[UsingCombineTests/SwitchAndFlatMapPublisherTests.swift]
+
+* https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift[UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift]
+
+__See also__::
+
+* <<#patterns-testing-publisher>>
+* <<#patterns-testing-subscriber>>
+* <<#patterns-testable-publisher-subscriber>>
+* <<reference.adoc#reference-passthroughsubject>>
+
+__Code and explanation__::
+
+There are a number of operators in Combine that are specific to the timing of data, including <<reference.adoc#reference-debounce>>, <<reference.adoc#reference-throttle>>, and <<reference.adoc#reference-delay>>.
+You may want to test that your pipeline timing is having the desired impact, indepedently of doing UI testing.
+
+One way of handling this leverages the both https://developer.apple.com/documentation/xctest/xctestexpectation[XCTestExpectation] and a <<reference.adoc#reference-passthroughsubject>>, combining the two.
+Building on both <<#patterns-testing-publisher>> and <<#patterns-testing-subscriber>>, add https://developer.apple.com/documentation/dispatch/dispatchqueue[DispatchQueue] in the test to schedule invocations of PassthroughSubject's `.send()` method.
+
+An example of this:
+
+.https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift#L178[UsingCombineTests/PublisherTests.swift - testKVOPublisher]
+[source, swift]
+----
+func testKVOPublisher() {
+    let expectation = XCTestExpectation(description: self.debugDescription)
+    let foo = KVOAbleNSObject()
+    let q = DispatchQueue(label: self.debugDescription) <1>
+
+    let _ = foo.publisher(for: \.intValue)
+        .print()
+        .sink { someValue in
+            print("value of intValue updated to: >>\(someValue)<<")
+        }
+
+    q.asyncAfter(deadline: .now() + 0.5, execute: { <2>
+        print("Updating to foo.intValue on background queue")
+        foo.intValue = 5
+        expectation.fulfill() <3>
+    })
+    wait(for: [expectation], timeout: 5.0) <4>
+}
+----
+
+<1> This adds a DispatchQueue to your test, conveniently naming the queue after the test itself.
+This really only shows when debugging test failures, and is convenient as a reminder of what's happening in the test code vs. any other background queues that might be in use.
+<2> `.asyncAfter` is used along with the deadline parameter to define when a call gets made.
+<3> The simplest form embeds any relevant assertions into the subscriber or around the subscriber. Additionally, invoking the `.fulfill()` on your expectation as the last queued entry you send lets the test know that it is now complete.
+<4> Make sure that when you set up the wait that allow for sufficient time for your queue'd calls to be invoked.
+
+A definite downside to this technique is that it forces the test to take a minimum amount of time matching the maximum queue delay in the test.
+
+Another option is a 3rd party library named EntwineTest, which was inspired by the RxTest library.
+EntwineTest is part of Entwine, a swift library that expands on Combine with some helpers.
+The library can be found on Github at https://github.com/tcldr/Entwine.git, available under the MIT license.
+
+One of the key elements included in EnwtineTest is a virtual time scheduler, as well as additional classes that schedule (TestablePublisher) and collect and record (TestableSubscriber) the timing of results while using this scheduler.
+
+An example of this from the EntwineTest project README is included:
+
+.https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/EntwineTestExampleTests.swift[UsingCombineTests/EntwineTestExampleTests.swift - testExampleUsingVirtualTimeScheduler]
+[source, swift]
+----
+func testExampleUsingVirtualTimeScheduler() {
+    let scheduler = TestScheduler(initialClock: 0) <1>
+    var didSink = false
+    let cancellable = Just(1) <2>
+        .delay(for: 1, scheduler: scheduler)
+        .sink { _ in
+            didSink = true
+        }
+
+    XCTAssertNotNil(cancellable)
+    // where a real scheduler would have triggered when .sink() was invoked
+    // the virtual time scheduler requires resume() to commence and runs to
+    // completion.
+    scheduler.resume() <3>
+    XCTAssertTrue(didSink) <4>
+}
+----
+
+<1> Using the virtual time scheduler requires you create one at the start of the test, initializing it's clock to a starting value.
+The virtual time scheduler in EntwineTest will commence subscription at the value `200` and times out at `900` if the pipeline isn't complete by that time.
+<2> You create your pipeline, along with any publishers or subscribers, as normal.
+EntwineTest also offers a testable publisher and a testable subscriber that could be used as well.
+For more details on these parts of EntwineTest, see <<#patterns-testable-publisher-subscriber>>.
+<3> `.resume()` needs to be invoked on the virtual time scheduler to commence its operation and run the pipeline.
+<4> Assert against expected end results after the pipeline has run to completion.
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

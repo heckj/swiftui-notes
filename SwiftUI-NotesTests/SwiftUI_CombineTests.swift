@@ -92,7 +92,7 @@ class SwiftUI_CombineTests: XCTestCase {
 
     func testAnyFuture_CreationAndUse() {
         // A generic Future that always returns <Any>"A result"
-        let goodPlace = Future<Any, Error> { promise in
+        let goodPlace = Future<Any, Never> { promise in
             promise(.success("A result"))
         }
 
@@ -109,7 +109,7 @@ class SwiftUI_CombineTests: XCTestCase {
 
     func testStringFuture_CreationAndUse() {
         // A generic Future that always returns <Any>"A result"
-        let goodPlace = Future<String, Error> { promise in
+        let goodPlace = Future<String, Never> { promise in
             promise(.success("A result"))
         }
 

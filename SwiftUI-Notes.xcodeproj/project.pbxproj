@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,7 +16,9 @@
 		1A1C87C422D0EF6100128A5E /* MockingURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1C87C122D0EF6100128A5E /* MockingURLProtocol.swift */; };
 		1A1C87C522D0EF6100128A5E /* Mocker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1C87C222D0EF6100128A5E /* Mocker.swift */; };
 		1A2AA5E722D7EEE9000C1CA3 /* FuturePublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2AA5E622D7EEE9000C1CA3 /* FuturePublisherTests.swift */; };
+		1A416E2022DE8A5B00C95DCB /* EntwineTestExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A416E1F22DE8A5B00C95DCB /* EntwineTestExampleTests.swift */; };
 		1A4FB16722D1464F0009F228 /* EncodeDecodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4FB16622D1464F0009F228 /* EncodeDecodeTests.swift */; };
+		1A534E1D22E3DF20005E6868 /* InterimTestingStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A534E1C22E3DF20005E6868 /* InterimTestingStructs.swift */; };
 		1A6006E122D267F10030A471 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006E022D267F10030A471 /* AppDelegate.swift */; };
 		1A6006E322D267F10030A471 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006E222D267F10030A471 /* SceneDelegate.swift */; };
 		1A6006E522D267F10030A471 /* GithubViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006E422D267F10030A471 /* GithubViewController.swift */; };
@@ -24,6 +26,9 @@
 		1A6006EA22D267F20030A471 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A6006E922D267F20030A471 /* Assets.xcassets */; };
 		1A6006ED22D267F20030A471 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1A6006EB22D267F20030A471 /* LaunchScreen.storyboard */; };
 		1A6006F822D267F30030A471 /* UIKit_CombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006F722D267F30030A471 /* UIKit_CombineTests.swift */; };
+		1A65598722E2213F00FEFBF5 /* EntwineTest in Frameworks */ = {isa = PBXBuildFile; productRef = 1A65598622E2213F00FEFBF5 /* EntwineTest */; };
+		1A65598922E2227F00FEFBF5 /* FormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A65598822E2227F00FEFBF5 /* FormViewController.swift */; };
+		1A65598B22E2421F00FEFBF5 /* MergingPipelineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A65598A22E2421F00FEFBF5 /* MergingPipelineTests.swift */; };
 		1A7C604122D0155E00D7675C /* DataTaskPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C604022D0155E00D7675C /* DataTaskPublisherTests.swift */; };
 		1AA72DB022B5536200FB8297 /* ExampleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA72DAF22B5536200FB8297 /* ExampleModel.swift */; };
 		1AA801E622DAA8CD00702286 /* LocationHeadingProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA801E522DAA8CD00702286 /* LocationHeadingProxy.swift */; };
@@ -79,7 +84,9 @@
 		1A1C87C122D0EF6100128A5E /* MockingURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockingURLProtocol.swift; sourceTree = "<group>"; };
 		1A1C87C222D0EF6100128A5E /* Mocker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mocker.swift; sourceTree = "<group>"; };
 		1A2AA5E622D7EEE9000C1CA3 /* FuturePublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuturePublisherTests.swift; sourceTree = "<group>"; };
+		1A416E1F22DE8A5B00C95DCB /* EntwineTestExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntwineTestExampleTests.swift; sourceTree = "<group>"; };
 		1A4FB16622D1464F0009F228 /* EncodeDecodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodeDecodeTests.swift; sourceTree = "<group>"; };
+		1A534E1C22E3DF20005E6868 /* InterimTestingStructs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterimTestingStructs.swift; sourceTree = "<group>"; };
 		1A6006DE22D267F10030A471 /* UIKit-Combine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "UIKit-Combine.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A6006E022D267F10030A471 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1A6006E222D267F10030A471 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -91,6 +98,8 @@
 		1A6006F322D267F30030A471 /* UIKit-CombineTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "UIKit-CombineTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A6006F722D267F30030A471 /* UIKit_CombineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKit_CombineTests.swift; sourceTree = "<group>"; };
 		1A6006F922D267F30030A471 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1A65598822E2227F00FEFBF5 /* FormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormViewController.swift; sourceTree = "<group>"; };
+		1A65598A22E2421F00FEFBF5 /* MergingPipelineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MergingPipelineTests.swift; sourceTree = "<group>"; };
 		1A7C604022D0155E00D7675C /* DataTaskPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTaskPublisherTests.swift; sourceTree = "<group>"; };
 		1AA72DAF22B5536200FB8297 /* ExampleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleModel.swift; sourceTree = "<group>"; };
 		1AA801E522DAA8CD00702286 /* LocationHeadingProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHeadingProxy.swift; sourceTree = "<group>"; };
@@ -143,6 +152,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A65598722E2213F00FEFBF5 /* EntwineTest in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -168,9 +178,10 @@
 			children = (
 				1A6006E022D267F10030A471 /* AppDelegate.swift */,
 				1A6006E222D267F10030A471 /* SceneDelegate.swift */,
+				1A65598822E2227F00FEFBF5 /* FormViewController.swift */,
 				1A6006E422D267F10030A471 /* GithubViewController.swift */,
-				1A087A7A22DD3AB400D23779 /* HeadingViewController.swift */,
 				1AA801E722DAA93F00702286 /* GithubAPI.swift */,
+				1A087A7A22DD3AB400D23779 /* HeadingViewController.swift */,
 				1AA801E522DAA8CD00702286 /* LocationHeadingProxy.swift */,
 				1A6006E622D267F10030A471 /* Main.storyboard */,
 				1A6006E922D267F20030A471 /* Assets.xcassets */,
@@ -256,6 +267,7 @@
 		1AEA9C2522CD5FE7006709F1 /* UsingCombineTests */ = {
 			isa = PBXGroup;
 			children = (
+				1A416E1F22DE8A5B00C95DCB /* EntwineTestExampleTests.swift */,
 				1AEA9C2622CD5FE7006709F1 /* SinkSubscriberTests.swift */,
 				1ACB983122D795CE00180481 /* EmptyPublisherTests.swift */,
 				1A2AA5E622D7EEE9000C1CA3 /* FuturePublisherTests.swift */,
@@ -273,6 +285,8 @@
 				1A1C87C022D0EF6100128A5E /* Mock.swift */,
 				1A1C87C222D0EF6100128A5E /* Mocker.swift */,
 				1A1C87C122D0EF6100128A5E /* MockingURLProtocol.swift */,
+				1A65598A22E2421F00FEFBF5 /* MergingPipelineTests.swift */,
+				1A534E1C22E3DF20005E6868 /* InterimTestingStructs.swift */,
 			);
 			path = UsingCombineTests;
 			sourceTree = "<group>";
@@ -328,6 +342,9 @@
 			dependencies = (
 			);
 			name = "SwiftUI-Notes";
+			packageProductDependencies = (
+				1A65598622E2213F00FEFBF5 /* EntwineTest */,
+			);
 			productName = "SwiftUI-Notes";
 			productReference = 1AC8C77522B1BED80064C1AE /* SwiftUI-Notes.app */;
 			productType = "com.apple.product-type.application";
@@ -410,6 +427,7 @@
 			);
 			mainGroup = 1AC8C76C22B1BED80064C1AE;
 			packageReferences = (
+				1A65598522E2213F00FEFBF5 /* XCRemoteSwiftPackageReference "Entwine" */,
 			);
 			productRefGroup = 1AC8C77622B1BED80064C1AE /* Products */;
 			projectDirPath = "";
@@ -475,6 +493,7 @@
 			files = (
 				1AA801E622DAA8CD00702286 /* LocationHeadingProxy.swift in Sources */,
 				1AA801E822DAA93F00702286 /* GithubAPI.swift in Sources */,
+				1A65598922E2227F00FEFBF5 /* FormViewController.swift in Sources */,
 				1A6006E522D267F10030A471 /* GithubViewController.swift in Sources */,
 				1A6006E122D267F10030A471 /* AppDelegate.swift in Sources */,
 				1A6006E322D267F10030A471 /* SceneDelegate.swift in Sources */,
@@ -520,17 +539,20 @@
 				1A4FB16722D1464F0009F228 /* EncodeDecodeTests.swift in Sources */,
 				1A1C87C422D0EF6100128A5E /* MockingURLProtocol.swift in Sources */,
 				1A02E8A822D7C219008CCCAE /* RetryPublisherTests.swift in Sources */,
+				1A534E1D22E3DF20005E6868 /* InterimTestingStructs.swift in Sources */,
 				1ACB983422D79E7F00180481 /* FilterPublisherTests.swift in Sources */,
 				1AEA9C2722CD5FE7006709F1 /* SinkSubscriberTests.swift in Sources */,
 				1ACB983222D795CE00180481 /* EmptyPublisherTests.swift in Sources */,
 				1A02E8A622D7C1B8008CCCAE /* SwitchAndFlatMapPublisherTests.swift in Sources */,
 				1A7C604122D0155E00D7675C /* DataTaskPublisherTests.swift in Sources */,
+				1A416E2022DE8A5B00C95DCB /* EntwineTestExampleTests.swift in Sources */,
 				1A02E8AC22D7DE53008CCCAE /* handleEventsPublisherTests.swift in Sources */,
 				1AC8123F22D69C4C0044AAAB /* PublisherTests.swift in Sources */,
 				1AFF21DD22D003D20039C303 /* XCTestCase+KVOExpectatio0n.swift in Sources */,
 				1AFF21DB22CFFF0C0039C303 /* SubscribeReceiveAssignTests.swift in Sources */,
 				1A1C87C322D0EF6100128A5E /* Mock.swift in Sources */,
 				1A02E8AA22D7C9BF008CCCAE /* debounceAndRemoveDuplicatesPublisherTests.swift in Sources */,
+				1A65598B22E2421F00FEFBF5 /* MergingPipelineTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -944,6 +966,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1A65598522E2213F00FEFBF5 /* XCRemoteSwiftPackageReference "Entwine" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tcldr/Entwine.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.6.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1A65598622E2213F00FEFBF5 /* EntwineTest */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A65598522E2213F00FEFBF5 /* XCRemoteSwiftPackageReference "Entwine" */;
+			productName = EntwineTest;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1AC8C76D22B1BED80064C1AE /* Project object */;
 }
