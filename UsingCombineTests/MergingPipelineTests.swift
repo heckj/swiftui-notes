@@ -154,6 +154,7 @@ class MergingPipelineTests: XCTestCase {
 //             (500, .input(("b", 3))),
 //             (550, .input(("c", 3))),
 //             (600, .completion(failure(UsingCombineTests.MergingPipelineTests.(unknown context at $108734d68).(unknown context at $108734dd8).testFailureCondition.example)))
+//        terminating one of the streams completing with .failure terminates all of the pipeline
 //            ])
 
         // verify the virtual time of the subscription signal
@@ -181,9 +182,54 @@ class MergingPipelineTests: XCTestCase {
         XCTAssertEqual(testableSubscriber.recordedOutput[6].0, 600)
         // verify that the final signal was a completion
         XCTAssertTrue(testableSubscriber.recordedOutput[6].1.isCompletion)
+    }
 
-        // In hindsight, I don't know that I really care about the timing of all these results, aside
-        // from the fact that it makes for an illuminating record of how combineLatest() itself
-        // functions.
+    func testCombineLatest3() {
+        // setup
+        let testScheduler = TestScheduler(initialClock: 0)
+
+        // set up the inputs and timing
+        let testablePublisher1: TestablePublisher<String, Never> = testScheduler.createRelativeTestablePublisher([
+            (100, .input("a")),
+            (200, .input("b")),
+            (350, .input("c")),
+            (400, .completion(.finished))
+        ])
+        let testablePublisher2: TestablePublisher<Int, Never> = testScheduler.createRelativeTestablePublisher([
+            (100, .input(1)),
+            (250, .input(2)),
+            (300, .input(3)),
+            (450, .input(4)),
+        ])
+        let testablePublisher3: TestablePublisher<String, Never> = testScheduler.createRelativeTestablePublisher([
+            (100, .input("x")),
+            (200, .input("y")),
+            (350, .input("z")),
+        ])
+
+        let mergedPipeline = Publishers.CombineLatest3(testablePublisher1, testablePublisher2, testablePublisher3)
+
+        // validate
+
+        // run the virtual time scheduler
+        let testableSubscriber = testScheduler.start { return mergedPipeline }
+
+        let expected: TestSequence<(String, Int, String), Never> = [
+            (200, .subscription),
+            (300, .input(("a", 1, "x"))),
+            (400, .input(("b", 1, "x"))),
+            (400, .input(("b", 1, "y"))),
+            (450, .input(("b", 2, "y"))),
+            (500, .input(("b", 3, "y"))),
+            (550, .input(("c", 3, "y"))),
+            (550, .input(("c", 3, "z"))),
+            (650, .input(("c", 4, "z"))),
+        ]
+        // using the latest hotness of Entwine - post 0.6.0 release (part of master branch, as of 20 July 2019)
+        // mapInput does the transformation from tuple to struct, with the struct's defined in
+        // InterimTestingStructs.swift
+        let mappedExpected = expected.mapInput(Tuple3.init)
+        let mappedResults = testableSubscriber.recordedOutput.mapInput(Tuple3.init)
+        XCTAssertEqual(mappedResults, mappedExpected)
     }
 }
