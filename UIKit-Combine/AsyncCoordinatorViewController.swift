@@ -20,11 +20,27 @@ class AsyncCoordinatorViewController: UIViewController {
     @IBOutlet weak var step3_button: UIButton!
     @IBOutlet weak var step4_button: UIButton!
 
-    @IBAction func startButtonPressed(_ sender: UIButton) {
-
-    }
-
+    var cancellable: AnyCancellable?
     var coordinatedPipeline: AnyPublisher<Bool, Error>?
+
+    @IBAction func startButtonPressed(_ sender: UIButton) {
+        print("DOING SOMETHING")
+        if self.cancellable != nil {
+            print("Cancelling existing run")
+            cancellable?.cancel()
+        }
+        print("resetting all the steps")
+        self.resetAllSteps()
+        // driving it by attaching it to .sink
+        print("attaching a new sink to start things going")
+        self.cancellable = coordinatedPipeline?
+            .print()
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion: ", String(describing: completion))
+            }, receiveValue: { value in
+                print(".sink() received value: ", value)
+            })
+    }
 
     // MARK: - helper pieces that would normally be in other files
 
@@ -37,7 +53,10 @@ class AsyncCoordinatorViewController: UIViewController {
         }
     }
 
-    func createFuturePublisher() -> AnyPublisher<Bool, Error> {
+    /// Creates and returns pipeline that uses a Future to wrap randomAsyncAPI, then updates a UIButton to represent
+    /// the completion of the async work before returning a boolean True
+    /// - Parameter button: button to be updated
+    func createFuturePublisher(button: UIButton) -> AnyPublisher<Bool, Error> {
         return Future<Bool, Error> { promise in
             self.randomAsyncAPI() { (result, err) in
                 if let err = err {
@@ -45,12 +64,30 @@ class AsyncCoordinatorViewController: UIViewController {
                 }
                 promise(.success(result))
             }
-        }.eraseToAnyPublisher()
+        }
+        .receive(on: RunLoop.main)
+            // so that we can update UI elements to show the "completion"
+            // of this step
+        .map { inValue -> Bool in
+            // intentially side effecting here to show progress of pipeline
+            self.markStepDone(button: button)
+            return true
+        }
+        .eraseToAnyPublisher()
     }
 
+    /// highlights a button and changes the background color to green
+    /// - Parameter button: reference to button being updated
     func markStepDone(button: UIButton) {
         button.backgroundColor = .systemGreen
         button.isHighlighted = true
+    }
+
+    func resetAllSteps() {
+        for button in [self.step1_button, self.step2_1_button, self.step2_2_button, self.step2_3_button, self.step3_button, self.step4_button] {
+            button?.backgroundColor = .lightGray
+            button?.isHighlighted = false
+        }
     }
 
     // MARK: - view setup
@@ -58,60 +95,27 @@ class AsyncCoordinatorViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let step2_1 = self.createFuturePublisher(button: self.step2_1_button)
+
+        let step2_2 = self.createFuturePublisher(button: self.step2_2_button)
+
+        let step2_3 = self.createFuturePublisher(button: self.step2_3_button)
+
         // Do any additional setup after loading the view.
-        coordinatedPipeline = createFuturePublisher()
-            .receive(on: RunLoop.main) // convenience to make it easy to tweak the UI to display progress
-            .map { _ -> Bool in
-                // intentially side effecting here to show progress of pipeline
-                self.markStepDone(button: self.step1_button)
-                return true
+        coordinatedPipeline = createFuturePublisher(button: self.step1_button)
+        .flatMap { flatMapInValue in
+            return Publishers.Zip3(step2_1, step2_2, step2_3)
+                .map { _ -> Bool in
+                    return true
+                }
             }
         .flatMap { _ in
-
-            let step2_1 = self.createFuturePublisher()
-                .receive(on: RunLoop.main)
-                .map { _ -> Bool in
-                    // intentially side effecting here to show progress of pipeline
-                    self.markStepDone(button: self.step2_1_button)
-                    return true
-                }.eraseToAnyPublisher()
-
-            return self.createFuturePublisher()
-//
-//            let step2_2 = self.createFuturePublisher()
-//                .receive(on: RunLoop.main) // convenience to make it easy to tweak the UI to display progress
-//                .map {
-//                    // intentially side effecting here to show progress of pipeline
-//                    self.markStepDone(button: self.step2_2_button)
-//                    return $0
-//                }
-//
-//            let step2_3 = self.createFuturePublisher()
-//                .receive(on: RunLoop.main) // convenience to make it easy to tweak the UI to display progress
-//                .map {
-//                    // intentially side effecting here to show progress of pipeline
-//                    self.markStepDone(button: self.step2_3_button)
-//                    return $0
-//                }
-//
-//            return Publishers.Zip3(step2_1, step2_2, step2_3)
-//                .map { _ -> Bool in
-//                    return true
-//                }.eraseToAnyPublisher()
-
-            }
-        .eraseToAnyPublisher() as AnyPublisher<Bool, Error>
-
-
-//        // driving it by attaching it to .sink
-//        let cancellable = futurePublisher.sink(receiveCompletion: { err in
-//            print(".sink() received the completion: ", String(describing: err))
-//            expectation.fulfill()
-//        }, receiveValue: { value in
-//            print(".sink() received value: ", value)
-//            outputValue = value
-//        })
-
+            return self.createFuturePublisher(button: self.step3_button)
+        }
+        .flatMap { _ in
+            return self.createFuturePublisher(button: self.step4_button)
+        }
+        .eraseToAnyPublisher()
     }
     
 

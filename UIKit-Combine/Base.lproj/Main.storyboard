@@ -188,7 +188,7 @@
                                     </preferredSymbolConfiguration>
                                 </state>
                                 <connections>
-                                    <action selector="startButtonPressed:" destination="ggS-fq-s3H" eventType="touchUpInside" id="aZi-1c-yaW"/>
+                                    <action selector="startButtonPressed:" destination="ggS-fq-s3H" eventType="touchUpInside" id="JpF-q1-iIY"/>
                                 </connections>
                             </button>
                         </subviews>
