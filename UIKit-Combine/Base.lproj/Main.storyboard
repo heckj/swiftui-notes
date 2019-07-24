@@ -177,7 +177,7 @@
                                     </preferredSymbolConfiguration>
                                 </state>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7fC-G3-FWh">
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7fC-G3-FWh">
                                 <rect key="frame" x="159" y="143" width="97" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
@@ -188,15 +188,20 @@
                                     </preferredSymbolConfiguration>
                                 </state>
                                 <connections>
-                                    <action selector="startButtonPressed:" destination="ggS-fq-s3H" eventType="touchUpInside" id="JpF-q1-iIY"/>
+                                    <action selector="doit:" destination="ggS-fq-s3H" eventType="touchUpInside" id="Cq6-Zp-f8V"/>
                                 </connections>
                             </button>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="q1W-fM-8Rb">
+                                <rect key="frame" x="197" y="191" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" xcode11CocoaTouchSystemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <viewLayoutGuide key="safeArea" id="mtG-qs-F3K"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Async Coordinator" image="square.stack.3d.down.dottedline" catalog="system" id="SaS-eR-hUC"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="q1W-fM-8Rb" id="g9m-Nl-31i"/>
                         <outlet property="startButton" destination="7fC-G3-FWh" id="Vaf-bS-TlA"/>
                         <outlet property="step1_button" destination="jtR-hl-X6j" id="Mst-Hy-VTn"/>
                         <outlet property="step2_1_button" destination="za9-ir-i7j" id="Wra-Bi-YY2"/>

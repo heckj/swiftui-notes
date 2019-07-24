@@ -38,6 +38,8 @@ class GithubViewController: UIViewController {
         print("Set username to ", username)
     }
 
+    @IBAction func poke(_ sender: Any) {
+    }
     // MARK - lifecycle methods
 
     override func viewDidLoad() {
