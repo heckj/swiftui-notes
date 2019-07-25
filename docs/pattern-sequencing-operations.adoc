@@ -8,13 +8,28 @@ __Goal__::
 __References__::
 
 * <<reference.adoc#reference-future>>
+* <<reference.adoc#reference-flatmap>>
+* <<reference.adoc#reference-zip>>
 
 __See also__::
 
 * <<#patterns-delegate-publisher-subject>>
+* The ViewController with this code is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/AsyncCoordinatorViewController.swift[UIKit-Combine/AsyncCoordinatorViewController.swift]
 
 __Code and explanation__::
 
+Any asynchronous (or synchronous) set of tasks that need to happen in a specific order can also be coordinated using a combine pipeline.
+By using <<reference.adoc#reference-future>> operator, the very act of completing an asynchronous call can be captured, and sequencing operators provides the structure of that coordination.
+
+For example, by wrapping an asynchronous API calls with the <<reference.adoc#reference-future>> publisher and then chaining them together with the <<reference.adoc#reference-flatmap>> operator, you invoke the wrapped asynchronous API calls in the order of the pipeline.
+Multiple parallel asynchronous efforts can be created by creating multiple pipelines, with <<reference.adoc#reference-future>> or another publisher.
+You can wait for all parallel pipelines to complete before continuing by merging them together with the <<reference.adoc#reference-zip>> operator.
+
+If you want force an <<reference.adoc#reference-future>> publisher to not be invoked until another has completed, then creating the future publisher in the <<reference.adoc#reference-flatmap>> closure causes it to wait to be created until a value has been passed to the flatMap operator.
+
+These techniques can be composed, creating any structure of parallel or serial tasks.
+
+If later tasks need data from earlier tasks, that can be passed down the pipeline.
 [source, swift]
 ----
 ----
