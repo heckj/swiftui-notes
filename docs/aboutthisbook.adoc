@@ -3,15 +3,16 @@
 
 == Supporting this effort
 
-**_This is a work in progress._**
+**_This is a work in progress. You can support this effort by http://gumroad.com/l/usingcombine[purchasing a copy]._**
 
-The book is being made available at no cost.
-The content for this book, including sample code and tests is available on GitHub at https://github.com/heckj/swiftui-notes.
+The book is being made available online at no cost.
+If you find the content useful, please consider supporting the effort with a purchase of the PDF or ePub version at http://gumroad.com/l/usingcombine.
+The money collected for sales of this book will go to hiring editors (copyediting and technical editing), and if sufficient funds exist, hiring graphic design for diagrams.
 
-If you want to report a problem (typo, grammar, or technical fault), please https://github.com/heckj/swiftui-notes/issues/new/choose[Open an issue] in GitHub.
+The content for this book, including sample code and tests, are sourced from the GitHub repository: https://github.com/heckj/swiftui-notes.
+
+To report a problem (typo, grammar, or technical fault), please https://github.com/heckj/swiftui-notes/issues/new/choose[Open an issue] in GitHub.
 If you are so inclined, feel free to fork the project and send me https://github.com/heckj/swiftui-notes/compare?expand=1[pull requests] with updates or corrections.
-
-I am working through how to make it available to the widest audience while also generating a small amount of money to support the creation of this book, from technical authoring and review through copy editing.
 
 == Author Bio
 
