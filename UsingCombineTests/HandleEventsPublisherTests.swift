@@ -1,5 +1,5 @@
 //
-//  handleEventsPublisherTests.swift
+//  HandleEventsPublisherTests.swift
 //  UsingCombineTests
 //
 //  Created by Joseph Heck on 7/11/19.
@@ -9,7 +9,7 @@
 import XCTest
 import Combine
 
-class handleEventsPublisherTests: XCTestCase {
+class HandleEventsPublisherTests: XCTestCase {
 
 
     func testHandleEvents() {
