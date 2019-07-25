@@ -3,9 +3,9 @@
 
 == Supporting this effort
 
-**_This is a work in progress. You can support this effort by http://gumroad.com/l/usingcombine[purchasing a copy]._**
+**_This is a work in progress. Please support this effort by http://gumroad.com/l/usingcombine[purchasing a copy]._**
 
-The book is being made available online at no cost.
+The book is https://heckj.github.io/swiftui-notes/[available online] at no cost.
 If you find the content useful, please consider supporting the effort with a purchase of the PDF or ePub version at http://gumroad.com/l/usingcombine.
 The money collected for sales of this book will go to hiring editors (copyediting and technical editing), and if sufficient funds exist, hiring graphic design for diagrams.
 
