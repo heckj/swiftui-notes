@@ -39,6 +39,7 @@ The whole sequence is triggered by a seperate button action, which also resets t
 In this example, the asynchronous API call is a call that simple takes a random amount of time to complete to provide an example of how the timing works.
 
 The workflow that is created is represented in steps:
+
 * step 1 runs first.
 * step 2 has three parallel efforts, running after step 1 completes.
 * step 3 waits to start until all three elements of step 2 complete.
