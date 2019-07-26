@@ -3,20 +3,173 @@
 
 __Goal__::
 
-* For testing a subscriber (how it reacts):
+* To gain understanding of why a pipeline isn't operating as you expect...
 
 __References__::
 
-* << link to reference pages>>
+* <<reference.adoc#reference-print>>
+* <<reference.adoc#reference-handleevents>>
+* <<reference.adoc#reference-breakpoint>>
+* <<reference.adoc#reference-sink>>
+* <<reference.adoc#reference-retry>>
+* The ViewController with this code is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubViewController.swift[UIKit-Combine/GithubViewController.swift]
+* The retry unit tests in the github project at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/RetryPublisherTests.swift[UsingCombineTests/RetryPublisherTests.swift]
 
 __See also__::
 
-* << link to other patterns>>
+* <<#patterns-cascading-update-interface>>
+* <<#patterns-sequencing-operations>>
+* <<#patterns-update-interface-userinput>>
 
 __Code and explanation__::
 
-. use print() and/or print("prefixValue") to get console output of what's happening in the pipeline lifecycle
-  * create a .sink() to capture results, and drive it with a PassthroughSubject for specific control
+I have found the greatest detail of information comes from selectively using the <<reference.adoc#reference-print>> operator.
+The downside is that it prints quite a lot of inforamtion, so the output can become quickly overwhelming.
+For understanding a simple pipeline, using the `.print()` as an operator without any parameters is very straightforward.
+As soon as you want to add more than one print operator, you will likely want to use the string parameter, which is puts in as a prefix to the output.
+
+The <<#patterns-cascading-update-interface>> example uses it in several places, with long descriptive prefixes to make it clear which pipeline is providing the information.
+
+The two pipelines cascade together by connecting through a private published variable - the github user data.
+The two relevant pipelines from that example code:
+
+.https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubViewController.swift[UIKit-Combine/GithubViewController.swift]
+[source, swift]
+----
+usernameSubscriber = $username
+    .throttle(for: 0.5, scheduler: myBackgroundQueue, latest: true)
+    // ^^ scheduler myBackGroundQueue publishes resulting elements
+    // into that queue, resulting on this processing moving off the
+    // main runloop.
+    .removeDuplicates()
+    .print("username pipeline: ") // debugging output for pipeline
+    .map { username -> AnyPublisher<[GithubAPIUser], Never> in
+        return GithubAPI.retrieveGithubUser(username: username)
+    }
+    // ^^ type returned in the pipeline is a Publisher, so we use
+    // switchToLatest to flatten the values out of that
+    // pipline to return down the chain, rather than returning a
+    // publisher down the pipeline.
+    .switchToLatest()
+    // using a sink to get the results from the API search lets us
+    // get not only the user, but also any errors attempting to get it.
+    .receive(on: RunLoop.main)
+    .assign(to: \.githubUserData, on: self)
+
+// using .assign() on the other hand (which returns an
+// AnyCancellable) *DOES* require a Failure type of <Never>
+repositoryCountSubscriber = $githubUserData
+    .print("github user data: ")
+    .map { userData -> String in
+        if let firstUser = userData.first {
+            return String(firstUser.public_repos)
+        }
+        return "unknown"
+    }
+    .receive(on: RunLoop.main)
+    .assign(to: \.text, on: repositoryCountLabel)
+----
+
+When you run the UIKit-Combine example code, the terminal shows the following output as I slowly enter the username `heckj`.
+In the course of doing these lookups, two other github accounts are found and retrieved (`hec` and `heck`) before the final one.
+
+.interactive output from simulator
+[source]
+----
+username pipeline: : receive subscription: (RemoveDuplicates)
+username pipeline: : request unlimited
+github user data: : receive subscription: (CurrentValueSubject)
+github user data: : request unlimited
+github user data: : receive value: ([])
+username pipeline: : receive value: ()
+github user data: : receive value: ([])
+
+Set username to  h
+username pipeline: : receive value: (h)
+github user data: : receive value: ([])
+
+Set username to  he
+username pipeline: : receive value: (he)
+github user data: : receive value: ([])
+
+Set username to  hec
+username pipeline: : receive value: (hec)
+
+Set username to  heck
+github user data: : receive value: ([UIKit_Combine.GithubAPIUser(login: "hec", public_repos: 3, avatar_url: "https://avatars3.githubusercontent.com/u/53656?v=4")])
+
+username pipeline: : receive value: (heck)
+github user data: : receive value: ([UIKit_Combine.GithubAPIUser(login: "heck", public_repos: 6, avatar_url: "https://avatars3.githubusercontent.com/u/138508?v=4")])
+
+Set username to  heckj
+username pipeline: : receive value: (heckj)
+github user data: : receive value: ([UIKit_Combine.GithubAPIUser(login: "heckj", public_repos: 69, avatar_url: "https://avatars0.githubusercontent.com/u/43388?v=4")])
+----
+
+I have removed some of the other extraneous print statements, which I also placed in <<reference.adoc#reference-sink>> closures to see final results.
+
+As you can see, you see the initial subscription setup at the very beginning, and then notifications, including the debug representation of the value passed through the print operator.
+Although it is not shown in the example content above, you will also see cancellations when an error occurs, or completions when they emit from a publisher reporting no further data is available.
+
+It can also be beneficial to use a print operator on either side of an operator to understand how it is operating.
+
+An example of doing this, leveraging the prefix to show the <<reference.adoc#reference-retry>> operator and how it works:
+
+.https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/RetryPublisherTests.swift[UsingCombineTests/RetryPublisherTests.swift]
+[source, swift]
+----
+func testRetryWithOneShotFailPublisher() {
+    // setup
+
+    let _ = Fail(outputType: String.self, failure: testFailureCondition.invalidServerResponse)
+        .print("(1)>") <1>
+        .retry(3)
+        .print("(2)>") <2>
+        .sink(receiveCompletion: { fini in
+            print(" ** .sink() received the completion:", String(describing: fini))
+        }, receiveValue: { stringValue in
+            XCTAssertNotNil(stringValue)
+            print(" ** .sink() received \(stringValue)")
+        })
+}
+----
+
+<1> The `(1)` prefix is to show the interactions above the retry operator
+<2> The `(2)` prefix shows the interactions after the retry operator
+
+.output from unit test
+[source]
+----
+Test Suite 'Selected tests' started at 2019-07-26 15:59:48.042
+Test Suite 'UsingCombineTests.xctest' started at 2019-07-26 15:59:48.043
+Test Suite 'RetryPublisherTests' started at 2019-07-26 15:59:48.043
+Test Case '-[UsingCombineTests.RetryPublisherTests testRetryWithOneShotFailPublisher]' started.
+(1)>: receive subscription: (Empty) <1>
+(1)>: receive error: (invalidServerResponse)
+(1)>: receive subscription: (Empty)
+(1)>: receive error: (invalidServerResponse)
+(1)>: receive subscription: (Empty)
+(1)>: receive error: (invalidServerResponse)
+(1)>: receive subscription: (Empty)
+(1)>: receive error: (invalidServerResponse)
+(2)>: receive error: (invalidServerResponse) <2>
+ ** .sink() received the completion: failure(UsingCombineTests.RetryPublisherTests.testFailureCondition.invalidServerResponse)
+(2)>: receive subscription: (Retry)
+(2)>: request unlimited
+(2)>: receive cancel
+Test Case '-[UsingCombineTests.RetryPublisherTests testRetryWithOneShotFailPublisher]' passed (0.010 seconds).
+Test Suite 'RetryPublisherTests' passed at 2019-07-26 15:59:48.054.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.010 (0.011) seconds
+Test Suite 'UsingCombineTests.xctest' passed at 2019-07-26 15:59:48.054.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.010 (0.011) seconds
+Test Suite 'Selected tests' passed at 2019-07-26 15:59:48.057.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.010 (0.015) seconds
+----
+
+<1> In the test sample, the publisher always reports a failure, resulting in seeing the prefix `(1)` receiving the error, and then the resubscription from the retry operator.
+<2> And after 4 of those attempts (3 "retries"), then you see the error falling through the pipeline.
+After the error hits the sink, you see the `cancel` signal propogated back up, which stops at the retry operator.
+
 
 . add a handleEvents() operator
   * create closures to do additional poking at values or digging into more structured pieces than get exposed with a print()
