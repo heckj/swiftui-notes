@@ -11,7 +11,6 @@ import Combine
 
 class HandleEventsPublisherTests: XCTestCase {
 
-
     func testHandleEvents() {
 
         let publisher = PassthroughSubject<String?, Never>()

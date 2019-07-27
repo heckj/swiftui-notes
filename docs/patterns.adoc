@@ -87,6 +87,8 @@ include::pattern-test-pipeline-expectation.adoc[]
 include::pattern-test-subscriber-subject.adoc[]
 include::pattern-test-subscriber-scheduled.adoc[]
 include::pattern-test-entwine.adoc[]
-include::pattern-debugging-pipelines.adoc[]
+include::pattern-debugging-pipelines-print.adoc[]
+include::pattern-debugging-pipelines-handleevents.adoc[]
+include::pattern-debugging-pipelines-breakpoint.adoc[]
 :leveloffset: -1
 

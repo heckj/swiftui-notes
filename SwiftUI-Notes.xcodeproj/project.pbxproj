@@ -31,6 +31,7 @@
 		1A6006F822D267F30030A471 /* UIKit_CombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006F722D267F30030A471 /* UIKit_CombineTests.swift */; };
 		1A65598922E2227F00FEFBF5 /* FormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A65598822E2227F00FEFBF5 /* FormViewController.swift */; };
 		1A65598B22E2421F00FEFBF5 /* MergingPipelineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A65598A22E2421F00FEFBF5 /* MergingPipelineTests.swift */; };
+		1A71C40222ECDDA80094D95C /* BreakpointPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A71C40122ECDDA80094D95C /* BreakpointPublisherTests.swift */; };
 		1A7C604122D0155E00D7675C /* DataTaskPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C604022D0155E00D7675C /* DataTaskPublisherTests.swift */; };
 		1AA72DB022B5536200FB8297 /* ExampleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA72DAF22B5536200FB8297 /* ExampleModel.swift */; };
 		1AA801E622DAA8CD00702286 /* LocationHeadingProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA801E522DAA8CD00702286 /* LocationHeadingProxy.swift */; };
@@ -103,6 +104,7 @@
 		1A6006F922D267F30030A471 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1A65598822E2227F00FEFBF5 /* FormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormViewController.swift; sourceTree = "<group>"; };
 		1A65598A22E2421F00FEFBF5 /* MergingPipelineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MergingPipelineTests.swift; sourceTree = "<group>"; };
+		1A71C40122ECDDA80094D95C /* BreakpointPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakpointPublisherTests.swift; sourceTree = "<group>"; };
 		1A7C604022D0155E00D7675C /* DataTaskPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTaskPublisherTests.swift; sourceTree = "<group>"; };
 		1AA72DAF22B5536200FB8297 /* ExampleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleModel.swift; sourceTree = "<group>"; };
 		1AA801E522DAA8CD00702286 /* LocationHeadingProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHeadingProxy.swift; sourceTree = "<group>"; };
@@ -292,6 +294,7 @@
 				1A1C87C222D0EF6100128A5E /* Mocker.swift */,
 				1A1C87C122D0EF6100128A5E /* MockingURLProtocol.swift */,
 				1A534E1C22E3DF20005E6868 /* InterimTestingStructs.swift */,
+				1A71C40122ECDDA80094D95C /* BreakpointPublisherTests.swift */,
 			);
 			path = UsingCombineTests;
 			sourceTree = "<group>";
@@ -550,6 +553,7 @@
 				1ACB983422D79E7F00180481 /* FilterPublisherTests.swift in Sources */,
 				1AEA9C2722CD5FE7006709F1 /* SinkSubscriberTests.swift in Sources */,
 				1ACB983222D795CE00180481 /* EmptyPublisherTests.swift in Sources */,
+				1A71C40222ECDDA80094D95C /* BreakpointPublisherTests.swift in Sources */,
 				1A02E8A622D7C1B8008CCCAE /* SwitchAndFlatMapPublisherTests.swift in Sources */,
 				1A7C604122D0155E00D7675C /* DataTaskPublisherTests.swift in Sources */,
 				1A416E2022DE8A5B00C95DCB /* EntwineTestExampleTests.swift in Sources */,
