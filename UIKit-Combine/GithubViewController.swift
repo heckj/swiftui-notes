@@ -151,6 +151,13 @@ class GithubViewController: UIViewController {
             .subscribe(on: myBackgroundQueue)
             // ^^ do the above processing as well on a background Queue rather
             // than potentially impacting the UI responsiveness
+            .breakpoint(receiveSubscription: { subscription in
+                return false
+            }, receiveOutput: { value in
+                return true
+            }, receiveCompletion: { completion in
+                return false
+            })
             .receive(on: RunLoop.main)
             // ^^ and then switch to receive and process the data on the main
             // queue since we're messin with the UI

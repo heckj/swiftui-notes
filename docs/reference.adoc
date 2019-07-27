@@ -1590,14 +1590,67 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: URL(string: t
 [#reference-breakpoint]
 ==== breakpoint
 
-* breakpoint
-** Raises a debugger signal when a provided closure needs to stop the process in the debugger.
+__Summary__::
+
+A publisher that raises a debugger signal when a provided closure needs to stop the process in the debugger.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__::  https://developer.apple.com/documentation/combine/publishers/breakpoint
+
+__Usage__::
+
+* <<patterns.adoc#patterns-debugging-breakpoint>>
+
+__Details__::
+
+When any of the provided closures returns true, this publisher raises the SIGTRAP signal to stop the process in the debugger. Otherwise, this publisher passes through values and completions as-is.
+
+The operator takes 3 optional closures as parameters, used to trigger when to raise the SIGTRAP signal:
+
+* `receiveSubscription`
+* `receiveOutput`
+* `receiveCompletion`
+
+[source, swift]
+----
+.breakpoint(receiveSubscription: { subscription in
+    return false // return true to throw SIGTRAP and invoke the debugger
+}, receiveOutput: { value in
+    return false // return true to throw SIGTRAP and invoke the debugger
+}, receiveCompletion: { completion in
+    return false // return true to throw SIGTRAP and invoke the debugger
+})
+----
+
 
 [#reference-breakpointonerror]
 ==== breakpointOnError
 
-* breakpointOnError
-** Raises a debugger signal upon receiving a failure.
+__Summary__::
+
+Raises a debugger signal upon receiving a failure.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/breakpoint/3205192-breakpointonerror
+
+__Usage__::
+
+* <<patterns.adoc#patterns-debugging-breakpoint>>
+
+__Details__::
+
+breakpointOnError is a convenience method used to raise a SIGTRAP signal when an error is propogated through it within a pipeline.
+
+[source, swift]
+----
+.breakpointOnError()
+----
 
 [#reference-handleevents]
 ==== handleEvents
@@ -1615,6 +1668,7 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 __Usage__::
 
 * unit tests illustrating using handleEvents: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/HandleEventsPublisherTests.swift[`UsingCombineTests/HandleEventsPublisherTests.swift`]
+* <<patterns.adoc#patterns-debugging-handleevents>>
 
 __Details__::
 
@@ -1667,6 +1721,7 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 __Usage__::
 
 * unit tests illustrating using print: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`]
+* <<patterns.adoc#patterns-debugging-print>>
 
 __Details__::
 
