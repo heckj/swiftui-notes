@@ -173,13 +173,6 @@ After the error hits the sink, you see the `cancel` signal propogated back up, w
 While very effective, the print operator can be a blunt tool, generating a lot of output that you have to parse and review.
 If you want to be more selective with what you identify and print, or if you need to process the data passing through for it to be used more meaningfully, then you look at the <<reference.adoc#reference-handleevents>> operator. More detail on how to use this opeartor for debugging is in  <<#patterns-debugging-handleevents>>.
 
-. breakPoint
-  * if you want to break into a debugger, add in a closure that returns true and you can inspect to your heart's content
-  ** closure's on `receiveSubscription`, `receiveOutput`, and `receiveCompletion`
-
-  * might also be interesting to use breakpointOnError() which triggers only when a failure completion
-
-
 // force a page break - in HTML rendering is just a <HR>
 <<<
 '''
