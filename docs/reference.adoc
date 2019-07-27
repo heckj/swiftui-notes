@@ -639,7 +639,7 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 
 __Usage__::
 
-* unit tests illustrating using removeDuplicates: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift`]
+* unit tests illustrating using removeDuplicates: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift`]
 
 __Details__::
 
@@ -679,7 +679,7 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 
 __Usage__::
 
-* unit tests illustrating using tryRemoveDuplicates: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift`]
+* unit tests illustrating using tryRemoveDuplicates: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift`]
 
 __Details__::
 
@@ -943,9 +943,9 @@ __Summary__::
 
 CombineLatest merges two pipelines into a single output, converting the output type to a tuple of values from the upstream pipelines, and providing an update when any of the upstream publishers provide a new value.
 
-__Constraints on connected publisher__::
+__Constraints on connected publishers__::
 
-* __none__
+* All upstream publishers must have the same failure type.
 
 __icon:apple[] docs__::
 
@@ -955,7 +955,8 @@ __icon:apple[] docs__::
 
 __Usage__::
 
-<<patterns.adoc#patterns-merging-streams-interface>>
+* <<patterns.adoc#patterns-merging-streams-interface>>
+* unit tests illustrating using combineLatest: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MergingPipelineTests.swift[`UsingCombineTests/MergingPipelineTests.swift`]
 
 __Details__::
 
@@ -969,23 +970,99 @@ For example, if combineLatest was used to merge a publisher with the output type
 CombineLatest is most often used with continual publishers, and it "remembers" the last output value provided from each publisher.
 In turn, when any of the upstream publishers sends an updated value, the operator makes a new combined tuple of all previous "current" values, adds in the new value in the correct place, and sends that new combined value down the pipeline.
 
+If the failure type of all three upstream publishers does need to be the same.
+For example, you can't have one publisher that has a failure type of Error and another (or more) that have a failure type of Never.
+If the combineLatest operator does receive a failure from any of the upstream publishers, then the operator (and the rest of the pipeline) is cancelled after propogating that failure.
+
+If any of the upstream publishers finish normally (that is, they send a completion message of finished), the combineLatest operator will continue operating and processing any messages from any of the other publishers that has additional data to send.
+
 Other operators that merge multiple upstream pipelines include <<#reference-merge>> and <<#reference-zip>>.
+If your upstream publishers have the same type and you want a stream of single values, as opposed to tuples, then you probably want to use the <<#reference-merge>> operator.
+If you want to wait on values from all upstream provides before providing an updated value, then use the <<#reference-zip>> operator.
 
 [#reference-merge]
 ==== merge
 
-* merge
+__Summary__::
 
-** Combines elements from this publisher with those from another publisher of the same type, delivering an interleaved sequence of elements.
-** requires Failure to be `<Never>`
-** multiple variants that will merge between 2 and 8 different streams
+Merge takes two upstream publishers and mixes the elements published into a single pipeline as they are received.
+
+__Constraints on connected publishers__::
+
+* All upstream publishers must have the same output type.
+* All upstream publishers must have the same failure type.
+
+__icon:apple[] docs__::
+
+* https://developer.apple.com/documentation/combine/publishers/merge[`merge`]
+* https://developer.apple.com/documentation/combine/publishers/merge3[`merge3`]
+* https://developer.apple.com/documentation/combine/publishers/merge4[`merge4`]
+* https://developer.apple.com/documentation/combine/publishers/merge5[`merge5`]
+* https://developer.apple.com/documentation/combine/publishers/merge6[`merge6`]
+* https://developer.apple.com/documentation/combine/publishers/merge7[`merge7`]
+* https://developer.apple.com/documentation/combine/publishers/merge8[`merge8`]
+
+__Usage__::
+
+* unit tests illustrating using merge: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MergingPipelineTests.swift[`UsingCombineTests/MergingPipelineTests.swift`]
+
+__Details__::
+
+Merge subscribers to two upstream publishers, and as they provide data for the subscriber it interleaves them into a single pipeline.
+Merge3 accepts three upstream publishers, merge4 accepts four upstream publishers, and so forth - through merge8 accepting eight upstream publishers.
+
+In all cases, the upstreams publishers are required to have the same output type, as well as the same failure type.
+
+As with <<#reference-combinelatest>>, if an error is propogated down any of the upstream publishers, the cancellation from the subscriber will terminate this operator and will propogate cancel to all upstream publishers as well.
+
+If an upstream publisher completes with a normal finish, the merge operator continues interleaving and forwarding from any values other upstream publishers.
+
+In the unlikely event that two values are provided at the same time from upstream publishers, the merge operator will interleave the values in the order upstream publishers are specified when the operator is initialized.
+
+If you want to mix different upstream publisher types into a single stream, then you likely want to use either <<#reference-combinelatest>> or <<#reference-zip>>, depending on how you want the timing of values to be handled.
+
+[source, swift]
+----
+----
+
+Other operators that merge multiple upstream pipelines include <<#reference-combinelatest>> and <<#reference-zip>>.
+If your upstream publishers have different types, but you want interleaved values to be propogated as they are available, use <<#reference-combinelatest>>.
+If you want to wait on values from all upstream provides before providing an updated value, then use the <<#reference-zip>> operator.
 
 [#reference-zip]
 ==== zip
 
-* zip
-** Combine elements from another publisher and deliver pairs of elements as tuples.
-** requires Failure to be `<Never>`
+__Summary__::
+
+Zip takes two upstream publishers and mixes the elements published into a single pipeline, waiting until values are paired up from each upstream publisher before forwarding the pair as a tuple.
+
+__Constraints on connected publishers__::
+
+* All upstream publishers must have the same failure type.
+
+__icon:apple[] docs__::
+
+* https://developer.apple.com/documentation/combine/publishers/zip[`zip`]
+* https://developer.apple.com/documentation/combine/publishers/zip3[`zip3`]
+* https://developer.apple.com/documentation/combine/publishers/zip4[`zip4`]
+
+__Usage__::
+
+* unit tests illustrating using merge: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MergingPipelineTests.swift[`UsingCombineTests/MergingPipelineTests.swift`]
+
+__Details__::
+
+Zip works very similiarly to <<#reference-combinelatest>>, connecting 2 upstream publishers and providing the output of those publishers as a single pipeline with a tuple output type, composed of the types of the upstream publishers.
+Zip3 supports connecting three upstream publishers, and zip4 supports connecting four upstream publishers.
+
+The notable difference from <<#reference-combinelatest>> is that zip will specifically wait for values to arrive from the upstream publishers, and will only publish a single new tuple when new values have been provided from all upstream publishers.
+
+One example of using this is to wait until all streams have provided a single value to provide a synchronization point.
+For example, if you have 2 independent network requests and require them to both be complete before continuing to process the results, you can use zip to connect two <<#reference-datataskpublisher>>, which will wait until both publishers are complete before forwarding the combined tuples.
+
+Other operators that merge multiple upstream pipelines include <<#reference-combinelatest>> and <<#reference-merge>>.
+If your upstream publishers have different types, but you want interleaved values to be propogated as they are available, use <<#reference-combinelatest>>.
+If your upstream publishers have the same type and you want a stream of single values, as opposed to tuples, then you probably want to use the <<#reference-merge>> operator.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
@@ -1274,7 +1351,7 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 
 __Usage__::
 
-* unit tests illustrating using debounce: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift`]
+* unit tests illustrating using debounce: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift`]
 
 __Details__::
 
@@ -1335,7 +1412,7 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 
 __Usage__::
 
-* unit tests illustrating using throttle: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift`]
+* unit tests illustrating using throttle: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift`]
 
 __Details__::
 
@@ -1537,7 +1614,7 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publis
 
 __Usage__::
 
-* unit tests illustrating using handleEvents: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/handleEventsPublisherTests.swift[`UsingCombineTests/handleEventsPublisherTests.swift`]
+* unit tests illustrating using handleEvents: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/HandleEventsPublisherTests.swift[`UsingCombineTests/HandleEventsPublisherTests.swift`]
 
 __Details__::
 

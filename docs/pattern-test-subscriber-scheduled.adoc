@@ -15,7 +15,7 @@ __References__::
 
 * https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SwitchAndFlatMapPublisherTests.swift[UsingCombineTests/SwitchAndFlatMapPublisherTests.swift]
 
-* https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift[UsingCombineTests/debounceAndRemoveDuplicatesPublisherTests.swift]
+* https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift[UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift]
 
 __See also__::
 

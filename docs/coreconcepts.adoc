@@ -512,8 +512,9 @@ A number of operators can impact what thread or queue is being used to do the re
 <<reference.adoc#reference-receive>> and <<reference.adoc#reference-subscribe>> are the two most common, explicitly moving execution of operators after and prior to their invocation respectively.
 
 A number of additional operators have parameters that include a scheduler.
-Examples include <<reference.adoc#reference-delay>>, <<reference.adoc#reference-throttle>>, and <<reference.adoc#reference-throttle>>, and these also have an impact on the queue executing the work - both for themselves and following operators in a pipeline.
-These are explicitly invoked on the scheduler provided to their `scheduler` parameter.
+Examples include <<reference.adoc#reference-delay>>, <<reference.adoc#reference-debounce>>, and <<reference.adoc#reference-throttle>>.
+These also have an impact on the queue executing the work - both for themselves and then any operators following in a pipeline.
+These operators all take a `scheduler` parameter, which switches to the relevant thread or queue to do the work.
 Any operators following them will also be invoked on their scheduler, giving them an impact somewhat like <<reference.adoc#reference-receive>>.
 
 [NOTE]

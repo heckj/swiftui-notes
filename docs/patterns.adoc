@@ -17,6 +17,7 @@ include::pattern-assign.adoc[]
 include::pattern-datataskpublisher-decode.adoc[]
 include::pattern-datataskpublisher-trymap.adoc[]
 include::pattern-future.adoc[]
+include::pattern-sequencing-operations.adoc[]
 
 [#patterns-general-error-handling]
 == Error Handling
@@ -52,7 +53,6 @@ include::pattern-constrained-network.adoc[]
 include::pattern-update-interface-userinput.adoc[]
 include::pattern-cascading-update-interface.adoc[]
 include::pattern-merging-streams-interface.adoc[]
-include::pattern-sequencing-operations.adoc[]
 include::pattern-delegate-publisher-subject.adoc[]
 include::pattern-notificationcenter.adoc[]
 :leveloffset: -1

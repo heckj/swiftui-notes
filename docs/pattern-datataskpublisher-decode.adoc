@@ -64,7 +64,7 @@ let cancellableSink = remoteDataPublisher
 <4> <<reference.adoc#reference-decode>> is used to load the data and attempt to transform it into the struct defined. Decode can throw an error itself if the decode fails. If it succeeds, the object passed down the pipeline will be the struct from the JSON data.
 <5> If the decoding happened without errors, the finished completion will be triggered, and the value will also be passed to the receiveValue closure.
 <6> If the a failure happened (either with the original network request or the decoding), the error will be passed into with the `.failure` completion.
-<7> Only if the data succeeded with request and decoding will this closure get invoked, and the data format received with be an instance of the struct `PostmanEchoTimeStampCheckResponse`.
+<7> Only if the data succeeded with request and decoding will this closure get invoked, and the data format received will be an instance of the struct `PostmanEchoTimeStampCheckResponse`.
 
 
 // force a page break - in HTML rendering is just a <HR>
