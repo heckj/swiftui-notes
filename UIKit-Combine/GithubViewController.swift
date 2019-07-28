@@ -69,7 +69,7 @@ class GithubViewController: UIViewController {
             }
             // ^^ type returned in the pipeline is a Publisher, so we use
             // switchToLatest to flatten the values out of that
-            // pipline to return down the chain, rather than returning a
+            // pipeline to return down the chain, rather than returning a
             // publisher down the pipeline.
             .switchToLatest()
             // using a sink to get the results from the API search lets us
