@@ -1775,7 +1775,7 @@ Receive takes a single required parameter (`on:`) which accepts a scheduler, and
 https://developer.apple.com/documentation/combine/scheduler[Scheduler] is a protocol in Combine, with the conforming types that are commonly used of https://developer.apple.com/documentation/foundation/runloop[RunLoop], https://developer.apple.com/documentation/dispatch/dispatchqueue[DispatchQueue] and https://developer.apple.com/documentation/foundation/operationqueue[OperationQueue].
 Receive is frequently used with <<#reference-assign>> to make sure any following pipeline invocations happen on a specific thread, such as `RunLoop.main` when updating user interface objects.
 Receive effects itself and any opertors chained after it, but not previous operators.
-If you want to influence previously chained publishers (or operators) for where to run, use the <<#reference-subscribe>> operator.
+If you want to influence a previously chained publishers (or operators) for where to run, you may want to look at the <<#reference-subscribe>> operator.
 
 [source, swift]
 ----
@@ -1788,7 +1788,7 @@ Receive takes a single
 
 __Summary__::
 
-Subscribe defines the scheduler on which to run operators in a pipeline.
+Subscribe defines the scheduler on which to run a publisher in a pipeline.
 
 __Constraints on connected publisher__::
 
@@ -1804,14 +1804,16 @@ __Usage__::
 
 __Details__::
 
-Subscribe assigns a scheduler to any preceding pipeline invocations, and is often used to invoke a publisher on a background thread or queue. When used in this fashion, it is often used in coordination with <<#reference-receive>> to transfer data to another thread (such as the main runloop) for following operators or the subscriber.
+Subscribe assigns a scheduler to the preceding pipeline invocation.
+It is relatively infrequently used, specifically to encourage a publisher such as <<#reference-just>> or <<#reference-deferred>> to run on a specific queue.
+If you want to control which queue operators run on, then it is more common to use the <<#reference-receive>> operator, which effects all following operators and subscribers.
 
 Subscribe takes a single required parameter (`on:`) which accepts a scheduler, and an optional parameter (`optional:`) which can accept SchedulerOptions.
 https://developer.apple.com/documentation/combine/scheduler[Scheduler] is a protocol in Combine, with the conforming types that are commonly used of https://developer.apple.com/documentation/foundation/runloop[RunLoop], https://developer.apple.com/documentation/dispatch/dispatchqueue[DispatchQueue] and https://developer.apple.com/documentation/foundation/operationqueue[OperationQueue].
 
-Subscribe effects itself and any opertors chained before it, but not following operators.
-If you want to influence chained operators after subscribe for where to run, use the <<#reference-receive>> operator.
-The most comon example of this is receiving on `RunLoop.main`, critical when updating user interface objects.
+Subscribe effects a subset of the functions, and does not guarantee that a publisher will run on that queue.
+In particular, it effects a publishers `receive` function, the subscribers `request` function, and the `cancel` function.
+Some publishers (such as <<#reference-datataskpublisher>>) have complex internals that will run on alterantive queues based on their configuration, and will be relatively uneffected by subscribe.
 
 [source, swift]
 ----
