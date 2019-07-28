@@ -1952,14 +1952,45 @@ A WritableKeyPath is one that's a mutable value reference (a mutable struct), an
 
 It's not always clear (for example, while using code-completion from the editor) what a property may reflect.
 
-If you try to assign to a property keypath and receive an error such as `Cannot convert value of type 'KeyPath<SomeObject, Bool>' to specified type 'ReferenceWritableKeyPath<SomeObject, Bool>'`, the error is because you're attempting to write to a property that is read-only.
-
 [source, swift]
 ----
 examplePublisher
     .receive(on: RunLoop.main) <2>
     .assign(to: \.text, on: yourLabel) <3>
 ----
+
+[WARNING]
+====
+An error you may see is
+
+[source]
+----
+Cannot convert value of type 'KeyPath<SomeObject, Bool>' to specified type 'ReferenceWritableKeyPath<SomeObject, Bool>'
+----
+
+This happens when you're attempting to assign to a property that is read-only.
+An example of this is UIActivityIndicator's `isAnimating` property.
+
+Another error you might see on using the assign operator is:
+
+[source]
+----
+Type of expression is ambiguous without more context
+----
+
+This error can occur when you are attempting to assign a non-optional type to a keypath that expects has an optional type.
+For example, UIImageView.image is of type `UIImage?`, so attempting to assign an output type of UIImage from a previous operator would result in this error message.
+
+The solution is to either use <<#reference-sink>>, or to include a map operator prior to assignment that changes the output type to match.
+For example, to convert the type `UIImage` to `UIImage?` you could use:
+
+[source, swift]
+----
+.map { image -> UIImage? in
+    image
+}
+----
+====
 
 [#reference-sink]
 === sink

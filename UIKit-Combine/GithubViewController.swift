@@ -154,17 +154,14 @@ class GithubViewController: UIViewController {
             .receive(on: RunLoop.main)
             // ^^ and then switch to receive and process the data on the main
             // queue since we're messin with the UI
+            .map { image -> UIImage? in
+                image
+            }
+            // ^^ this converts from the type UIImage to the type UIImage?
+            // which is key to making it work correctly with the .assign()
+            // operator, which must map the type *exactly*
+            .assign(to: \.image, on: self.githubAvatarImageView)
 
-            // .assign(to: \.image, on: self.githubAvatarImageView)
-            // this ^^^ line is returning a compiler error: Type of expression
-            // is ambiguous without more context. I *thought* it would work,
-            // but it's having an issue with the keyPath that I'm trying to
-            // assign for the githubAvatarImageView.image.
-
-            // so instead we can use a sink to capture the data and set a value
-            .sink(receiveValue: { image in
-                self.githubAvatarImageView.image = image
-            })
         // convert the .sink to an `AnyCancellable` object that we have
         // referenced from the implied initializers
         avatarViewSubscriber = AnyCancellable(avatarViewSub)
