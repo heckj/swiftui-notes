@@ -105,7 +105,7 @@ class PublisherTests: XCTestCase {
         let q = DispatchQueue(label: self.debugDescription)
         var countOfHits = 0
 
-        let _ = foo.$username
+        let cancellable1 = foo.$username
             .print("first subscriber")
             .sink { someString in
                 print("first subscriber: value of username updated to: ", someString)
@@ -114,7 +114,7 @@ class PublisherTests: XCTestCase {
                 }
 
         }
-        let _ = foo.$username
+        let cancellable2 = foo.$username
             .print("second subscriber")
             .sink { someString in
                 print("second subscriber: value of username updated to: ", someString)
@@ -134,6 +134,8 @@ class PublisherTests: XCTestCase {
         })
         wait(for: [expectation], timeout: 5.0)
         XCTAssertEqual(countOfHits, 2)
+        XCTAssertNotNil(cancellable1)
+        XCTAssertNotNil(cancellable2)
     }
 
     func testPublishedSinkWithError() {
