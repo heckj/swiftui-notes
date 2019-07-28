@@ -16,7 +16,7 @@ class HandleEventsPublisherTests: XCTestCase {
         let publisher = PassthroughSubject<String?, Never>()
 
         // this sets up the chain of whatever it's going to do
-        let _ = publisher
+        let cancellable = publisher
             .handleEvents(receiveSubscription: { aValue in
                 print("receiveSubscription event called with \(String(describing: aValue))")
                 // this happened second:
@@ -49,6 +49,7 @@ class HandleEventsPublisherTests: XCTestCase {
 
         publisher.send("DATA IN")
         publisher.send(completion: .finished)
+        XCTAssertNotNil(cancellable)
     }
 
 }

@@ -14,7 +14,7 @@ class FilterPublisherTests: XCTestCase {
     func testFilter() {
         let simplePublisher = PassthroughSubject<String, Error>()
 
-        let _ = simplePublisher
+        let cancellable = simplePublisher
             .filter { stringValue in
                 return stringValue == "onefish"
             }
@@ -37,6 +37,7 @@ class FilterPublisherTests: XCTestCase {
         simplePublisher.send("onefish") // onefish will pass the filter
         simplePublisher.send("twofish") // twofish will not
         simplePublisher.send(completion: Subscribers.Completion.finished)
+        XCTAssertNotNil(cancellable)
     }
 
     func testTryFilter() {
@@ -47,7 +48,7 @@ class FilterPublisherTests: XCTestCase {
 
         let simplePublisher = PassthroughSubject<String, Error>()
 
-        let _ = simplePublisher
+        let cancellable = simplePublisher
             .tryFilter { stringValue in
                 if stringValue == "explode" {
                     throw TestFailure.boom
@@ -74,5 +75,6 @@ class FilterPublisherTests: XCTestCase {
         simplePublisher.send("twofish") // twofish will not
         simplePublisher.send("explode") // explode will trigger a failure
         simplePublisher.send(completion: Subscribers.Completion.finished)
+        XCTAssertNotNil(cancellable)
     }
 }

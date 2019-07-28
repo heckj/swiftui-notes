@@ -14,7 +14,7 @@ class EmptyPublisherTests: XCTestCase {
     func testEmptyPublisher() {
         let expectation = XCTestExpectation(description: self.debugDescription)
 
-        let _ = Empty<String, Never>()
+        let cancellable = Empty<String, Never>()
             .sink(receiveCompletion: { completion in
                 print(".sink() received the completion", String(describing: completion))
                 switch completion {
@@ -32,6 +32,7 @@ class EmptyPublisherTests: XCTestCase {
             })
 
         wait(for: [expectation], timeout: 5.0)
+        XCTAssertNotNil(cancellable)
     }
 
 }

@@ -20,18 +20,11 @@ class BreakpointPublisherTests: XCTestCase {
         let publisher = PassthroughSubject<String?, Error>()
 
         // this sets up the chain of whatever it's going to do
-        let _ = publisher
+        let cancellable = publisher
             .tryMap { stringValue in
                 throw testFailureCondition.invalidServerResponse
             }
-            .breakpointOnError() // not triggering debugger from within unit tests
-            .breakpoint(receiveSubscription: { subscription in
-                return false
-            }, receiveOutput: { value in
-                return false
-            }, receiveCompletion: { completion in
-                return false
-            })
+            .breakpointOnError()
             .sink(
                 // sink captures and terminates the pipeline of operators
                 receiveCompletion: { completion in
@@ -44,7 +37,7 @@ class BreakpointPublisherTests: XCTestCase {
 
         publisher.send("DATA IN")
         publisher.send(completion: .finished)
-//        publisher.send(completion: .failure(testFailureCondition.invalidServerResponse))
+        XCTAssertNotNil(cancellable)
     }
 
         func testBreakpointOnSubscription() {
@@ -52,13 +45,9 @@ class BreakpointPublisherTests: XCTestCase {
             let publisher = PassthroughSubject<String?, Error>()
 
             // this sets up the chain of whatever it's going to do
-            let _ = publisher
-                .tryMap { stringValue in
-                    throw testFailureCondition.invalidServerResponse
-                }
-                .breakpointOnError() // not triggering debugger from within unit tests
+            let cancellable = publisher
                 .breakpoint(receiveSubscription: { subscription in
-                    return true
+                    return true // triggers breakpoint
                 }, receiveOutput: { value in
                     return false
                 }, receiveCompletion: { completion in
@@ -75,24 +64,22 @@ class BreakpointPublisherTests: XCTestCase {
 
             publisher.send("DATA IN")
             publisher.send(completion: .finished)
+            XCTAssertNotNil(cancellable)
         }
 
         func testBreakpointOnData() {
 
             let publisher = PassthroughSubject<String?, Error>()
-            let _ = publisher
-                .tryMap { stringValue in
-                    throw testFailureCondition.invalidServerResponse
-                }
+            let cancellable = publisher
                 .breakpoint(receiveSubscription: { subscription in
                     return false
                 }, receiveOutput: { value in
-                    return true
+                    return true // triggers breakpoint
                 }, receiveCompletion: { completion in
                     return false
                 })
                 .map {
-                    $0
+                    $0 // does nothing, but can be convenient to hang a debugger breakpoint on to see the data
                 }
                 .sink(
                     // sink captures and terminates the pipeline of operators
@@ -106,5 +93,6 @@ class BreakpointPublisherTests: XCTestCase {
 
             publisher.send("DATA IN")
             publisher.send(completion: .finished)
+            XCTAssertNotNil(cancellable)
         }
 }

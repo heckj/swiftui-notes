@@ -22,7 +22,7 @@ class EncodeDecodeTests: XCTestCase {
         // setup
         let dataProvider = PassthroughSubject<Data, Never>()
 
-        let _ = dataProvider
+        let cancellable = dataProvider
             .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder())
             // validate
             .sink(receiveCompletion: { completion in
@@ -42,13 +42,14 @@ class EncodeDecodeTests: XCTestCase {
             })
 
         dataProvider.send(Data("{\"valid\":true}".utf8))
+        XCTAssertNotNil(cancellable)
     }
 
     func testSimpleDecodeFailure() {
         // setup
         let dataProvider = PassthroughSubject<Data, Never>()
 
-        let _ = dataProvider
+        let cancellable = dataProvider
             .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder())
             // validate
             .sink(receiveCompletion: { completion in
@@ -70,13 +71,14 @@ class EncodeDecodeTests: XCTestCase {
             })
 
         dataProvider.send(Data("{}".utf8))
+        XCTAssertNotNil(cancellable)
     }
 
     func testSimpleEncode() {
         // setup
         let dataProvider = PassthroughSubject<PostmanEchoTimeStampCheckResponse, Never>()
 
-        let _ = dataProvider
+        let cancellable = dataProvider
             .encode(encoder: JSONEncoder())
             // validate
             .sink(receiveCompletion: { completion in
@@ -97,13 +99,14 @@ class EncodeDecodeTests: XCTestCase {
             })
 
         dataProvider.send(PostmanEchoTimeStampCheckResponse(valid: false))
+        XCTAssertNotNil(cancellable)
     }
 
     func testSimpleEncodeError() {
         // setup
         let dataProvider = PassthroughSubject<PostmanEchoTimeStampCheckResponse?, Never>()
 
-        let _ = dataProvider
+        let cancellable = dataProvider
             .encode(encoder: JSONEncoder())
             // validate
             .sink(receiveCompletion: { completion in
@@ -123,5 +126,6 @@ class EncodeDecodeTests: XCTestCase {
             })
 
         dataProvider.send(nil)
+        XCTAssertNotNil(cancellable)
     }
 }

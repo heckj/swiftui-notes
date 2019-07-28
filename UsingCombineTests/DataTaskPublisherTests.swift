@@ -84,7 +84,7 @@ class DataTaskPublisherTests: XCTestCase {
         XCTAssertNotNil(remoteDataPublisher)
 
         // validate
-        let _ = remoteDataPublisher
+        let cancellable = remoteDataPublisher
             .sink(receiveCompletion: { completion in
                 print(".sink() received the completion", String(describing: completion))
                 switch completion {
@@ -97,6 +97,7 @@ class DataTaskPublisherTests: XCTestCase {
             })
 
         wait(for: [expectation], timeout: 5.0)
+        XCTAssertNotNil(cancellable)
     }
 
     func testSimpleFailingURLDecodePipeline_URLError() {

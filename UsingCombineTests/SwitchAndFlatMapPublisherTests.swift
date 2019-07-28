@@ -24,7 +24,7 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
         // setup
         let simpleControlledPublisher = PassthroughSubject<String, Never>()
 
-        let _ = simpleControlledPublisher
+        let cancellable = simpleControlledPublisher
             .flatMap { someValue in // takes a String in and returns a Publisher
                 return Just<String>("Alternate data")
                 // flatMap returns a Publisher, where map returns <Input> - String in this case
@@ -51,7 +51,7 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
         simpleControlledPublisher.send(twoFish)
         simpleControlledPublisher.send(redFish)
         simpleControlledPublisher.send(blueFish)
-
+        XCTAssertNotNil(cancellable)
     }
 
     func testBasicFlatMapWithBackdoorPublisher_String_NeverPublisher() {
@@ -60,7 +60,7 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
 
         let backDoorPublisher = PassthroughSubject<String, Never>()
 
-        let _ = simpleControlledPublisher
+        let cancellable = simpleControlledPublisher
             .flatMap { someValue -> AnyPublisher<String, Never> in // takes a String in and returns a Publisher
                 return backDoorPublisher.eraseToAnyPublisher()
         }
@@ -115,7 +115,7 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
 
         simpleControlledPublisher.send(blueFish)
         backDoorPublisher.send("fifth response")
-
+        XCTAssertNotNil(cancellable)
         // based on this output, flatMap is adding a publisher for every element in the original stream
         // and each publisher that's created gets added - so if the original stream had 3 events flow through,
         // there could be 3 active publishers sending data
@@ -136,7 +136,7 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
         // setup
         let simpleControlledPublisher = PassthroughSubject<Data, Never>()
 
-        let _ = simpleControlledPublisher
+        let cancellable = simpleControlledPublisher
             .flatMap { value in // takes a String in and returns a Publisher
                 return Just<Data>(value)
                     .decode(type: IPInfo.self, decoder: JSONDecoder())
@@ -167,14 +167,14 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
         simpleControlledPublisher.send(redFish!)
         simpleControlledPublisher.send(blueFish!)
         simpleControlledPublisher.send(completion: Subscribers.Completion.finished)
-
+        XCTAssertNotNil(cancellable)
     }
 
     func testBasicFlatMapFallback_Data_ErrorPublisher() {
         // setup
         let simpleControlledPublisher = PassthroughSubject<Data, Error>()
 
-        let _ = simpleControlledPublisher
+        let cancellable = simpleControlledPublisher
             .flatMap { value in // takes a String in and returns a Publisher
                 return Just(value)
                     .decode(type: IPInfo.self, decoder: JSONDecoder())
@@ -205,7 +205,7 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
         simpleControlledPublisher.send(redFish!)
         simpleControlledPublisher.send(blueFish!)
         simpleControlledPublisher.send(completion: Subscribers.Completion.finished)
-
+        XCTAssertNotNil(cancellable)
     }
 
     func testSwitchToLatest() {
@@ -218,7 +218,7 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
 
         let simpleSubjectPublisher = PassthroughSubject<String, Never>()
 
-        let _ = simpleSubjectPublisher
+        let cancellable = simpleSubjectPublisher
             .map { stringValue in
                 return APIProxyExample(someString: stringValue)
             }
@@ -242,6 +242,7 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
 
         simpleSubjectPublisher.send("onefish") // onefish will pass the filter
         simpleSubjectPublisher.send(completion: Subscribers.Completion.finished)
+        XCTAssertNotNil(cancellable)
     }
 
     func testSwitchToLatestReturningTwoResults() {

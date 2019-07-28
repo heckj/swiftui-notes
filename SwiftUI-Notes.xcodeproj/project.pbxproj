@@ -288,13 +288,13 @@
 				1AFF21DA22CFFF0C0039C303 /* SubscribeReceiveAssignTests.swift */,
 				1A4FB16622D1464F0009F228 /* EncodeDecodeTests.swift */,
 				1A7C604022D0155E00D7675C /* DataTaskPublisherTests.swift */,
+				1A71C40122ECDDA80094D95C /* BreakpointPublisherTests.swift */,
 				1AEA9C2822CD5FE7006709F1 /* Info.plist */,
 				1AFF21DC22D003D20039C303 /* XCTestCase+KVOExpectatio0n.swift */,
 				1A1C87C022D0EF6100128A5E /* Mock.swift */,
 				1A1C87C222D0EF6100128A5E /* Mocker.swift */,
 				1A1C87C122D0EF6100128A5E /* MockingURLProtocol.swift */,
 				1A534E1C22E3DF20005E6868 /* InterimTestingStructs.swift */,
-				1A71C40122ECDDA80094D95C /* BreakpointPublisherTests.swift */,
 			);
 			path = UsingCombineTests;
 			sourceTree = "<group>";
