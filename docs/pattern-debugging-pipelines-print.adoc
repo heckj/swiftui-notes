@@ -3,7 +3,7 @@
 
 __Goal__::
 
-* To gain understanding of why a pipeline isn't operating as you expect...
+* To gain understanding of what is happening in a pipeline, seeing all control and data interactions.
 
 __References__::
 

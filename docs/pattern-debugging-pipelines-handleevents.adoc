@@ -3,7 +3,7 @@
 
 __Goal__::
 
-* To gain understanding of why a pipeline isn't operating as you expect...
+* To get more targettted understanding of what is happening within a pipeline, employing breakpoints, print or logging statements, or additional logic.
 
 __References__::
 
@@ -23,6 +23,8 @@ __Code and explanation__::
 
 <<reference.adoc#reference-handleevents>> passes data through, making no modifications to the output and failure types, or the data.
 When you put in the operator, you can specify a number of optional closures, allowing you to focus on the aspect of what you want to see.
+The <<reference.adoc#reference-handleevents>> operator with specific closures can be a great way to get a window to see what is happening when a pipeline is cancelling, erroring, or otherwise terminating expectedly.
+
 The closures you can provide include:
 
 * `receiveSubscription`
@@ -65,6 +67,12 @@ This will repeat for as many values as the publisher sends.
 Just the like the <<reference.adoc#reference-sink>> closure, you can switch on the completion provided, and if it is a `.failure` completion, then you can inspect the enclosed error.
 <5> If the pipeline is cancelled, then the `receiveCancel` closure will be called.
 No data is passed into the cancellation closure.
+
+[NOTE]
+====
+While you can also use <<reference.adoc#rerefence-breakpoint>> and <<reference.adoc#rerefence-breakpointOnError>> operators to break into a debugger (as shown in <<#patterns-debugging-breakpoint>>), the handleEvents() operator with closures allows you to set breakpoints within Xcode.
+This allows you to immediately jump into the debugger to inspect the data flowing through the pipeline, or to get references to the subscriber, or the error in the case of a failed completion.
+====
 
 // force a page break - in HTML rendering is just a <HR>
 <<<

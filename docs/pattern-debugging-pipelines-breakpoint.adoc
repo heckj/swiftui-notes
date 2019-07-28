@@ -3,7 +3,7 @@
 
 __Goal__::
 
-* To gain understanding of why a pipeline isn't operating as you expect...
+* To force the pipeline to trap into a debugger on specific scenarios or conditions.
 
 __References__::
 
@@ -47,10 +47,18 @@ With very active pipelines processing a lot of data, this can be a great tool to
 If you are only interested in the breaking into the debugger on error conditions, then convenience operator <<reference.adoc#reference-breakpointonerror>> is perfect.
 It takes no parameters or closures, simply invoking the debugger when an error condition of any form is passed through the pipeline.
 
+[source, swift]
+----
+.breakpointOnError()
+----
+
+
 [NOTE]
 ====
 The location of the breakpoint that is triggered by the breakpoint operator isn't in your code, so getting to local frames and information can be a bit tricky.
 This does allow you to inspect global application state in highly specific instances (whenever the closure returns `true`, with logic you provide), but you may find it more effective to use regular breakpoints within closures.
+The breakpoint() and breakpointOnError() operators don't immediately drop you into a closure where you can see the data being passed, error thrown, or control signals that may have triggered the breakpoint.
+You can often walk back up the stack trace within the debugging window to see the publisher.
 
 When you trigger a breakpoint within an operator's closure, the debugger immediately gets the context of that closure as well, so you can see/inspect the data being passed.
 ====
