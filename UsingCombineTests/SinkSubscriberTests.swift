@@ -16,12 +16,13 @@ class SinkSubscriberTests: XCTestCase {
         let expectation = XCTestExpectation(description: "async sink test")
         let examplePublisher = Just(5)
         // validate
-        let _ = examplePublisher.sink { value in
+        let cancellable = examplePublisher.sink { value in
             print(".sink() received \(String(describing: value))")
             XCTAssertEqual(value, 5)
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: 5.0)
+        XCTAssertNotNil(cancellable)
     }
 
     func testDualSink() {
@@ -30,7 +31,7 @@ class SinkSubscriberTests: XCTestCase {
         let examplePublisher = Just(5)
 
         // validate
-        let _ = examplePublisher.sink(receiveCompletion: { err in
+        let cancellable = examplePublisher.sink(receiveCompletion: { err in
             print(".sink() received the completion", String(describing: err))
             expectation.fulfill()
         }, receiveValue: { value in
@@ -39,6 +40,7 @@ class SinkSubscriberTests: XCTestCase {
         })
 
         wait(for: [expectation], timeout: 5.0)
+        XCTAssertNotNil(cancellable)
     }
 
     func testSinkReceiveDataThenError() {

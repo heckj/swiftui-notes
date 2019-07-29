@@ -19,7 +19,7 @@ class RetryPublisherTests: XCTestCase {
         // setup
         let simpleControlledPublisher = PassthroughSubject<String, Error>()
 
-        let _ = simpleControlledPublisher
+        let cancellable = simpleControlledPublisher
             .print(self.debugDescription)
             .retry(1)
             .sink(receiveCompletion: { fini in
@@ -45,13 +45,14 @@ class RetryPublisherTests: XCTestCase {
 
         simpleControlledPublisher.send(redFish)
         simpleControlledPublisher.send(blueFish)
+        XCTAssertNotNil(cancellable)
     }
 
     func testRetryOperatorWithCurrentValueSubject() {
         // setup
         let simpleControlledPublisher = CurrentValueSubject<String, Error>("initial value")
 
-        let _ = simpleControlledPublisher
+        let cancellable = simpleControlledPublisher
             .print("(1)>")
             .retry(3)
             .print("(2)>")
@@ -67,7 +68,7 @@ class RetryPublisherTests: XCTestCase {
         simpleControlledPublisher.send(oneFish)
         // with an error response, this prints two results and hangs...
         simpleControlledPublisher.send(completion: Subscribers.Completion.failure(testFailureCondition.invalidServerResponse))
-
+        XCTAssertNotNil(cancellable)
         // with a completion, this prints two results and ends
         //simpleControlledPublisher.send(completion: .finished)
 
@@ -89,7 +90,7 @@ class RetryPublisherTests: XCTestCase {
 
     func testRetryWithOneShotJustPublisher() {
         // setup
-        let _ = Just<String>("yo")
+        let cancellable = Just<String>("yo")
             .print("(1)>")
             .retry(3)
             .print("(2)>")
@@ -99,6 +100,7 @@ class RetryPublisherTests: XCTestCase {
                 XCTAssertNotNil(stringValue)
                 print(" ** .sink() received \(stringValue)")
             })
+        XCTAssertNotNil(cancellable)
         //        output:
         //        (1)>: receive subscription: (Just)
         //        (2)>: receive subscription: (Retry)
@@ -116,7 +118,7 @@ class RetryPublisherTests: XCTestCase {
     func testRetryWithOneShotFailPublisher() {
         // setup
 
-        let _ = Fail(outputType: String.self, failure: testFailureCondition.invalidServerResponse)
+        let cancellable = Fail(outputType: String.self, failure: testFailureCondition.invalidServerResponse)
             .print("(1)>")
             .retry(3)
             .print("(2)>")
@@ -126,6 +128,7 @@ class RetryPublisherTests: XCTestCase {
                 XCTAssertNotNil(stringValue)
                 print(" ** .sink() received \(stringValue)")
             })
+        XCTAssertNotNil(cancellable)
         //        output:
         //        (1)>: receive subscription: (Empty)
         //        (1)>: receive error: (invalidServerResponse)

@@ -154,6 +154,13 @@ class SubscribeReceiveAssignTests: XCTestCase {
                 print("map after dataTask on queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
                 // XCTAssertEqual(String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!, "firstQueue")
                 // beta4: ❌
+                // NOTE: per feedback from Apple development teams in FB6727976, the subscribe(on:) only impacts a few select
+                // functions:
+                // - Publisher's func receive<S: Subscriber>(subscriber: S) where S.Input == Output, S.Failure == Failure
+                // - Subscription's func request(_ demand: Subscribers.Demand)
+                // - func cancel()
+                // dataTaskPublisher manages it's own queues based on the URLSession object, and runs it's relevant queue from
+                // there, which cascades until a receive(on:) function transfers pipeline operation to another queue.
                 return $0.data
             }
             .subscribe(on: firstQueue)

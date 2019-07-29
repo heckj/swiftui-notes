@@ -326,7 +326,7 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         var receivedCount = 0
         var lastReceivedSinkValue = -1
 
-        let _ = foo.$intValue
+        let cancellable = foo.$intValue
             .throttle(for: 0.5, scheduler: q, latest: true)
             .print(self.debugDescription)
             .sink { someValue in
@@ -362,5 +362,6 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         // of the values send at 1.1 and 1.2 seconds in, the second value is returned down the pipeline
         XCTAssertEqual(foo.intValue, 4)
         XCTAssertEqual(lastReceivedSinkValue, 4)
+        XCTAssertNotNil(cancellable)
     }
 }
