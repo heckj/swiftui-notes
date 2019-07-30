@@ -147,10 +147,17 @@ Additional examples of how to arrange error handling for a continous publisher l
 
 [WARNING]
 ====
-As of the beta3 release of Combine with the updated operating systems, Published doesn't always trigger updates when a struct is the holding the @Published variable, but it works within a class instance.
-The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`] illustrate this with the tests:
-* `testPublishedOnStructWithChange`
-* `testPublishedOnClassWithChange`
+Using `@Published` should only be done within reference types - that is, within classes.
+An early beta (2) allowed @Published wrapped within a struct.
+As of beta5, the compiler will no throw an error if this is attempted:
+
+[source]
+----
+<unknown>:0: error: 'wrappedValue' is unavailable: @Published is only available on properties of classes
+	     Combine.Published:5:16: note: 'wrappedValue' has been explicitly marked unavailable here
+	         public var wrappedValue: Value { get set }
+                        ^
+----
 ====
 
 [#reference-empty]

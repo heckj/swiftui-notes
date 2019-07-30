@@ -102,7 +102,7 @@ class EncodeDecodeTests: XCTestCase {
         XCTAssertNotNil(cancellable)
     }
 
-    func testSimpleEncodeError() {
+    func testSimpleEncodeNil() {
         // setup
         let dataProvider = PassthroughSubject<PostmanEchoTimeStampCheckResponse?, Never>()
 
@@ -117,15 +117,16 @@ class EncodeDecodeTests: XCTestCase {
                     break
                 case .failure(let anError):
                     print("received error: ", anError)
-                    XCTAssertEqual("The data couldn’t be written because it isn’t in the correct format.", anError.localizedDescription)
+                    XCTFail("shouldn't receive a finished with this sample")
                     break
                 }
             }, receiveValue: { data in
-                print(".sink() data received \(data)")
-                XCTFail("shouldn't receive any data with this sample")
+                let resultingString = String(data: data, encoding: .utf8)
+                XCTAssertEqual(resultingString, "null")
             })
 
         dataProvider.send(nil)
         XCTAssertNotNil(cancellable)
     }
+
 }
