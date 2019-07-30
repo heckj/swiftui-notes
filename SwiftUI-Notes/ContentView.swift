@@ -27,7 +27,7 @@ struct MapView: UIViewRepresentable {
 
 /// the sample ContentView
 struct ContentView : View {
-    @ObjectBinding var model: ExampleModel
+    @ObservedObject var model: ExampleModel
 
     func clickityButton() {
 
