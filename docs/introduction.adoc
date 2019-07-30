@@ -16,7 +16,7 @@ If you are already familar with RxSwift there is https://medium.com/gett-enginee
 built and inspired by the data collected at
 https://github.com/freak4pc/rxswift-to-combine-cheatsheet.
 
-Another good over is a post https://www.caseyliss.com/2019/6/17/combine-wheres-the-beef[Combine: Where's the Beef?] by Casey Liss describing how Combine maps back to RxSwift and RxCocoa's concepts, and where it is different.
+Another good overview is a post https://www.caseyliss.com/2019/6/17/combine-wheres-the-beef[Combine: Where's the Beef?] by Casey Liss describing how Combine maps back to RxSwift and RxCocoa's concepts, and where it is different.
 ====
 
 == Functional reactive programming
