@@ -71,6 +71,7 @@ class NotificationCenterPublisherTests: XCTestCase {
             // in the notification itself.
             .sink { receivedNotification in
                 print("passed through: ", receivedNotification)
+                receivedNotification.name
                 XCTAssertNil(receivedNotification.userInfo)
                 XCTAssertNotNil(receivedNotification.object)
                 XCTAssertEqual(receivedNotification.description, "name = an-example-notification, object = Optional(UsingCombineTests.exampleStruct(aProperty: \"hello\")), userInfo = nil")

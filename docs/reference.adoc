@@ -304,8 +304,42 @@ __Usage__::
 
 __Details__::
 
-* https://developer.apple.com/documentation/foundation/notificationcenter[`NotificationCenter`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publisher`]
+https://developer.apple.com/documentation/appkit[AppKit] and MacOS applications have heavily relied on https://developer.apple.com/documentation/foundation/notification[Notifications] to provide general application state information.
+A number of components also use Notifications through https://developer.apple.com/documentation/foundation/notificationcenter[NotificationCenter] to provide updates on user interactions, such as
 
+Notifications are identified primarily by name, defined by a string in your own code, or a constant from a relevant framework.
+You can find a good general list of existing Notifications by name at https://developer.apple.com/documentation/foundation/nsnotification/name.
+A number of framework specific notifications are often included within the framework.
+For example, within AppKit, there are a number of common notifications under https://developer.apple.com/documentation/appkit/nscontrol[NSControl].
+
+A number of AppKit controls provide notifications when the control has been updated.
+For example, AppKit's https://developer.apple.com/documentation/appkit/views_and_controls/text_field[TextField] triggers a number of notifications including:
+
+* textDidBeginEditingNotification
+* textDidChangeNotification
+* textDidEndEditingNotification
+
+NotificationCenter provides a publisher upon which you may create pipelines to declaratively react to application or system notifications.
+When creating a publisher, you define a single Notification name, often from a constant within a relevant framework.
+The publisher optionally takes an object reference which further filters notifications to those provided by the specific reference.
+
+[source, swift]
+----
+extension Notification.Name {
+    static let yourNotification = Notification.Name("your-notification") <1>
+}
+
+let cancellable = NotificationCenter.default.publisher(for: .yourNotification, object: nil) <2>
+    .sink {
+        print ($0) <3>
+    }
+----
+<1> Notifications are defined by a string for their name.
+If defining your own, be careful to define the strings uniquely.
+<2> A NotificationCenter publisher can be created for a single type of notification, `.yourNotification` in this case, defined previously in your code.
+<3> https://developer.apple.com/documentation/foundation/notifications[Notifications] are received from the publisher.
+These include at least their name, and optionally a `object` reference from the sending object - most commonly provided from Apple frameworks.
+Notifications may also include a `userInfo` dictionary of arbitrary values, which can be used to pass additional information within your application.
 
 [#reference-timer]
 === Timer
