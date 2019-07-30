@@ -1,5 +1,5 @@
 //
-//  NoticiationCenterPubisherTests.swift
+//  NotificationCenterPubisherTests.swift
 //  UsingCombineTests
 //
 //  Created by Joseph Heck on 7/30/19.
@@ -8,26 +8,103 @@
 
 import XCTest
 
-class NoticiationCenterPubisherTests: XCTestCase {
+extension Notification.Name {
+    static let myExampleNotification = Notification.Name("an-example-notification")
+}
 
-    override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+class exampleClass {
+    var aProperty: String = ""
+}
+
+struct exampleStruct {
+    var aProperty: String = ""
+}
+
+class NotificationCenterPubisherTests: XCTestCase {
+
+    func testNotificationCenterPublisherBareNotification() {
+        let expectation = XCTestExpectation(description: self.debugDescription)
+
+        let cancellable = NotificationCenter.default.publisher(for: .myExampleNotification)
+            .sink { receivedNotification in
+                print("passed through: ", receivedNotification)
+                XCTAssertNil(receivedNotification.userInfo)
+                XCTAssertNil(receivedNotification.object)
+                XCTAssertEqual(receivedNotification.description, "name = an-example-notification, object = nil, userInfo = nil")
+                expectation.fulfill()
+            }
+
+        let note = Notification(name: .myExampleNotification)
+        NotificationCenter.default.post(note)
+
+        XCTAssertNotNil(cancellable)
+        wait(for: [expectation], timeout: 5.0)
     }
 
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    func testNotificationCenterPublisherWithRefObject() {
+        let expectation = XCTestExpectation(description: self.debugDescription)
+        let refInstance = exampleClass()
+        refInstance.aProperty = "hello"
+
+        let cancellable = NotificationCenter.default.publisher(for: .myExampleNotification, object: refInstance)
+            .sink { receivedNotification in
+                print("passed through: ", receivedNotification)
+                XCTAssertNil(receivedNotification.userInfo)
+                XCTAssertNotNil(receivedNotification.object)
+                XCTAssertEqual(receivedNotification.description, "name = an-example-notification, object = Optional(UsingCombineTests.exampleClass), userInfo = nil")
+                expectation.fulfill()
+            }
+
+        NotificationCenter.default.post(name: .myExampleNotification, object: refInstance)
+        XCTAssertNotNil(cancellable)
+
+        wait(for: [expectation], timeout: 5.0)
     }
 
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testNotificationCenterPublisherWithValueObject() {
+        let expectation = XCTestExpectation(description: self.debugDescription)
+        let valInstance = exampleStruct(aProperty: "hello")
+
+        let cancellable = NotificationCenter.default.publisher(for: .myExampleNotification, object: nil)
+            // can't use the object parameter to filter on a value reference, only class references, but
+            // filtering on 'nil' only constrains to notification name, so value objects *can* be passed
+            // in the notification itself.
+            .sink { receivedNotification in
+                print("passed through: ", receivedNotification)
+                XCTAssertNil(receivedNotification.userInfo)
+                XCTAssertNotNil(receivedNotification.object)
+                XCTAssertEqual(receivedNotification.description, "name = an-example-notification, object = Optional(UsingCombineTests.exampleStruct(aProperty: \"hello\")), userInfo = nil")
+                expectation.fulfill()
+            }
+
+        NotificationCenter.default.post(name: .myExampleNotification, object: valInstance)
+        XCTAssertNotNil(cancellable)
+
+        wait(for: [expectation], timeout: 5.0)
     }
 
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
+    func testNotificationCenterPublisherBareNotificationWithUserInfo() {
+        let expectation = XCTestExpectation(description: self.debugDescription)
+        let myUserInfo = ["foo": "bar"]
 
+        let cancellable = NotificationCenter.default.publisher(for: .myExampleNotification)
+            .sink { receivedNotification in
+                print("passed through: ", receivedNotification)
+                XCTAssertNotNil(receivedNotification.userInfo)
+                guard let localDict = receivedNotification.userInfo as? Dictionary<String, String> else {
+                    XCTFail()
+                    return
+                }
+                XCTAssertEqual(myUserInfo, localDict)
+                XCTAssertNil(receivedNotification.object)
+                XCTAssertEqual(receivedNotification.description, "name = an-example-notification, object = nil, userInfo = Optional([AnyHashable(\"foo\"): \"bar\"])")
+                expectation.fulfill()
+            }
+
+        let note = Notification(name: .myExampleNotification, userInfo: myUserInfo)
+        NotificationCenter.default.post(note)
+
+        XCTAssertNotNil(cancellable)
+        wait(for: [expectation], timeout: 5.0)
+    }
 }
