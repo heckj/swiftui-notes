@@ -171,11 +171,11 @@ Combine provides a number of additional convenience publishers:
 | <<reference.adoc#reference-published>>
 
 | <<reference.adoc#reference-empty>>
-| <<reference.adoc#reference-optional>>
 | <<reference.adoc#reference-sequence>>
-
 | <<reference.adoc#reference-fail>>
+
 | <<reference.adoc#reference-deferred>>
+| <<reference.adoc#reference-observableobjectpublisher>>
 |
 
 |===
@@ -183,7 +183,7 @@ Combine provides a number of additional convenience publishers:
 A number of Apple APIs outside of Combine provide publishers as well.
 // TODO(heckj): come back and map these to xref's to the reference section when created
 
-* SwiftUI provides https://developer.apple.com/documentation/swiftui/objectbinding[`@ObjectBinding`] which can be used to create a publisher.
+* SwiftUI provides https://developer.apple.com/documentation/swiftui/observedobject[`@ObservedObject`] which can be used to create a publisher.
 
 * Foundation
 ** <<reference.adoc#reference-datataskpublisher>>

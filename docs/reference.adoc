@@ -183,7 +183,7 @@ Empty is useful in error handling scenarios where with publishers where the valu
 Empty can be invoked to be a publisher of any output and failure type combination.
 
 Empty is most commonly used where you need to return a publisher, but don't want to propogate any values (a possible error handling scenario).
-If you want a publisher that provides a single value, then look at <<#reference-just>> or <<#reference-optional>> publishers as alternatives.
+If you want a publisher that provides a single value, then look at <<#reference-just>> or <<#reference-deferred>> publishers as alternatives.
 
 When subscribed to, an instance of the Empty publisher will not return any values (or errors) and will immediately return a finished completion message to the subscriber.
 
@@ -212,23 +212,6 @@ __Details__::
 
 n/a
 
-[#reference-optional]
-=== Publishers.Optional
-
-__Summary__::
-
-generates a value exactly once for each subscriber, if the optional has a value
-
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/optional[`Publishers.Optional`]
-
-__Usage__::
-
-n/a
-
-__Details__::
-
-n/a
-
 [#reference-sequence]
 === Publishers.Sequence
 
@@ -246,7 +229,6 @@ __Details__::
 
 n/a
 
-
 [#reference-deferred]
 === Deferred
 
@@ -255,6 +237,23 @@ __Summary__::
 Publisher waits for a subscriber before running the provided closure to create values for the subscriber.
 
 __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/deferred[`Deferred`]
+
+__Usage__::
+
+n/a
+
+__Details__::
+
+n/a
+
+[#reference-observableobjectpublisher]
+=== ObservableObjectPublisher
+
+__Summary__::
+
+Used with https://developer.apple.com/documentation/swiftui[SwiftUI], objects conforming to https://developer.apple.com/documentation/combine/observableobject[ObservableObject] protocol can provide a publisher.
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/observableobjectpublisher[`ObservableObjectPublisher`]
 
 __Usage__::
 
@@ -295,7 +294,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/foundation/notificationcenter/
+__icon:apple[] docs__:: https://developer.apple.com/documentation/foundation/notificationcenter/[`NotificationCenter`]
 
 __Usage__::
 

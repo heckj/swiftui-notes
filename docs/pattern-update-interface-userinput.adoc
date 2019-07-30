@@ -7,7 +7,7 @@ __Goal__::
 
 __References__::
 
-* The Xcode project ViewController with this code is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/ViewController.swift[`UIKit-Combine/ViewController.swift`]
+* The Xcode project ViewController with this code is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubViewController.swift[`UIKit-Combine/GithubViewController.swift`]
 
 * Publishers:
 <<reference.adoc#reference-published>>,

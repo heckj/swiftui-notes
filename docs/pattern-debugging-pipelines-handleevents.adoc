@@ -70,7 +70,7 @@ No data is passed into the cancellation closure.
 
 [NOTE]
 ====
-While you can also use <<reference.adoc#rerefence-breakpoint>> and <<reference.adoc#rerefence-breakpointOnError>> operators to break into a debugger (as shown in <<#patterns-debugging-breakpoint>>), the handleEvents() operator with closures allows you to set breakpoints within Xcode.
+While you can also use <<reference.adoc#reference-breakpoint>> and <<reference.adoc#reference-breakpointonerror>> operators to break into a debugger (as shown in <<#patterns-debugging-breakpoint>>), the handleEvents() operator with closures allows you to set breakpoints within Xcode.
 This allows you to immediately jump into the debugger to inspect the data flowing through the pipeline, or to get references to the subscriber, or the error in the case of a failed completion.
 ====
 
