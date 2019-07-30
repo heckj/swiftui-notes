@@ -284,12 +284,81 @@ n/a
 [#reference-foundation]
 === Foundation
 
+[#reference-notificationcenter]
+=== NotificationCenter
+
+__Summary__::
+
+Foundation's NotificationCenter added the capability to act as a publisher, providing https://developer.apple.com/documentation/foundation/notifications[Notifications] to pipelines.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/foundation/notificationcenter/
+
+__Usage__::
+
+* <<pattern.adoc#patterns-notificationcenter>>
+* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/NotificationCenterPubisherTests.swift[`UsingCombineTests/NotificationCenterPubisherTests.swift`]
+
+__Details__::
+
 * https://developer.apple.com/documentation/foundation/notificationcenter[`NotificationCenter`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publisher`]
 
-* https://developer.apple.com/documentation/foundation/timer[`Timer`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publish`] and https://developer.apple.com/documentation/foundation/timer/timerpublisher[`Timer.TimerPublisher`]
 
-** * https://developer.apple.com/documentation/foundation/timer/timerpublisher[TimerPublisher]
-** StackOverflow Q&A: https://stackoverflow.com/questions/56998702/swift-combine-repeat
+[#reference-timer]
+=== Timer
+
+__Summary__::
+
+Foundation's Timer added the capability to act as a publisher, providing https://developer.apple.com/documentation/foundation/notifications[Notifications] to pipelines.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/foundation/timer[`Timer`]
+
+__Usage__::
+
+* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/TimerPublisherTests.swift[`UsingCombineTests/TimerPublisherTests.swift`]
+
+__Details__::
+
+Timer.publish returns an instance of https://developer.apple.com/documentation/foundation/timer/timerpublisher[`Timer.TimerPublisher`].
+This publisher is a connectable publisher, conforming to https://developer.apple.com/documentation/combine/connectablepublisher[`ConnectablePublisher`].
+This means that even when subscribers are connected to it, it will not start producing values until connect() or autoconnect() is invoked on the publisher.
+
+Creating the timer publisher requires an interval in seconds, and a RunLoop and mode upon which to run.
+The publisher may optionally take an additional parameter `tolerance`, which defines a variance allowed in the generation of timed events.
+The default for toleranace is nil, allowing any variance.
+
+The publisher has an output type of https://developer.apple.com/documentation/foundation/date[Date] and a failure type of `<Never>`.
+
+If you want the publisher to automatically connect and start receiving values as soon as subscribers are connected and make requests for values, then you may include autoconnect() in the pipeline to have it automatically start to generate values as soon as a subscriber requests data.
+
+[source, swift]
+----
+let cancellable = Timer.publish(every: 1.0, on: RunLoop.main, in: .common)
+    .autoconnect()
+    .sink { receivedTimeStamp in
+        print("passed through: ", receivedTimeStamp)
+    }
+----
+
+Alternatively, you can connect up the subscribers, which will receive no values until you invoke `connect()` on the publisher, which also returns a https://developer.apple.com/documentation/combine/cancellable[Cancellable] reference.
+
+[source, swift]
+----
+let timerPublisher = Timer.publish(every: 1.0, on: RunLoop.main, in: .default)
+let cancellableSink = timerPublisher
+    .sink { receivedTimeStamp in
+        print("passed through: ", receivedTimeStamp)
+    }
+// no values until the following is invoked elsewhere/later:
+let cancellablePublisher = timerPublisher.connect()
+----
 
 [#reference-kvo-publisher]
 === .publisher on KVO instance

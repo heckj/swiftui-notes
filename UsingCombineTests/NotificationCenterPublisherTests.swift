@@ -1,5 +1,5 @@
 //
-//  NotificationCenterPubisherTests.swift
+//  NotificationCenterPublisherTests.swift
 //  UsingCombineTests
 //
 //  Created by Joseph Heck on 7/30/19.
@@ -20,7 +20,7 @@ struct exampleStruct {
     var aProperty: String = ""
 }
 
-class NotificationCenterPubisherTests: XCTestCase {
+class NotificationCenterPublisherTests: XCTestCase {
 
     func testNotificationCenterPublisherBareNotification() {
         let expectation = XCTestExpectation(description: self.debugDescription)

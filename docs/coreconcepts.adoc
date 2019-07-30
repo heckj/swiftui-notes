@@ -188,10 +188,8 @@ A number of Apple APIs outside of Combine provide publishers as well.
 * Foundation
 ** <<reference.adoc#reference-datataskpublisher>>
 ** <<reference.adoc#reference-kvo-publisher>>
-
-** https://developer.apple.com/documentation/foundation/notificationcenter[`NotificationCenter`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publisher`]
-
-** https://developer.apple.com/documentation/foundation/timer[`Timer`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publish`] and https://developer.apple.com/documentation/foundation/timer/timerpublisher[`Timer.TimerPublisher`]
+** <<reference.adoc#reference-notificationcenter>>
+** <<reference.adoc#reference-timer>>
 
 * https://developer.apple.com/documentation/realitykit[`RealityKit`] https://developer.apple.com/documentation/realitykit/scene[`.Scene`] https://developer.apple.com/documentation/realitykit/scene/3254685-publisher[`.publisher()`]
 

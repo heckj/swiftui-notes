@@ -3,17 +3,21 @@
 
 __Goal__::
 
-* The big "master bus" of events across a variety of Apple platforms, its where you can listen for updates and changes from controls and events across a variety of frameworks.
+* Receiving notifications from NotificationCenter as a publisher to declaratively react to the information provided.
 
 __References__::
 
-* << link to reference pages>>
+* <<reference.adoc#reference-notificationcenter>>
 
 __See also__::
 
-* << link to other patterns>>
+* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/NotificationCenterPubisherTests.swift[`UsingCombineTests/NotificationCenterPubisherTests.swift`]
 
 __Code and explanation__::
+
+A large number of frameworks and user interface components provide information about their state and interactions via Notifications from NotificationCenter.
+
+The big "master bus" of events across a variety of Apple platforms, its where you can listen for updates and changes from controls and events across a variety of frameworks.
 
 https://www.caseyliss.com/2019/6/18/quick-notes-on-yesterdays-post[Casey Liss talks about about this (not entirely happily)] based on the apple documentation https://developer.apple.com/documentation/combine/receiving_and_handling_events_with_combine[Receiving and Handling Events with Combine].
 
