@@ -11,7 +11,7 @@ __References__::
 
 __See also__::
 
-* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/NotificationCenterPubisherTests.swift[`UsingCombineTests/NotificationCenterPubisherTests.swift`]
+* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/NotificationCenterPublisherTests.swift[`UsingCombineTests/NotificationCenterPublisherTests.swift`]
 
 __Code and explanation__::
 

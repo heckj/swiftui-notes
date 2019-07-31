@@ -298,8 +298,8 @@ __icon:apple[] docs__:: https://developer.apple.com/documentation/foundation/not
 
 __Usage__::
 
-* <<pattern.adoc#patterns-notificationcenter>>
-* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/NotificationCenterPubisherTests.swift[`UsingCombineTests/NotificationCenterPubisherTests.swift`]
+* <<patterns.adoc#patterns-notificationcenter>>
+* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/NotificationCenterPublisherTests.swift[`UsingCombineTests/NotificationCenterPublisherTests.swift`]
 
 __Details__::
 
