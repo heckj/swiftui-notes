@@ -9,7 +9,7 @@
 import SwiftUI
 import Combine
 
-class ExampleModel : BindableObject {
+class ExampleModel : ObservableObject {
     typealias PublisherType = PassthroughSubject<Void, Never>
 
     var willChange = PassthroughSubject<Void, Never>()

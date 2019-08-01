@@ -11,9 +11,23 @@ import Combine
 
 class PublisherTests: XCTestCase {
 
-    struct HoldingStruct {
-        @Published var username: String = ""
-    }
+//    struct HoldingStruct {
+//        @Published var username: String = ""
+//    }
+
+    /* NOTE(heckj):
+     The above stanza (as of beta5) is now explicitly disallowed from the compiler, although it's
+     not reported very clearly in Xcode. The compiler error from the above lines:
+
+     <unknown>:0: error: 'wrappedValue' is unavailable: @Published is only available on properties of classes
+     Combine.Published:5:16: note: 'wrappedValue' has been explicitly marked unavailable here
+         public var wrappedValue: Value { get set }
+                    ^
+
+     Given that it's explicitly marked as unavailable, I'm presuming that the @Published annotation is
+     only to be used with properties on reference types (classes), and commenting out the tests that had
+     previously attempting to use it within a value type (struct).
+     */
 
     class HoldingClass {
         @Published var username: String = ""
@@ -28,18 +42,18 @@ class PublisherTests: XCTestCase {
         @objc dynamic var boolValue: Bool = false
     }
 
-    func testPublishedOnStruct() {
-        let expectation = XCTestExpectation(description: self.debugDescription)
-        let foo = HoldingStruct()
-
-        let cancellable = foo.$username
-            .sink { someString in
-                print("value of username updated to: >>\(someString)<<")
-                expectation.fulfill()
-        }
-        wait(for: [expectation], timeout: 5.0)
-        XCTAssertNotNil(cancellable)
-    }
+//    func testPublishedOnStruct() {
+//        let expectation = XCTestExpectation(description: self.debugDescription)
+//        let foo = HoldingStruct()
+//
+//        let cancellable = foo.$username
+//            .sink { someString in
+//                print("value of username updated to: >>\(someString)<<")
+//                expectation.fulfill()
+//        }
+//        wait(for: [expectation], timeout: 5.0)
+//        XCTAssertNotNil(cancellable)
+//    }
 
     func testPublishedOnClassInstance() {
         let expectation = XCTestExpectation(description: "async sink test")
@@ -53,31 +67,32 @@ class PublisherTests: XCTestCase {
         wait(for: [expectation], timeout: 5.0)
         XCTAssertNotNil(cancellable)
     }
-
-    func testPublishedOnStructWithChange() {
-        // NOTE(heckj) this test succeeded on beta 2, but fails on beta3 and beta4.
-        // documented to Apple as FB6608729
-        // beta2: ✅
-        // beta3: ❌
-        // beta4: ❌
-        let expectation = XCTestExpectation(description: self.debugDescription)
-        var foo = HoldingStruct()
-        let q = DispatchQueue(label: self.debugDescription)
-
-        let cancellable = foo.$username
-            .sink { someString in
-                print("value of username updated to: >>\(someString)<<")
-                if someString == "redfish" {
-                    expectation.fulfill()
-                }
-        }
-        q.async {
-            print("Updating to redfish on background queue")
-            foo.username = "redfish"
-        }
-        wait(for: [expectation], timeout: 5.0)
-        XCTAssertNotNil(cancellable)
-    }
+//
+//    func testPublishedOnStructWithChange() {
+//        // NOTE(heckj) this test succeeded on beta 2, but fails on beta3 and beta4.
+//        // documented to Apple as FB6608729
+//        // beta2: ✅
+//        // beta3: ❌
+//        // beta4: ❌
+//        // beta5: ❌ - compiler error
+//        let expectation = XCTestExpectation(description: self.debugDescription)
+//        var foo = HoldingStruct()
+//        let q = DispatchQueue(label: self.debugDescription)
+//
+//        let cancellable = foo.$username
+//            .sink { someString in
+//                print("value of username updated to: >>\(someString)<<")
+//                if someString == "redfish" {
+//                    expectation.fulfill()
+//                }
+//        }
+//        q.async {
+//            print("Updating to redfish on background queue")
+//            foo.username = "redfish"
+//        }
+//        wait(for: [expectation], timeout: 5.0)
+//        XCTAssertNotNil(cancellable)
+//    }
 
     func testPublishedOnClassWithChange() {
         let expectation = XCTestExpectation(description: self.debugDescription)

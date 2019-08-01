@@ -147,10 +147,17 @@ Additional examples of how to arrange error handling for a continous publisher l
 
 [WARNING]
 ====
-As of the beta3 release of Combine with the updated operating systems, Published doesn't always trigger updates when a struct is the holding the @Published variable, but it works within a class instance.
-The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`] illustrate this with the tests:
-* `testPublishedOnStructWithChange`
-* `testPublishedOnClassWithChange`
+Using `@Published` should only be done within reference types - that is, within classes.
+An early beta (2) allowed @Published wrapped within a struct.
+As of beta5, the compiler will no throw an error if this is attempted:
+
+[source]
+----
+<unknown>:0: error: 'wrappedValue' is unavailable: @Published is only available on properties of classes
+	     Combine.Published:5:16: note: 'wrappedValue' has been explicitly marked unavailable here
+	         public var wrappedValue: Value { get set }
+                        ^
+----
 ====
 
 [#reference-empty]
@@ -176,7 +183,7 @@ Empty is useful in error handling scenarios where with publishers where the valu
 Empty can be invoked to be a publisher of any output and failure type combination.
 
 Empty is most commonly used where you need to return a publisher, but don't want to propogate any values (a possible error handling scenario).
-If you want a publisher that provides a single value, then look at <<#reference-just>> or <<#reference-optional>> publishers as alternatives.
+If you want a publisher that provides a single value, then look at <<#reference-just>> or <<#reference-deferred>> publishers as alternatives.
 
 When subscribed to, an instance of the Empty publisher will not return any values (or errors) and will immediately return a finished completion message to the subscriber.
 
@@ -205,23 +212,6 @@ __Details__::
 
 n/a
 
-[#reference-optional]
-=== Publishers.Optional
-
-__Summary__::
-
-generates a value exactly once for each subscriber, if the optional has a value
-
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/optional[`Publishers.Optional`]
-
-__Usage__::
-
-n/a
-
-__Details__::
-
-n/a
-
 [#reference-sequence]
 === Publishers.Sequence
 
@@ -239,7 +229,6 @@ __Details__::
 
 n/a
 
-
 [#reference-deferred]
 === Deferred
 
@@ -248,6 +237,23 @@ __Summary__::
 Publisher waits for a subscriber before running the provided closure to create values for the subscriber.
 
 __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/deferred[`Deferred`]
+
+__Usage__::
+
+n/a
+
+__Details__::
+
+n/a
+
+[#reference-observableobjectpublisher]
+=== ObservableObjectPublisher
+
+__Summary__::
+
+Used with https://developer.apple.com/documentation/swiftui[SwiftUI], objects conforming to https://developer.apple.com/documentation/combine/observableobject[ObservableObject] protocol can provide a publisher.
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/observableobjectpublisher[`ObservableObjectPublisher`]
 
 __Usage__::
 
@@ -277,12 +283,115 @@ n/a
 [#reference-foundation]
 === Foundation
 
-* https://developer.apple.com/documentation/foundation/notificationcenter[`NotificationCenter`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publisher`]
+[#reference-notificationcenter]
+=== NotificationCenter
 
-* https://developer.apple.com/documentation/foundation/timer[`Timer`] https://developer.apple.com/documentation/foundation/notificationcenter/3329353-publisher[`.publish`] and https://developer.apple.com/documentation/foundation/timer/timerpublisher[`Timer.TimerPublisher`]
+__Summary__::
 
-** * https://developer.apple.com/documentation/foundation/timer/timerpublisher[TimerPublisher]
-** StackOverflow Q&A: https://stackoverflow.com/questions/56998702/swift-combine-repeat
+Foundation's NotificationCenter added the capability to act as a publisher, providing https://developer.apple.com/documentation/foundation/notifications[Notifications] to pipelines.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/foundation/notificationcenter/[`NotificationCenter`]
+
+__Usage__::
+
+* <<patterns.adoc#patterns-notificationcenter>>
+* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/NotificationCenterPublisherTests.swift[`UsingCombineTests/NotificationCenterPublisherTests.swift`]
+
+__Details__::
+
+https://developer.apple.com/documentation/appkit[AppKit] and MacOS applications have heavily relied on https://developer.apple.com/documentation/foundation/notification[Notifications] to provide general application state information.
+A number of components also use Notifications through https://developer.apple.com/documentation/foundation/notificationcenter[NotificationCenter] to provide updates on user interactions, such as
+
+Notifications are identified primarily by name, defined by a string in your own code, or a constant from a relevant framework.
+You can find a good general list of existing Notifications by name at https://developer.apple.com/documentation/foundation/nsnotification/name.
+A number of framework specific notifications are often included within the framework.
+For example, within AppKit, there are a number of common notifications under https://developer.apple.com/documentation/appkit/nscontrol[NSControl].
+
+A number of AppKit controls provide notifications when the control has been updated.
+For example, AppKit's https://developer.apple.com/documentation/appkit/views_and_controls/text_field[TextField] triggers a number of notifications including:
+
+* textDidBeginEditingNotification
+* textDidChangeNotification
+* textDidEndEditingNotification
+
+NotificationCenter provides a publisher upon which you may create pipelines to declaratively react to application or system notifications.
+When creating a publisher, you define a single Notification name, often from a constant within a relevant framework.
+The publisher optionally takes an object reference which further filters notifications to those provided by the specific reference.
+
+[source, swift]
+----
+extension Notification.Name {
+    static let yourNotification = Notification.Name("your-notification") <1>
+}
+
+let cancellable = NotificationCenter.default.publisher(for: .yourNotification, object: nil) <2>
+    .sink {
+        print ($0) <3>
+    }
+----
+<1> Notifications are defined by a string for their name.
+If defining your own, be careful to define the strings uniquely.
+<2> A NotificationCenter publisher can be created for a single type of notification, `.yourNotification` in this case, defined previously in your code.
+<3> https://developer.apple.com/documentation/foundation/notifications[Notifications] are received from the publisher.
+These include at least their name, and optionally a `object` reference from the sending object - most commonly provided from Apple frameworks.
+Notifications may also include a `userInfo` dictionary of arbitrary values, which can be used to pass additional information within your application.
+
+[#reference-timer]
+=== Timer
+
+__Summary__::
+
+Foundation's Timer added the capability to act as a publisher, providing https://developer.apple.com/documentation/foundation/notifications[Notifications] to pipelines.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[] docs__:: https://developer.apple.com/documentation/foundation/timer[`Timer`]
+
+__Usage__::
+
+* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/TimerPublisherTests.swift[`UsingCombineTests/TimerPublisherTests.swift`]
+
+__Details__::
+
+Timer.publish returns an instance of https://developer.apple.com/documentation/foundation/timer/timerpublisher[`Timer.TimerPublisher`].
+This publisher is a connectable publisher, conforming to https://developer.apple.com/documentation/combine/connectablepublisher[`ConnectablePublisher`].
+This means that even when subscribers are connected to it, it will not start producing values until connect() or autoconnect() is invoked on the publisher.
+
+Creating the timer publisher requires an interval in seconds, and a RunLoop and mode upon which to run.
+The publisher may optionally take an additional parameter `tolerance`, which defines a variance allowed in the generation of timed events.
+The default for toleranace is nil, allowing any variance.
+
+The publisher has an output type of https://developer.apple.com/documentation/foundation/date[Date] and a failure type of `<Never>`.
+
+If you want the publisher to automatically connect and start receiving values as soon as subscribers are connected and make requests for values, then you may include autoconnect() in the pipeline to have it automatically start to generate values as soon as a subscriber requests data.
+
+[source, swift]
+----
+let cancellable = Timer.publish(every: 1.0, on: RunLoop.main, in: .common)
+    .autoconnect()
+    .sink { receivedTimeStamp in
+        print("passed through: ", receivedTimeStamp)
+    }
+----
+
+Alternatively, you can connect up the subscribers, which will receive no values until you invoke `connect()` on the publisher, which also returns a https://developer.apple.com/documentation/combine/cancellable[Cancellable] reference.
+
+[source, swift]
+----
+let timerPublisher = Timer.publish(every: 1.0, on: RunLoop.main, in: .default)
+let cancellableSink = timerPublisher
+    .sink { receivedTimeStamp in
+        print("passed through: ", receivedTimeStamp)
+    }
+// no values until the following is invoked elsewhere/later:
+let cancellablePublisher = timerPublisher.connect()
+----
 
 [#reference-kvo-publisher]
 === .publisher on KVO instance

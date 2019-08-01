@@ -68,3 +68,7 @@ fastlane/screenshots/**/*.png
 fastlane/test_output
 
 output/
+
+# utilities for link checking
+node_modules
+package-lock.json
