@@ -14,6 +14,19 @@ The content for this book, including sample code and tests, are sourced from the
 To report a problem (typo, grammar, or technical fault), please https://github.com/heckj/swiftui-notes/issues/new/choose[Open an issue] in GitHub.
 If you are so inclined, feel free to fork the project and send me https://github.com/heckj/swiftui-notes/compare?expand=1[pull requests] with updates or corrections.
 
+== Acknowledgements
+
+Michael Critz designed and provided the cover art.
+
+Thank you's for reviews, corrections, and updates from:
+
+* Nanu Jogi
+* Michael Mohrmann
+* Lee O'Mara
+* Paul Wood III
+
+Thank you all for taking the time and effort to submit a pull request to make this work better!
+
 == Author Bio
 
 Joe Heck has broad software engineering development and management experience crossing startups and large companies.
