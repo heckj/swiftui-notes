@@ -424,7 +424,7 @@ Most other subscribers are part of other Apple frameworks.
 For example, nearly every control in SwiftUI can act as a subscriber.
 The https://developer.apple.com/documentation/swiftui/view/3278619-onreceive[`.onReceive(publisher)`] function is used on SwiftUI views to act as a subscriber, taking a closure akin to `.sink()` that can manipulate `@State` or `@Bindings` within SwiftUI.
 
-An example of that in swift might look like:
+An example of that in SwiftUI might look like:
 
 [source, swift]
 ----
@@ -435,7 +435,7 @@ struct MyView : View {
         Text("Current status: \(currentStatusValue)")
     }
     .onReceive(MyPublisher.currentStatusPublisher) { newStatus in
-        currentStatusValue = newStatus
+        self.currentStatusValue = newStatus
     }
 }
 ----
