@@ -422,7 +422,8 @@ An example of this in swift might look like:
 
 Most other subscribers are part of other Apple frameworks.
 For example, nearly every control in SwiftUI can act as a subscriber.
-The https://developer.apple.com/documentation/swiftui/view/3278619-onreceive[`.onReceive(publisher)`] function is used on SwiftUI views to act as a subscriber, taking a closure akin to `.sink()` that can manipulate `@State` or `@Bindings` within SwiftUI.
+The https://developer.apple.com/documentation/swiftui/view/[View protocol] in SwiftUI defines an `.onReceive(publisher)` function to use views as a subscriber.
+The `onReceive` function takes a closure akin to `sink` that can manipulate `@State` or `@Bindings` within SwiftUI.
 
 An example of that in SwiftUI might look like:
 
@@ -475,15 +476,17 @@ The resulting type would reflect that composition:
 Publishers.FlatMap<Publishers.Map<Publishers.Catch<Future<String, Error>, Just<String>>, String>, PassthroughSubject<String, Never>>
 ----
 
-When you want to expose the code, all of that composition detail can be very distracting and make your publisher, subject, or subscriber) harder to use.
-To clean up that interface, and provide a nice API boundary, the three major protocols all support methods that do type erasure.
-This cleans up the exposed type to a simpler generic form.
+When you want to expose the code, all of that composition detail can be very distracting and make your code harder to use.
+To clean up that interface, and provide a nice API boundary, there are type erased classes which can wrap either publishers or subscribers.
+These explicitly hide the type complexity that builds up from chained functions in swift.
 
-These three methods are:
+The two classes used to expose simplified types for subscribers and publishers are:
 
-* https://developer.apple.com/documentation/combine/publisher/3241548-erasetoanypublisher[`.eraseToAnyPublisher()`]
-* https://developer.apple.com/documentation/combine/subscriber/3241649-erasetoanysubscriber[`.eraseToAnySubscriber()`]
-* https://developer.apple.com/documentation/combine/subject/3241648-erasetoanysubject[`.eraseToAnySubject()`]
+* https://developer.apple.com/documentation/combine/anysubscriber[AnySubscriber]
+* https://developer.apple.com/documentation/combine/anypublisher[AnyPublisher]
+
+Most publishers also include a convenience method `eraseToAnyPublisher` that returns an instance of AnyPublisher.
+`eraseToAnyPublisher` is used very much like an operator, often as the last element in a chained pipeline, to simplify the type returned.
 
 If you updated the above code to add .eraseToAnyPublisher() at the end of the pipeline:
 
