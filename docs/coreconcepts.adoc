@@ -6,10 +6,12 @@
 
 Two key concepts, described in swift with protocols, are https://developer.apple.com/documentation/combine/publisher[*publisher*] and https://developer.apple.com/documentation/combine/subscriber[*subscriber*].
 
-A publisher provides data.
+A publisher fundamentally provides data, when available, upon request.
 It is described with two associated types: one for Output and one for Failure.
 A subscriber requests data.
 It is also described with two associated types, one for Input and one for Failure.
+
+Publishers and subscribers are meant to be connected, and make up the core of Combine.
 When you connect a subscriber to a publisher, both types must match: Output to Input, and Failure to Failure.
 You can view this as a series of operations on two types in parallel.
 
@@ -191,7 +193,6 @@ Combine provides a number of additional convenience publishers:
 |===
 
 A number of Apple APIs outside of Combine provide publishers as well.
-// TODO(heckj): come back and map these to xref's to the reference section when created
 
 * SwiftUI provides https://developer.apple.com/documentation/swiftui/observedobject[`@ObservedObject`] which can be used to create a publisher.
 
@@ -200,8 +201,6 @@ A number of Apple APIs outside of Combine provide publishers as well.
 ** <<reference.adoc#reference-kvo-publisher>>
 ** <<reference.adoc#reference-notificationcenter>>
 ** <<reference.adoc#reference-timer>>
-
-* https://developer.apple.com/documentation/realitykit[`RealityKit`] https://developer.apple.com/documentation/realitykit/scene[`.Scene`] https://developer.apple.com/documentation/realitykit/scene/3254685-publisher[`.publisher()`]
 
 [#core-operators]
 == Operators
@@ -441,7 +440,7 @@ struct MyView : View {
 }
 ----
 
-For any type of UI object (UIKit, AppKit, or SwiftUI), `.assign` can be used with pipelines to manipulate properties.
+For any type of UI object (UIKit, AppKit, or SwiftUI), <<reference.adoc#reference-assign>> can be used with pipelines to manipulate properties.
 
 When you are storing a reference to your own subscriber in order to clean up later, you generally want a reference to cancel the subscription.
 <<reference.adoc#reference-anycancellable>> provides a type-erased reference that converts any subscriber to the type AnyCancellable, allowing the use of `.cancel()` on that reference, but not access to the subscription itself (which could, for instance, request more data).
@@ -534,13 +533,7 @@ These also have an impact on the queue executing the work - both for themselves 
 These operators all take a `scheduler` parameter, which switches to the relevant thread or queue to do the work.
 Any operators following them will also be invoked on their scheduler, giving them an impact somewhat like <<reference.adoc#reference-receive>>.
 
-[NOTE]
-====
-As of beta4, the <<reference.adoc#reference-subscribe>> operator is not quite working as documented.
-According to the documentation, it should be effecting the operator just prior to it in a pipeline.
-However, it appears that other factors can significantly impact what queue is being used.
-You can see some examples of this in exploratory tests, annotated with feedback to Apple, at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SubscribeReceiveAssignTests.swift[UsingCombineTests/SubscribeReceiveAssignTests.swift]
-====
+If you want to be explicit about which thread context an operator or subsequent operation will run within, define it with the <<reference.adoc#reference-receive>> operator.
 
 // force a page break - ignored in HTML rendering
 <<<

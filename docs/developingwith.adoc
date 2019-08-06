@@ -1,3 +1,50 @@
 [#developingwith]
 = Developing with Combine
 
+* https://github.com/heckj/swiftui-notes/issues/42[#42]
+
+== developing with and for combine
+
+integrating APIs into combine:
+
+* as publisher (returning a publisher)
+
+* as a subscriber (accepting data to do something...)
+
+declaratively pipelines
+
+- decide what you want it to do
+- map through the types needed, and error handling
+
+To integrate an external API into a pipeline
+- map & switchToLatest
+- flatMap
+- sequenced pipelines, linked with subjects (or @Published)
+
+== reasoning about pipelines
+
+* one-shot
+
+* continuous
+
+effect on demand, (note subjects obscure specific demand)
+- demand is a local effect only
+
+== how to create a subscriber/implementing your own subscriber
+
+https://developer.apple.com/documentation/combine/subscriber[Subscriber]
+
+types:
+* Input
+* Failure
+
+required functions:
+* receive(Self.Input) -> Subscribers.Demand
+* receive(subscription: Subscription)
+* receive(completion: Subscribers.Completion<Self.Failure>)
+
+* receive() -> Subscribers.Demand (when input void)
+
+== implementing your own publisher
+
+* covered this a bit in the patterns section...
