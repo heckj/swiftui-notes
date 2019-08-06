@@ -110,7 +110,7 @@ __Usage__::
 
 __Details__::
 
-Published is part of combine, but allows you to wrap an property, enabling you to get a publisher that triggers data updates whenever the property is changed.
+Published is part of combine, but allows you to wrap a property, enabling you to get a publisher that triggers data updates whenever the property is changed.
 The publisher's output type is inferred from the type of the property, and the error type of the provided publisher is <Never>.
 
 A smaller examples of how it can be used:
@@ -149,7 +149,7 @@ Additional examples of how to arrange error handling for a continous publisher l
 ====
 Using `@Published` should only be done within reference types - that is, within classes.
 An early beta (2) allowed @Published wrapped within a struct.
-As of beta5, the compiler will no throw an error if this is attempted:
+As of beta5, the compiler will not throw an error if this is attempted:
 
 [source]
 ----
