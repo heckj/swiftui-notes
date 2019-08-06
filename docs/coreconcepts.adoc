@@ -132,17 +132,19 @@ More examples, and some common tasks, are detailed in the <<patterns.adoc#patter
 [#core-lifecycle]
 == Lifecycle of Publishers and Subscribers
 
-The data flow in Combine is driven by, and starts from, the subscriber.
-This is how Combine supports the concept of back pressure.
+Combine is designed such that the subscriber ultimately controls the flow of data, and any related processing that happens in pipelines.
+The term commonly used for this is *back-pressure*.
 
-Internally, Combine supports this with the enumeration https://developer.apple.com/documentation/combine/subscribers/demand[Demand].
-When a subscriber is communicating with a publisher, it requests data based on demand.
-This request is what drives calling all the closures up the composed pipeline.
+This means that the subscriber provides information for how much information is wants or can accept.
+When a subscriber is connected to a publisher, it requests data based with a specfic https://developer.apple.com/documentation/combine/subscribers/demand[Demand].
 
-Because subscribers drive the closure execution, it also allows Combine to support cancellation.
-Cancellation can be triggered by the subscriber.
+This request is drives calling all the closures up the composed pipeline, and returning any data available from publishers.
 
-This is all enabled by subscribers and publishers communicating in a well defined sequence, or lifecycle.
+With subscribers driving the process, it also allows Combine to support cancellation.
+Subscribers all conform to the https://developer.apple.com/documentation/combine/cancellable[Cancellable] protocol.
+This means they all have a function `cancel()` that can be invoked to terminate a pipeline.
+
+The end to end lifecycle is enabled by subscribers and publishers communicating in a well defined sequence:
 
 . When the subscriber is attached to a publisher, it starts with a call to `.subscribe(Subscriber)`.
 . The publisher in turn acknowledges the subscription calling `receive(subscription)`.
@@ -161,6 +163,14 @@ The publisher is the provider of data.
 The https://developer.apple.com/documentation/combine/publisher[publisher protocol] has a strict contract returning values when asked from subscribers, and possibly terminating with an explicit completion enumeration.
 
 <<reference.adoc#reference-just>> and <<reference.adoc#reference-future>> are extremely common sources to start your own publisher from a value or function.
+
+Many publishers will immediately provide data when requested by a subscriber.
+In some cases, a publisher may have a separate mechanism to enable it to return data.
+This is codified by the protocol https://developer.apple.com/documentation/combine/connectablepublisher[ConnectablePublisher].
+A publisher conforming to `ConnectablePublisher` will have an additional mechanism to start the the flow of data after a subscriber has provided a request.
+This could be `.autoconnect()`, which will start the flow of data as soon as a subscriber requests it.
+The other option is a separate `.connect()` call on the publisher itself.
+
 Combine provides a number of additional convenience publishers:
 
 //TODO(heckj) - convert to xref to reference sections on these operators
@@ -203,8 +213,6 @@ Many will accept  one of more closures from the developer to define the business
 Some operators support bringing together outputs from different pipelines, or splitting to send to multiple subscribers.
 Operators may also have constraints on the types they will operate on.
 Operators can also help with error handling and retry logic, buffering and prefetch, controlling timing, and supporting debugging.
-
-// NOTE(heckj): add xref link to reference section when written
 
 [cols="3*^"]
 |===
@@ -366,12 +374,20 @@ This is useful for integrating existing imperative code with Combine.
 
 A subject can also broadcast values to multiple subscribers.
 If multiple subscribers are connected to a subject, it will fanning out values to the multiple subscribers when `send()` is invoked.
+A subject is also frequently used to connect or cascade multiple pipelines together, especially to fan out to multiple pipelines.
 
-There are two built-in subjects with Combine: <<reference.adoc#reference-currentvaluesubject>> and <<reference.adoc#reference-passthroughsubject>>
+A subject does not blindly pass through the demand from its subscribers, instead it provides a sort of aggregation point for demand.
+A subject will not signal for demand to it's connected publishers until it has received at least one subscriber itself.
+When it receives any demand, it then signals for `unlimited` demand to connected publishers.
+With the subject supporting multiple subscribers, any subscribers that have not requested data with a demand are not provided the data until they do.
+
+There are two types of built-in subjects with Combine: <<reference.adoc#reference-currentvaluesubject>> and <<reference.adoc#reference-passthroughsubject>>.
 They act similiarly, the primary difference being currentValueSubject remembers and provides an initial state value for any subscribers, where passthroughSubject does not.
 Both will provide updated values to any subscribers when `.send()` is invoked.
 
-Both CurrentValueSubject and PassthroughSubject are also useful for creating publishers from objects conforming to the https://developer.apple.com/documentation/swiftui/bindableobject[`BindableObject`] protocol within SwiftUI.
+Both CurrentValueSubject and PassthroughSubject are also useful for creating publishers from objects conforming to the
+https://developer.apple.com/documentation/combine/observableobject[`ObservableObject`].
+This protocol is supported by a number of declarative components within SwiftUI.
 
 [#core-subscribers]
 == Subscribers

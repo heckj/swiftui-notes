@@ -11,7 +11,7 @@ v 0.5, 2019-07-30
 :idprefix:
 :idseparator: -
 :imagesdir: images
-//:front-cover-image: image:front-cover.jpg[Front Cover,1050,1600]
+:front-cover-image: image:UsingCombineWithSwiftCoverArt_2560x1920.png[Using Combine,2560,1920]
 :google-analytics-account: UA-898243-5
 :source-highlighter: rouge
 :url-issues: https://github.com/heckj/swiftui-notes/issues

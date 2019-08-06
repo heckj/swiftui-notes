@@ -72,3 +72,6 @@ output/
 # utilities for link checking
 node_modules
 package-lock.json
+
+# macOS kruft
+.DS_Store
