@@ -106,129 +106,14 @@ cp -r docs/images output/images
 
 A variation of these commands are included in the [`.travisCI`](.travis.yml) build configuration.
 
-## Outline (work in progress)
+## Link Validation
 
-- Using Combine
+There's an NPM package that will hit a page and do a scan for broken links: https://www.npmjs.com/package/broken-link-checker[broken-link-checker].
 
-  - Introduction
-    - what it is
+To install:
 
-  - Choosing the right tool
-    - when its useful
-    - where to use it
+    npm install broken-link-checker
 
-  - Core Concepts
-    - Publisher
-    - Subscriber
-    - Subject
-    - Operators
+To run it against the live site:
 
-  - Patterns and recipes
-
-    - sequencing async operations
-      - handling errors, fallback pattern
-
-    - binding with models
-    - binding with notifications
-    - binding to SwiftUI
-      - validating forms
-      - UX responsiveness - live updates
-    - binding to RealityKit
-
-    - testing with Combine
-      - testing streams/pipelines
-      - testing publishers
-      - testing subscribers
-
-  - Combine Reference
-
-    - Publishers
-      - Just
-      - Once
-      - Optional
-      - Sequence
-      - Deferred
-      - BindableObject (protocol)
-      - Published (property wrapper)
-      - DataTaskPublisher
-      - Future
-
-      - eraseToAnyPublisher
-
-    - Subscribers
-      - sink
-      - assign
-
-    - Subject
-      - Passthrough
-      - CurrentValue
-
-      - eraseToAnySubject
-
-    - Operators (functional)
-      - map
-      - compactMap
-      - prefix
-      - decode
-      - encode
-      - removeDuplicates
-
-    - Operators (splitting/combining streams)
-      - zip
-      - combineLatest
-      - flatMap
-      - allSatisfy (tryAllSatisfy)
-      - replaceError
-      - replaceEmpty
-      - replaceNil
-      - ignoreOutput
-
-    - Operators (list operations)
-      - merge
-      - reduce
-      - dropFirst
-      - count
-      - comparison
-      - prepend
-      - append
-      - max
-      - min
-
-    - Operators (conditional operations)
-      - filter
-      - first
-      - last
-      - contains
-      - drop
-
-    - Operators (error handling)
-      - assertNoFailure
-      - retry
-      - catch
-      - mapError
-      - setFailureType
-
-    - Operators (debugging)
-      - breakpoint
-      - breakpointOnError
-      - abortOnError
-      - log
-      - print
-
-    - Operators (thread/queue handling)
-      - receive(on:)
-      - subscribe(on:)
-
-    - Operators (time handling)
-      - throttle
-      - timeout
-      - debounce
-      - delay
-      - measureInterval
-      - collect
-
-    - Operators (unsure)
-      - scan
-      - handleEvents
-      - multicast
-      - output
+    ./node_modules/.bin/blc http://heckj.github.io/swiftui-notes/ | grep BROKEN
