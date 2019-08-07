@@ -133,25 +133,33 @@ Any operators following them will also be invoked on their scheduler, giving the
 
 If you want to be explicit about which thread context an operator or subsequent operation will run within, define it with the <<reference.adoc#reference-receive>> operator.
 
-== developing to use combine
+== Developing to use combine
 
-__YET TO BE DEVELOPED__
+There are two common paths to developing code leveraging combine.
 
-integrating APIs into combine:
+* First is simply leveraging synchronous (blocking) calls within a closure to one of the common operators.
+The two most prevelant operators leveraged for this are <<reference.adoc#reference-map>> and <<reference.adoc#reference-trymap>>, for when your code needs to throw an Error.
 
-* as publisher (returning a publisher)
+* Second is integrating your own code that is asynchronous, or APIs that provide a completion callback.
+If the code you are integrating is asynchronous, then you can't (quite) as easily use it within a closure.
+You need to wrap the asynchronous code with a structure that the combine operators can work with and invoke.
+In practice, this often implies creating a call that returns a publisher instance, and then using that within the pipeline.
 
-* as a subscriber (accepting data to do something...)
+The <<reference.adoc#reference-future>> publisher was specifically created to support this kind of integration, and the pattern <<patterns.adoc#patterns-future>> shows an example.
 
-declaratively pipelines
+If you want to use data provided by a publisher as a parameter or input to creating this publisher, there are two common means of enabling this:
 
-- decide what you want it to do
-- map through the types needed, and error handling
+. Using the <<reference.adoc#reference-flatmap>> operator, using the data passed in to create or return a Publisher instance.
+This is a variation of the pattern illustrated in <<patterns.adoc#patterns-continual-error-handling>>.
 
-To integrate an external API into a pipeline
-- map & switchToLatest
-- flatMap
-- sequenced pipelines, linked with subjects (or @Published)
+. Alternately, <<reference.adoc#reference-map>> or <<reference.adoc#reference-trymap>> can be used to create an instance of a publisher, followed immediately by chaining <<reference.adoc#reference-switchtolatest>> to resolve that publisher into a value (or values) to be passed within the pipeline.
+
+The patterns <<patterns.adoc#patterns-cascading-update-interface>> and <<patterns.adoc#patterns-update-interface-userinput>> illustrate these patterns.
+
+You may find it worthwhile to create objects which return a publisher.
+Often this enables your code to encapsulate the details of communicating with a remote or network based API.
+These can be developed using <<reference.adoc#reference-datataskpublisher>> or your own code.
+A simple example of this is detailed in the pattern <<patterns.adoc#patterns-cascading-update-interface>>.
 
 == how to create a subscriber/implementing your own subscriber
 
@@ -169,11 +177,6 @@ required functions:
 * receive(completion: Subscribers.Completion<Self.Failure>)
 
 * receive() -> Subscribers.Demand (when input void)
-
-== implementing your own publisher
-
-
-__YET TO BE DEVELOPED__
 
 // force a page break - ignored in HTML rendering
 <<<
