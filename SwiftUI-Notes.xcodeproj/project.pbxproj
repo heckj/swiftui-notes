@@ -23,6 +23,10 @@
 		1A534E1D22E3DF20005E6868 /* InterimTestingStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A534E1C22E3DF20005E6868 /* InterimTestingStructs.swift */; };
 		1A534E2022E3EA32005E6868 /* EntwineTest in Frameworks */ = {isa = PBXBuildFile; productRef = 1A534E1F22E3EA32005E6868 /* EntwineTest */; };
 		1A534E2222E3EA32005E6868 /* Entwine in Frameworks */ = {isa = PBXBuildFile; productRef = 1A534E2122E3EA32005E6868 /* Entwine */; };
+		1A5B2704230098140006B8EE /* FailedPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5B2703230098140006B8EE /* FailedPublisherTests.swift */; };
+		1A5B27062300982C0006B8EE /* SequencePublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5B27052300982C0006B8EE /* SequencePublisherTests.swift */; };
+		1A5B27082300983D0006B8EE /* DeferredPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5B27072300983D0006B8EE /* DeferredPublisherTests.swift */; };
+		1A5B270A2300985A0006B8EE /* ObservableObjectPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5B27092300985A0006B8EE /* ObservableObjectPublisherTests.swift */; };
 		1A6006E122D267F10030A471 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006E022D267F10030A471 /* AppDelegate.swift */; };
 		1A6006E322D267F10030A471 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006E222D267F10030A471 /* SceneDelegate.swift */; };
 		1A6006E522D267F10030A471 /* GithubViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006E422D267F10030A471 /* GithubViewController.swift */; };
@@ -94,6 +98,10 @@
 		1A416E1F22DE8A5B00C95DCB /* EntwineTestExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntwineTestExampleTests.swift; sourceTree = "<group>"; };
 		1A4FB16622D1464F0009F228 /* EncodeDecodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodeDecodeTests.swift; sourceTree = "<group>"; };
 		1A534E1C22E3DF20005E6868 /* InterimTestingStructs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterimTestingStructs.swift; sourceTree = "<group>"; };
+		1A5B2703230098140006B8EE /* FailedPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FailedPublisherTests.swift; sourceTree = "<group>"; };
+		1A5B27052300982C0006B8EE /* SequencePublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequencePublisherTests.swift; sourceTree = "<group>"; };
+		1A5B27072300983D0006B8EE /* DeferredPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeferredPublisherTests.swift; sourceTree = "<group>"; };
+		1A5B27092300985A0006B8EE /* ObservableObjectPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableObjectPublisherTests.swift; sourceTree = "<group>"; };
 		1A6006DE22D267F10030A471 /* UIKit-Combine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "UIKit-Combine.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A6006E022D267F10030A471 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1A6006E222D267F10030A471 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -278,6 +286,10 @@
 		1AEA9C2522CD5FE7006709F1 /* UsingCombineTests */ = {
 			isa = PBXGroup;
 			children = (
+				1A5B2703230098140006B8EE /* FailedPublisherTests.swift */,
+				1A5B27052300982C0006B8EE /* SequencePublisherTests.swift */,
+				1A5B27072300983D0006B8EE /* DeferredPublisherTests.swift */,
+				1A5B27092300985A0006B8EE /* ObservableObjectPublisherTests.swift */,
 				1A416E1F22DE8A5B00C95DCB /* EntwineTestExampleTests.swift */,
 				1AEA9C2622CD5FE7006709F1 /* SinkSubscriberTests.swift */,
 				1ACB983122D795CE00180481 /* EmptyPublisherTests.swift */,
@@ -556,6 +568,7 @@
 				1A1C87C422D0EF6100128A5E /* MockingURLProtocol.swift in Sources */,
 				1A02E8A822D7C219008CCCAE /* RetryPublisherTests.swift in Sources */,
 				1A534E1D22E3DF20005E6868 /* InterimTestingStructs.swift in Sources */,
+				1A5B27082300983D0006B8EE /* DeferredPublisherTests.swift in Sources */,
 				1ACB983422D79E7F00180481 /* FilterPublisherTests.swift in Sources */,
 				1AEA9C2722CD5FE7006709F1 /* SinkSubscriberTests.swift in Sources */,
 				1ACB983222D795CE00180481 /* EmptyPublisherTests.swift in Sources */,
@@ -564,11 +577,14 @@
 				1A7C604122D0155E00D7675C /* DataTaskPublisherTests.swift in Sources */,
 				1A416E2022DE8A5B00C95DCB /* EntwineTestExampleTests.swift in Sources */,
 				1A02E8AC22D7DE53008CCCAE /* HandleEventsPublisherTests.swift in Sources */,
+				1A5B2704230098140006B8EE /* FailedPublisherTests.swift in Sources */,
 				1AB7DD1F22F0EF2E00294402 /* TimerPublisherTests.swift in Sources */,
 				1A06C84822F0A8E90035C1AD /* NotificationCenterPublisherTests.swift in Sources */,
+				1A5B27062300982C0006B8EE /* SequencePublisherTests.swift in Sources */,
 				1AC8123F22D69C4C0044AAAB /* PublisherTests.swift in Sources */,
 				1AFF21DD22D003D20039C303 /* XCTestCase+KVOExpectatio0n.swift in Sources */,
 				1AFF21DB22CFFF0C0039C303 /* SubscribeReceiveAssignTests.swift in Sources */,
+				1A5B270A2300985A0006B8EE /* ObservableObjectPublisherTests.swift in Sources */,
 				1A1C87C322D0EF6100128A5E /* Mock.swift in Sources */,
 				1A02E8AA22D7C9BF008CCCAE /* DebounceAndRemoveDuplicatesPublisherTests.swift in Sources */,
 				1A65598B22E2421F00FEFBF5 /* MergingPipelineTests.swift in Sources */,
