@@ -24,7 +24,7 @@ __See also__::
 __Code and explanation__::
 
 I have found the greatest detail of information comes from selectively using the <<reference.adoc#reference-print>> operator.
-The downside is that it prints quite a lot of inforamtion, so the output can become quickly overwhelming.
+The downside is that it prints quite a lot of information, so the output can become quickly overwhelming.
 For understanding a simple pipeline, using the `.print()` as an operator without any parameters is very straightforward.
 As soon as you want to add more than one print operator, you will likely want to use the string parameter, which is puts in as a prefix to the output.
 
