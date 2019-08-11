@@ -59,7 +59,7 @@ __Usage__::
 
 __Details__::
 
-Future is a publisher that let's you combine in any asynchronous call and us that call to generate a value or a completion as a Publisher.
+Future is a publisher that let's you combine in any asynchronous call and use that call to generate a value or a completion as a Publisher.
 It's ideal for when you want to make a single request, or get a single response, where the API you are using has a completion handler closure.
 
 The obvious example that everyone immediately thinks about is URLSession.
