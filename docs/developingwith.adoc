@@ -161,34 +161,6 @@ Often this enables your code to encapsulate the details of communicating with a 
 These can be developed using <<reference.adoc#reference-datataskpublisher>> or your own code.
 A simple example of this is detailed in the pattern <<patterns.adoc#patterns-cascading-update-interface>>.
 
-== Implementing your own Subscriber
-
-Developing with combine can frequently leverage the two common existing subscribers <<reference.adoc#reference-assign>> and <<reference.adoc#reference-sink>>, or you are working with an Apple framework (such as https://developer.apple.com/documentation/swiftui[SwiftUI]) that is the the subscriber to which you are integrating.
-
-In some cases, you may want to create your own subscriber.
-While <<reference.adoc#reference-sink>> can handle most situations, if you want to control the demand that drives the pipelines, you need to provide your own implementation.
-
-__YET TO BE DEVELOPED__
-
-https://developer.apple.com/documentation/combine/subscriber[Subscriber]
-
-types:
-* Input
-* Failure
-
-protocol required functions:
-* `receive(Self.Input) -> Subscribers.Demand`
-* `receive(subscription: Subscription)`
-* `receive(completion: Subscribers.Completion<Self.Failure>)`
-
-* receive() -> Subscribers.Demand (when input void)
-
-maybe based on https://developer.apple.com/documentation/combine/anysubscriber[`AnySubscriber`] which can be initialized with 3 closures:
-
-* receiveSubscription: `((Subscription) -> Void)?``
-* receiveValue: `((Input) -> Subscribers.Demand)?``
-* receiveCompletion: `((Subscribers.Completion<Failure>) -> Void)?)``
-
 // force a page break - ignored in HTML rendering
 <<<
 '''
