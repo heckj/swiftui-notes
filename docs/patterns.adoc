@@ -92,3 +92,6 @@ include::pattern-debugging-pipelines-handleevents.adoc[]
 include::pattern-debugging-pipelines-breakpoint.adoc[]
 :leveloffset: -1
 
+// force a page break - ignored in HTML rendering
+<<<
+'''

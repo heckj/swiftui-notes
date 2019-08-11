@@ -6,10 +6,12 @@
 
 Two key concepts, described in swift with protocols, are https://developer.apple.com/documentation/combine/publisher[*publisher*] and https://developer.apple.com/documentation/combine/subscriber[*subscriber*].
 
-A publisher provides data.
+A publisher fundamentally provides data, when available, upon request.
 It is described with two associated types: one for Output and one for Failure.
 A subscriber requests data.
 It is also described with two associated types, one for Input and one for Failure.
+
+Publishers and subscribers are meant to be connected, and make up the core of Combine.
 When you connect a subscriber to a publisher, both types must match: Output to Input, and Failure to Failure.
 You can view this as a series of operations on two types in parallel.
 
@@ -191,7 +193,6 @@ Combine provides a number of additional convenience publishers:
 |===
 
 A number of Apple APIs outside of Combine provide publishers as well.
-// TODO(heckj): come back and map these to xref's to the reference section when created
 
 * SwiftUI provides https://developer.apple.com/documentation/swiftui/observedobject[`@ObservedObject`] which can be used to create a publisher.
 
@@ -200,8 +201,6 @@ A number of Apple APIs outside of Combine provide publishers as well.
 ** <<reference.adoc#reference-kvo-publisher>>
 ** <<reference.adoc#reference-notificationcenter>>
 ** <<reference.adoc#reference-timer>>
-
-* https://developer.apple.com/documentation/realitykit[`RealityKit`] https://developer.apple.com/documentation/realitykit/scene[`.Scene`] https://developer.apple.com/documentation/realitykit/scene/3254685-publisher[`.publisher()`]
 
 [#core-operators]
 == Operators
@@ -441,106 +440,10 @@ struct MyView : View {
 }
 ----
 
-For any type of UI object (UIKit, AppKit, or SwiftUI), `.assign` can be used with pipelines to manipulate properties.
+For any type of UI object (UIKit, AppKit, or SwiftUI), <<reference.adoc#reference-assign>> can be used with pipelines to manipulate properties.
 
 When you are storing a reference to your own subscriber in order to clean up later, you generally want a reference to cancel the subscription.
 <<reference.adoc#reference-anycancellable>> provides a type-erased reference that converts any subscriber to the type AnyCancellable, allowing the use of `.cancel()` on that reference, but not access to the subscription itself (which could, for instance, request more data).
-
-[#core-types]
-== Swift types and exposing pipelines or subscribers
-
-When you compose pipelines within swift, the chaining is interpretted as nesting generic types to the compiler.
-If you expose a pipeline as a publisher, subscriber, or subject the exposed type can be exceptionally complex.
-
-For example, if you created a publisher from a PassthroughSubject such as:
-
-// Source for this at SwiftUI-NotesTests/CombinePatternTests.swift
-[source, swift]
-----
-let x = PassthroughSubject<String, Never>()
-    .flatMap { name in
-        return Future<String, Error> { promise in
-            promise(.success(""))
-            }.catch { _ in
-                Just("No user found")
-            }.map { result in
-                return "\(result) foo"
-        }
-}
-----
-
-The resulting type would reflect that composition:
-
-[source, swift]
-----
-Publishers.FlatMap<Publishers.Map<Publishers.Catch<Future<String, Error>, Just<String>>, String>, PassthroughSubject<String, Never>>
-----
-
-When you want to expose the code, all of that composition detail can be very distracting and make your code harder to use.
-To clean up that interface, and provide a nice API boundary, there are type erased classes which can wrap either publishers or subscribers.
-These explicitly hide the type complexity that builds up from chained functions in swift.
-
-The two classes used to expose simplified types for subscribers and publishers are:
-
-* https://developer.apple.com/documentation/combine/anysubscriber[AnySubscriber]
-* https://developer.apple.com/documentation/combine/anypublisher[AnyPublisher]
-
-Most publishers also include a convenience method `eraseToAnyPublisher` that returns an instance of AnyPublisher.
-`eraseToAnyPublisher` is used very much like an operator, often as the last element in a chained pipeline, to simplify the type returned.
-
-If you updated the above code to add .eraseToAnyPublisher() at the end of the pipeline:
-
-[source, swift]
-----
-let x = PassthroughSubject<String, Never>()
-    .flatMap { name in
-        return Future<String, Error> { promise in
-            promise(.success(""))
-            }.catch { _ in
-                Just("No user found")
-            }.map { result in
-                return "\(result) foo"
-        }
-}.eraseToAnyPublisher()
-----
-
-The resulting type would simplify to:
-
-[source, swift]
-----
-AnyPublisher<String, Never>
-----
-
-[#core-threads]
-== Pipelines and threads
-
-Combine is not just a single threaded construct.
-Combine allows for publishers to specify the scheduler used when either receiving from an upstream publisher (in the case of operators), or when sending to a downstream subscriber.
-This is critical when working with a subscriber that updates UI elements, as that should always be called on the main thread.
-
-You may see this in code as an operator, for example:
-
-[source, swift]
-----
-.receive(on: RunLoop.main)
-----
-
-A number of operators can impact what thread or queue is being used to do the relevant processing.
-<<reference.adoc#reference-receive>> and <<reference.adoc#reference-subscribe>> are the two most common, explicitly moving execution of operators after and prior to their invocation respectively.
-
-A number of additional operators have parameters that include a scheduler.
-Examples include <<reference.adoc#reference-delay>>, <<reference.adoc#reference-debounce>>, and <<reference.adoc#reference-throttle>>.
-These also have an impact on the queue executing the work - both for themselves and then any operators following in a pipeline.
-These operators all take a `scheduler` parameter, which switches to the relevant thread or queue to do the work.
-Any operators following them will also be invoked on their scheduler, giving them an impact somewhat like <<reference.adoc#reference-receive>>.
-
-[NOTE]
-====
-As of beta4, the <<reference.adoc#reference-subscribe>> operator is not quite working as documented.
-According to the documentation, it should be effecting the operator just prior to it in a pipeline.
-However, it appears that other factors can significantly impact what queue is being used.
-You can see some examples of this in exploratory tests, annotated with feedback to Apple, at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SubscribeReceiveAssignTests.swift[UsingCombineTests/SubscribeReceiveAssignTests.swift]
-====
 
 // force a page break - ignored in HTML rendering
 <<<
