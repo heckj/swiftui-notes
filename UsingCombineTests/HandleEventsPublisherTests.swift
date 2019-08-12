@@ -30,7 +30,7 @@ class HandleEventsPublisherTests: XCTestCase {
                 print("receiveOutput was invoked with \(String(describing: aValue))")
                 XCTAssertEqual(aValue, "DATA IN")
             }, receiveCompletion: { aValue in
-                // no completions were sent in this test
+                // completion .finished were sent in this test
                 print("receiveCompletion event called with \(String(describing: aValue))")
             }, receiveCancel: {
                 // no cancellations sent in this test

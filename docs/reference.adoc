@@ -1429,7 +1429,7 @@ The following snippet is part of the larger example <<patterns.adoc#patterns-upd
 }
 // ^^ type returned in the pipeline is a Publisher, so we use
 // switchToLatest to flatten the values out of that
-// pipline to return down the chain, rather than returning a
+// pipeline to return down the chain, rather than returning a
 // publisher down the pipeline.
 .switchToLatest() <3>
 ----
