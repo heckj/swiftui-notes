@@ -1,6 +1,6 @@
 = Using Combine
 Joseph Heck
-v 0.5, 2019-07-30
+v 0.6, 2019-08-11
 :doctype: book
 :creator: {author}
 :producer: Asciidoctor
@@ -25,5 +25,6 @@ ifndef::ebook-format[:leveloffset: 1]
 include::aboutthisbook.adoc[]
 include::introduction.adoc[]
 include::coreconcepts.adoc[]
+include::developingwith.adoc[]
 include::patterns.adoc[]
 include::reference.adoc[]
