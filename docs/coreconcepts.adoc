@@ -118,7 +118,7 @@ let _ = Just(5) <1>
 [sidebar]
 ****
 When you are creating pipelines in Xcode and don't match the types, the error message from Xcode may include a helpful _fixit_.
-In some cases, such as the example above, the compiler is unable to infer the return types of closure provided to `map` withpout specifying the return type.
+In some cases, such as the example above, the compiler is unable to infer the return types of closure provided to `map` without specifying the return type.
 Xcode (11 beta 2 and beta 3) displays this as the error message: `Unable to infer complex closure return type; add explicit type to disambiguate`.
 In the example above, we explicitly specified the type being returned with the line `value -> String in`.
 ****
@@ -137,10 +137,10 @@ More examples, and some common tasks, are detailed in the <<patterns.adoc#patter
 Combine is designed such that the subscriber ultimately controls the flow of data, and any related processing that happens in pipelines.
 The term commonly used for this is *back-pressure*.
 
-This means that the subscriber provides information for how much information is wants or can accept.
+This means that the subscriber provides information for how much information it wants or can accept.
 When a subscriber is connected to a publisher, it requests data based with a specfic https://developer.apple.com/documentation/combine/subscribers/demand[Demand].
 
-This request is drives calling all the closures up the composed pipeline, and returning any data available from publishers.
+This request it drives calling all the closures up the composed pipeline, and returning any data available from publishers.
 
 With subscribers driving the process, it also allows Combine to support cancellation.
 Subscribers all conform to the https://developer.apple.com/documentation/combine/cancellable[Cancellable] protocol.
