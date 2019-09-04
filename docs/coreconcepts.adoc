@@ -376,7 +376,7 @@ If multiple subscribers are connected to a subject, it will fanning out values t
 A subject is also frequently used to connect or cascade multiple pipelines together, especially to fan out to multiple pipelines.
 
 A subject does not blindly pass through the demand from its subscribers, instead it provides a sort of aggregation point for demand.
-A subject will not signal for demand to it's connected publishers until it has received at least one subscriber itself.
+A subject will not signal for demand to its connected publishers until it has received at least one subscriber itself.
 When it receives any demand, it then signals for `unlimited` demand to connected publishers.
 With the subject supporting multiple subscribers, any subscribers that have not requested data with a demand are not provided the data until they do.
 
