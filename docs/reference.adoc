@@ -1792,7 +1792,7 @@ Optional closures can be provided for the following events:
 
 All of the closures are expected to return Void, which makes handleEvents useful for intentionally creating side effects based on what is happening in the pipeline.
 
-You could, for example, use handleEvents to update an activityIndicator UI element, triggering it on with the receipt of the the subscription, and terminating with the receipt of either cancel or completion.
+You could, for example, use handleEvents to update an activityIndicator UI element, triggering it on with the receipt of the subscription, and terminating with the receipt of either cancel or completion.
 
 If you only want to view the information of what's happening, you might consider using the <<#reference-print>> operator instead.
 

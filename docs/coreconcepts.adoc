@@ -84,7 +84,7 @@ The `map` operator allows for any combination of Output and Failure type and pas
 Operators like `map` allow you to define the output type being returned by infering the type based on what you return in a closure provided to the operator.
 In the example above, the `map` operator is returning a String output type since that it what the closure returns.
 
-To illustrate the the example of changing types more concretely, we expand upon the logic to use the values being passed. This example still starts with a publisher providing the types `<Int>`, `<Never>` and end with a subscription taking the types `<String>`, `<Never>`.
+To illustrate the example of changing types more concretely, we expand upon the logic to use the values being passed. This example still starts with a publisher providing the types `<Int>`, `<Never>` and end with a subscription taking the types `<String>`, `<Never>`.
 
 // NOTE: source in project at SwiftUI-NotesTests/CombinePatternTests.swift
 [source, swift]
@@ -169,7 +169,7 @@ The https://developer.apple.com/documentation/combine/publisher[publisher protoc
 Many publishers will immediately provide data when requested by a subscriber.
 In some cases, a publisher may have a separate mechanism to enable it to return data.
 This is codified by the protocol https://developer.apple.com/documentation/combine/connectablepublisher[ConnectablePublisher].
-A publisher conforming to `ConnectablePublisher` will have an additional mechanism to start the the flow of data after a subscriber has provided a request.
+A publisher conforming to `ConnectablePublisher` will have an additional mechanism to start the flow of data after a subscriber has provided a request.
 This could be `.autoconnect()`, which will start the flow of data as soon as a subscriber requests it.
 The other option is a separate `.connect()` call on the publisher itself.
 

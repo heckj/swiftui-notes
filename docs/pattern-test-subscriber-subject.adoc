@@ -130,7 +130,7 @@ Like the completion handler, We also increment test specific variables that we w
 <8> In the test, the `send()` triggers the actions, and immediately after we can test the side effects through the test variables we are updating.
 In your own code, you may not be able to (or want to) modify your subscriber, but you may be able to provide private/testable properties or windows into the objects to validate them in a similiar fashion.
 <9> We also use `send()` to trigger a completion, in this case a failure completion.
-<10> And the final `send()` is simply validating the operation of the the failure that just happened - that it wasn't processed, and no further state updates happened.
+<10> And the final `send()` is simply validating the operation of the failure that just happened - that it wasn't processed, and no further state updates happened.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
