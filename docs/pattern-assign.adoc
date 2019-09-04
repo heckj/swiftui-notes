@@ -18,7 +18,7 @@ __Code and explanation__::
 
 Assign is a subscriber that's specifically designed to apply data from a publisher or pipeline into a property, updating that property whenever it receives data.
 Like sink, it activates when created and requests an unlimited data updates.
-Assign requires the failure type to be specified as `<Never>`, so if your pipeline could fail (such as using an operator like tryMap) you will need to <<#patterns-general-error-handling,convert or handle the the failure cases>> before using `.assign`.
+Assign requires the failure type to be specified as `<Never>`, so if your pipeline could fail (such as using an operator like tryMap) you will need to <<#patterns-general-error-handling,convert or handle the failure cases>> before using `.assign`.
 
 .simple sink
 [source, swift]
