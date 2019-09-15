@@ -21,7 +21,7 @@ class DeferredPublisherTests: XCTestCase {
         // The core of "Deferred" is that the closure that generates the published is not invoked
         // until a subscriber is attached, then it creates the publisher "just in time".
         // I'm afraid I haven't figured out any sane way to illustrate that with a unit test...
-        
+
         let cancellable = deferredPublisher
             .sink(receiveCompletion: { completion in
                 print(".sink() received the completion", String(describing: completion))
