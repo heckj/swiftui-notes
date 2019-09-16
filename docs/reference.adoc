@@ -219,11 +219,11 @@ Initializing a Fail publisher can be done two ways: with the type notation speci
 
 For example:
 
-Initializing `Fail` by specifying the types:
+Initializing `Fail` by specifying the types
 [source, swift]
 ----
 let cancellable = Fail<String, Error>(error: testFailureCondition.exampleFailure)
----
+----
 
 Initializing `Fail` by providing types as parameters:
 [source, swift]
@@ -2240,7 +2240,6 @@ Since the <<#reference-assign>> returns an AnyCancellable, this is often used wh
 
 [source, swift]
 ----
-
 var mySubscriber: AnyCancellable?
 
 let mySinkSubscriber = remotePublisher
@@ -2249,3 +2248,4 @@ let mySinkSubscriber = remotePublisher
     }
 mySubscriber = AnyCancellable(mySinkSubscriber)
 ----
+
