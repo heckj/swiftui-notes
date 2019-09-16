@@ -7,7 +7,7 @@ __Goal__::
 
 __References__::
 
-* <<reference.adoc#reference-sink>>
+* <<reference.adoc#reference-sink,Sink>>
 
 __See also__::
 
