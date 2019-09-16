@@ -200,17 +200,36 @@ let myEmptyPublisher = Empty<String, Never>() <1>
 
 __Summary__::
 
-`fail` immediately terminates publishing with the specified failure.
+`Fail` immediately terminates publishing with the specified failure.
 
 __icon:apple[] docs__:: https://developer.apple.com/documentation/combine/fail[`Fail`]
 
 __Usage__::
 
-n/a
+* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FailedPublisherTests.swift[`UsingCombineTests/FailedPublisherTests.swift`]
 
 __Details__::
 
-n/a
+Fail is commonly used when implementing an API that returns a publisher.
+In the case where you want to return an immediate failure, Fail provides a publisher that immediately triggers a failure on subscription.
+One way this might be used is to provide a failure response when invalid parameters are passed.
+The Fail publisher lets you generate a publisher of the correct type that provides a failure completion when demand is requested.
+
+Initializing a Fail publisher can be done two ways: with the type notation specifying the output and failure types or with the types implied by handing parameters to the initializer.
+
+For example:
+
+Initializing `Fail` by specifying the types:
+[source, swift]
+----
+let cancellable = Fail<String, Error>(error: testFailureCondition.exampleFailure)
+---
+
+Initializing `Fail` by providing types as parameters:
+[source, swift]
+----
+let cancellable = Fail(outputType: String.self, failure: testFailureCondition.exampleFailure)
+----
 
 [#reference-sequence]
 === Publishers.Sequence
