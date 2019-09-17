@@ -28,7 +28,7 @@ __References__::
 <<reference.adoc#reference-throttle>>,
 <<reference.adoc#reference-removeduplicates>>
 * Subscribers:
-<<reference.adoc#reference-sink>>,
+<<reference.adoc#reference-sink,Sink>>,
 <<reference.adoc#reference-assign>>
 
 __See also__::
@@ -54,7 +54,7 @@ Even though we only expect a single value here, we use a list because we can con
 The empty list is useful to return because when a username is provided that doesn't resolve, we want to explicitly remove any avatar image that was previously displayed.
 To do this, we need the pipelines to fully resolve to some value, so that further pipelines are triggered and the relevant UI interfaces updated.
 
-The subscribers (created with <<reference.adoc#reference-assign>> and <<reference.adoc#reference-sink>>) are stored as AnyCancellable variables on the ViewController instance.
+The subscribers (created with <<reference.adoc#reference-assign>> and <<reference.adoc#reference-sink,Sink>>) are stored as AnyCancellable variables on the ViewController instance.
 Because they are defined on the class instance, the swift compiler creates initializers and deinitializers, which will cancel and clean up the publishers when the class is torn down.
 
 [NOTE]
@@ -71,8 +71,8 @@ Likewise when the resulting pipelines assign or update UI elements, the <<refere
 ====
 If you want to have the UI continuously updated from changes propogating through <<reference.adoc#reference-published>> properties, make sure that any configured pipelines have a <Never> failure type.
 This is required for the <<reference.adoc#reference-assign>> operator.
-But more importantly, it's a source of bugs when using a <<reference.adoc#reference-sink>> operator.
-If the pipeline from a <<reference.adoc#reference-published>> variable terminates in a <<reference.adoc#reference-sink>> that accepts an Error failure type, the sink will send a termination signal if an error occures, which stops the pipeline from further processing even when the variable is updated.
+But more importantly, it's a source of bugs when using a <<reference.adoc#reference-sink,Sink>> operator.
+If the pipeline from a <<reference.adoc#reference-published>> variable terminates in a <<reference.adoc#reference-sink,Sink>> that accepts an Error failure type, the sink will send a termination signal if an error occures, which stops the pipeline from further processing even when the variable is updated.
 ====
 
 .https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubAPI.swift[UIKit-Combine/GithubAPI.swift]

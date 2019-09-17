@@ -31,7 +31,7 @@ __Summary__::
 
 `Just` provides a single result and then terminates, providing a publisher with a failure type of `<Never>`
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/just[`Just`]
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/just[`Just`]
 
 __Usage__::
 
@@ -51,7 +51,7 @@ __Summary__::
 
 A future is initialized with a closure that eventually resolves to a single output value or failure completion.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/future[Future].
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/future[Future].
 
 __Usage__::
 
@@ -100,7 +100,7 @@ __Summary__::
 
 A property wrapper that adds a Combine publisher to any property
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/published[Published]
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/published[Published]
 
 __Usage__::
 
@@ -167,7 +167,7 @@ __Summary__::
 
 `empty` never publishes any values, and optionally finishes immediately.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/empty[`Empty`]
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/empty[`Empty`]
 
 __Usage__::
 
@@ -200,17 +200,36 @@ let myEmptyPublisher = Empty<String, Never>() <1>
 
 __Summary__::
 
-`fail` immediately terminates publishing with the specified failure.
+`Fail` immediately terminates publishing with the specified failure.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/fail[`Fail`]
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/fail[`Fail`]
 
 __Usage__::
 
-n/a
+* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FailedPublisherTests.swift[`UsingCombineTests/FailedPublisherTests.swift`]
 
 __Details__::
 
-n/a
+Fail is commonly used when implementing an API that returns a publisher.
+In the case where you want to return an immediate failure, Fail provides a publisher that immediately triggers a failure on subscription.
+One way this might be used is to provide a failure response when invalid parameters are passed.
+The Fail publisher lets you generate a publisher of the correct type that provides a failure completion when demand is requested.
+
+Initializing a Fail publisher can be done two ways: with the type notation specifying the output and failure types or with the types implied by handing parameters to the initializer.
+
+For example:
+
+Initializing `Fail` by specifying the types
+[source, swift]
+----
+let cancellable = Fail<String, Error>(error: testFailureCondition.exampleFailure)
+----
+
+Initializing `Fail` by providing types as parameters:
+[source, swift]
+----
+let cancellable = Fail(outputType: String.self, failure: testFailureCondition.exampleFailure)
+----
 
 [#reference-sequence]
 === Publishers.Sequence
@@ -219,15 +238,21 @@ __Summary__::
 
 Publishes a provided sequence of elements.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/sequence[`Publishers.Sequence`]
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/sequence[`Publishers.Sequence`]
 
 __Usage__::
 
-n/a
+* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequencePublisherTests.swift[`UsingCombineTests/SequencePublisherTests.swift`]
 
 __Details__::
 
-n/a
+Sequence provides a way to return values as subscribers demand them initialized from a collection.
+Formally, it provides elements from any type conforming to the https://developer.apple.com/documentation/swift/sequence[sequence protocol].
+
+If a subscriber requests unlimited demand, all elements will be sent, and then a finished completion will terminate the output.
+If the subscribe requests a single element at a time, then individual elements will be returned based on demand.
+
+If the type within the sequence is denoted as Optional, and a nil value is included within the sequence, that will be sent as an instance of the optional type.
 
 [#reference-deferred]
 === Deferred
@@ -236,15 +261,17 @@ __Summary__::
 
 Publisher waits for a subscriber before running the provided closure to create values for the subscriber.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/deferred[`Deferred`]
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/deferred[`Deferred`]
 
 __Usage__::
 
-n/a
+* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DeferredPublisherTests.swift[`UsingCombineTests/DeferredPublisherTests.swift`]
 
 __Details__::
 
-n/a
+Deferred is useful when creating an API to return a publisher, where creating the publisher is an expensive effort, either computationally or in the time it takes to set up.
+Deferred holds off on setting up any publisher data structures until a subscription is requested.
+This provides a means of deferring the setup of the publisher until it's actually needed.
 
 [#reference-observableobjectpublisher]
 === ObservableObjectPublisher
@@ -253,15 +280,21 @@ __Summary__::
 
 Used with https://developer.apple.com/documentation/swiftui[SwiftUI], objects conforming to https://developer.apple.com/documentation/combine/observableobject[ObservableObject] protocol can provide a publisher.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/observableobjectpublisher[`ObservableObjectPublisher`]
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/observableobjectpublisher[`ObservableObjectPublisher`]
 
 __Usage__::
 
-n/a
+* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ObservableObjectPublisherTests.swift[`UsingCombineTests/ObservableObjectPublisherTests.swift`]
 
 __Details__::
 
-n/a
+When a class includes a Published property and conforms to the https://developer.apple.com/documentation/combine/observableobject[ObservableObject protocol], this class instances will get a `objectWillChange` publisher endpoint providing this publisher.
+The `objectWillChange` publisher will not return any of the changed data, only an indicator that the referenced object has changed.
+
+The output type of `ObservableObject.Output` is type aliased to Void, so while it's not nill, it will not provide any meaningful data.
+Therefore using this method and attaching a subscription is probably best done using <<reference-sink>>.
+
+In practice, this method is most frequently used by the SwiftUI framework, although it can also be used locally to watch for updates to a reference-type model.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
@@ -294,7 +327,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/foundation/notificationcenter/[`NotificationCenter`]
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/foundation/notificationcenter/[`NotificationCenter`]
 
 __Usage__::
 
@@ -351,7 +384,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/foundation/timer[`Timer`]
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/foundation/timer[`Timer`]
 
 __Usage__::
 
@@ -400,7 +433,7 @@ __Summary__::
 
 Foundation added the ability to get a publisher on any Object that can be watched with Key Value Observing.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/objectivec/nsobject/keyvalueobservingpublisher['KeyValueObservingPublisher']
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/objectivec/nsobject/keyvalueobservingpublisher['KeyValueObservingPublisher']
 
 __Usage__::
 
@@ -446,7 +479,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/foundation/urlsession/datataskpublisher[`URLSession.DataTaskPublisher`]
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/foundation/urlsession/datataskpublisher[`URLSession.DataTaskPublisher`]
 
 __Usage__::
 
@@ -521,7 +554,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/map
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/map
 
 n/a
 
@@ -582,7 +615,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/trymap
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/trymap
 
 __Usage__::
 
@@ -625,7 +658,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/flatmap[`flatMap`]
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/flatmap[`flatMap`]
 
 __Usage__::
 
@@ -692,7 +725,7 @@ __Constraints on connected publisher__::
 
 * requires Failure type to be `<Never>`
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/filter[`filter`]
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/filter[`filter`]
 
 __Usage__::
 
@@ -719,7 +752,7 @@ __Constraints on connected publisher__::
 
 * none
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/tryfilter[`tryFilter`]
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/tryfilter[`tryFilter`]
 
 __Usage__::
 
@@ -744,7 +777,7 @@ __Constraints on connected publisher__::
 
 * Available when Output of the previous publisher conforms to Equatable.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/removeduplicates[`removeDuplicates`]
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/removeduplicates[`removeDuplicates`]
 
 __Usage__::
 
@@ -784,7 +817,7 @@ __Constraints on connected publisher__::
 
 * none
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/tryremoveduplicates[`tryRemoveDuplicates`]
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/tryremoveduplicates[`tryRemoveDuplicates`]
 
 __Usage__::
 
@@ -1056,7 +1089,7 @@ __Constraints on connected publishers__::
 
 * All upstream publishers must have the same failure type.
 
-__icon:apple[] docs__::
+__icon:apple[set=fab] docs__::
 
 * https://developer.apple.com/documentation/combine/publishers/combinelatest[`combineLatest`]
 * https://developer.apple.com/documentation/combine/publishers/combinelatest3[`combineLatest3`]
@@ -1101,7 +1134,7 @@ __Constraints on connected publishers__::
 * All upstream publishers must have the same output type.
 * All upstream publishers must have the same failure type.
 
-__icon:apple[] docs__::
+__icon:apple[set=fab] docs__::
 
 * https://developer.apple.com/documentation/combine/publishers/merge[`merge`]
 * https://developer.apple.com/documentation/combine/publishers/merge3[`merge3`]
@@ -1149,7 +1182,7 @@ __Constraints on connected publishers__::
 
 * All upstream publishers must have the same failure type.
 
-__icon:apple[] docs__::
+__icon:apple[set=fab] docs__::
 
 * https://developer.apple.com/documentation/combine/publishers/zip[`zip`]
 * https://developer.apple.com/documentation/combine/publishers/zip3[`zip3`]
@@ -1194,7 +1227,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] Documentation reference__:: https://developer.apple.com/documentation/combine/publishers/catch[`Publishers.Catch`]
+__icon:apple[set=fab] Documentation reference__:: https://developer.apple.com/documentation/combine/publishers/catch[`Publishers.Catch`]
 
 __Usage__::
 
@@ -1265,7 +1298,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/trycatch
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/trycatch
 
 __Usage__::
 
@@ -1287,7 +1320,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/assertnofailure
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/assertnofailure
 
 __Usage__::
 
@@ -1329,7 +1362,7 @@ __Constraints on connected publisher__::
 
 * failure type must be `<Error>`
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/retry
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/retry
 
 __Usage__::
 
@@ -1400,7 +1433,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/switchtolatest['switchToLatest']
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/switchtolatest['switchToLatest']
 
 __Usage__::
 
@@ -1456,7 +1489,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/debounce['debounce']
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/debounce['debounce']
 
 __Usage__::
 
@@ -1482,7 +1515,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/delay['delay']
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/delay['delay']
 
 __Usage__::
 
@@ -1517,7 +1550,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/throttle['throttle']
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/throttle['throttle']
 
 __Usage__::
 
@@ -1548,7 +1581,7 @@ __Constraints on connected publisher__::
 
 * requires Failure to be `<Never>`
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/timeout
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/timeout
 
 __Usage__::
 
@@ -1603,7 +1636,7 @@ __Constraints on connected publisher__::
 
 * Available when Output conforms to Encodable.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/encode
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/encode
 
 __Usage__::
 
@@ -1645,7 +1678,7 @@ __Constraints on connected publisher__::
 
 * Available when Output conforms to Decodable.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/decode
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/decode
 
 __Usage__::
 
@@ -1707,7 +1740,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__::  https://developer.apple.com/documentation/combine/publishers/breakpoint
+__icon:apple[set=fab] docs__::  https://developer.apple.com/documentation/combine/publishers/breakpoint
 
 __Usage__::
 
@@ -1746,7 +1779,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/breakpoint/3205192-breakpointonerror
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/breakpoint/3205192-breakpointonerror
 
 __Usage__::
 
@@ -1772,7 +1805,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/handleevents
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/handleevents
 
 __Usage__::
 
@@ -1825,7 +1858,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publishers/print
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/print
 
 __Usage__::
 
@@ -1871,7 +1904,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/publisher/3204743-receive[`receive`]
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publisher/3204743-receive[`receive`]
 
 __Usage__::
 
@@ -1903,7 +1936,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/anypublisher/3204260-subscribe[`subscribe`]
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/anypublisher/3204260-subscribe[`subscribe`]
 
 
 __Usage__::
@@ -1979,7 +2012,7 @@ __Summary__::
 
 CurrentValue creates an object that can be used to integrate imperative code into a Combine pipeline, starting with an initial value.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/currentvaluesubject[`CurrentValueSubject`]
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/currentvaluesubject[`CurrentValueSubject`]
 
 __Usage__::
 
@@ -2001,7 +2034,7 @@ __Summary__::
 
 PassthroughSubject creates an object that can be used to integrate imperative code into a Combine pipeline.
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/passthroughsubject[`PassthroughSubject`]
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/passthroughsubject[`PassthroughSubject`]
 
 __Usage__::
 
@@ -2041,7 +2074,7 @@ __Constraints on connected publisher__::
 
 * Failure type must be `<Never>`
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/subscribers/assign[`assign`]
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/subscribers/assign[`assign`]
 
 __Usage__::
 
@@ -2113,7 +2146,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/subscribers/sink[`sink`]
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/subscribers/sink[`sink`]
 
 __Usage__::
 
@@ -2205,7 +2238,7 @@ __Summary__::
 
 AnyCancellable type erases a subscriber to the general form of https://developer.apple.com/documentation/combine/cancellable[Cancellable].
 
-__icon:apple[] docs__:: https://developer.apple.com/documentation/combine/anycancellable
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/anycancellable
 
 __Usage__::
 
@@ -2221,7 +2254,6 @@ Since the <<#reference-assign>> returns an AnyCancellable, this is often used wh
 
 [source, swift]
 ----
-
 var mySubscriber: AnyCancellable?
 
 let mySinkSubscriber = remotePublisher
@@ -2230,3 +2262,4 @@ let mySinkSubscriber = remotePublisher
     }
 mySubscriber = AnyCancellable(mySinkSubscriber)
 ----
+

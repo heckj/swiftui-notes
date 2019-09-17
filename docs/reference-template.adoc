@@ -6,7 +6,7 @@ __Constraints on connected publisher__::
 
 * __none__
 
-__icon:apple[] docs__:: n/a
+__icon:apple[set=fab] docs__:: n/a
 
 __Usage__::
 
