@@ -7,7 +7,7 @@ reference preamble goes here...
 ====
 This is intended to extend Apple's documentation, not replace it.
 
-* The documentation associated with beta2 is better than beta1, but still fairly anemic.
+* The documentation associated with IOS 13 GM.
 
 things to potentially include for each segment
 
@@ -21,8 +21,7 @@ things to potentially include for each segment
 [#reference-publishers]
 == Publishers
 
-For general information about Publishers, see <<coreconcepts.adoc#core-publishers>> and
-<<coreconcepts#coreconcepts-lifecycle>>.
+For general information about publishers see <<coreconcepts#coreconcepts-publishers,Publishers>> and <<coreconcepts#coreconcepts-lifecycle,Lifecycle of Publishers and Subscribers>>.
 
 [#reference-just]
 === Just
@@ -35,14 +34,14 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* <<patterns.adoc#patterns-oneshot-error-handling>>
-* <<patterns.adoc#patterns-continual-error-handling>>
-* <<patterns.adoc#patterns-update-interface-userinput>>
-* <<patterns.adoc#patterns-cascading-update-interface>>
+* <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
+* <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>
+* <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>
+* <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>>
 
 __Details__::
 
-Often used within a closure to <<#reference-flatmap>> in error handling, it can see a one-shot pipeline for use in error handling of continuous values.
+Often used within a closure to <<reference#reference-flatmap,flatMap>> in error handling, it can see a one-shot pipeline for use in error handling of continuous values.
 
 [#reference-future]
 === Future
@@ -63,7 +62,7 @@ Future is a publisher that let's you combine in any asynchronous call and use th
 It's ideal for when you want to make a single request, or get a single response, where the API you are using has a completion handler closure.
 
 The obvious example that everyone immediately thinks about is URLSession.
-Fortunately, <<#reference-datataskpublisher>> exists to make a call with a URLSession and return a publisher.
+Fortunately, <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> exists to make a call with a URLSession and return a publisher.
 However, if you already have an API object that wraps the direct calls to URLSession, then making a single request using Future can great way to integrate the result into a Combine pipeline.
 
 There are a number of other APIs that exist in the Apple frameworks that use a completion closure.
@@ -91,7 +90,7 @@ It hands in a Result object matching the type description, which you interact.
 <4> Or a call to `promise(.success(<OutputType>))` returns a value.
 
 If you want to wrap an async API that could return many values over time, Future probably isn't what you want, as it only returns a single value.
-Instead, you should consider creating your own publisher based on <<#reference-passthroughsubject>> or <<#reference-currentvaluesubject>>.
+Instead, you should consider creating your own publisher based on <<reference#reference-passthroughsubject>> or <<reference#reference-currentvaluesubject>>.
 
 [#reference-published]
 === Published
@@ -104,8 +103,8 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* <<patterns.adoc#patterns-update-interface-userinput>>
-* <<patterns.adoc#patterns-cascading-update-interface>>
+* <<patterns#patterns-update-interface-userinput>>
+* <<patterns#patterns-cascading-update-interface>>
 * unit tests illustrating using Published: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`]
 
 __Details__::
@@ -136,14 +135,14 @@ The publisher for the property is available at the same scope, and with the same
 <2> The publisher is accessible as `$username`, of type `Published<String>.publisher`.
 <3> A Published property can have more than one subscriber pipeline triggering from it.
 <4> If you're publishing your own type, you may find it convenient to publish an array of that type as the property, even if you only reference a single value.
-This allows you represent an "Empty" result that is still a concrete result within combine pipelines, as <<#reference-assign>> and <<#reference-sink>> subscribers will only trigger updates on non-nil values.
+This allows you represent an "Empty" result that is still a concrete result within combine pipelines, as <<reference#reference-assign>> and <<reference#reference-sink>> subscribers will only trigger updates on non-nil values.
 
 If the publisher generated from `@Published` receives a cancellation from any subscriber, it is expected to, and will cease, reporting property changes.
 Because of this expectation, it is common to arrange pipelines from these publishers that have an error type of `<Never>` and do all error handling within the pipelines.
-For example, if a <<#reference-sink>> subscriber is set up to capture errors from a pipeline originating from a @Published property, when the error is received, the sink will send a `cancel` message, causing the publisher to cease generating any updates on change.
+For example, if a <<reference#reference-sink>> subscriber is set up to capture errors from a pipeline originating from a @Published property, when the error is received, the sink will send a `cancel` message, causing the publisher to cease generating any updates on change.
 This is illustrated in the test `testPublishedSinkWithError` at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`]
 
-Additional examples of how to arrange error handling for a continous publisher like `@Published` can be found at  <<patterns.adoc#patterns-continual-error-handling>>.
+Additional examples of how to arrange error handling for a continous publisher like `@Published` can be found at  <<patterns#patterns-continual-error-handling>>.
 
 [WARNING]
 ====
@@ -171,10 +170,10 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* <<patterns.adoc#patterns-oneshot-error-handling>> shows an example of using `catch` to handle errors with a one-shot publisher.
-* <<patterns.adoc#patterns-continual-error-handling>> shows an example of using `catch` with `flatMap` to handle errors with a continual publisher.
-* <<patterns.adoc#patterns-update-interface-userinput>>
-* <<patterns.adoc#patterns-cascading-update-interface>>
+* <<patterns#patterns-oneshot-error-handling>> shows an example of using `catch` to handle errors with a one-shot publisher.
+* <<patterns#patterns-continual-error-handling>> shows an example of using `catch` with `flatMap` to handle errors with a continual publisher.
+* <<patterns#patterns-update-interface-userinput>>
+* <<patterns#patterns-cascading-update-interface>>
 * The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/EmptyPublisherTests.swift[`UsingCombineTests/EmptyPublisherTests.swift`]
 
 __Details__::
@@ -183,7 +182,7 @@ Empty is useful in error handling scenarios where with publishers where the valu
 Empty can be invoked to be a publisher of any output and failure type combination.
 
 Empty is most commonly used where you need to return a publisher, but don't want to propogate any values (a possible error handling scenario).
-If you want a publisher that provides a single value, then look at <<#reference-just>> or <<#reference-deferred>> publishers as alternatives.
+If you want a publisher that provides a single value, then look at <<reference#reference-just>> or <<reference#reference-deferred>> publishers as alternatives.
 
 When subscribed to, an instance of the Empty publisher will not return any values (or errors) and will immediately return a finished completion message to the subscriber.
 
@@ -331,7 +330,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/foundat
 
 __Usage__::
 
-* <<patterns.adoc#patterns-notificationcenter>>
+* <<patterns#patterns-notificationcenter>>
 * The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/NotificationCenterPublisherTests.swift[`UsingCombineTests/NotificationCenterPublisherTests.swift`]
 
 __Details__::
@@ -465,7 +464,7 @@ let _ = foo.publisher(for: \.intValue)
 ====
 KVO publisher access implies that with MacOS 10.15 release or IOS 13, most of Appkit and UIKit interface instances will be accessible as publishers.
 Relying on the interface element's state to trigger updates into pipelines can lead to your state being very tightly bound to the interface elements, rather than your model.
-You may be better served by explicitly creating your own state to react to from a <<#reference-published>> property wrapper.
+You may be better served by explicitly creating your own state to react to from a <<reference#reference-published>> property wrapper.
 ====
 
 [#reference-datataskpublisher]
@@ -483,12 +482,12 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/foundat
 
 __Usage__::
 
-* <<patterns.adoc#patterns-datataskpublisher-decode>>
-* <<patterns.adoc#patterns-oneshot-error-handling>>
-* <<patterns.adoc#patterns-retry>>
-* <<patterns.adoc#patterns-constrained-network>>
-* <<patterns.adoc#patterns-update-interface-userinput>>
-* <<patterns.adoc#patterns-cascading-update-interface>>
+* <<patterns#patterns-datataskpublisher-decode>>
+* <<patterns#patterns-oneshot-error-handling>>
+* <<patterns#patterns-retry>>
+* <<patterns#patterns-constrained-network>>
+* <<patterns#patterns-update-interface-userinput>>
+* <<patterns#patterns-cascading-update-interface>>
 
 __Details__::
 
@@ -560,11 +559,11 @@ n/a
 
 __Usage__::
 
-* <<patterns.adoc#patterns-datataskpublisher-decode>>
-* <<patterns.adoc#patterns-oneshot-error-handling>>
-* <<patterns.adoc#patterns-retry>>
-* <<patterns.adoc#patterns-update-interface-userinput>>
-* <<patterns.adoc#patterns-cascading-update-interface>>
+* <<patterns#patterns-datataskpublisher-decode>>
+* <<patterns#patterns-oneshot-error-handling>>
+* <<patterns#patterns-retry>>
+* <<patterns#patterns-update-interface-userinput>>
+* <<patterns#patterns-cascading-update-interface>>
 
 * unit tests illustrating using map with dataTaskPublisher: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DataTaskPublisherTests.swift[`UsingCombineTests/DataTaskPublisherTests.swift`]
 
@@ -572,12 +571,12 @@ __Usage__::
 __Details__::
 
 The map operator doesn't allow for any additional failures to be thrown, and doesn't transform the failure type.
-If you want to throw an error within your closure, then use the <<#reference-trymap>> operator.
+If you want to throw an error within your closure, then use the <<reference#reference-trymap>> operator.
 
 map takes a single closure where you provide the logic for the map operation.
 
-For example, the <<#reference-datataskpublisher>> provides a tuple of `(data: Data, response: URLResponse)`` as its output.
-You can use map to pass along the data, for example to use with <<#reference-decode>>.
+For example, the <<reference#reference-datataskpublisher>> provides a tuple of `(data: Data, response: URLResponse)`` as its output.
+You can use map to pass along the data, for example to use with <<reference#reference-decode>>.
 
 [source, swift]
 ----
@@ -609,7 +608,7 @@ Just(myStruct())
 
 __Summary__::
 
-tryMap is effectively the similiar to <<#reference-map>>, except that it also allows you to provide a closure that throws additional errors if your conversion logic is unsuccessful.
+tryMap is effectively the similiar to <<reference#reference-map>>, except that it also allows you to provide a closure that throws additional errors if your conversion logic is unsuccessful.
 
 __Constraints on connected publisher__::
 
@@ -619,13 +618,13 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* <<patterns.adoc#patterns-datataskpublisher-trymap>>
+* <<patterns#patterns-datataskpublisher-trymap>>
 * unit tests illustrating using tryMap with dataTaskPublisher: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DataTaskPublisherTests.swift[`UsingCombineTests/DataTaskPublisherTests.swift`]
 
 __Details__::
 
 tryMap is useful when you have more complex business logic around your map and you want to indicate that the data passed in is an error, possibly handling that error later in the pipeline.
-If you are looking at tryMap to decode JSON, you may want to consider using the <<#reference-decode>> operator instead, which is set up for that common task.
+If you are looking at tryMap to decode JSON, you may want to consider using the <<reference#reference-decode>> operator instead, which is set up for that common task.
 
 [source, swift]
 ----
@@ -662,14 +661,14 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* <<patterns.adoc#patterns-continual-error-handling>>
+* <<patterns#patterns-continual-error-handling>>
 * unit tests illustrating flatMap: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SwitchAndFlatMapPublisherTests.swift[`UsingCombineTests/SwitchAndFlatMapPublisherTests.swift`]
 
 __Details__::
 
 Most typically used in error handling scenarios, flatMap takes a closure that allows you to read the incoming data value, and provide a publisher that returns a value to the pipeline.
 
-In error handling, this is most frequently used to take the incoming value and create a one-shot pipeline that does some potentially failing operation, and then handling the error condition with a <<#reference-catch>> operator.
+In error handling, this is most frequently used to take the incoming value and create a one-shot pipeline that does some potentially failing operation, and then handling the error condition with a <<reference#reference-catch>> operator.
 
 A diagram version of this pipeline construct might be:
 
@@ -729,8 +728,8 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* <<patterns.adoc#patterns-update-interface-userinput>>
-* <<patterns.adoc#patterns-cascading-update-interface>>
+* <<patterns#patterns-update-interface-userinput>>
+* <<patterns#patterns-cascading-update-interface>>
 * unit tests illustrating using filter: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FilterPublisherTests.swift[`UsingCombineTests/FilterPublisherTests.swift`]
 
 __Details__::
@@ -739,7 +738,7 @@ Filter takes a single closure as a parameter that is provided the value from the
 If the return from the closure is `true`, then the operator republishes the value further down the chain.
 If the return from the closure is `false`, then the operator drops the value.
 
-If you need a variation of this that will generate an error condition in the pipeline to be handled use the <<#reference-tryfilter>> operator, which allows the closure to throw an error in the evaluation.
+If you need a variation of this that will generate an error condition in the pipeline to be handled use the <<reference#reference-tryfilter>> operator, which allows the closure to throw an error in the evaluation.
 
 [#reference-tryfilter]
 ==== tryFilter
@@ -761,7 +760,7 @@ __Usage__::
 
 __Details__::
 
-Like <<#reference-filter>>, tryFilter takes a single closure as a parameter that is provided the value from the previous publisher and returns a Bool value.
+Like <<reference#reference-filter>>, tryFilter takes a single closure as a parameter that is provided the value from the previous publisher and returns a Bool value.
 If the return from the closure is `true`, then the operator republishes the value further down the chain.
 If the return from the closure is `false`, then the operator drops the value.
 You can additionally throw an error during the evaluation of tryFilter, which will then be propogated as the failure type down the pipeline.
@@ -804,14 +803,14 @@ If the closure returns true, the removeDuplicates predicate will consider the va
 })
 ----
 
-A variation of removeDuplicates exists that allows the predicate closure to throw an Error exists: <<#reference-tryremoveduplicates>>
+A variation of removeDuplicates exists that allows the predicate closure to throw an Error exists: <<reference#reference-tryremoveduplicates>>
 
 [#reference-tryremoveduplicates]
 ==== tryRemoveDuplicates
 
 __Summary__::
 
-tryRemoveDuplicates is a variant of <<#reference-removeduplicates>> that allows the predicate testing equality to throw an Error, resulting in an Error completion type.
+tryRemoveDuplicates is a variant of <<reference#reference-removeduplicates>> that allows the predicate testing equality to throw an Error, resulting in an Error completion type.
 
 __Constraints on connected publisher__::
 
@@ -825,7 +824,7 @@ __Usage__::
 
 __Details__::
 
-tryRemoveDuplicates is a variant of <<#reference-removeduplicates>> taking a single parameter that can throw an error.
+tryRemoveDuplicates is a variant of <<reference#reference-removeduplicates>> taking a single parameter that can throw an error.
 The parameter is a closure that allows you to determine the logic of what will be removed.
 If the closure returns true, tryRemoveDuplicates will consider the values matched and not forward a the duplicate value.
 If the closure throws an error, a failure completion will be propogated down the chain, and no value is sent.
@@ -1097,7 +1096,7 @@ __icon:apple[set=fab] docs__::
 
 __Usage__::
 
-* <<patterns.adoc#patterns-merging-streams-interface>>
+* <<patterns#patterns-merging-streams-interface>>
 * unit tests illustrating using combineLatest: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MergingPipelineTests.swift[`UsingCombineTests/MergingPipelineTests.swift`]
 
 __Details__::
@@ -1118,9 +1117,9 @@ If the combineLatest operator does receive a failure from any of the upstream pu
 
 If any of the upstream publishers finish normally (that is, they send a completion message of finished), the combineLatest operator will continue operating and processing any messages from any of the other publishers that has additional data to send.
 
-Other operators that merge multiple upstream pipelines include <<#reference-merge>> and <<#reference-zip>>.
-If your upstream publishers have the same type and you want a stream of single values, as opposed to tuples, then you probably want to use the <<#reference-merge>> operator.
-If you want to wait on values from all upstream provides before providing an updated value, then use the <<#reference-zip>> operator.
+Other operators that merge multiple upstream pipelines include <<reference#reference-merge>> and <<reference#reference-zip>>.
+If your upstream publishers have the same type and you want a stream of single values, as opposed to tuples, then you probably want to use the <<reference#reference-merge>> operator.
+If you want to wait on values from all upstream provides before providing an updated value, then use the <<reference#reference-zip>> operator.
 
 [#reference-merge]
 ==== merge
@@ -1155,21 +1154,21 @@ Merge3 accepts three upstream publishers, merge4 accepts four upstream publisher
 
 In all cases, the upstreams publishers are required to have the same output type, as well as the same failure type.
 
-As with <<#reference-combinelatest>>, if an error is propogated down any of the upstream publishers, the cancellation from the subscriber will terminate this operator and will propogate cancel to all upstream publishers as well.
+As with <<reference#reference-combinelatest>>, if an error is propogated down any of the upstream publishers, the cancellation from the subscriber will terminate this operator and will propogate cancel to all upstream publishers as well.
 
 If an upstream publisher completes with a normal finish, the merge operator continues interleaving and forwarding from any values other upstream publishers.
 
 In the unlikely event that two values are provided at the same time from upstream publishers, the merge operator will interleave the values in the order upstream publishers are specified when the operator is initialized.
 
-If you want to mix different upstream publisher types into a single stream, then you likely want to use either <<#reference-combinelatest>> or <<#reference-zip>>, depending on how you want the timing of values to be handled.
+If you want to mix different upstream publisher types into a single stream, then you likely want to use either <<reference#reference-combinelatest>> or <<reference#reference-zip>>, depending on how you want the timing of values to be handled.
 
 [source, swift]
 ----
 ----
 
-Other operators that merge multiple upstream pipelines include <<#reference-combinelatest>> and <<#reference-zip>>.
-If your upstream publishers have different types, but you want interleaved values to be propogated as they are available, use <<#reference-combinelatest>>.
-If you want to wait on values from all upstream provides before providing an updated value, then use the <<#reference-zip>> operator.
+Other operators that merge multiple upstream pipelines include <<reference#reference-combinelatest>> and <<reference#reference-zip>>.
+If your upstream publishers have different types, but you want interleaved values to be propogated as they are available, use <<reference#reference-combinelatest>>.
+If you want to wait on values from all upstream provides before providing an updated value, then use the <<reference#reference-zip>> operator.
 
 [#reference-zip]
 ==== zip
@@ -1194,17 +1193,17 @@ __Usage__::
 
 __Details__::
 
-Zip works very similiarly to <<#reference-combinelatest>>, connecting 2 upstream publishers and providing the output of those publishers as a single pipeline with a tuple output type, composed of the types of the upstream publishers.
+Zip works very similiarly to <<reference#reference-combinelatest>>, connecting 2 upstream publishers and providing the output of those publishers as a single pipeline with a tuple output type, composed of the types of the upstream publishers.
 Zip3 supports connecting three upstream publishers, and zip4 supports connecting four upstream publishers.
 
-The notable difference from <<#reference-combinelatest>> is that zip will specifically wait for values to arrive from the upstream publishers, and will only publish a single new tuple when new values have been provided from all upstream publishers.
+The notable difference from <<reference#reference-combinelatest>> is that zip will specifically wait for values to arrive from the upstream publishers, and will only publish a single new tuple when new values have been provided from all upstream publishers.
 
 One example of using this is to wait until all streams have provided a single value to provide a synchronization point.
-For example, if you have 2 independent network requests and require them to both be complete before continuing to process the results, you can use zip to connect two <<#reference-datataskpublisher>>, which will wait until both publishers are complete before forwarding the combined tuples.
+For example, if you have 2 independent network requests and require them to both be complete before continuing to process the results, you can use zip to connect two <<reference#reference-datataskpublisher>>, which will wait until both publishers are complete before forwarding the combined tuples.
 
-Other operators that merge multiple upstream pipelines include <<#reference-combinelatest>> and <<#reference-merge>>.
-If your upstream publishers have different types, but you want interleaved values to be propogated as they are available, use <<#reference-combinelatest>>.
-If your upstream publishers have the same type and you want a stream of single values, as opposed to tuples, then you probably want to use the <<#reference-merge>> operator.
+Other operators that merge multiple upstream pipelines include <<reference#reference-combinelatest>> and <<reference#reference-merge>>.
+If your upstream publishers have different types, but you want interleaved values to be propogated as they are available, use <<reference#reference-combinelatest>>.
+If your upstream publishers have the same type and you want a stream of single values, as opposed to tuples, then you probably want to use the <<reference#reference-merge>> operator.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
@@ -1213,7 +1212,7 @@ If your upstream publishers have the same type and you want a stream of single v
 [#reference-operators-handlingerrors]
 === Handling errors
 
-See <<patterns.adoc#patterns-general-error-handling>> for more detail on how you can design error handling.
+See <<patterns#patterns-general-error-handling>> for more detail on how you can design error handling.
 
 [#reference-catch]
 ==== catch
@@ -1231,10 +1230,10 @@ __icon:apple[set=fab] Documentation reference__:: https://developer.apple.com/do
 
 __Usage__::
 
-* <<patterns.adoc#patterns-oneshot-error-handling>> shows an example of using `catch` to handle errors with a one-shot publisher.
-* <<patterns.adoc#patterns-continual-error-handling>> shows an example of using `catch` with `flatMap` to handle errors with a continual publisher.
-* <<patterns.adoc#patterns-update-interface-userinput>>
-* <<patterns.adoc#patterns-cascading-update-interface>>
+* <<patterns#patterns-oneshot-error-handling>> shows an example of using `catch` to handle errors with a one-shot publisher.
+* <<patterns#patterns-continual-error-handling>> shows an example of using `catch` with `flatMap` to handle errors with a continual publisher.
+* <<patterns#patterns-update-interface-userinput>>
+* <<patterns#patterns-cascading-update-interface>>
 
 
 __Details__::
@@ -1292,7 +1291,7 @@ If we want the pipeline to remain active, we need to change how we handle the er
 
 __Summary__::
 
-A variant of the <<#reference-catch>> operator that also allows an `<Error>` failure type, and doesn't convert the failure type to `<Never>`.
+A variant of the <<reference#reference-catch>> operator that also allows an `<Error>` failure type, and doesn't convert the failure type to `<Never>`.
 
 __Constraints on connected publisher__::
 
@@ -1302,11 +1301,11 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* <<patterns.adoc#patterns-constrained-network>>
+* <<patterns#patterns-constrained-network>>
 
 __Details__::
 
-`tryCatch` is a variant of <<#reference-catch>> that has a failure type of `<Error>` rather than catch's failure type of `<Never>`.
+`tryCatch` is a variant of <<reference#reference-catch>> that has a failure type of `<Error>` rather than catch's failure type of `<Never>`.
 This allows it to be used where you want to immediately react to an error by creating another publisher that may also produce a failure type.
 
 [#reference-assertnofailure]
@@ -1324,7 +1323,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* <<patterns.adoc#patterns-assertnofailure>>
+* <<patterns#patterns-assertnofailure>>
 
 __Details__::
 
@@ -1347,7 +1346,7 @@ I'm not entirely clear on where that string would appear if you did include it.
 When trying out this code in unit tests, the tests invariably drop into a debugger at the assertion point when a .failure is processed through the pipeline.
 ====
 
-If you want to convert an failure tyoe output of `<Error>` to `<Never>`, you probably want to look at the <<#reference-catch>> operator.
+If you want to convert an failure tyoe output of `<Error>` to `<Never>`, you probably want to look at the <<reference#reference-catch>> operator.
 
 Apple asserts this function should be primarily used for testing and verifying "internal sanity checks that are active during testing".
 
@@ -1366,7 +1365,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* <<patterns.adoc#patterns-retry>>
+* <<patterns#patterns-retry>>
 * unit tests illustrating using map with dataTaskPublisher: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DataTaskPublisherTests.swift[`UsingCombineTests/DataTaskPublisherTests.swift`]
 * unit tests illustrating retry: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/RetryPublisherTests.swift[`UsingCombineTests/RetryPublisherTests.swift`]
 
@@ -1381,7 +1380,7 @@ If no number of retries is specified, it will attempt to retry indefinitely unti
 [NOTE]
 ====
 Using retry without any specific count can result in your pipeline never resolving any data or completions.
-If you use retry without a count, you may also want to use the <<#reference-timeout>> operator to force a completion from the pipeline.
+If you use retry without a count, you may also want to use the <<reference#reference-timeout>> operator to force a completion from the pipeline.
 ====
 
 If the number of retries is specified and all requests fail, then the `.failure` completion is passed down to the subscriber of this operator.
@@ -1437,23 +1436,23 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* <<patterns.adoc#patterns-update-interface-userinput>>
-* <<patterns.adoc#patterns-cascading-update-interface>>
+* <<patterns#patterns-update-interface-userinput>>
+* <<patterns#patterns-cascading-update-interface>>
 * unit tests illustrating switchToLatest: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SwitchAndFlatMapPublisherTests.swift[`UsingCombineTests/SwitchAndFlatMapPublisherTests.swift`]
 
 __Details__::
 
-switchToLatest is akin to <<#reference-flatmap>>, taking in a publisher instance and returning it's value (or values).
+switchToLatest is akin to <<reference#reference-flatmap>>, taking in a publisher instance and returning it's value (or values).
 The primary different is in where it gets the publisher.
 In flatMap, the publisher is returned within the closure provided to flatMap, and the operator works upon that to subscribe and provide the relevant value down the pipeline.
 In switchToLatest, the publisher instance is provided *as the output type* from a previous publisher or operator.
 
-The most common form of using this is with a one-shot publisher such as <<#reference-just>> getting it's value as a result of a <<#reference-map>> transform.
+The most common form of using this is with a one-shot publisher such as <<reference#reference-just>> getting it's value as a result of a <<reference#reference-map>> transform.
 
 It is also commonly used when working with an API that provides a publisher.
 switchToLatest assists in taking the result of the publisher and sending that down the pipeline rather than sending the publisher itself down as the output type.
 
-The following snippet is part of the larger example <<patterns.adoc#patterns-update-interface-userinput>>
+The following snippet is part of the larger example <<patterns#patterns-update-interface-userinput>>
 
 [source, swift]
 ----
@@ -1468,7 +1467,7 @@ The following snippet is part of the larger example <<patterns.adoc#patterns-upd
 ----
 
 <1> In this example, an API instance (GithubAPI) has a function that returns a publisher.
-<2> We are using <<#reference-map>> to take an earlier String output type and use that to invoke the API, which returns a publisher instance.
+<2> We are using <<reference#reference-map>> to take an earlier String output type and use that to invoke the API, which returns a publisher instance.
 <3> We want to use the value from that publisher, not the publisher itself, which is exactly what switchToLatest() provides.
 
 // force a page break - in HTML rendering is just a <HR>
@@ -1500,9 +1499,9 @@ __Details__::
 The operator takes a minimum of two parameters, an amount of time over which to debounce the signal and a scheduler on which to apply the operations.
 The operator will collapse any values received within the timeframe provided to a single, last value received from the upstream publisher within the time window.
 
-This operator is frequently used with <<#reference-removeduplicates>> when the publishing source is bound to UI interactions, primarily to prevent an "edit and revert" style of interaction from triggering unnessecary work.
+This operator is frequently used with <<reference#reference-removeduplicates>> when the publishing source is bound to UI interactions, primarily to prevent an "edit and revert" style of interaction from triggering unnessecary work.
 
-If you wish to control the value returned within the timewindow provided, you may prefer to use <<#reference-throttle>>, which allows you to choose the first or last value provided.
+If you wish to control the value returned within the timewindow provided, you may prefer to use <<reference#reference-throttle>>, which allows you to choose the first or last value provided.
 
 [#reference-delay]
 ==== delay
@@ -1519,8 +1518,8 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* <<patterns.adoc#patterns-delegate-publisher-subject>>
-* <<patterns.adoc#patterns-retry>>
+* <<patterns#patterns-delegate-publisher-subject>>
+* <<patterns#patterns-retry>>
 
 __Details__::
 
@@ -1558,12 +1557,12 @@ __Usage__::
 
 __Details__::
 
-Throttle is akin to the <<#reference-debounce>> operator in that it collapses values.
+Throttle is akin to the <<reference#reference-debounce>> operator in that it collapses values.
 The operator will collapse any values received within the timeframe provided to a single, last value received from the upstream publisher within the time window.
 
 The operator takes a minimum of three parameters, `for`: an amount of time over which to collapse the values received, `scheduler`: a scheduler on which to apply the operations, and `latest`: a boolean indicating if the first value or last value should be chosen and forwarded.
 
-This operator is frequently used with <<#reference-removeduplicates>> when the publishing source is bound to UI interactions, primarily to prevent an "edit and revert" style of interaction from triggering unnessecary work.
+This operator is frequently used with <<reference#reference-removeduplicates>> when the publishing source is bound to UI interactions, primarily to prevent an "edit and revert" style of interaction from triggering unnessecary work.
 
 [source, swift]
 ----
@@ -1594,7 +1593,7 @@ If a timeout does trigger and force a completion, it will not generate an failur
 
 Timeout is specified with two parameters, a time period and a scheduler.
 
-If you are using a specific background thread (for example, with the <<#reference-subscribe>> operator), then timeout should likely be using the same scheduler.
+If you are using a specific background thread (for example, with the <<reference#reference-subscribe>> operator), then timeout should likely be using the same scheduler.
 
 The time period specified will take a literal integer, but otherwise needs to conform to the protocol https://developer.apple.com/documentation/combine/schedulertimeintervalconvertible[SchedulerTimeIntervalConvertible].
 If you want to set a number from a Float or Int, you need to create the relevant structure, as Int or Float directly doesn't conform.
@@ -1664,7 +1663,7 @@ let dataProvider = PassthroughSubject<PostmanEchoTimeStampCheckResponse, Never>(
     })
 ----
 
-Like the <<#reference-decode>> operator, the encode process can also fail and throw an error, so it returns a failure type of Error.
+Like the <<reference#reference-decode>> operator, the encode process can also fail and throw an error, so it returns a failure type of Error.
 With the compiler forcing type matching, the usual error condition is if you flow an optional value into the pipeline.
 
 [#reference-decode]
@@ -1672,7 +1671,7 @@ With the compiler forcing type matching, the usual error condition is if you flo
 
 __Summary__::
 
-A very common operation is to want to use decode (or <<#reference-encode>> data in a pipeline, so Combine provides an operator specifically suited to that task.
+A very common operation is to want to use decode (or <<reference#reference-encode>> data in a pipeline, so Combine provides an operator specifically suited to that task.
 
 __Constraints on connected publisher__::
 
@@ -1682,10 +1681,10 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* <<patterns.adoc#patterns-datataskpublisher-decode>>
-* <<patterns.adoc#patterns-datataskpublisher-trymap>>
-* <<patterns.adoc#patterns-oneshot-error-handling>>
-* <<patterns.adoc#patterns-retry>>
+* <<patterns#patterns-datataskpublisher-decode>>
+* <<patterns#patterns-datataskpublisher-trymap>>
+* <<patterns#patterns-oneshot-error-handling>>
+* <<patterns#patterns-retry>>
 * unit tests illustrating using encode and decode: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/EncodeDecodeTests.swift[`UsingCombineTests/EncodeDecodeTests.swift`]
 
 
@@ -1744,7 +1743,7 @@ __icon:apple[set=fab] docs__::  https://developer.apple.com/documentation/combin
 
 __Usage__::
 
-* <<patterns.adoc#patterns-debugging-breakpoint>>
+* <<patterns#patterns-debugging-breakpoint>>
 
 __Details__::
 
@@ -1783,7 +1782,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* <<patterns.adoc#patterns-debugging-breakpoint>>
+* <<patterns#patterns-debugging-breakpoint>>
 
 __Details__::
 
@@ -1810,7 +1809,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 __Usage__::
 
 * unit tests illustrating using handleEvents: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/HandleEventsPublisherTests.swift[`UsingCombineTests/HandleEventsPublisherTests.swift`]
-* <<patterns.adoc#patterns-debugging-handleevents>>
+* <<patterns#patterns-debugging-handleevents>>
 
 __Details__::
 
@@ -1827,7 +1826,7 @@ All of the closures are expected to return Void, which makes handleEvents useful
 
 You could, for example, use handleEvents to update an activityIndicator UI element, triggering it on with the receipt of the subscription, and terminating with the receipt of either cancel or completion.
 
-If you only want to view the information of what's happening, you might consider using the <<#reference-print>> operator instead.
+If you only want to view the information of what's happening, you might consider using the <<reference#reference-print>> operator instead.
 
 [source, swift]
 ----
@@ -1863,7 +1862,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 __Usage__::
 
 * unit tests illustrating using print: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`]
-* <<patterns.adoc#patterns-debugging-print>>
+* <<patterns#patterns-debugging-print>>
 
 __Details__::
 
@@ -1908,16 +1907,16 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* <<patterns.adoc#patterns-assign-subscriber>> shows an example of using assign to set an a boolean property on a UI element.
+* <<patterns#patterns-assign-subscriber>> shows an example of using assign to set an a boolean property on a UI element.
 * unit tests illustrating using an assign subscriber in a pipeline from a dataTaskPublisher with subscribe and receive: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SubscribeReceiveAssignTests.swift[`UsingCombineTests/SubscribeReceiveAssignTests.swift`]
 
 __Details__::
 
 Receive takes a single required parameter (`on:`) which accepts a scheduler, and an optional parameter (`optional:`) which can accept SchedulerOptions.
 https://developer.apple.com/documentation/combine/scheduler[Scheduler] is a protocol in Combine, with the conforming types that are commonly used of https://developer.apple.com/documentation/foundation/runloop[RunLoop], https://developer.apple.com/documentation/dispatch/dispatchqueue[DispatchQueue] and https://developer.apple.com/documentation/foundation/operationqueue[OperationQueue].
-Receive is frequently used with <<#reference-assign>> to make sure any following pipeline invocations happen on a specific thread, such as `RunLoop.main` when updating user interface objects.
+Receive is frequently used with <<reference#reference-assign>> to make sure any following pipeline invocations happen on a specific thread, such as `RunLoop.main` when updating user interface objects.
 Receive effects itself and any opertors chained after it, but not previous operators.
-If you want to influence a previously chained publishers (or operators) for where to run, you may want to look at the <<#reference-subscribe>> operator.
+If you want to influence a previously chained publishers (or operators) for where to run, you may want to look at the <<reference#reference-subscribe>> operator.
 
 [source, swift]
 ----
@@ -1941,21 +1940,21 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* <<patterns.adoc#patterns-assign-subscriber>> shows an example of using assign to set an a boolean property on a UI element.
+* <<patterns#patterns-assign-subscriber>> shows an example of using assign to set an a boolean property on a UI element.
 * unit tests illustrating using an assign subscriber in a pipeline from a dataTaskPublisher with subscribe and receive: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SubscribeReceiveAssignTests.swift[`UsingCombineTests/SubscribeReceiveAssignTests.swift`]
 
 __Details__::
 
 Subscribe assigns a scheduler to the preceding pipeline invocation.
-It is relatively infrequently used, specifically to encourage a publisher such as <<#reference-just>> or <<#reference-deferred>> to run on a specific queue.
-If you want to control which queue operators run on, then it is more common to use the <<#reference-receive>> operator, which effects all following operators and subscribers.
+It is relatively infrequently used, specifically to encourage a publisher such as <<reference#reference-just>> or <<reference#reference-deferred>> to run on a specific queue.
+If you want to control which queue operators run on, then it is more common to use the <<reference#reference-receive>> operator, which effects all following operators and subscribers.
 
 Subscribe takes a single required parameter (`on:`) which accepts a scheduler, and an optional parameter (`optional:`) which can accept SchedulerOptions.
 https://developer.apple.com/documentation/combine/scheduler[Scheduler] is a protocol in Combine, with the conforming types that are commonly used of https://developer.apple.com/documentation/foundation/runloop[RunLoop], https://developer.apple.com/documentation/dispatch/dispatchqueue[DispatchQueue] and https://developer.apple.com/documentation/foundation/operationqueue[OperationQueue].
 
 Subscribe effects a subset of the functions, and does not guarantee that a publisher will run on that queue.
 In particular, it effects a publishers `receive` function, the subscribers `request` function, and the `cancel` function.
-Some publishers (such as <<#reference-datataskpublisher>>) have complex internals that will run on alterantive queues based on their configuration, and will be relatively uneffected by subscribe.
+Some publishers (such as <<reference#reference-datataskpublisher>>) have complex internals that will run on alterantive queues based on their configuration, and will be relatively uneffected by subscribe.
 
 [source, swift]
 ----
@@ -1967,7 +1966,7 @@ networkDataPublisher
 
 <1> the `subscribe` call requests the publisher (and any pipeline invocations before this in a chain) be invoked on the backgroundQueue.
 <2> the `receive` call transfers the data to the main runloop, suitable for updating user interface elements
-<3> the `assign` call uses the <<#reference-assign>> subscriber to update the property `text` on a KVO compliant object, in this case `yourLabel`.
+<3> the `assign` call uses the <<reference#reference-assign>> subscriber to update the property `text` on a KVO compliant object, in this case `yourLabel`.
 
 [NOTE]
 ====
@@ -2003,7 +2002,7 @@ That is - don't create the queue with `attributes: .concurrent`.
 [#reference-subjects]
 == Subjects
 
-General information on <<coreconcepts.adoc#core-subjects>> can be found in the Core Concepts section.
+General information on <<coreconcepts#coreconcepts-subjects>> can be found in the Core Concepts section.
 
 [#reference-currentvaluesubject]
 === currentValueSubject
@@ -2016,7 +2015,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* <<patterns.adoc#patterns-cascading-update-interface>>
+* <<patterns#patterns-cascading-update-interface>>
 
 __Details__::
 
@@ -2038,7 +2037,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* <<patterns.adoc#patterns-cascading-update-interface>>
+* <<patterns#patterns-cascading-update-interface>>
 
 __Details__::
 
@@ -2061,7 +2060,7 @@ When creating tests, you can send data (or a failure) is under test control.
 [#reference-subscribers]
 == Subscribers
 
-For general information about subscribers and how they fit with publishers and operators, see <<coreconcepts.adoc#core-subscribers>>.
+For general information about subscribers and how they fit with publishers and operators, see <<coreconcepts#coreconcepts-subscribers>>.
 
 [#reference-assign]
 === assign
@@ -2078,14 +2077,14 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* <<patterns.adoc#patterns-assign-subscriber>> shows an example of using assign to set an a boolean property on a UI element.
+* <<patterns#patterns-assign-subscriber>> shows an example of using assign to set an a boolean property on a UI element.
 * unit tests illustrating using an assign subscriber in a pipeline from a dataTaskPublisher with subscribe and receive: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SubscribeReceiveAssignTests.swift[`UsingCombineTests/SubscribeReceiveAssignTests.swift`]
 
 __Details__::
 
 Assign only handles data, and expects all errors or failures to be handled in the pipeline before it is invoked.
 The return value from setting up assign can be cancelled, and is frequently used when disabling the pipeline, such as when a viewController is disabled or deallocated.
-Assign is frequently used in conjunction with the <<#reference-receive>> operator to receive values on a specific scheduler, typically `RunLoop.main` when updating UI objects.
+Assign is frequently used in conjunction with the <<reference#reference-receive>> operator to receive values on a specific scheduler, typically `RunLoop.main` when updating UI objects.
 
 The type of KeyPath required for the assign operator is important.
 It requires a ReferenceWritableKeyPath, which is different from both WritableKeyPath and KeyPath.
@@ -2123,7 +2122,7 @@ Type of expression is ambiguous without more context
 This error can occur when you are attempting to assign a non-optional type to a keypath that expects has an optional type.
 For example, UIImageView.image is of type `UIImage?`, so attempting to assign an output type of UIImage from a previous operator would result in this error message.
 
-The solution is to either use <<#reference-sink>>, or to include a map operator prior to assignment that changes the output type to match.
+The solution is to either use <<reference#reference-sink>>, or to include a map operator prior to assignment that changes the output type to match.
 For example, to convert the type `UIImage` to `UIImage?` you could use:
 
 [source, swift]
@@ -2150,7 +2149,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* <<patterns.adoc#patterns-sink-subscriber>> shows an example of creating a sink that receives both completion messages as well as data from the publisher.
+* <<patterns#patterns-sink-subscriber>> shows an example of creating a sink that receives both completion messages as well as data from the publisher.
 * unit tests illustrating a sink subscriber and how it works: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SinkSubscriberTests.swift[`UsingCombineTests/SinkSubscriberTests.swift`]
 
 __Details__::
@@ -2229,7 +2228,7 @@ cancellablePublisher.cancel() // when invoked, this invalidates the pipeline
 // no further data will be received by the sink
 ----
 
-<<#reference-anycancellable>> is often used with the result of sink to convert the resulting type into AnyCancellable.
+<<reference#reference-anycancellable>> is often used with the result of sink to convert the resulting type into AnyCancellable.
 
 [#reference-anycancellable]
 === AnyCancellable
@@ -2242,15 +2241,15 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* <<patterns.adoc#patterns-update-interface-userinput>>
-* <<patterns.adoc#patterns-cascading-update-interface>>
-* <<patterns.adoc#patterns-delegate-publisher-subject>>
+* <<patterns#patterns-update-interface-userinput>>
+* <<patterns#patterns-cascading-update-interface>>
+* <<patterns#patterns-delegate-publisher-subject>>
 
 __Details__::
 
 This is used to provide a reference to a subscriber that allows the use of `cancel` without access to the subscription itself to request items.
 This is most typically used when you want a reference to a subscriber to clean it up on deallocation.
-Since the <<#reference-assign>> returns an AnyCancellable, this is often used when you want to save the reference to a <<#reference-sink>> an AnyCancellable.
+Since the <<reference#reference-assign>> returns an AnyCancellable, this is often used when you want to save the reference to a <<reference#reference-sink>> an AnyCancellable.
 
 [source, swift]
 ----

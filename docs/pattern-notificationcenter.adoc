@@ -7,7 +7,7 @@ __Goal__::
 
 __References__::
 
-* <<#reference-notificationcenter,NotificationCenter>>
+* <<reference#reference-notificationcenter,NotificationCenter>>
 
 __See also__::
 
@@ -65,7 +65,7 @@ let sub = NotificationCenter.default.publisher(for: NSControl.textDidChangeNotif
 <1> TextFields within AppKit generate textDidChangeNotifications when the values are updated.
 <2> A AppKit application can frequently have a large number of text fields that may be changed.
 Including a reference to the sending control can be used to filter to text changed notifications to which you are specifically interested in responding.
-<3> the <<reference.adoc#reference-map,map>> operator can be used to get into the object references included with the notification, in this case the `.stringValue` property of the text field that sent the notification, providing it's updated value
+<3> the <<reference#reference-map,map>> operator can be used to get into the object references included with the notification, in this case the `.stringValue` property of the text field that sent the notification, providing it's updated value
 <4> The resulting string can be assigned using a writable KeyValue path.
 
 An example of subscribing to your own notifications:

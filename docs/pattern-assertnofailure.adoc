@@ -7,7 +7,7 @@ __Goal__::
 
 __References__::
 
-* <<reference.adoc#reference-assertnofailure,assertNoFailure>>
+* <<reference#reference-assertnofailure,assertNoFailure>>
 
 __See also__::
 
@@ -22,7 +22,7 @@ This is useful for verifying the invariant of having dealt with an error.
 If you are sure you handled the errors and need to map a pipeline which technically can generate a failure type of `<Error>` to a subscriber that requires a failure type of `<Never>`.
 
 It is far more likely that you want to handle the error with and not have the application terminate.
-Look forward to <<#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>> and <<#patterns-continual-error-handling,Using flatMap with catch to handle errors>> for patterns of how to provide logic to handle errors in a pipeline.
+Look forward to <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>> and <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>> for patterns of how to provide logic to handle errors in a pipeline.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<

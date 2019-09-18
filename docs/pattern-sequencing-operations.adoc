@@ -7,26 +7,26 @@ __Goal__::
 
 __References__::
 
-* <<reference.adoc#reference-future,Future>>
-* <<reference.adoc#reference-flatmap,flatMap>>
-* <<reference.adoc#reference-zip,zip>>
-* <<reference.adoc#reference-sink,sink>>
+* <<reference#reference-future,Future>>
+* <<reference#reference-flatmap,flatMap>>
+* <<reference#reference-zip,zip>>
+* <<reference#reference-sink,sink>>
 
 __See also__::
 
-* <<#patterns-delegate-publisher-subject,Creating a repeating publisher by wrapping a delegate based API>
+* <<patterns#patterns-delegate-publisher-subject,Creating a repeating publisher by wrapping a delegate based API>
 * The ViewController with this code is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/AsyncCoordinatorViewController.swift[UIKit-Combine/AsyncCoordinatorViewController.swift]
 
 __Code and explanation__::
 
 Any asynchronous (or synchronous) set of tasks that need to happen in a specific order can also be coordinated using a combine pipeline.
-By using <<reference.adoc#reference-future,Future>> operator, the very act of completing an asynchronous call can be captured, and sequencing operators provides the structure of that coordination.
+By using <<reference#reference-future,Future>> operator, the very act of completing an asynchronous call can be captured, and sequencing operators provides the structure of that coordination.
 
-For example, by wrapping an asynchronous API calls with the <<reference.adoc#reference-future,Future>> publisher and then chaining them together with the <<reference.adoc#reference-flatmap,flatMap>> operator, you invoke the wrapped asynchronous API calls in the order of the pipeline.
-Multiple parallel asynchronous efforts can be created by creating multiple pipelines, with <<reference.adoc#reference-future,Future>> or another publisher.
-You can wait for all parallel pipelines to complete before continuing by merging them together with the <<reference.adoc#reference-zip,zip>> operator.
+For example, by wrapping an asynchronous API calls with the <<reference#reference-future,Future>> publisher and then chaining them together with the <<reference#reference-flatmap,flatMap>> operator, you invoke the wrapped asynchronous API calls in the order of the pipeline.
+Multiple parallel asynchronous efforts can be created by creating multiple pipelines, with <<reference#reference-future,Future>> or another publisher.
+You can wait for all parallel pipelines to complete before continuing by merging them together with the <<reference#reference-zip,zip>> operator.
 
-If you want force an <<reference.adoc#reference-future,Future>> publisher to not be invoked until another has completed, then creating the future publisher in the <<reference.adoc#reference-flatmap,flatMap>> closure causes it to wait to be created until a value has been passed to the flatMap operator.
+If you want force an <<reference#reference-future,Future>> publisher to not be invoked until another has completed, then creating the future publisher in the <<reference#reference-flatmap,flatMap>> closure causes it to wait to be created until a value has been passed to the flatMap operator.
 
 These techniques can be composed, creating any structure of parallel or serial tasks.
 
@@ -177,13 +177,13 @@ If defined, it calls the cancel on the existing subscriber.
 <2> `resetAllSteps` iterates through all the existing buttons used represent the progress of this workflow, and resets them to gray and unhighlighted to reflect an initial state.
 It also verifies that the activity indicator is not currently animated.
 <3> Then we get things started, first with activating the animation on the activity indicator.
-<4> Creating the subscriber with <<reference.adoc#reference-sink,sink>> and storing the reference initiates the workflow.
+<4> Creating the subscriber with <<reference#reference-sink,sink>> and storing the reference initiates the workflow.
 The publisher to which it is subscribing is setup outside this function, allowing it to be re-used multiple times.
-The <<reference.adoc#reference-print,print>> operator in the pipeline is for debugging, to show console output of when the pipeline is triggered.
-<5> Each step is represented by the invocation of a <<reference.adoc#reference-future,Future>> publisher, followed immediately by pipeline elements to switch to the main thread and then update a UIButton's background to show the step has completed.
-This is encapsulated in a `createFuturePublisher` call, using <<reference.adoc#reference-erasetoanypublisher,eraseToAnyPublisher>> to simplify the type being returned.
-<6> The <<reference.adoc#reference-map,map>> operator is used to create this specific side effect of updating the a UIbutton to show the step has been completed.
-<7> The creation of the overall pipeline and it's structure of serial and parallel tasks is created from the combination of calls to `createFuturePublisher` along with the operators <<reference.adoc#reference-flatmap,flatMap>> and  <<reference.adoc#reference-zip,zip>>.
+The <<reference#reference-print,print>> operator in the pipeline is for debugging, to show console output of when the pipeline is triggered.
+<5> Each step is represented by the invocation of a <<reference#reference-future,Future>> publisher, followed immediately by pipeline elements to switch to the main thread and then update a UIButton's background to show the step has completed.
+This is encapsulated in a `createFuturePublisher` call, using <<reference#reference-erasetoanypublisher,eraseToAnyPublisher>> to simplify the type being returned.
+<6> The <<reference#reference-map,map>> operator is used to create this specific side effect of updating the a UIbutton to show the step has been completed.
+<7> The creation of the overall pipeline and it's structure of serial and parallel tasks is created from the combination of calls to `createFuturePublisher` along with the operators <<reference#reference-flatmap,flatMap>> and  <<reference#reference-zip,zip>>.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<

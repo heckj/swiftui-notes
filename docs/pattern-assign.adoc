@@ -7,18 +7,18 @@ __Goal__::
 
 __References__::
 
-* <<reference.adoc#reference-assign,assign>>
-* <<reference.adoc#reference-receive,receive>>
+* <<reference#reference-assign,assign>>
+* <<reference#reference-receive,receive>>
 
 __See also__::
 
-* <<#patterns-sink-subscriber,Creating a subscriber with sink>>
+* <<patterns#patterns-sink-subscriber,Creating a subscriber with sink>>
 
 __Code and explanation__::
 
 Assign is a subscriber that's specifically designed to apply data from a publisher or pipeline into a property, updating that property whenever it receives data.
 Like sink, it activates when created and requests an unlimited data updates.
-Assign requires the failure type to be specified as `<Never>`, so if your pipeline could fail (such as using an operator like tryMap) you will need to <<#patterns-general-error-handling,convert or handle the failure cases>> before using `.assign`.
+Assign requires the failure type to be specified as `<Never>`, so if your pipeline could fail (such as using an operator like tryMap) you will need to <<patterns#patterns-general-error-handling,convert or handle the failure cases>> before using `.assign`.
 
 .simple sink
 [source, swift]

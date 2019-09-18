@@ -11,41 +11,41 @@ __References__::
 * The GithubAPI is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubAPI.swift[UIKit-Combine/GithubAPI.swift]
 
 * Publishers:
-<<reference.adoc#reference-published,Published>>,
-<<reference.adoc#reference-datataskpublisher,URLSession.dataTaskPublisher>>,
-<<reference.adoc#reference-just,Just>>,
-<<reference.adoc#reference-empty,Empty>>
+<<reference#reference-published,Published>>,
+<<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>,
+<<reference#reference-just,Just>>,
+<<reference#reference-empty,Empty>>
 * Operators:
-<<reference.adoc#reference-decode,decode>>,
-<<reference.adoc#reference-catch,catch>>,
-<<reference.adoc#reference-map,map>>,
-<<reference.adoc#reference-trymap,tryMap>>,
-<<reference.adoc#reference-switchtolatest,switchToLatest>>,
-<<reference.adoc#reference-filter,filter>>,
-<<reference.adoc#reference-handleevents,handleEvents>>,
-<<reference.adoc#reference-subscribe,subscribe>>,
-<<reference.adoc#reference-receive,receive>>,
-<<reference.adoc#reference-throttle,throttle>>,
-<<reference.adoc#reference-removeduplicates,removeDuplicates>>
+<<reference#reference-decode,decode>>,
+<<reference#reference-catch,catch>>,
+<<reference#reference-map,map>>,
+<<reference#reference-trymap,tryMap>>,
+<<reference#reference-switchtolatest,switchToLatest>>,
+<<reference#reference-filter,filter>>,
+<<reference#reference-handleevents,handleEvents>>,
+<<reference#reference-subscribe,subscribe>>,
+<<reference#reference-receive,receive>>,
+<<reference#reference-throttle,throttle>>,
+<<reference#reference-removeduplicates,removeDuplicates>>
 * Subscribers:
-<<reference.adoc#reference-sink,sink>>,
-<<reference.adoc#reference-assign,assign>>
+<<reference#reference-sink,sink>>,
+<<reference#reference-assign,assign>>
 
 __See also__::
 
-* <<#patterns-continual-error-handling,Using flatMap with catch to handle errors>>
-* <<#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
-* <<#patterns-datataskpublisher-trymap,Stricter request processing with dataTaskPublisher>>
+* <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>
+* <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
+* <<patterns#patterns-datataskpublisher-trymap,Stricter request processing with dataTaskPublisher>>
 
 __Code and explanation__::
 
-The example provided expands on a publisher updating from <<#patterns-update-interface-userinput,Declarative UI updates from user input>>, adding additional combine pipelines to update multiple UI elements.
+The example provided expands on a publisher updating from <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>, adding additional combine pipelines to update multiple UI elements.
 
 The general pattern of this view starts with a textfield that accepts user input:
 
-1. We using an IBAction to update the <<reference.adoc#reference-published,Published>> username variable.
+1. We using an IBAction to update the <<reference#reference-published,Published>> username variable.
 2. We have a subscriber (`usernameSubscriber`) attached `$username` publisher reference, which attempts to retrieve the GitHub user from the API.
-The resulting variable `githubUserData` (also <<reference.adoc#reference-published,Published>>) is a list of GitHub user objects.
+The resulting variable `githubUserData` (also <<reference#reference-published,Published>>) is a list of GitHub user objects.
 Even though we only expect a single value here, we use a list because we can conveniently return an empty list on failure scenarios: unable to access the API or the username isn't registered at GitHub.
 3. We have a "secondary" subscriber `apiNetworkActivitySubscriber` which another publisher from the GithubAPI object that provides values when the GithubAPI object starts or finishes making network requests.
 4. We have a another subscriber `repositoryCountSubscriber` attached to `$githubUserData` that pulls the repository count off the github user data object and assigns it as the count to be displayed.
@@ -54,7 +54,7 @@ Even though we only expect a single value here, we use a list because we can con
 The empty list is useful to return because when a username is provided that doesn't resolve, we want to explicitly remove any avatar image that was previously displayed.
 To do this, we need the pipelines to fully resolve to some value, so that further pipelines are triggered and the relevant UI interfaces updated.
 
-The subscribers (created with <<reference.adoc#reference-assign,assign>> and <<reference.adoc#reference-sink,sink>>) are stored as AnyCancellable variables on the ViewController instance.
+The subscribers (created with <<reference#reference-assign,assign>> and <<reference#reference-sink,sink>>) are stored as AnyCancellable variables on the ViewController instance.
 Because they are defined on the class instance, the swift compiler creates initializers and deinitializers, which will cancel and clean up the publishers when the class is torn down.
 
 [NOTE]
@@ -63,16 +63,16 @@ A number of developers comfortable with RxSwift are using a "CancelBag" object t
 An example of this can be seen at https://github.com/tailec/CombineExamples/blob/master/CombineExamples/Shared/CancellableBag.swift
 ====
 
-The pipelines have been explicitly configured to work on a background queue using the <<reference.adoc#reference-subscribe,subscribe>> operator.
+The pipelines have been explicitly configured to work on a background queue using the <<reference#reference-subscribe,subscribe>> operator.
 Without that additional configured, the pipelines would be invoked and run on the main runloop since they were invoked from the UI, which causes a noticable slow-down in responsiveness in the simulator.
-Likewise when the resulting pipelines assign or update UI elements, the <<reference.adoc#reference-receive,receive>> operator is used to transfer that work back onto the main runloop.
+Likewise when the resulting pipelines assign or update UI elements, the <<reference#reference-receive,receive>> operator is used to transfer that work back onto the main runloop.
 
 [WARNING]
 ====
-If you want to have the UI continuously updated from changes propogating through <<reference.adoc#reference-published,Published>> properties, make sure that any configured pipelines have a <Never> failure type.
-This is required for the <<reference.adoc#reference-assign,assign>> operator.
-But more importantly, it's a source of bugs when using a <<reference.adoc#reference-sink,sink>> operator.
-If the pipeline from a <<reference.adoc#reference-published,Published>> variable terminates in a <<reference.adoc#reference-sink,sink>> that accepts an Error failure type, the sink will send a termination signal if an error occures, which stops the pipeline from further processing even when the variable is updated.
+If you want to have the UI continuously updated from changes propogating through <<reference#reference-published,Published>> properties, make sure that any configured pipelines have a <Never> failure type.
+This is required for the <<reference#reference-assign,assign>> operator.
+But more importantly, it's a source of bugs when using a <<reference#reference-sink,sink>> operator.
+If the pipeline from a <<reference#reference-published,Published>> variable terminates in a <<reference#reference-sink,sink>> that accepts an Error failure type, the sink will send a termination signal if an error occures, which stops the pipeline from further processing even when the variable is updated.
 ====
 
 .https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubAPI.swift[UIKit-Combine/GithubAPI.swift]
@@ -160,23 +160,23 @@ struct GithubAPI { <2>
 ----
 
 <1> The decodable struct created here is a subset of what's returned from the GitHub API.
-Any pieces not defined in the struct are simply ignored when processed by the <<reference.adoc#reference-decode,decode>> operator.
+Any pieces not defined in the struct are simply ignored when processed by the <<reference#reference-decode,decode>> operator.
 <2> The code to interact with the GitHub API was broken out into its own object, which I would normally have in a separate file.
 The functions on the API struct return publishers, and are then mixed and merged with other pipelines in the ViewController.
-<3> This struct also exposes a publisher using <<reference.adoc#reference-passthroughsubject,passthroughSubject>> that have set up to trigger Boolean values when it is actively making network requests.
+<3> This struct also exposes a publisher using <<reference#reference-passthroughsubject,passthroughSubject>> that have set up to trigger Boolean values when it is actively making network requests.
 <4> I first created the pipelines to return an optional GithubAPIUser instance, but found that there wasn't a convenient way to propogate "nil" or empty objects on failure conditions.
 The code was then recreated to return a list, even though only a single instance was ever expected, to conveniently represent an "empty" object.
 This was important for the use case of wanting to erase existing values in following pipelines reacting to the GithubAPIUser object "disappearing" - removing the repository count and avatar images in this case.
 <5> The logic here is simply to prevent extraneous network requests, returning an empty result if the username being requested has less than 3 characters.
 The commented out code is a bit of legacy from when I wanted to return nothing instead of an empty list.
-<6> the <<reference.adoc#reference-handleevents,handleEvents>> operator here is how we are triggering updates for the network activity publisher.
-We define closures that trigger on subscription and finalization (both completion and cancel) that invoke `send()` on the <<reference.adoc#reference-passthroughsubject,passthroughSubject>>.
+<6> the <<reference#reference-handleevents,handleEvents>> operator here is how we are triggering updates for the network activity publisher.
+We define closures that trigger on subscription and finalization (both completion and cancel) that invoke `send()` on the <<reference#reference-passthroughsubject,passthroughSubject>>.
 This is an example of how we can provide metadata about a pipeline's operation as a separate publisher.
-<7> <<reference.adoc#reference-trymap,tryMap>> adds additional checking on the API response from github to convert correct responses from the API that aren't valid User instances into a pipeline failure condition.
-<8> <<reference.adoc#reference-decode,decode>> takes the Data from the response and decodes it into a single instance of `GithubAPIUser`
-<9> <<reference.adoc#reference-map,map>> is used to take the single instance and convert it into a list of 1 item, changing the type to a list of `GithubAPIUser`: `[GithubAPIUser]`.
-<10> <<reference.adoc#reference-catch,catch>> operator captures the error conditions within this pipeline, and returns an empty list on failure while also converting the failure type to `Never`.
-<11> <<reference.adoc#reference-erasetoanypublisher,eraseToAnyPublisher>> collapses the complex types of all the chained operators and exposes the whole pipeline as an instance of `AnyPublisher`.
+<7> <<reference#reference-trymap,tryMap>> adds additional checking on the API response from github to convert correct responses from the API that aren't valid User instances into a pipeline failure condition.
+<8> <<reference#reference-decode,decode>> takes the Data from the response and decodes it into a single instance of `GithubAPIUser`
+<9> <<reference#reference-map,map>> is used to take the single instance and convert it into a list of 1 item, changing the type to a list of `GithubAPIUser`: `[GithubAPIUser]`.
+<10> <<reference#reference-catch,catch>> operator captures the error conditions within this pipeline, and returns an empty list on failure while also converting the failure type to `Never`.
+<11> <<reference#reference-erasetoanypublisher,eraseToAnyPublisher>> collapses the complex types of all the chained operators and exposes the whole pipeline as an instance of `AnyPublisher`.
 
 .https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubViewController.swift[UIKit-Combine/GithubViewController.swift]
 [source, swift]
@@ -352,14 +352,14 @@ class ViewController: UIViewController {
 }
 ----
 <1> We add a subscriber to our previous controller from that connects notifications of activity from the GithubAPI object to our activity indicator.
-<2> Where the username is updated from the IBAction (from our earlier example <<#patterns-update-interface-userinput,Declarative UI updates from user input>>) we have the subscriber make the network request and put the results in a new variable (also <<reference.adoc#reference-published,published>>) on our ViewController.
+<2> Where the username is updated from the IBAction (from our earlier example <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>) we have the subscriber make the network request and put the results in a new variable (also <<reference#reference-published,published>>) on our ViewController.
 <3> The first of two subscribers on the publisher `$githubUserData`, this pipeline extracts the count of repositories and updates the a UI label instance.
 There is a bit of logic in the middle of the pipeline to return the string "unknown" when the list is empty.
 <4> The second subscriber to the publisher `$githubUserData`, this triggers a follow on network request to request the image data for the github avatar.
 This is a more complex pipeline, extracting the data from the githubUser, assembling a URL, and then requesting it.
-As this code is in the ViewController, we can also use <<reference.adoc#reference-handleevents,handleEvents>> operator to trigger updates to the activityIndicator in our view.
-We use <<reference.adoc#reference-subscribe,subscribe>> to make the requests on a background queue, and later <<reference.adoc#reference-receive,receive>> the results back onto the main thread to update the UI elements.
-The <<reference.adoc#reference-catch,catch>> and failure handling returns an empty `UIImage` instance in the event of failure.
+As this code is in the ViewController, we can also use <<reference#reference-handleevents,handleEvents>> operator to trigger updates to the activityIndicator in our view.
+We use <<reference#reference-subscribe,subscribe>> to make the requests on a background queue, and later <<reference#reference-receive,receive>> the results back onto the main thread to update the UI elements.
+The <<reference#reference-catch,catch>> and failure handling returns an empty `UIImage` instance in the event of failure.
 <5> A final subscriber that doesn't do anything is attached to the UILabel itself.
 Any Key-Value Observable object from Foundation can also produce a publisher.
 In this example, we attach a publisher that triggers a print statement that the UI element was updated.
@@ -368,7 +368,7 @@ In this example, we attach a publisher that triggers a print statement that the 
 ====
 While we could simply attach pipelines to UI elements as we're updating them, it more closely couples interactions to the actual UI elements themselves.
 While easy and direct, it is often a good idea to make explicit state and updates to seperate out actions and data for debugging and understandability.
-In the example above, we use two <<reference.adoc#reference-published,published>> properties to hold the state associated with the current view.
+In the example above, we use two <<reference#reference-published,published>> properties to hold the state associated with the current view.
 One of which is updated by an IBAction, and the second updated declaratively using a Combine publisher pipeline.
 All other UI elements are updated publishers hanging from those properties getting updated.
 ====

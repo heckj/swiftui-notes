@@ -7,29 +7,29 @@ __Goal__::
 
 __References__::
 
-* <<reference.adoc#reference-print,print>>
-* <<reference.adoc#reference-sink,sink>>
-* <<reference.adoc#reference-retry,retry>>
+* <<reference#reference-print,print>>
+* <<reference#reference-sink,sink>>
+* <<reference#reference-retry,retry>>
 * The ViewController with this code is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubViewController.swift[UIKit-Combine/GithubViewController.swift]
 * The retry unit tests in the github project at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/RetryPublisherTests.swift[UsingCombineTests/RetryPublisherTests.swift]
 
 __See also__::
 
-* <<#patterns-cascading-update-interface,Cascading UI updates including a network request>>
-* <<#patterns-sequencing-operations,Sequencing operations with Combine>>
-* <<#patterns-update-interface-userinput,Declarative UI updates from user input>>
-* <<#patterns-debugging-breakpoint,Debugging pipelines with the debugger>>
-* <<#patterns-debugging-handleevents,Debugging pipelines with the handleEvents operator>>
+* <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>>
+* <<patterns#patterns-sequencing-operations,Sequencing operations with Combine>>
+* <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>
+* <<patterns#patterns-debugging-breakpoint,Debugging pipelines with the debugger>>
+* <<patterns#patterns-debugging-handleevents,Debugging pipelines with the handleEvents operator>>
 
 
 __Code and explanation__::
 
-I have found the greatest detail of information comes from selectively using the <<reference.adoc#reference-print,print>> operator.
+I have found the greatest detail of information comes from selectively using the <<reference#reference-print,print>> operator.
 The downside is that it prints quite a lot of information, so the output can become quickly overwhelming.
 For understanding a simple pipeline, using the `.print()` as an operator without any parameters is very straightforward.
 As soon as you want to add more than one print operator, you will likely want to use the string parameter, which is puts in as a prefix to the output.
 
-The example <<#patterns-cascading-update-interface,Cascading UI updates including a network request>> uses it in several places, with long descriptive prefixes to make it clear which pipeline is providing the information.
+The example <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>> uses it in several places, with long descriptive prefixes to make it clear which pipeline is providing the information.
 
 The two pipelines cascade together by connecting through a private published variable - the github user data.
 The two relevant pipelines from that example code:
@@ -107,14 +107,14 @@ username pipeline: : receive value: (heckj)
 github user data: : receive value: ([UIKit_Combine.GithubAPIUser(login: "heckj", public_repos: 69, avatar_url: "https://avatars0.githubusercontent.com/u/43388?v=4")])
 ----
 
-I have removed some of the other extraneous print statements, which I also placed in <<reference.adoc#reference-sink,sink>> closures to see final results.
+I have removed some of the other extraneous print statements, which I also placed in <<reference#reference-sink,sink>> closures to see final results.
 
 As you can see, you see the initial subscription setup at the very beginning, and then notifications, including the debug representation of the value passed through the print operator.
 Although it is not shown in the example content above, you will also see cancellations when an error occurs, or completions when they emit from a publisher reporting no further data is available.
 
 It can also be beneficial to use a print operator on either side of an operator to understand how it is operating.
 
-An example of doing this, leveraging the prefix to show the <<reference.adoc#reference-retry,retry>> operator and how it works:
+An example of doing this, leveraging the prefix to show the <<reference#reference-retry,retry>> operator and how it works:
 
 .https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/RetryPublisherTests.swift[UsingCombineTests/RetryPublisherTests.swift]
 [source, swift]
@@ -172,7 +172,7 @@ Test Suite 'Selected tests' passed at 2019-07-26 15:59:48.057.
 After the error hits the sink, you see the `cancel` signal propogated back up, which stops at the retry operator.
 
 While very effective, the print operator can be a blunt tool, generating a lot of output that you have to parse and review.
-If you want to be more selective with what you identify and print, or if you need to process the data passing through for it to be used more meaningfully, then you look at the <<reference.adoc#reference-handleevents,handleEvents>> operator. More detail on how to use this opeartor for debugging is in  <<#patterns-debugging-handleevents,Debugging pipelines with the handleEvents operator>>.
+If you want to be more selective with what you identify and print, or if you need to process the data passing through for it to be used more meaningfully, then you look at the <<reference#reference-handleevents,handleEvents>> operator. More detail on how to use this opeartor for debugging is in  <<patterns#patterns-debugging-handleevents,Debugging pipelines with the handleEvents operator>>.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<

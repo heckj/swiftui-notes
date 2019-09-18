@@ -3,17 +3,17 @@
 
 __Goal__::
 
-* The <<reference.adoc#reference-retry,retry>> operator can be included in a pipeline to retry a subscription when a `.failure` completion occurs.
+* The <<reference#reference-retry,retry>> operator can be included in a pipeline to retry a subscription when a `.failure` completion occurs.
 
 __References__::
 
-* <<reference.adoc#reference-catch,catch>>
-* <<reference.adoc#reference-retry,retry>>
+* <<reference#reference-catch,catch>>
+* <<reference#reference-retry,retry>>
 
 __See also__::
 
-* <<#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
-* <<#patterns-continual-error-handling,Using flatMap with catch to handle errors>>
+* <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
+* <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>
 
 __Code and explanation__::
 
@@ -52,9 +52,9 @@ let remoteDataPublisher = urlSession.dataTaskPublisher(for: self.mockURL!)
 
 [WARNING]
 ====
-When using the <<reference.adoc#reference-retry,retry>> operator with <<#reference-datataskpublisher,URLSession.dataTaskPublisher>>, verify that the URL you are requesting isn't going to have negative side effects if requested repeatedly or with a retry.
+When using the <<reference#reference-retry,retry>> operator with <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>, verify that the URL you are requesting isn't going to have negative side effects if requested repeatedly or with a retry.
 Ideally such requests are be expected to be idempotent.
-If they are not, the <<reference.adoc#reference-retry,retry>> operator may make multiple requests, with very unexpected side effects.
+If they are not, the <<reference#reference-retry,retry>> operator may make multiple requests, with very unexpected side effects.
 ====
 
 // force a page break - in HTML rendering is just a <HR>

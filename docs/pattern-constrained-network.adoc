@@ -7,14 +7,14 @@ __Goal__::
 
 __References__::
 
-* <<#reference-datataskpublisher,URLSession.dataTaskPublisher>>
-* <<reference.adoc#reference-trycatch,tryCatch>>
-* <<reference.adoc#reference-trymap,tryMap>>
+* <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>
+* <<reference#reference-trycatch,tryCatch>>
+* <<reference#reference-trymap,tryMap>>
 
 __See also__::
 
-* <<#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
-* <<#patterns-retry,Retrying in the event of a temporary failure>>
+* <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
+* <<patterns#patterns-retry,Retrying in the event of a temporary failure>>
 
 __Code and explanation__::
 

@@ -7,11 +7,11 @@ __Goal__::
 
 __References__::
 
-* <<reference.adoc#reference-future,Future>>
+* <<reference#reference-future,Future>>
 
 __See also__::
 
-* <<#patterns-delegate-publisher-subject,Creating a repeating publisher by wrapping a delegate based API>>
+* <<patterns#patterns-delegate-publisher-subject,Creating a repeating publisher by wrapping a delegate based API>>
 
 __Code and explanation__::
 
