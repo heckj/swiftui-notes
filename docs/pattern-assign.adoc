@@ -7,12 +7,12 @@ __Goal__::
 
 __References__::
 
-* <<reference.adoc#reference-assign>>
-* <<reference.adoc#reference-receive>>
+* <<reference.adoc#reference-assign,assign>>
+* <<reference.adoc#reference-receive,receive>>
 
 __See also__::
 
-* <<#patterns-sink-subscriber>>
+* <<#patterns-sink-subscriber,Creating a subscriber with sink>>
 
 __Code and explanation__::
 

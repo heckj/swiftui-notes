@@ -7,14 +7,14 @@ __Goal__::
 
 __References__::
 
-* <<reference.adoc#reference-flatmap>>
-* <<reference.adoc#reference-just>>
-* <<reference.adoc#reference-catch>>
+* <<reference.adoc#reference-flatmap,flatMap>>
+* <<reference.adoc#reference-just,Just>>
+* <<reference.adoc#reference-catch,catch>>
 
 __See also__::
 
-* <<#patterns-oneshot-error-handling>>
-* <<#patterns-retry>>
+* <<#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
+* <<#patterns-retry,Retrying in the event of a temporary failure>>
 
 __Code and explanation__::
 
@@ -22,7 +22,7 @@ The `flatMap` operator is the operator to use in handling errors on a continual 
 
 You provide a closure to flatMap that can read in the value that was provided, and creates a one-shot closure that does the possibly failing work.
 An example of this is requesting data from a network and then decoding the returned data.
-You can include a <<reference.adoc#reference-catch>> operator to capture any errors and provide any appropriate value.
+You can include a <<reference.adoc#reference-catch,catch>> operator to capture any errors and provide any appropriate value.
 
 This is a perfect mechanism for when you want to maintain updates up an upstream publisher, as it creates one-shot publisher or short pipelines that send a single value and then complete for every incoming value.
 The completion from the created one-shot publishers terminates in the flatMap and isn't passed to downstream subscribers.
