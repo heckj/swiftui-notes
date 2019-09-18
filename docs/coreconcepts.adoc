@@ -131,7 +131,7 @@ More examples, and some common tasks, are detailed in the <<patterns.adoc#patter
 // force a page break - ignored in HTML rendering
 <<<
 
-[#core-lifecycle]
+[#coreconcepts-lifecycle]
 == Lifecycle of Publishers and Subscribers
 
 Combine is designed such that the subscriber ultimately controls the flow of data, and any related processing that happens in pipelines.

@@ -8,7 +8,7 @@ coreconcepts
 
 <<#coreconcepts,Core Concepts>>
 <<#core-publisher-subscriber,Publisher, Subscriber>>
-<<#core-lifecycle,Lifecycle of Publishers and Subscribers>>
+<<#coreconcepts-lifecycle,Lifecycle of Publishers and Subscribers>>
 <<#core-publishers,Publishers>>
 <<#core-operators,Operators>>
 <<#core-subjects,Subjects>>

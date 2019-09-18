@@ -22,7 +22,7 @@ things to potentially include for each segment
 == Publishers
 
 For general information about Publishers, see <<coreconcepts.adoc#core-publishers>> and
-<<coreconcepts.adoc#core-lifecycle>>.
+<<coreconcepts#coreconcepts-lifecycle>>.
 
 [#reference-just]
 === Just
