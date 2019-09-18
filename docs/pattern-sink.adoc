@@ -3,21 +3,21 @@
 
 __Goal__::
 
-* To receive the output, and the errors or completion messages, generated from a publisher or through a pipeline, you can create a subscriber with `sink`.
+* To receive the output, and the errors or completion messages, generated from a publisher or through a pipeline, you can create a subscriber with <<reference#reference-sink,sink>>.
 
 __References__::
 
-* <<reference.adoc#reference-sink,Sink>>
+* <<reference#reference-sink,sink>>
 
 __See also__::
 
-* <<#patterns-assign-subscriber>>
-* <<#patterns-testing-publisher>>
-* <<#patterns-testing-subscriber>>
+* <<patterns#patterns-assign-subscriber,Creating a subscriber with assign>>
+* <<patterns#patterns-testing-publisher,Testing a publisher with XCTestExpectation>>
+* <<patterns#patterns-testing-subscriber-scheduled,Testing a subscriber with scheduled sends from PassthroughSubject>>
 
 __Code and explanation__::
 
-Sink creates an all-purpose subscriber to capture or react the data from a Combine pipeline, while also supporting cancellation and the <<coreconcepts.adoc#core-lifecycle,publisher subscriber lifecycle>>.
+Sink creates an all-purpose subscriber to capture or react the data from a Combine pipeline, while also supporting cancellation and the <<coreconcepts#coreconcepts-lifecycle,publisher subscriber lifecycle>>.
 
 .simple sink
 [source, swift]
@@ -55,7 +55,7 @@ cancellablePipeline.cancel() <2>
 ----
 
 <1> Sinks are created by chaining the code from a publisher or pipeline, and terminate the pipeline.
-When the sink is created or invoked on a publisher, it implicitly starts <<coreconcepts.adoc#core-lifecycle,the lifecycle>> with the `subscribe` and will request unlimited data.
+When the sink is created or invoked on a publisher, it implicitly starts <<coreconcepts#coreconcepts-lifecycle,the lifecycle>> with the `subscribe` and will request unlimited data.
 <2> Creating a sink is cancellable subscriber, so at any time you can take the reference that terminated with sink and invoke `.cancel()` on it to invalidate and shut down the pipeline.
 
 // force a page break - in HTML rendering is just a <HR>

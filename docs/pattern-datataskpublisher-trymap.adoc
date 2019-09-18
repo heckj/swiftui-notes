@@ -7,17 +7,17 @@ __Goal__::
 
 __References__::
 
-* <<reference.adoc#reference-datataskpublisher>>
-* <<reference.adoc#reference-trymap>>
-* <<reference.adoc#reference-decode>>
-* <<reference.adoc#reference-sink>>
-* <<reference.adoc#reference-subscribe>>
+* <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>
+* <<reference#reference-trymap,tryMap>>
+* <<reference#reference-decode,decode>>
+* <<reference#reference-sink,sink>>
+* <<reference#reference-subscribe,subscribe>>
 
 __See also__::
 
-* <<#patterns-datataskpublisher-decode>>
-* <<#patterns-oneshot-error-handling>>
-* <<#patterns-retry>>
+* <<patterns#patterns-datataskpublisher-decode,Making a network request with dataTaskPublisher>>
+* <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
+* <<patterns#patterns-retry,Retrying in the event of a temporary failure>>
 
 
 __Code and explanation__::
@@ -64,9 +64,9 @@ let cancellableSink = remoteDataPublisher
     })
 ----
 
-Where the <<#patterns-datataskpublisher-decode, previous pattern>> used a <<reference.adoc#reference-map>> operator, this uses tryMap, which allows us to identify and throw errors in the pipeline based on what was returned.
+Where the <<patterns#patterns-datataskpublisher-decode, previous pattern>> used a <<reference#reference-map,map>> operator, this uses tryMap, which allows us to identify and throw errors in the pipeline based on what was returned.
 
-<1> <<reference.adoc#reference-trymap>> still gets the tuple of `(data: Data, response: URLResponse)`, and is defined here as returning just the type of Data down the pipeline.
+<1> <<reference#reference-trymap,tryMap>> still gets the tuple of `(data: Data, response: URLResponse)`, and is defined here as returning just the type of Data down the pipeline.
 <2> Within the closure for tryMap, we can cast the response to HTTPURLResponse and dig deeper into it, including looking at the specific status code.
 <3> In this case, we want to consider **anything** other than a 200 response code as a failure. HTTPURLResponse.status_code is an Int type, so you could also have logic such as `httpResponse.statusCode > 300`.
 <4> If the predicates aren't met, then we can throw an instance of an error of our choosing, `invalidServerResponse` in this case.

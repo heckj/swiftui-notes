@@ -1,7 +1,7 @@
 [#coreconcepts]
 = Core Concepts
 
-[#core-publisher-subscriber]
+[#coreconcepts-publisher-subscriber]
 == Publisher, Subscriber
 
 Two key concepts, described in swift with protocols, are https://developer.apple.com/documentation/combine/publisher[*publisher*] and https://developer.apple.com/documentation/combine/subscriber[*subscriber*].
@@ -77,7 +77,7 @@ Some operators require conformance to an input or failure type.
 Other operators may change either or both the failure and output types.
 For example, there are a number of operators that have a similar operator prefixed with `try`, which indicates they return an <Error> failure type.
 
-An example of this is <<reference.adoc#reference-map>> and <<reference.adoc#reference-trymap>>.
+An example of this is <<reference#reference-map,map>> and <<reference#reference-trymap,tryMap>>.
 The `map` operator allows for any combination of Output and Failure type and passes them through.
 `tryMap` accepts any Input, Failure types, and allows any Output type, but will always output an `<Error>` failure type.
 
@@ -126,12 +126,12 @@ In the example above, we explicitly specified the type being returned with the l
 You can view Combine publishers, operators, and subscribers as having two parallel types that both need to be aligned - one for the functional case and one for the error case.
 Designing your pipeline is frequently choosing how to convert one or both of those types and the associated data with it.
 
-More examples, and some common tasks, are detailed in the <<patterns.adoc#patterns,section on patterns>>.
+More examples, and some common tasks, are detailed in the <<patterns#patterns,section on patterns>>.
 
 // force a page break - ignored in HTML rendering
 <<<
 
-[#core-lifecycle]
+[#coreconcepts-lifecycle]
 == Lifecycle of Publishers and Subscribers
 
 Combine is designed such that the subscriber ultimately controls the flow of data, and any related processing that happens in pipelines.
@@ -158,13 +158,13 @@ A publisher should never send **more** than the demand requested.
 
 . A publisher may optionally send https://developer.apple.com/documentation/combine/subscribers/completion[completion]: `receive(completion:)` which is also how errors are propogated.
 
-[#core-publishers]
+[#coreconcepts-publishers]
 == Publishers
 
 The publisher is the provider of data.
 The https://developer.apple.com/documentation/combine/publisher[publisher protocol] has a strict contract returning values when asked from subscribers, and possibly terminating with an explicit completion enumeration.
 
-<<reference.adoc#reference-just>> and <<reference.adoc#reference-future>> are extremely common sources to start your own publisher from a value or function.
+<<reference#reference-just,Just>> and <<reference#reference-future,Future>> are extremely common sources to start your own publisher from a value or function.
 
 Many publishers will immediately provide data when requested by a subscriber.
 In some cases, a publisher may have a separate mechanism to enable it to return data.
@@ -178,16 +178,16 @@ Combine provides a number of additional convenience publishers:
 //TODO(heckj) - convert to xref to reference sections on these operators
 [cols="3*^"]
 |===
-| <<reference.adoc#reference-just>>
-| <<reference.adoc#reference-future>>
-| <<reference.adoc#reference-published>>
+| <<reference#reference-just,Just>>
+| <<reference#reference-future,Future>>
+| <<reference#reference-published,@Published>>
 
-| <<reference.adoc#reference-empty>>
-| <<reference.adoc#reference-sequence>>
-| <<reference.adoc#reference-fail>>
+| <<reference#reference-empty,Empty>>
+| <<reference#reference-sequence,Sequence>>
+| <<reference#reference-fail,Fail>>
 
-| <<reference.adoc#reference-deferred>>
-| <<reference.adoc#reference-observableobjectpublisher>>
+| <<reference#reference-deferred,Deferred>>
+| <<reference#reference-observableobjectpublisher,ObservableObjectPublisher>>
 |
 
 |===
@@ -197,12 +197,12 @@ A number of Apple APIs outside of Combine provide publishers as well.
 * SwiftUI provides https://developer.apple.com/documentation/swiftui/observedobject[`@ObservedObject`] which can be used to create a publisher.
 
 * Foundation
-** <<reference.adoc#reference-datataskpublisher>>
-** <<reference.adoc#reference-kvo-publisher>>
-** <<reference.adoc#reference-notificationcenter>>
-** <<reference.adoc#reference-timer>>
+** <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>
+** <<reference#reference-kvo-publisher,.publisher on KVO instance>>
+** <<reference#reference-notificationcenter,NotificationCenter>>
+** <<reference#reference-timer,Timer>>
 
-[#core-operators]
+[#coreconcepts-operators]
 == Operators
 
 Operators are a convenient name for a number of pre-built functions that are included under Publisher in Apple's reference documentation.
@@ -216,28 +216,28 @@ Operators can also help with error handling and retry logic, buffering and prefe
 [cols="3*^"]
 |===
 3+h| Mapping elements
-| <<reference.adoc#reference-scan>>
-| <<reference.adoc#reference-tryscan>>
-| <<reference.adoc#reference-setfailuretype>>
+| <<reference#reference-scan,scan>>
+| <<reference#reference-tryscan,tryScan>>
+| <<reference#reference-setfailuretype,setFailureType>>
 
-| <<reference.adoc#reference-map>>
-| <<reference.adoc#reference-trymap>>
-| <<reference.adoc#reference-flatmap>>
+| <<reference#reference-map,map>>
+| <<reference#reference-trymap,tryMap>>
+| <<reference#reference-flatmap,flatMap>>
 |===
 
 [cols="3*^"]
 |===
 3+h| Filtering elements
-| <<reference.adoc#reference-compactmap>>
-| <<reference.adoc#reference-trycompactmap>>
-| <<reference.adoc#reference-replaceempty>>
+| <<reference#reference-compactmap,compactMap>>
+| <<reference#reference-trycompactmap,tryCompactMap>>
+| <<reference#reference-replaceempty,replaceEmpty>>
 
-| <<reference.adoc#reference-filter>>
-| <<reference.adoc#reference-tryfilter>>
-| <<reference.adoc#reference-replaceerror>>
+| <<reference#reference-filter,filter>>
+| <<reference#reference-tryfilter,tryFilter>>
+| <<reference#reference-replaceerror,replaceError>>
 
-| <<reference.adoc#reference-removeduplicates>>
-| <<reference.adoc#reference-tryremoveduplicates>>
+| <<reference#reference-removeduplicates,removeDuplicates>>
+| <<reference#reference-tryremoveduplicates,tryRemoveDuplicates>>
 |
 |===
 
@@ -245,111 +245,111 @@ Operators can also help with error handling and retry logic, buffering and prefe
 [cols="3*^"]
 |===
 3+h| Reducing elements
-| <<reference.adoc#reference-collect>>
-| <<reference.adoc#reference-collectbycount>>
-| <<reference.adoc#reference-collectbytime>>
+| <<reference#reference-collect,collect>>
+| <<reference#reference-collectbycount,collectByCount>>
+| <<reference#reference-collectbytime,collectByTime>>
 
-| <<reference.adoc#reference-reduce>>
-| <<reference.adoc#reference-tryreduce>>
-| <<reference.adoc#reference-ignoreoutput>>
+| <<reference#reference-reduce,reduce>>
+| <<reference#reference-tryreduce,tryReduce>>
+| <<reference#reference-ignoreoutput,ignoreOutput>>
 |===
 
 [cols="3*^"]
 |===
 3+h| Mathematic opertions on elements
-| <<reference.adoc#reference-comparison>>
-| <<reference.adoc#reference-trycomparison>>
-| <<reference.adoc#reference-count>>
+| <<reference#reference-comparison,comparison>>
+| <<reference#reference-trycomparison,tryComparison>>
+| <<reference#reference-count,count>>
 |===
 
 [cols="3*^"]
 |===
 3+h| Applying matching criteria to elements
-| <<reference.adoc#reference-allsatisfy>>
-| <<reference.adoc#reference-tryallsatisfy>>
-| <<reference.adoc#reference-contains>>
+| <<reference#reference-allsatisfy,allSatisfy>>
+| <<reference#reference-tryallsatisfy,tryAllSatisfy>>
+| <<reference#reference-contains,contains>>
 
-| <<reference.adoc#reference-containswhere>>
-| <<reference.adoc#reference-trycontainswhere>>
+| <<reference#reference-containswhere,containsWhere>>
+| <<reference#reference-trycontainswhere,tryContainsWhere>>
 |
 |===
 
 [cols="3*^"]
 |===
 3+h| Applying sequence operations to elements
-| <<reference.adoc#reference-firstwhere>>
-| <<reference.adoc#reference-tryfirstwhere>>
-| <<reference.adoc#reference-first>>
+| <<reference#reference-firstwhere,firstWhere>>
+| <<reference#reference-tryfirstwhere,tryFirstWhere>>
+| <<reference#reference-first,first>>
 
-| <<reference.adoc#reference-lastwhere>>
-| <<reference.adoc#reference-trylastwhere>>
-| <<reference.adoc#reference-last>>
+| <<reference#reference-lastwhere,lastWhere>>
+| <<reference#reference-trylastwhere,tryLastWhere>>
+| <<reference#reference-last,last>>
 
-| <<reference.adoc#reference-dropwhile>>
-| <<reference.adoc#reference-trydropwhile>>
-| <<reference.adoc#reference-dropuntiloutput>>
+| <<reference#reference-dropwhile,dropWhile>>
+| <<reference#reference-trydropwhile,tryDropWhile>>
+| <<reference#reference-dropuntiloutput,dropUntilOutput>>
 
-| <<reference.adoc#reference-concatenate>>
-| <<reference.adoc#reference-drop>>
-| <<reference.adoc#reference-prefixuntiloutput>>
+| <<reference#reference-concatenate,concatenate>>
+| <<reference#reference-drop,drop>>
+| <<reference#reference-prefixuntiloutput,prefixUntilOutput>>
 
-| <<reference.adoc#reference-prefixwhile>>
-| <<reference.adoc#reference-tryprefixwhile>>
-| <<reference.adoc#reference-output>>
+| <<reference#reference-prefixwhile,prefixWhile>>
+| <<reference#reference-tryprefixwhile,tryPrefixWhile>>
+| <<reference#reference-output,output>>
 |===
 
 [cols="3*^"]
 |===
 3+h| Combining elements from multiple publishers
-| <<reference.adoc#reference-combinelatest>>
-| <<reference.adoc#reference-merge>>
-| <<reference.adoc#reference-zip>>
+| <<reference#reference-combinelatest,combineLatest>>
+| <<reference#reference-merge,merge>>
+| <<reference#reference-zip,zip>>
 |===
 
 [cols="3*^"]
 |===
 3+h| Handling errors
-| <<reference.adoc#reference-catch>>
-| <<reference.adoc#reference-trycatch>>
-| <<reference.adoc#reference-assertnofailure>>
+| <<reference#reference-catch,catch>>
+| <<reference#reference-trycatch,tryCatch>>
+| <<reference#reference-assertnofailure,assertNoFailure>>
 
-| <<reference.adoc#reference-retry>>
-| <<reference.adoc#reference-maperror>>
+| <<reference#reference-retry,retry>>
+| <<reference#reference-maperror,mapError>>
 |
 |===
 
 [cols="3*^"]
 |===
 3+h| Adapting publisher types
-| <<reference.adoc#reference-switchtolatest>>
-| <<reference.adoc#reference-erasetoanypublisher>>
+| <<reference#reference-switchtolatest,switchToLatest>>
+| <<reference#reference-erasetoanypublisher,eraseToAnyPublisher>>
 |
 |===
 
 [cols="3*^"]
 |===
 3+h| Controlling timing
-| <<reference.adoc#reference-debounce>>
-| <<reference.adoc#reference-delay>>
-| <<reference.adoc#reference-measureinterval>>
+| <<reference#reference-debounce,debounce>>
+| <<reference#reference-delay,delay>>
+| <<reference#reference-measureinterval,measureInterval>>
 
-| <<reference.adoc#reference-throttle>>
-| <<reference.adoc#reference-timeout>>
+| <<reference#reference-throttle,throttle>>
+| <<reference#reference-timeout,timeout>>
 |
 |===
 
 [cols="3*^"]
 |===
 3+h| Encoding and decoding
-| <<reference.adoc#reference-encode>>
-| <<reference.adoc#reference-decode>>
+| <<reference#reference-encode,encode>>
+| <<reference#reference-decode,decode>>
 |
 |===
 
 [cols="3*^"]
 |===
 3+h| Working with multiple subscribers
-| <<reference.adoc#reference-multicast>>
+| <<reference#reference-multicast,multicast>>
 |
 |
 |===
@@ -357,12 +357,12 @@ Operators can also help with error handling and retry logic, buffering and prefe
 [cols="3*^"]
 |===
 3+h| Debugging
-| <<reference.adoc#reference-breakpoint>>
-| <<reference.adoc#reference-handleevents>>
-| <<reference.adoc#reference-print>>
+| <<reference#reference-breakpoint,breakpoint>>
+| <<reference#reference-handleevents,handleEvents>>
+| <<reference#reference-print,print>>
 |===
 
-[#core-subjects]
+[#coreconcepts-subjects]
 == Subjects
 
 Subjects are a special case of publisher that also adhere to the https://developer.apple.com/documentation/combine/subject[`subject`] protocol.
@@ -380,7 +380,7 @@ A subject will not signal for demand to its connected publishers until it has re
 When it receives any demand, it then signals for `unlimited` demand to connected publishers.
 With the subject supporting multiple subscribers, any subscribers that have not requested data with a demand are not provided the data until they do.
 
-There are two types of built-in subjects with Combine: <<reference.adoc#reference-currentvaluesubject>> and <<reference.adoc#reference-passthroughsubject>>.
+There are two types of built-in subjects with Combine: <<reference#reference-currentvaluesubject,currentValueSubject>> and <<reference#reference-passthroughsubject,passthroughSubject>>.
 They act similiarly, the primary difference being currentValueSubject remembers and provides an initial state value for any subscribers, where passthroughSubject does not.
 Both will provide updated values to any subscribers when `.send()` is invoked.
 
@@ -388,12 +388,12 @@ Both CurrentValueSubject and PassthroughSubject are also useful for creating pub
 https://developer.apple.com/documentation/combine/observableobject[`ObservableObject`].
 This protocol is supported by a number of declarative components within SwiftUI.
 
-[#core-subscribers]
+[#coreconcepts-subscribers]
 == Subscribers
 
 While https://developer.apple.com/documentation/combine/subscriber[`subscriber`] is the protocol used to receive data throughout a pipeline, _the Subscriber_ typically refers to the end of a pipeline.
 
-There are two subscribers built-in to Combine: <<reference.adoc#reference-assign>> and <<reference.adoc#reference-sink,Sink>>.
+There are two subscribers built-in to Combine: <<reference#reference-assign,assign>> and <<reference#reference-sink,sink>>.
 
 Subscribers can support cancellation, which terminates a subscription and shuts down all the stream processing prior to any Completion sent by the publisher.
 Both `Assign` and `Sink` conform to the https://developer.apple.com/documentation/combine/cancellable[cancellable protocol].
@@ -440,10 +440,10 @@ struct MyView : View {
 }
 ----
 
-For any type of UI object (UIKit, AppKit, or SwiftUI), <<reference.adoc#reference-assign>> can be used with pipelines to manipulate properties.
+For any type of UI object (UIKit, AppKit, or SwiftUI), <<reference#reference-assign,assign>> can be used with pipelines to manipulate properties.
 
 When you are storing a reference to your own subscriber in order to clean up later, you generally want a reference to cancel the subscription.
-<<reference.adoc#reference-anycancellable>> provides a type-erased reference that converts any subscriber to the type AnyCancellable, allowing the use of `.cancel()` on that reference, but not access to the subscription itself (which could, for instance, request more data).
+<<reference#reference-anycancellable,anyCancellable>> provides a type-erased reference that converts any subscriber to the type AnyCancellable, allowing the use of `.cancel()` on that reference, but not access to the subscription itself (which could, for instance, request more data).
 
 // force a page break - ignored in HTML rendering
 <<<

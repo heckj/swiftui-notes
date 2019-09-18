@@ -10,22 +10,22 @@ __References__::
 * The Xcode project ViewController with this code is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubViewController.swift[`UIKit-Combine/GithubViewController.swift`]
 
 * Publishers:
-<<reference.adoc#reference-published>>,
-<<reference.adoc#reference-datataskpublisher>>,
+<<reference#reference-published,Published>>,
+<<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>,
 * Operators:
-<<reference.adoc#reference-map>>,
-<<reference.adoc#reference-switchtolatest>>,
-<<reference.adoc#reference-receive>>,
-<<reference.adoc#reference-throttle>>,
-<<reference.adoc#reference-removeduplicates>>
+<<reference#reference-map,map>>,
+<<reference#reference-switchtolatest,switchToLatest>>,
+<<reference#reference-receive,receive>>,
+<<reference#reference-throttle,throttle>>,
+<<reference#reference-removeduplicates,removeDuplicates>>
 * Subscribers:
-<<reference.adoc#reference-assign>>
+<<reference#reference-assign,assign>>
 
 __See also__::
 
-* <<#patterns-continual-error-handling>>
-* <<#patterns-oneshot-error-handling>>
-* <<#patterns-datataskpublisher-trymap>>
+* <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>
+* <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
+* <<patterns#patterns-datataskpublisher-trymap,Stricter request processing with dataTaskPublisher>>
 
 __Code and explanation__::
 
@@ -35,7 +35,7 @@ A pattern for integrating UIKit is setting up a variable which will hold a refer
 
 The sample here is a portion of the code at in a larger ViewController implementation.
 
-This example overlaps with the next pattern <<#patterns-cascading-update-interface>>, which builds upon the initial publisher.
+This example overlaps with the next pattern <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>>, which builds upon the initial publisher.
 
 .https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubAPI.swift[UIKit-Combine/GithubAPI.swift]
 [source, swift]
@@ -89,22 +89,22 @@ class ViewController: UIViewController {
 ----
 
 <1> The UITextField is the interface element which is driving the updates from user interaction.
-<2> We defined a <<reference.adoc#reference-published>> property to both hold the updates.
+<2> We defined a <<reference#reference-published,Published>> property to both hold the updates.
 Because its a Published property, it provides a publisher reference that we can use to attach additional combine pipelines to update other variables or elements of the interface.
 <3> We set the variable `username` from within an IBAction, which in turn triggers a data flow if the publisher `$username` has any subscribers.
 <4> We in turn set up a subscriber on the publisher `$username` that does further actions. In this case the overall flow retrives an instance of a GithubAPIUser from Github's REST API.
-<5> The <<reference.adoc#reference-throttle>> is there to keep from triggering a network request on ever request.
+<5> The <<reference#reference-throttle,throttle>> is there to keep from triggering a network request on ever request.
 The throttle keeps it to a maximum of 1 request every half-second.
-<6> <<reference.adoc#reference-removeduplicates>> is there to collapse events from the changing username so that API requests aren't made on rapidly changing values.
+<6> <<reference#reference-removeduplicates,removeDuplicates>> is there to collapse events from the changing username so that API requests aren't made on rapidly changing values.
 The removeDuplicates prevents redundant requests from being made, should the user edit and the return the previous value.
 <7> map is used similiarly to flatMap in error handling here, returning an instance of a publisher.
 The API object returns a publisher, which this map is invoking.
 This doesn't return the value from the call, but the calling publisher itself.
-<8> <<reference.adoc#reference-switchtolatest>> operator takes the instance of the publisher that is the element passed down the pipeline, and pulls out the data to push the elements further down the pipeline.
+<8> <<reference#reference-switchtolatest,switchToLatest>> operator takes the instance of the publisher that is the element passed down the pipeline, and pulls out the data to push the elements further down the pipeline.
 switchToLatest resolves that publisher into a value and passes that value down the pipeline, in this case an instance of `[GithubAPIUser]`.
 <9> And assign at the end up the pipeline is the subscriber, which assigns the value into another variable
 
-Continue on to <<#patterns-cascading-update-interface>> to expand this into multiple cascading updates of various UI elements.
+Continue on to <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>> to expand this into multiple cascading updates of various UI elements.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
