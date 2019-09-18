@@ -19,8 +19,6 @@ echo "Rendering HTML"
 # render the HTML, results will appear in `output` directory
 docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
 
-docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/feedback.adoc
-
 # copy in the images for the HTML
 cp -r docs/images output/images
 if [ -n "${OPENIT}" ]; then
