@@ -11,10 +11,10 @@ __References__::
 
 __See also__::
 
-* <<#patterns-testing-publisher>>
-* <<#patterns-testing-subscriber>>
-* <<#patterns-testing-subscriber-scheduled>>
-* <<reference.adoc#reference-passthroughsubject>>
+* <<#patterns-testing-publisher,Testing a publisher with XCTestExpectation>>
+* <<#patterns-testing-subscriber,Testing a subscriber with a PassthroughSubject>>
+* <<#patterns-testing-subscriber-scheduled,Testing a subscriber with scheduled sends from PassthroughSubject>>
+* <<reference.adoc#reference-passthroughsubject,passthroughSubject>>
 
 __Code and explanation__::
 

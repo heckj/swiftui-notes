@@ -26,17 +26,17 @@ The examples above expected that the subscriber would handle the error condition
 However, you are not always able to control the subscriber - as might be the case if you're using SwiftUI view properties as the subscriber, and you're providing the publisher.
 In these cases, you need to build your pipeline so that the output types match the subscriber types.
 
-For example, if you are working with SwiftUI and the you want to use `.assign` to set the `isEnabled` property on a button, the subscriber will have a few requirements:
+For example, if you are working with SwiftUI and the you want to use <<#reference-assign,assign>> to set the `isEnabled` property on a button, the subscriber will have a few requirements:
 
 . the subcriber should match the type output of `<Bool>`, `<Never>`
 . the subscriber should be called on the main thread
 
-With a publisher that can throw an error (such as `dataTaskPublisher`), you need to construct a pipeline to convert the output type, but also handle the error within the pipeline to match a failure type of `<Never>`.
+With a publisher that can throw an error (such as <<#reference-datataskpublisher,URLSession.dataTaskPublisher>>), you need to construct a pipeline to convert the output type, but also handle the error within the pipeline to match a failure type of `<Never>`.
 
 How you handle the errors within a pipeline is very dependent on how the pipeline is working.
-If the pipeline is set up to return a single result and terminate, continue to <<patterns-oneshot-error-handling>>.
+If the pipeline is set up to return a single result and terminate, continue to <<#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>.
 If the pipeline is set up to continually update, the error handling needs to be a little more complex.
-Jump ahead to <<patterns-continual-error-handling>>.
+Jump ahead to <<#patterns-continual-error-handling,Using flatMap with catch to handle errors>>.
 
 :leveloffset: +1
 include::pattern-assertnofailure.adoc[]
@@ -77,7 +77,7 @@ For example, if your code was focused on providing it's data from external web s
 You could then use that interface to test either side of that pipeline independently.
 
 * You could mock data responses that emulate the underlying API calls and possible responses, including various error conditions.
-This might include returning data from a publisher created with <<reference.adoc#reference-just>> or <<reference.adoc#reference-fail>>, or something more complex using <<reference.adoc#reference-future>>.
+This might include returning data from a publisher created with <<reference.adoc#reference-just,Just>> or <<reference.adoc#reference-fail,Fail>>, or something more complex using <<reference.adoc#reference-future,Future>>.
 None of these options require you to make actual network interface calls.
 
 * Likewise you can isolate the testing of making the publisher do the API calls and verify the various success and failure conditions expected.
