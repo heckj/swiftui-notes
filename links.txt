@@ -1,0 +1,171 @@
+# grep -A1 "\[#" docs/* | grep docs
+
+aboutthisbook
+
+<<#aboutthisbook,About This Book>>
+
+coreconcepts
+
+<<#coreconcepts,Core Concepts>>
+<<#core-publisher-subscriber,Publisher, Subscriber>>
+<<#core-lifecycle,Lifecycle of Publishers and Subscribers>>
+<<#core-publishers,Publishers>>
+<<#core-operators,Operators>>
+<<#core-subjects,Subjects>>
+<<#core-subscribers]
+docs/coreconcepts.adoc-== Subscribers
+
+developingwith
+
+<<#developingwith,Developing with Combine>>
+<<#developingwith-types,Swift types and exposing pipelines or subscribers>>
+<<#developingwith-threads,Pipelines and threads>>
+
+introduction
+
+<<#introduction,Introduction to Combine>>
+
+patterns
+
+<<#patterns-assertnofailure,Verifying a failure hasn't happened using assertNoFailure>>
+<<#patterns-assign-subscriber,Creating a subscriber with assign>>
+<<#patterns-bindableobject,Using BindableObject with SwiftUI models as a publisher source>>
+<<#patterns-cascading-update-interface,Cascading UI updates including a network request>>
+<<#patterns-constrained-network,Requesting data from an alternate URL when the network is constrained>>
+<<#patterns-continual-error-handling,Using flatMap with catch to handle errors>>
+<<#patterns-datataskpublisher-decode,Making a network request with dataTaskPublisher>>
+<<#patterns-datataskpublisher-trymap,Stricter request processing with dataTaskPublisher>>
+<<#patterns-debugging-breakpoint,Debugging pipelines with the debugger>>
+<<#patterns-debugging-handleevents,Debugging pipelines with the handleEvents operator>>
+<<#patterns-debugging-print,Debugging pipelines with the print operator>>
+<<#patterns-delegate-publisher-subject,Creating a repeating publisher by wrapping a delegate based API>
+<<#patterns-future,Wrapping an asynchronous call with a Future to create a one-shot publisher>>
+<<#patterns-merging-streams-interface,Merging multiple pipelines to update UI elements>>
+<<#patterns-notificationcenter,Responding to updates from NotificationCenter>>
+<<#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
+<<#patterns-retry,Retrying in the event of a temporary failure>>
+<<#patterns-sequencing-operations,Sequencing operations with Combine>>
+<<#patterns-sink-subscriber,Creating a subscriber with sink>>
+<<#patterns-testable-publisher-subscriber,Using EntwineTest to create a testable publisher and subscriber>>
+<<#patterns-testing-publisher,Testing a publisher with XCTestExpectation>>
+<<#patterns-testing-subscriber-scheduled,Testing a subscriber with scheduled sends from PassthroughSubject>>
+<<#patterns-testing-subscriber,Testing a subscriber with a PassthroughSubject>>
+<<#patterns-update-interface-userinput,Declarative UI updates from user input>>
+<<#patterns,Patterns and Recipes>>
+<<#patterns-general-error-handling,Error Handling>>
+<<#patterns-uikit-integration,UIKit (or AppKit) Integration>>
+<<#patterns-swiftui-integration,SwiftUI Integration>>
+<<#patterns-testing-and-debugging,Testing and Debugging>>
+
+reference
+
+<<#reference,Reference>>
+<<#reference-publishers,Publishers>>
+<<#reference-just,Just>>
+<<#reference-future,Future>>
+<<#reference-published,Published>>
+<<#reference-empty,Empty>>
+<<#reference-fail,Fail>>
+<<#reference-sequence,Publishers.Sequence>>
+<<#reference-deferred,Deferred>>
+<<#reference-observableobjectpublisher,ObservableObjectPublisher>>
+<<#reference-swiftui,SwiftUI>>
+<<#reference-foundation,Foundation>>
+<<#reference-notificationcenter,NotificationCenter>>
+<<#reference-timer,Timer>>
+<<#reference-kvo-publisher,.publisher on KVO instance>>
+<<#reference-datataskpublisher,URLSession.dataTaskPublisher>>
+<<#reference-realitykit,RealityKit>>
+<<#reference-operators,Operators>>
+<<#reference-operators-mapping,Mapping elements>>
+<<#reference-scan,scan>>
+<<#reference-tryscan,tryScan>>
+<<#reference-map,map>>
+<<#reference-trymap,tryMap>>
+<<#reference-flatmap,flatMap>>
+<<#reference-setfailuretype,setFailureType>>
+<<#reference-operators-filtering,Filtering elements>>
+<<#reference-compactmap,compactMap>>
+<<#reference-trycompactmap,tryCompactMap>>
+<<#reference-filter,filter>>
+<<#reference-tryfilter,tryFilter>>
+<<#reference-removeduplicates,removeDuplicates>>
+<<#reference-tryremoveduplicates,tryRemoveDuplicates>>
+<<#reference-replaceempty,replaceEmpty>>
+<<#reference-replaceerror,replaceError>>
+<<#reference-replacenil,replaceNil>>
+<<#reference-operators-reducing,Reducing elements>>
+<<#reference-collect,collect>>
+<<#reference-collectbycount,collectByCount>>
+<<#reference-collectbytime,collectByTime>>
+<<#reference-ignoreoutput,ignoreOutput>>
+<<#reference-reduce,reduce>>
+<<#reference-tryreduce,tryReduce>>
+<<#reference-operators-mathematical,Mathematic opertions on elements>>
+<<#reference-max,max>>
+<<#reference-min,min>>
+<<#reference-comparison,comparison>>
+<<#reference-trycomparison,tryComparison>>
+<<#reference-count,count>>
+<<#reference-operators-criteria,Applying matching criteria to elements>>
+<<#reference-allsatisfy,allSatisfy>>
+<<#reference-tryallsatisfy,tryAllSatisfy>>
+<<#reference-contains,contains>>
+<<#reference-containswhere,containsWhere>>
+<<#reference-trycontainswhere,tryContainsWhere>>
+<<#reference-operators-sequence,Applying sequence operations to elements>>
+<<#reference-first,first>>
+<<#reference-firstwhere,firstWhere>>
+<<#reference-tryfirstwhere,tryFirstWhere>>
+<<#reference-last,last>>
+<<#reference-lastwhere,lastWhere>>
+<<#reference-trylastwhere,tryLastWhere>>
+<<#reference-dropuntiloutput,dropUntilOutput>>
+<<#reference-dropwhile,dropWhile>>
+<<#reference-trydropwhile,tryDropWhile>>
+<<#reference-concatenate,concatenate>>
+<<#reference-drop,drop>>
+<<#reference-prefixuntiloutput,prefixUntilOutput>>
+<<#reference-prefixwhile,prefixWhile>>
+<<#reference-tryprefixwhile,tryPrefixWhile>>
+<<#reference-output,output>>
+<<#reference-operators-combinepublishers,Combining elements from multiple publishers>>
+<<#reference-combinelatest,combineLatest>>
+<<#reference-merge,merge>>
+<<#reference-zip,zip>>
+<<#reference-operators-handlingerrors,Handling errors>>
+<<#reference-catch,catch>>
+<<#reference-trycatch,tryCatch>>
+<<#reference-assertnofailure,assertNoFailure>>
+<<#reference-retry,retry>>
+<<#reference-maperror,mapError>>
+<<#reference-operators-adaptingtypes,Adapting publisher types>>
+<<#reference-switchtolatest,switchToLatest>>
+<<#reference-operators-timing,Controlling timing>>
+<<#reference-debounce,debounce>>
+<<#reference-delay,delay>>
+<<#reference-measureinterval,measureInterval>>
+<<#reference-throttle,throttle>>
+<<#reference-timeout,timeout>>
+<<#reference-operators-coding,Encoding and decoding>>
+<<#reference-encode,encode>>
+<<#reference-decode,decode>>
+<<#reference-operators-multiplesubscribers,Working with multiple subscribers>>
+<<#reference-multicast,multicast>>
+<<#reference-operators-debugging,Debugging>>
+<<#reference-breakpoint,breakpoint>>
+<<#reference-breakpointonerror,breakpointOnError>>
+<<#reference-handleevents,handleEvents>>
+<<#reference-print,print>>
+<<#reference-receive,receive>>
+<<#reference-subscribe,subscribe>>
+<<#reference-erasetoanypublisher,eraseToAnyPublisher>>
+<<#reference-erasetoanysubscriber,eraseToAnySubscriber>>
+<<#reference-erasetoanysubject,eraseToAnySubject>>
+<<#reference-subjects,Subjects>>
+<<#reference-currentvaluesubject,currentValueSubject>>
+<<#reference-passthroughsubject,PassthroughSubject>>
+<<#reference-subscribers,Subscribers>>
+<<#reference-assign,assign>>
+<<#reference-sink,sink>>
+<<#reference-anycancellable,AnyCancellable>>
