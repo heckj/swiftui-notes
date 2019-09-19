@@ -2,7 +2,9 @@
 
 RxMarbles diagramming tool
 
-- from <https://bitbucket.org/achary/rx-marbles/src/master/>
+documented: <https://flames-of-code.netlify.com/blog/rx-marbles/>
+source: <https://bitbucket.org/achary/rx-marbles/src/master/>
+diagram syntax: <https://bitbucket.org/achary/rx-marbles/src/0f5d57bb309491a979f10d07d4aa7ecff3e4084e/docs/syntax.md?fileviewer=file-view-default>
 
 ## install
 
@@ -10,7 +12,7 @@ RxMarbles diagramming tool
     source .venv/bin/activate
     pip3 install -r requirements.txt
 
-## use
+## generate and move to use them in the content
 
-    marblesgen test.txt
-
+    marblesgen -v diagrams/*
+    mv *.svg ../docs/images/diagrams/

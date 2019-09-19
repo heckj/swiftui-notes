@@ -24,8 +24,12 @@ Thank you's for reviews, corrections, and updates from:
 * Michael Mohrmann
 * Lee O'Mara
 * Paul Wood III
+* Federico Zanetello
 
 Thank you all for taking the time and effort to submit a pull request to make this work better!
+
+The marble diagrams in this book are derived using https://pypi.org/project/rxmarbles/[rxmarbles].
+The https://bitbucket.org/achary/rx-marbles/src/0f5d57bb309491a979f10d07d4aa7ecff3e4084e/docs/syntax.md[marble diagram sources format] is documented with the source, and inspired from https://flames-of-code.netlify.com/blog/rx-marbles/[Rx marbles diagram generator].
 
 == Author Bio
 
@@ -59,9 +63,15 @@ Larger updates and announcements will also be provided through https://gumroad.c
 The contents of this book, as well as example code and unit tests referenced from the book, are link in an Xcode project (`SwiftUI-Notes.xcodeproj`), sourced from the GitHub repository https://github.com/heckj/swiftui-notes[heckj/swiftui-notes].
 The project includes unit tests illustrating the behavior of combine and example code showing Combine integration with UIKit and SwiftUI.
 
+=== Diagram Test
+
+Test sample trying to include an `.svg` file with a marble diagram:
+
+image::diagrams/test_example.svg[foo]
+
 === Download the project
 
-The project associated with this book requires Xcode v11 (which has been released as beta3 as of this writing) and MacOS 10.14 or later.
+The project associated with this book requires Xcode 11 and MacOS 10.14 or later.
 
 image::welcomeToXcode.png[Welcome to Xcode,406,388]
 
