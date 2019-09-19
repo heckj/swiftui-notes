@@ -19,6 +19,8 @@ jobs:
   include:
     - stage: render
       script:
+      - docker run --rm -i -v $(TRAVIS_BUILD_DIR)/marbles/diagrams:/data --name rxmarbles heckj/rxmarbles
+      - mv $(TRAVIS_BUILD_DIR)/marbles/diagrams/*.svg $(TRAVIS_BUILD_DIR)/docs/images/diagrams/
       - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb -r ./docs/lib/git-metadata-preprocessor/extension.rb docs/using-combine-book.adoc
       - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-pdf heckj/docker-asciidoctor asciidoctor-pdf -v -t -D /documents/output docs/using-combine-book.adoc
       - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-epub3 heckj/docker-asciidoctor asciidoctor-epub3 -v -t -D /documents/output docs/using-combine-book.adoc
@@ -36,11 +38,13 @@ jobs:
       - git push --force "https://${GH_TOKEN}@github.com/heckj/swiftui-notes.git" master:gh-pages
 
 after_error:
+  - docker logs rxmarbles
   - docker logs asciidoc-to-html
   - docker logs asciidoc-to-pdf
   - docker logs asciidoc-to-epub3
 
 after_failure:
+  - docker logs rxmarbles
   - docker logs asciidoc-to-html
   - docker logs asciidoc-to-pdf
   - docker logs asciidoc-to-epub3

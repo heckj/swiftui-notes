@@ -69,6 +69,8 @@ Test sample trying to include an `.svg` file with a marble diagram:
 
 image::diagrams/test_example.svg[foo]
 
+image::diagrams/endings.svg[endings]
+
 === Download the project
 
 The project associated with this book requires Xcode 11 and MacOS 10.14 or later.
