@@ -75,3 +75,6 @@ package-lock.json
 
 # macOS kruft
 .DS_Store
+
+marbles/.venv
+marbles/*.svg

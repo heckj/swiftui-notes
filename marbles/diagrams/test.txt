@@ -1,0 +1,5 @@
+marble test_example
+{
+    source a:     +--A-B--C-#
+    operator example: +--1-2--3-|
+}

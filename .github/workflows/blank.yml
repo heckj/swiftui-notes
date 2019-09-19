@@ -13,25 +13,26 @@ jobs:
     # - name: Show the currently detailed version of Xcode for CLI
     #   run: xcode-select -p
 
-    # - name: Show what's in User's home directory
-    #   run: |
-    #     cd ~
-    #     pwd
-    #     ls -al
-
-    # - name: Show what's in Applications
-    #   run: ls -al /Applications
+    - name: Show what's in Applications
+      run: ls -al /Applications
 
     - name: try switching to Xcode 11 (beta)
       run: sudo xcode-select -s /Applications/Xcode_11.app
 
-    - name: Xcode overview
-      run: |
-        xcodebuild --help
-        xcodebuild -showsdks
-        xcodebuild -showBuildSettings
-        # xcodebuild -showTestPlans
-        xcodebuild -list
+    - name: xcodebuild --help
+      run: xcodebuild --help
+
+    - name: xcodebuild --showsdks
+      run: xcodebuild -showsdks
+
+    - name: xcodebuild -showBuildSettings
+      run: xcodebuild -showBuildSettings
+
+    # - name: xcodebuild -showTestPlans
+    #   run: xcodebuild -showTestPlans
+
+    - name: xcodebuild -list
+      run: xcodebuild -list
 
     - name: Show available destinations
       run: xcodebuild -scheme SwiftUI-Notes -showdestinations

@@ -1,0 +1,6 @@
+marble endings
+{
+    source foo: +--->       // this one with no specific end
+    source bar: +---|       // this one ending with completion
+    source dog: +---#       // this one ending with error
+}

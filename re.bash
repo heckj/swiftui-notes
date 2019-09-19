@@ -15,6 +15,10 @@
 #   export OPENIT=1
 #   ./re.bash
 
+echo "generating diagrams"
+docker run --rm -i -v $(pwd)/marbles/diagrams:/data --name rxmarbles heckj/rxmarbles
+mv $(pwd)/marbles/diagrams/*.svg $(pwd)/docs/images/diagrams/
+
 echo "Rendering HTML"
 # render the HTML, results will appear in `output` directory
 docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
