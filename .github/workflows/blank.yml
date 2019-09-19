@@ -28,8 +28,8 @@ jobs:
     - name: xcodebuild -showBuildSettings
       run: xcodebuild -showBuildSettings
 
-    - name: xcodebuild -showTestPlans
-      run: xcodebuild -showTestPlans
+    # - name: xcodebuild -showTestPlans
+    #   run: xcodebuild -showTestPlans
 
     - name: xcodebuild -list
       run: xcodebuild -list
