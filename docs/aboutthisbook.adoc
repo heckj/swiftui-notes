@@ -41,9 +41,9 @@ He writes online across a variety of topics at https://rhonabwy.com/.
 
 [cols="3*^",frame=none,grid=none,width=50%]
 |===
-.^| https://github.com/heckj[icon:github[size=2x]]
-.^| https://www.linkedin.com/in/josephheck/[icon:linkedin[size=2x]]
-.^| http://twitter.com/heckj[icon:twitter[size=2x]]
+.^| https://github.com/heckj[icon:github[size=2x,set=fab]]
+.^| https://www.linkedin.com/in/josephheck/[icon:linkedin[size=2x,set=fab]]
+.^| http://twitter.com/heckj[icon:twitter[size=2x,set=fab]]
 |===
 
 == Where to get this book

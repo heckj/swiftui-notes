@@ -7,24 +7,24 @@ __Goal__::
 
 __References__::
 
-* <<reference.adoc#reference-datataskpublisher>>
-* <<reference.adoc#reference-map>>
-* <<reference.adoc#reference-decode>>
-* <<reference.adoc#reference-sink>>
-* <<reference.adoc#reference-subscribe>>
+* <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>
+* <<reference#reference-map,map>>
+* <<reference#reference-decode,decode>>
+* <<reference#reference-sink,sink>>
+* <<reference#reference-subscribe,subscribe>>
 
 __See also__::
 
-* <<#patterns-datataskpublisher-trymap>>
-* <<#patterns-oneshot-error-handling>>
-* <<#patterns-retry>>
+* <<patterns#patterns-datataskpublisher-trymap,Stricter request processing with dataTaskPublisher>>
+* <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
+* <<patterns#patterns-retry,Retrying in the event of a temporary failure>>
 
 __Code and explanation__::
 
 This can be readily accomplished with Combine using
-<<reference.adoc#reference-datataskpublisher>> followed by a series of operators that process the
+<<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> followed by a series of operators that process the
 data.
-Minimally, this is <<reference.adoc#reference-map>> and <<reference.adoc#reference-decode>> before going into your subscriber.
+Minimally, this is <<reference#reference-map,map>> and <<reference#reference-decode,decode>> before going into your subscriber.
 
 https://developer.apple.com/documentation/foundation/urlsession/3329708-datataskpublisher[dataTaskPublisher] on https://developer.apple.com/documentation/foundation/urlsession[URLSession].
 
@@ -60,8 +60,8 @@ let cancellableSink = remoteDataPublisher
 
 <1> Commonly you'll have a struct defined that supports at least https://developer.apple.com/documentation/swift/decodable[Decodable] (if not the full https://developer.apple.com/documentation/swift/codable[Codable protocol]). This struct can be defined to only pull the pieces you're interested in from the JSON provided over the network.
 <2> dataTaskPublisher is instantiated from URLSession. You can configure your own options on URLSession, or use the general shared session as you require.
-<3> The data that is returns down the pipeline is a tuple: `(data: Data, response: URLResponse)`. The <<reference.adoc#reference-map>> operator is used to get the data and drop the URL response, returning just Data down the pipeline.
-<4> <<reference.adoc#reference-decode>> is used to load the data and attempt to transform it into the struct defined. Decode can throw an error itself if the decode fails. If it succeeds, the object passed down the pipeline will be the struct from the JSON data.
+<3> The data that is returns down the pipeline is a tuple: `(data: Data, response: URLResponse)`. The <<reference#reference-map,map>> operator is used to get the data and drop the URL response, returning just Data down the pipeline.
+<4> <<reference#reference-decode,decode>> is used to load the data and attempt to transform it into the struct defined. Decode can throw an error itself if the decode fails. If it succeeds, the object passed down the pipeline will be the struct from the JSON data.
 <5> If the decoding happened without errors, the finished completion will be triggered, and the value will also be passed to the receiveValue closure.
 <6> If the a failure happened (either with the original network request or the decoding), the error will be passed into with the `.failure` completion.
 <7> Only if the data succeeded with request and decoding will this closure get invoked, and the data format received will be an instance of the struct `PostmanEchoTimeStampCheckResponse`.

@@ -6,12 +6,40 @@ jobs:
   build:
 
     runs-on: macOS-latest
-    
+
     steps:
     - uses: actions/checkout@v1
-    - name: Run a one-line script
-      run: echo Hello, world!
-    - name: Run a multi-line script
+
+    # - name: Show the currently detailed version of Xcode for CLI
+    #   run: xcode-select -p
+
+    # - name: Show what's in User's home directory
+    #   run: |
+    #     cd ~
+    #     pwd
+    #     ls -al
+
+    # - name: Show what's in Applications
+    #   run: ls -al /Applications
+
+    - name: try switching to Xcode 11 (beta)
+      run: sudo xcode-select -s /Applications/Xcode_11.app
+
+    - name: Xcode overview
       run: |
-        echo Add other actions to build,
-        echo test, and deploy your project.
+        xcodebuild --help
+        xcodebuild -showsdks
+        xcodebuild -showBuildSettings
+        # xcodebuild -showTestPlans
+        xcodebuild -list
+
+    - name: Show available destinations
+      run: xcodebuild -scheme SwiftUI-Notes -showdestinations
+
+    - name: Run the Combine test suite
+      run: |
+        xcodebuild -scheme SwiftUI-Notes \
+        -configuration Debug \
+        -sdk iphonesimulator13.0 \
+        -destination 'platform=iOS Simulator,OS=13.0,name=iPhone 8' \
+        test -showBuildTimingSummary

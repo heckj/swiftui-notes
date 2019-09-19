@@ -90,7 +90,7 @@ Even with just a few operations, Combine can still make it much easier to view a
 <<<
 == Apple's Documentation
 
-icon:apple[size=2x]
+icon:apple[size=2x,set=fab]
 
 The https://developer.apple.com/documentation/combine[online documentation for Combine] can be found at https://developer.apple.com/documentation/combine.
 Apple's developer documentation is hosted at https://developer.apple.com/documentation/.

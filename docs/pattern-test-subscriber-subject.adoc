@@ -23,14 +23,14 @@ __References__::
 
 __See also__::
 
-* <<#patterns-testing-publisher>>
-* <<reference.adoc#reference-passthroughsubject>>
-* <<#patterns-testing-subscriber-scheduled>>
-* <<#patterns-testable-publisher-subscriber>>
+* <<patterns#patterns-testing-publisher,Testing a publisher with XCTestExpectation>>
+* <<reference#reference-passthroughsubject,passthroughSubject>>
+* <<patterns#patterns-testing-subscriber-scheduled,Testing a subscriber with scheduled sends from PassthroughSubject>>
+* <<patterns#patterns-testable-publisher-subscriber,Using EntwineTest to create a testable publisher and subscriber>>
 
 __Code and explanation__::
 
-When you are testing a subscriber in isolation, you can often get more fine-grained control of your tests by emulating the publisher with a <<reference.adoc#reference-passthroughsubject>> and using the associated `.send()` method to trigger controlled updates.
+When you are testing a subscriber in isolation, you can often get more fine-grained control of your tests by emulating the publisher with a <<reference#reference-passthroughsubject,passthroughSubject>> and using the associated `.send()` method to trigger controlled updates.
 
 This pattern relies on the subscriber setting up the initial part of the publisher-subscriber lifecycle upon construction, and leaving the code to stand waiting until data is provided.
 With a PassthroughSubject, sending the data to trigger the pipeline and subscriber closures, or following state changes that can be verified, is at the control of the test code itself.
@@ -118,8 +118,8 @@ func testSinkReceiveDataThenError() {
 
 <1> This test sets up some variables to capture and modify during test execution that we use to validate when and how the sink code operates.
 Additionally, we have an error definition defined here because it's not coming from other code elsewhere.
-<2> The setup for this code uses the <<reference.adoc#reference-passthroughsubject>> to drive the test, but the code we're interested in testing is really the subscriber.
-<3> The subscriber setup under test (in this case, a standard <<reference.adoc#reference-sink>>).
+<2> The setup for this code uses the <<reference#reference-passthroughsubject,passthroughSubject>> to drive the test, but the code we're interested in testing is really the subscriber.
+<3> The subscriber setup under test (in this case, a standard <<reference#reference-sink,sink>>).
 We have code paths that trigger on receiving data and completions.
 <4> Within the completion path, we switch on the type of completion, adding an assertion that will fail the test if a finish is called, as we expect to only generate a `.failure` completion.
 <5> I find testing error equality in swift to be awkward, but if the error is code you are controller, you can sometimes use the `localizedDescription` as a convenient way to test the type of error received.
@@ -130,8 +130,9 @@ Like the completion handler, We also increment test specific variables that we w
 <8> In the test, the `send()` triggers the actions, and immediately after we can test the side effects through the test variables we are updating.
 In your own code, you may not be able to (or want to) modify your subscriber, but you may be able to provide private/testable properties or windows into the objects to validate them in a similiar fashion.
 <9> We also use `send()` to trigger a completion, in this case a failure completion.
-<10> And the final `send()` is simply validating the operation of the the failure that just happened - that it wasn't processed, and no further state updates happened.
+<10> And the final `send()` is simply validating the operation of the failure that just happened - that it wasn't processed, and no further state updates happened.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
 '''
+
