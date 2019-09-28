@@ -27,7 +27,7 @@ jobs:
 
     - stage: deploy
       script:
-      - docker run --rm -i -v $(TRAVIS_BUILD_DIR)/marbles/diagrams:/data --name rxmarbles heckj/rxmarbles
+      - docker run --rm -i -v $TRAVIS_BUILD_DIR/marbles/diagrams:/data --name rxmarbles heckj/rxmarbles
       - cp $TRAVIS_BUILD_DIR/marbles/diagrams/*.svg $TRAVIS_BUILD_DIR/docs/images/diagrams/
       - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb -r ./docs/lib/git-metadata-preprocessor/extension.rb docs/using-combine-book.adoc
       - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-pdf heckj/docker-asciidoctor asciidoctor-pdf -v -t -D /documents/output docs/using-combine-book.adoc
