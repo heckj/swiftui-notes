@@ -4,7 +4,7 @@
 [#coreconcepts-publisher-subscriber]
 == Publisher, Subscriber
 
-Two key concepts, described in swift with protocols, are https://developer.apple.com/documentation/combine/publisher[*publisher*] and https://developer.apple.com/documentation/combine/subscriber[*subscriber*].
+Two key concepts, described in Swift with protocols, are https://developer.apple.com/documentation/combine/publisher[*publisher*] and https://developer.apple.com/documentation/combine/subscriber[*subscriber*].
 
 A publisher fundamentally provides data, when available, upon request.
 It is described with two associated types: one for Output and one for Failure.
@@ -72,7 +72,7 @@ This pattern will come in handy when you start constructing your own pipelines.
 When creating pipelines, you are often selecting operators to help you transform the types, to achieve your end goal.
 That end goal might be enabling or disabling a user interface element, or it might be retrieving some piece of data to be displayed.
 
-Many combine operators are specifically created to help with these transformations.
+Many Combine operators are specifically created to help with these transformations.
 Some operators require conformance to an input or failure type.
 Other operators may change either or both the failure and output types.
 For example, there are a number of operators that have a similar operator prefixed with `try`, which indicates they return an <Error> failure type.
@@ -400,7 +400,7 @@ Both `Assign` and `Sink` conform to the https://developer.apple.com/documentatio
 
 https://developer.apple.com/documentation/combine/subscribers/assign[`assign`] applies values passed down from the publisher to an object defined by a keypath.
 The keypath is set when the pipeline is created.
-An example of this in swift might look like:
+An example of this in Swift might look like:
 
 [source, swift]
 ----
@@ -410,7 +410,7 @@ An example of this in swift might look like:
 https://developer.apple.com/documentation/combine/subscribers/sink[`sink`] accepts a closure that receives any resulting values from the publisher.
 This allows the developer to terminate a pipeline with their own code.
 This subscriber is also extremely helpful when writing unit tests to validate either publishers or pipelines.
-An example of this in swift might look like:
+An example of this in Swift might look like:
 
 [source, swift]
 ----

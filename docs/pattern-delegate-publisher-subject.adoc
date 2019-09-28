@@ -3,7 +3,7 @@
 
 __Goal__::
 
-* To use one of the Apple delegate APIs to provide values to be used in a combine pipeline.
+* To use one of the Apple delegate APIs to provide values to be used in a Combine pipeline.
 
 __References__::
 

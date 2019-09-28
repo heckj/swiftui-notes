@@ -1,19 +1,19 @@
 [#developingwith]
 = Developing with Combine
 
-Developing with combine can take any of a number of different forms.
+Developing with Combine can take any of a number of different forms.
 
 A common starting point is composing pipelines, leveraging existing publishers, operators, and subcribers.
 A number of examples within this book highlight various patterns, many of which are aimed at providing declarative responses to user inputs within interfaces.
 
-You may also want to create APIs that integrate more easily into combine.
+You may also want to create APIs that integrate more easily into Combine.
 For example, creating a publisher that encapsulates a remote API, returning a single result or a series of results.
 
 Or you might be creating a subscriber to consume and process data over time.
 
 == Reasoning about pipelines
 
-When developing with combine, there are two broader patterns of how publishers are used that frequently recur: one-shot and continuous.
+When developing with Combine, there are two broader patterns of how publishers are used that frequently recur: one-shot and continuous.
 
 The first is what I'm calling a "one-shot" publisher or pipeline.
 These publishers are expected to create a single response (or perhaps no response) and then terminate normally.
@@ -22,7 +22,7 @@ The second is what I'm calling a "continuous" publisher.
 These publishers, or more often pipelines, are expected to be always active and providing the means to respond to ongoing events, either user initiated or another source.
 In this case, the lifetime of the pipeline is significant longer, and it is often not desirable to have such pipelines fail or terminate.
 
-When you are thinking about your development and how to use combine, it is often beneficial to think about pipelines as being one of these types, and mixing them together to achieve your goals.
+When you are thinking about your development and how to use Combine, it is often beneficial to think about pipelines as being one of these types, and mixing them together to achieve your goals.
 
 For example, the pattern <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>> in this book explicitly uses one-shot pipelines to support error handling on a continual pipeline.
 
@@ -33,12 +33,12 @@ In addition to how much data the pipeline or publisher will provide, and the exp
 Quite a number of pipelines are more about transforming data through various types, and handling possible error conditions in that processing.
 A good example of this is the use of returning a pipeline returning a list in the pattern <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>> to provide a means to represent an "empty" result, even though the list is never expected to have more than 1 item within it.
 
-Ultimately, using combine is grounded at both ends by the originating publisher, and how it is providing data (when it is available), and the subscriber ultimately consuming the data.
+Ultimately, using Combine is grounded at both ends by the originating publisher, and how it is providing data (when it is available), and the subscriber ultimately consuming the data.
 
 [#developingwith-types]
 == Swift types and exposing pipelines or subscribers
 
-When you compose pipelines within swift, the chaining of functions results in the type being exposed as nesting generic types.
+When you compose pipelines within Swift, the chaining of functions results in the type being exposed as nesting generic types.
 If you are creating a pipeline, and then wanting to provide that as an API to another part of your code, the type definition for the exposed property or function can be exceptionally complex.
 
 To illustrate the exposed type complexity, if you created a publisher from a PassthroughSubject such as:
@@ -68,7 +68,7 @@ Publishers.FlatMap<Publishers.Map<Publishers.Catch<Future<String, Error>, Just<S
 When you want to expose the code, all of that composition detail can be very distracting and make your code harder to use.
 
 To clean up that interface, and provide a nice API boundary, there are type erased classes which can wrap either publishers or subscribers.
-These explicitly hide the type complexity that builds up from chained functions in swift.
+These explicitly hide the type complexity that builds up from chained functions in Swift.
 
 The two classes used to expose simplified types for subscribers and publishers are:
 
@@ -133,16 +133,16 @@ Any operators following them will also be invoked on their scheduler, giving the
 
 If you want to be explicit about which thread context an operator or subsequent operation will run within, define it with the <<reference#reference-receive,receive>> operator.
 
-== Developing to use combine
+== Developing to use Combine
 
-There are two common paths to developing code leveraging combine.
+There are two common paths to developing code leveraging Combine.
 
 * First is simply leveraging synchronous (blocking) calls within a closure to one of the common operators.
 The two most prevelant operators leveraged for this are <<reference#reference-map,map>> and <<reference#reference-trymap,tryMap>>, for when your code needs to throw an Error.
 
 * Second is integrating your own code that is asynchronous, or APIs that provide a completion callback.
 If the code you are integrating is asynchronous, then you can't (quite) as easily use it within a closure.
-You need to wrap the asynchronous code with a structure that the combine operators can work with and invoke.
+You need to wrap the asynchronous code with a structure that the Combine operators can work with and invoke.
 In practice, this often implies creating a call that returns a publisher instance, and then using that within the pipeline.
 
 The <<reference#reference-future,Future>> publisher was specifically created to support this kind of integration, and the pattern <<patterns#patterns-future,Wrapping an asynchronous call with a Future to create a one-shot publisher>> shows an example.

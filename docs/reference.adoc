@@ -109,7 +109,7 @@ __Usage__::
 
 __Details__::
 
-Published is part of combine, but allows you to wrap a property, enabling you to get a publisher that triggers data updates whenever the property is changed.
+Published is part of Combine, but allows you to wrap a property, enabling you to get a publisher that triggers data updates whenever the property is changed.
 The publisher's output type is inferred from the type of the property, and the error type of the provided publisher is <Never>.
 
 A smaller examples of how it can be used:
@@ -135,7 +135,7 @@ The publisher for the property is available at the same scope, and with the same
 <2> The publisher is accessible as `$username`, of type `Published<String>.publisher`.
 <3> A Published property can have more than one subscriber pipeline triggering from it.
 <4> If you're publishing your own type, you may find it convenient to publish an array of that type as the property, even if you only reference a single value.
-This allows you represent an "Empty" result that is still a concrete result within combine pipelines, as <<reference#reference-assign,assign>> and <<reference#reference-sink,sink>> subscribers will only trigger updates on non-nil values.
+This allows you represent an "Empty" result that is still a concrete result within Combine pipelines, as <<reference#reference-assign,assign>> and <<reference#reference-sink,sink>> subscribers will only trigger updates on non-nil values.
 
 If the publisher generated from `@Published` receives a cancellation from any subscriber, it is expected to, and will cease, reporting property changes.
 Because of this expectation, it is common to arrange pipelines from these publishers that have an error type of `<Never>` and do all error handling within the pipelines.
@@ -680,7 +680,7 @@ A diagram version of this pipeline construct might be:
 publisher -> flatMap -> ( +                           +  ) -> subscriber
 ----
 
-In swift, this looks like:
+In Swift, this looks like:
 
 [source, swift]
 ----
@@ -1983,7 +1983,7 @@ That is - don't create the queue with `attributes: .concurrent`.
 [#reference-erasetoanypublisher]
 ==== eraseToAnyPublisher
 
-** when you chain operators together in swift, the object's type signature accumulates all the various types, and it gets ugly pretty quickly.
+** when you chain operators together in Swift, the object's type signature accumulates all the various types, and it gets ugly pretty quickly.
 ** eraseToAnyPublisher takes the signature and "erases" the type back to the common type of AnyPublisher
 ** this provides a cleaner type for external declarations (framework was created prior to Swift 5's opaque types)
 ** `.eraseToAnyPublisher()`

@@ -67,7 +67,7 @@ include::pattern-bindableobject.adoc[]
 [#patterns-testing-and-debugging]
 == Testing and Debugging
 
-The Publisher/Subscriber interface in combine is beautifully suited to be an easily testable interface.
+The Publisher/Subscriber interface in Combine is beautifully suited to be an easily testable interface.
 
 With the composability of Combine, you can use this to your advantage, creating APIs that present, or consume, code that conforms to https://developer.apple.com/documentation/combine/publisher[Publisher].
 

@@ -122,7 +122,7 @@ Additionally, we have an error definition defined here because it's not coming f
 <3> The subscriber setup under test (in this case, a standard <<reference#reference-sink,sink>>).
 We have code paths that trigger on receiving data and completions.
 <4> Within the completion path, we switch on the type of completion, adding an assertion that will fail the test if a finish is called, as we expect to only generate a `.failure` completion.
-<5> I find testing error equality in swift to be awkward, but if the error is code you are controller, you can sometimes use the `localizedDescription` as a convenient way to test the type of error received.
+<5> I find testing error equality in Swift to be awkward, but if the error is code you are controller, you can sometimes use the `localizedDescription` as a convenient way to test the type of error received.
 <6> The `receiveValue` closure is more complex in how it asserts its values.
 Since we are receiving multiple values in the process of this test, we have some additional logic to simply check that the values are within the set that we send.
 Like the completion handler, We also increment test specific variables that we will assert on later to validate state and order of operation.
