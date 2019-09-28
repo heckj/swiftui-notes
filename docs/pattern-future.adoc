@@ -3,7 +3,7 @@
 
 __Goal__::
 
-* Using Future to turn an an asynchronous call into publisher to use the result in a combine pipeline.
+* Using Future to turn an asynchronous call into publisher to use the result in a Combine pipeline.
 
 __References__::
 

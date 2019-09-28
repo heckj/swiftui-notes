@@ -61,7 +61,7 @@ Updates of the content will be made to the online version as development continu
 Larger updates and announcements will also be provided through https://gumroad.com/heckj[the author's profile at Gumroad].
 
 The contents of this book, as well as example code and unit tests referenced from the book, are link in an Xcode project (`SwiftUI-Notes.xcodeproj`), sourced from the GitHub repository https://github.com/heckj/swiftui-notes[heckj/swiftui-notes].
-The project includes unit tests illustrating the behavior of combine and example code showing Combine integration with UIKit and SwiftUI.
+The project includes unit tests illustrating the behavior of Combine and example code showing Combine integration with UIKit and SwiftUI.
 
 === Diagram Test
 

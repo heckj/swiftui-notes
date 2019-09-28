@@ -19,7 +19,7 @@ __See also__::
 
 __Code and explanation__::
 
-Any asynchronous (or synchronous) set of tasks that need to happen in a specific order can also be coordinated using a combine pipeline.
+Any asynchronous (or synchronous) set of tasks that need to happen in a specific order can also be coordinated using a Combine pipeline.
 By using <<reference#reference-future,Future>> operator, the very act of completing an asynchronous call can be captured, and sequencing operators provides the structure of that coordination.
 
 For example, by wrapping an asynchronous API calls with the <<reference#reference-future,Future>> publisher and then chaining them together with the <<reference#reference-flatmap,flatMap>> operator, you invoke the wrapped asynchronous API calls in the order of the pipeline.

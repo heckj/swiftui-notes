@@ -90,7 +90,7 @@ class ViewController: UIViewController {
 
 <1> The UITextField is the interface element which is driving the updates from user interaction.
 <2> We defined a <<reference#reference-published,Published>> property to both hold the updates.
-Because its a Published property, it provides a publisher reference that we can use to attach additional combine pipelines to update other variables or elements of the interface.
+Because its a Published property, it provides a publisher reference that we can use to attach additional Combine pipelines to update other variables or elements of the interface.
 <3> We set the variable `username` from within an IBAction, which in turn triggers a data flow if the publisher `$username` has any subscribers.
 <4> We in turn set up a subscriber on the publisher `$username` that does further actions. In this case the overall flow retrives an instance of a GithubAPIUser from Github's REST API.
 <5> The <<reference#reference-throttle,throttle>> is there to keep from triggering a network request on ever request.

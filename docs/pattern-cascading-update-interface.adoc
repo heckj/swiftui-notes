@@ -39,7 +39,7 @@ __See also__::
 
 __Code and explanation__::
 
-The example provided expands on a publisher updating from <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>, adding additional combine pipelines to update multiple UI elements.
+The example provided expands on a publisher updating from <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>, adding additional Combine pipelines to update multiple UI elements.
 
 The general pattern of this view starts with a textfield that accepts user input:
 
@@ -55,7 +55,7 @@ The empty list is useful to return because when a username is provided that does
 To do this, we need the pipelines to fully resolve to some value, so that further pipelines are triggered and the relevant UI interfaces updated.
 
 The subscribers (created with <<reference#reference-assign,assign>> and <<reference#reference-sink,sink>>) are stored as AnyCancellable variables on the ViewController instance.
-Because they are defined on the class instance, the swift compiler creates initializers and deinitializers, which will cancel and clean up the publishers when the class is torn down.
+Because they are defined on the class instance, the Swift compiler creates initializers and deinitializers, which will cancel and clean up the publishers when the class is torn down.
 
 [NOTE]
 ====

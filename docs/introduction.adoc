@@ -41,7 +41,7 @@ Or more generally for creating pipelines that process data from external sources
 
 == Combine specifics
 
-Applying these concepts to a strongly typed language like swift is part of what Apple has created in Combine.
+Applying these concepts to a strongly typed language like Swift is part of what Apple has created in Combine.
 Combine embeds the concept of back-pressure, which allows the subscriber to control how much information it gets at once and needs to process.
 In addition, it supports efficient operation with the notion of streams that are cancellable and driven primarily by the subscriber.
 
