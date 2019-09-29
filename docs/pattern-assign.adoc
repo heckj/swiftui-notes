@@ -20,7 +20,7 @@ Assign is a subscriber that's specifically designed to apply data from a publish
 Like sink, it activates when created and requests an unlimited data updates.
 Assign requires the failure type to be specified as `<Never>`, so if your pipeline could fail (such as using an operator like tryMap) you will need to <<patterns#patterns-general-error-handling,convert or handle the failure cases>> before using `.assign`.
 
-.simple sink
+.simple assign
 [source, swift]
 ----
 let cancellablePipeline = publishingSource <1>
