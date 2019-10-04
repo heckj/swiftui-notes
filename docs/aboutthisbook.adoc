@@ -1,6 +1,11 @@
 [#aboutthisbook]
 = About This Book
 
+This is an intermediate to advanced book, focusing on how to use a specific framework (Combine) provided by Apple.
+The work is written with an expectation of a solid understanding of the Swift programming language, including reference and value types, protocols, and comfort with the existing Foundation framework.
+
+This work provides <<introduction#introduction,a very abbreviated introduction>> to the concept of functional reactive programming, which is what this library is meant to provide.
+
 == Supporting this effort
 
 **_This is a work in progress. Please support this effort by http://gumroad.com/l/usingcombine[purchasing a copy]._**
@@ -25,6 +30,8 @@ Thank you's for reviews, corrections, and updates from:
 * Lee O'Mara
 * Paul Wood III
 * Federico Zanetello
+
+(ADD devepre)
 
 Thank you all for taking the time and effort to submit a pull request to make this work better!
 
