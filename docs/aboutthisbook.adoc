@@ -28,10 +28,9 @@ Thank you's for reviews, corrections, and updates from:
 * Nanu Jogi
 * Michael Mohrmann
 * Lee O'Mara
+* Antoine Weber
 * Paul Wood III
 * Federico Zanetello
-
-(ADD devepre)
 
 Thank you all for taking the time and effort to submit a pull request to make this work better!
 
