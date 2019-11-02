@@ -1518,7 +1518,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* <<patterns#patterns-delegate-publisher-subject,Creating a repeating publisher by wrapping a delegate based API>
+* <<patterns#patterns-delegate-publisher-subject,Creating a repeating publisher by wrapping a delegate based API>>
 * <<patterns#patterns-retry,Retrying in the event of a temporary failure>>
 
 __Details__::
@@ -2243,7 +2243,7 @@ __Usage__::
 
 * <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>
 * <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>>
-* <<patterns#patterns-delegate-publisher-subject,Creating a repeating publisher by wrapping a delegate based API>
+* <<patterns#patterns-delegate-publisher-subject,Creating a repeating publisher by wrapping a delegate based API>>
 
 __Details__::
 
