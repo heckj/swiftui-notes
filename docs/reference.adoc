@@ -290,10 +290,15 @@ __Details__::
 When a class includes a Published property and conforms to the https://developer.apple.com/documentation/combine/observableobject[ObservableObject protocol], this class instances will get a `objectWillChange` publisher endpoint providing this publisher.
 The `objectWillChange` publisher will not return any of the changed data, only an indicator that the referenced object has changed.
 
-The output type of `ObservableObject.Output` is type aliased to Void, so while it's not nill, it will not provide any meaningful data.
-Therefore using this method and attaching a subscription is probably best done using <<reference-sink,sink>>.
+The output type of `ObservableObject.Output` is type aliased to Void, so while it is not nill, it will not provide any meaningful data.
+Because the output type does not include what changes on the referenced object, the best method for responding to changes is probably best done using <<reference-sink,sink>>.
 
-In practice, this method is most frequently used by the SwiftUI framework, although it can also be used locally to watch for updates to a reference-type model.
+In practice, this method is most frequently used by the SwiftUI framework.
+SwiftUI views use the `@ObservedObject` property wrapper to know when to invalidate and refresh views that reference classes implementing ObservableObject.
+
+Classes implementing ObservedObject are also expected to use @Published to provide notifications of changes on specific properties, or to optionally provide a custom announcement that indicates the object has changed.
+
+It can also be used locally to watch for updates to a reference-type model.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
@@ -301,6 +306,10 @@ In practice, this method is most frequently used by the SwiftUI framework, altho
 
 [#reference-swiftui]
 === SwiftUI
+
+SwiftUI uses a variety of property wrappers within its Views to reference and display content from outside of those views.
+@Published, @ObservedObject, and @EnvironmentObject are the most common that also relate to Combine.
+SwiftUI also includes @Binding, which uses the Combine framework for similiar change notifications across SwiftUI views.
 
 * @ObjectBinding (swiftUI)
 * BindableObject
