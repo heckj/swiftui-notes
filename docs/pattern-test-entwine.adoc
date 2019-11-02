@@ -22,6 +22,14 @@ The EntwineTest library, available from Gitub at https://github.com/tcldr/Entwin
 In addition to a virtual time scheduler, EntwineTest has a TestablePublisher and a TestableSubscriber.
 These work in coordination with the virtual time scheduler to allow you to specify the timing of the publisher generating data, and to valid the data received by the subscriber.
 
+[WARNING]
+====
+As of Xcode 11.2, there is a bug with SwiftPM that impacts the use of Entwine as a testing library.
+The details can be found at https://bugs.swift.org/plugins/servlet/mobile#issue/SR-11564[SR-11564] in Swift's open source bug reporting.
+
+The workaround, which you may need to apply if using Xcode 11.2, is to set the project setting `DEAD_CODE_STRIPPING=NO`.
+====
+
 An example of this from the EntwineTest project is included:
 
 .https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/EntwineTestExampleTests.swift[UsingCombineTests/EntwineTestExampleTests.swift - testMap]
