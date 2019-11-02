@@ -309,7 +309,7 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         XCTAssertEqual(receivedCount, 3)
 
         // of the values send at 1.1 and 1.2 seconds in, the first value is returned down the pipeline
-        XCTAssertEqual(lastReceivedSinkValue, 3)
+        XCTAssertEqual(lastReceivedSinkValue, 4)
         XCTAssertEqual(foo.intValue, 4)
         XCTAssertNotNil(cancellable)
     }
