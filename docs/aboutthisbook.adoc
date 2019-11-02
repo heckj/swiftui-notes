@@ -26,6 +26,7 @@ Michael Critz designed and provided the cover art.
 Thank you's for reviews, corrections, and updates from:
 
 * Nanu Jogi
+* Serhii Kyrylenko
 * Michel Mohrmann
 * Lee O'Mara
 * Antoine Weber
