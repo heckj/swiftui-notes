@@ -311,7 +311,7 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         // NOTE(heckj): this changed in Xcode 11.2:
         // of the values sent at 1.1 and 1.2 seconds in, the second value is returned down the pipeline
         // and prior to that it returned the first value - so the value of "false" for recent from throttle
-        // doesn't appear to be respected.
+        // doesn't appear to be respected. - reported as FB7424221
         XCTAssertEqual(lastReceivedSinkValue, 4)
         XCTAssertEqual(foo.intValue, 4)
         XCTAssertNotNil(cancellable)
