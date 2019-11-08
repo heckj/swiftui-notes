@@ -120,7 +120,7 @@ class DataTaskPublisherTests: XCTestCase {
                     print("received error: ", anError)
                     // URL doesn't exist, so a failure should be triggered
                     // normally, the error description would be "A server with the specified hostname could not be found."
-                    // but out mocking system screws with the errors
+                    // but our mocking system screws with the errors
                     // XCTAssertEqual(anError.localizedDescription, "A server with the specified hostname could not be found.")
                     expectation.fulfill()
                 }

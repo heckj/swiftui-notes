@@ -298,7 +298,7 @@ class MergingPipelineTests: XCTestCase {
         // run the virtual time scheduler
         let testableSubscriber = testScheduler.start { return mergedPipeline }
         // print(testableSubscriber.recordedOutput)
-        
+
         let expected: TestSequence<(String), Never> = [
             (200, .subscription),
             (300, .input("a")),

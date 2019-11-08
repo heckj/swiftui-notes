@@ -1578,6 +1578,13 @@ This operator is frequently used with <<reference#reference-removeduplicates,rem
 .throttle(for: 0.5, scheduler: RunLoop.main, latest: false)
 ----
 
+[WARNING]
+====
+As of Xcode 11.2, the behavior for setting `latest` to false appears to have changed, as it's currently showing the same behavior as `true`.
+This has been reported to apple as Feedback FB7424221.
+====
+
+
 [#reference-timeout]
 ==== timeout
 
