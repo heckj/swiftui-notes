@@ -15,6 +15,9 @@ Publishers and subscribers are meant to be connected, and make up the core of Co
 When you connect a subscriber to a publisher, both types must match: Output to Input, and Failure to Failure.
 You can view this as a series of operations on two types in parallel.
 
+image::diagrams/basic_types.svg[basic types]
+
+image::diagrams/input-output.svg[publisher output to subscriber input]
 //TODO(heckj) - convert to a diagram
 [source]
 ----
