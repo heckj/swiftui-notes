@@ -6,28 +6,37 @@
 
 Two key concepts, described in Swift with protocols, are https://developer.apple.com/documentation/combine/publisher[*publisher*] and https://developer.apple.com/documentation/combine/subscriber[*subscriber*].
 
-A publisher fundamentally provides data, when available, upon request.
-It is described with two associated types: one for Output and one for Failure.
-A subscriber requests data.
-It is also described with two associated types, one for Input and one for Failure.
+When you are talking about programming (and especially with Swift and Combine), quite a lot is described by the types.
+When you say a function or method returns a value, that value is generally described as being "one of this type".
 
-Publishers and subscribers are meant to be connected, and make up the core of Combine.
-When you connect a subscriber to a publisher, both types must match: Output to Input, and Failure to Failure.
-You can view this as a series of operations on two types in parallel.
+Combine is all about returning many possible values over time - the whole sequence of returning those values as one concept.
+Combine also goes farther, in that it not only talks about the types that can be returned, but the failures that might happen as well.
+
+The first core concept to introduce in this respect is the publisher.
+A publisher fundamentally provides data, when available, and upon request.
+A publisher that hasn't had any requests will not provide any data.
+When you are describing a Combine publisher, you describe it with two associated types: one for Output and one for Failure.
 
 image::diagrams/basic_types.svg[basic types]
 
-image::diagrams/input-output.svg[publisher output to subscriber input]
-//TODO(heckj) - convert to a diagram
-[source]
-----
-Publisher source       Subscriber
-+--------------+      +--------------+
-|        <Output> --> <Input>        |
-|       <Failure> --> <Failure>      |
-+--------------+      +--------------+
-----
+These are often written using Swift's generics syntax which uses the `<` and `>` symbol around a string.
+This represents that we are talking about a generic instance of this type of value.
+For example, if a publisher returned an instance of String, and could return a failure in the form of an instance of URLError, then the publisher might be described with the string `<String>,<URLError>`.
 
+The corresponding concept that matches with a publisher is a subscriber, and is the second core concept to introduce.
+Publishers and subscribers are meant to be connected, and make up the core of Combine.
+
+A subscriber is responsible for requesting data and accepting the data (and possible failures) provided by a publisher.
+In Combine, the subscriber initiates the request for data, and controls the amount of data it receives.
+It can be thought of as "driving the action" within Combine, as without a subscriber, the other components in Combine are idle.
+A subcriber is also described with two associated types, one for Input and one for Failure.
+
+When you connect a subscriber to a publisher, both types must match: Output to Input, and Failure to Failure.
+One way to visualize this is as a series of operations on two types in parallel, where both types need to match in order to plug the components together.
+
+image::diagrams/input-output.svg[publisher output to subscriber input]
+
+The third core concept is an operator - an object that acts both like a subscriber and a publisher.
 Operators are classes that adopt both the https://developer.apple.com/documentation/combine/subscriber[Subscriber protocol] and https://developer.apple.com/documentation/combine/publisher[Publisher protocol].
 They support subscribing to a publisher, and sending results to any subscribers.
 
@@ -35,23 +44,14 @@ You can create chains of these together, for processing, reacting, and transform
 
 I'm calling these composed sequences **pipelines**.
 
-//TODO(heckj) - convert to a diagram
-[source]
-----
-Publisher source       Operator                          Subscriber
-+--------------+      +---------------------------+      +--------------+
-|        <Output> --> <Input>      map      <Output> --> <Input>        |
-|       <Failure> --> <Failure>  function  <Failure> --> <Failure>      |
-+--------------+      +---------------------------+      +--------------+
-----
-
+image::diagrams/pipeline.svg[pipeline]
 
 Operators can be used to transform types - both the Output and Failure type.
 Operators may also split or duplicate streams, or merge streams together.
 Operators must always be aligned by the combination of Output/Failure types.
 The compiler will enforce the matching types, so getting it wrong will result in a compiler error (and sometimes a useful _fixit_ snippet.)
 
-A simple pipeline, using Combine, might look like:
+A simple pipeline written in swift, using Combine, might look like:
 [source, swift]
 ----
 let _ = Just(5) <1>
