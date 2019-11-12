@@ -6,25 +6,37 @@
 
 Two key concepts, described in Swift with protocols, are https://developer.apple.com/documentation/combine/publisher[*publisher*] and https://developer.apple.com/documentation/combine/subscriber[*subscriber*].
 
-A publisher fundamentally provides data, when available, upon request.
-It is described with two associated types: one for Output and one for Failure.
-A subscriber requests data.
-It is also described with two associated types, one for Input and one for Failure.
+When you are talking about programming (and especially with Swift and Combine), quite a lot is described by the types.
+When you say a function or method returns a value, that value is generally described as being "one of this type".
 
+Combine is all about returning many possible values over time - the whole sequence of returning those values as one concept.
+Combine also goes farther, in that it not only talks about the types that can be returned, but the failures that might happen as well.
+
+The first core concept to introduce in this respect is the publisher.
+A publisher fundamentally provides data, when available, and upon request.
+A publisher that hasn't had any requests will not provide any data.
+When you are describing a Combine publisher, you describe it with two associated types: one for Output and one for Failure.
+
+image::diagrams/basic_types.svg[basic types]
+
+These are often written using Swift's generics syntax which uses the `<` and `>` symbol around a string.
+This represents that we are talking about a generic instance of this type of value.
+For example, if a publisher returned an instance of String, and could return a failure in the form of an instance of URLError, then the publisher might be described with the string `<String>,<URLError>`.
+
+The corresponding concept that matches with a publisher is a subscriber, and is the second core concept to introduce.
 Publishers and subscribers are meant to be connected, and make up the core of Combine.
+
+A subscriber is responsible for requesting data and accepting the data (and possible failures) provided by a publisher.
+In Combine, the subscriber initiates the request for data, and controls the amount of data it receives.
+It can be thought of as "driving the action" within Combine, as without a subscriber, the other components in Combine are idle.
+A subcriber is also described with two associated types, one for Input and one for Failure.
+
 When you connect a subscriber to a publisher, both types must match: Output to Input, and Failure to Failure.
-You can view this as a series of operations on two types in parallel.
+One way to visualize this is as a series of operations on two types in parallel, where both types need to match in order to plug the components together.
 
-//TODO(heckj) - convert to a diagram
-[source]
-----
-Publisher source       Subscriber
-+--------------+      +--------------+
-|        <Output> --> <Input>        |
-|       <Failure> --> <Failure>      |
-+--------------+      +--------------+
-----
+image::diagrams/input-output.svg[publisher output to subscriber input]
 
+The third core concept is an operator - an object that acts both like a subscriber and a publisher.
 Operators are classes that adopt both the https://developer.apple.com/documentation/combine/subscriber[Subscriber protocol] and https://developer.apple.com/documentation/combine/publisher[Publisher protocol].
 They support subscribing to a publisher, and sending results to any subscribers.
 
@@ -32,23 +44,14 @@ You can create chains of these together, for processing, reacting, and transform
 
 I'm calling these composed sequences **pipelines**.
 
-//TODO(heckj) - convert to a diagram
-[source]
-----
-Publisher source       Operator                          Subscriber
-+--------------+      +---------------------------+      +--------------+
-|        <Output> --> <Input>      map      <Output> --> <Input>        |
-|       <Failure> --> <Failure>  function  <Failure> --> <Failure>      |
-+--------------+      +---------------------------+      +--------------+
-----
-
+image::diagrams/pipeline.svg[pipeline]
 
 Operators can be used to transform types - both the Output and Failure type.
 Operators may also split or duplicate streams, or merge streams together.
 Operators must always be aligned by the combination of Output/Failure types.
 The compiler will enforce the matching types, so getting it wrong will result in a compiler error (and sometimes a useful _fixit_ snippet.)
 
-A simple pipeline, using Combine, might look like:
+A simple pipeline written in swift, using Combine, might look like:
 [source, swift]
 ----
 let _ = Just(5) <1>
@@ -115,7 +118,7 @@ let _ = Just(5) <1>
 <3> `sink`, the subscriber, receives the `<String>`, `<Never>` combination.
 
 
-[sidebar]
+[TIP]
 ****
 When you are creating pipelines in Xcode and don't match the types, the error message from Xcode may include a helpful _fixit_.
 In some cases, such as the example above, the compiler is unable to infer the return types of closure provided to `map` without specifying the return type.
@@ -140,11 +143,23 @@ The term commonly used for this is *back-pressure*.
 This means that the subscriber provides information for how much information it wants or can accept.
 When a subscriber is connected to a publisher, it requests data based with a specific https://developer.apple.com/documentation/combine/subscribers/demand[Demand].
 
+[NOTE]
+====
+In the first release of the Combine framework - in IOS 13 prior to IOS 13.2, macOS 10.15 Catalina, when the subscriber requested data with a Demand, that call itself was asynchronous.
+Because this process acted as the driver which triggered attached operators and ultimately the source publisher, it meant that there were scenarios where data might appear to be lost.
+Due to this, in IOS 13.2 and later combine releases, the process of requesting demand has been updated to a synchronous/blocking call.
+In practice, this means that you can be a bit more certain of having any pipelines created and full engaged prior to a publisher receiving the request to send any data.
+
+There is an https://forums.swift.org/t/combine-receive-on-runloop-main-loses-sent-value-how-can-i-make-it-work/28631/39[extended thread on the swift forums] about this topic, if you are interested in reading the history.
+====
+
 This request it drives calling all the closures up the composed pipeline, and returning any data available from publishers.
 
-With subscribers driving the process, it also allows Combine to support cancellation.
+With the subscriber driving the process, this also allows Combine to support cancellation.
 Subscribers all conform to the https://developer.apple.com/documentation/combine/cancellable[Cancellable] protocol.
-This means they all have a function `cancel()` that can be invoked to terminate a pipeline.
+This means they all have a function `cancel()` that can be invoked to terminate a pipeline and stop all related processing.
+When a pipeline has been cancelled, the pipeline is not expected to be restarted.
+Rather than restarting a cancelled pipeline, the developer is expected to create a new pipeline.
 
 The end to end lifecycle is enabled by subscribers and publishers communicating in a well defined sequence:
 
