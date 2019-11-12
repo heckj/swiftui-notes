@@ -118,7 +118,7 @@ let _ = Just(5) <1>
 <3> `sink`, the subscriber, receives the `<String>`, `<Never>` combination.
 
 
-[sidebar]
+[TIP]
 ****
 When you are creating pipelines in Xcode and don't match the types, the error message from Xcode may include a helpful _fixit_.
 In some cases, such as the example above, the compiler is unable to infer the return types of closure provided to `map` without specifying the return type.
