@@ -143,11 +143,23 @@ The term commonly used for this is *back-pressure*.
 This means that the subscriber provides information for how much information it wants or can accept.
 When a subscriber is connected to a publisher, it requests data based with a specific https://developer.apple.com/documentation/combine/subscribers/demand[Demand].
 
+[NOTE]
+====
+In the first release of the Combine framework - in IOS 13 prior to IOS 13.2, macOS 10.15 Catalina, when the subscriber requested data with a Demand, that call itself was asynchronous.
+Because this process acted as the driver which triggered attached operators and ultimately the source publisher, it meant that there were scenarios where data might appear to be lost.
+Due to this, in IOS 13.2 and later combine releases, the process of requesting demand has been updated to a synchronous/blocking call.
+In practice, this means that you can be a bit more certain of having any pipelines created and full engaged prior to a publisher receiving the request to send any data.
+
+There is an https://forums.swift.org/t/combine-receive-on-runloop-main-loses-sent-value-how-can-i-make-it-work/28631/39[extended thread on the swift forums] about this topic, if you are interested in reading the history.
+====
+
 This request it drives calling all the closures up the composed pipeline, and returning any data available from publishers.
 
-With subscribers driving the process, it also allows Combine to support cancellation.
+With the subscriber driving the process, this also allows Combine to support cancellation.
 Subscribers all conform to the https://developer.apple.com/documentation/combine/cancellable[Cancellable] protocol.
-This means they all have a function `cancel()` that can be invoked to terminate a pipeline.
+This means they all have a function `cancel()` that can be invoked to terminate a pipeline and stop all related processing.
+When a pipeline has been cancelled, the pipeline is not expected to be restarted.
+Rather than restarting a cancelled pipeline, the developer is expected to create a new pipeline.
 
 The end to end lifecycle is enabled by subscribers and publishers communicating in a well defined sequence:
 
