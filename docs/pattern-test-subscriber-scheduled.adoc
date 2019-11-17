@@ -95,7 +95,7 @@ func testExampleUsingVirtualTimeScheduler() {
 }
 ----
 
-<1> Using the virtual time scheduler requires you create one at the start of the test, initializing it's clock to a starting value.
+<1> Using the virtual time scheduler requires you create one at the start of the test, initializing its clock to a starting value.
 The virtual time scheduler in EntwineTest will commence subscription at the value `200` and times out at `900` if the pipeline isn't complete by that time.
 <2> You create your pipeline, along with any publishers or subscribers, as normal.
 EntwineTest also offers a testable publisher and a testable subscriber that could be used as well.

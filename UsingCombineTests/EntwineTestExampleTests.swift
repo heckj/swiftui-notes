@@ -16,7 +16,7 @@ class EntwineTestExampleTests: XCTestCase {
     func testMap() {
         let testScheduler = TestScheduler(initialClock: 0)
 
-        // creates a publisher that will schedule it's elements relatively, at the point of subscription
+        // creates a publisher that will schedule its elements relatively, at the point of subscription
         let testablePublisher: TestablePublisher<String, Never> = testScheduler.createRelativeTestablePublisher([
             (100, .input("a")),
             (200, .input("b")),

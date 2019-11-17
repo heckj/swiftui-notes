@@ -159,7 +159,7 @@ class SubscribeReceiveAssignTests: XCTestCase {
                 // - Publisher's func receive<S: Subscriber>(subscriber: S) where S.Input == Output, S.Failure == Failure
                 // - Subscription's func request(_ demand: Subscribers.Demand)
                 // - func cancel()
-                // dataTaskPublisher manages it's own queues based on the URLSession object, and runs it's relevant queue from
+                // dataTaskPublisher manages its own queues based on the URLSession object, and runs its relevant queue from
                 // there, which cascades until a receive(on:) function transfers pipeline operation to another queue.
                 return $0.data
             }

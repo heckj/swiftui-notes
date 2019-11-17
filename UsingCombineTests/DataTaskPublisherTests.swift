@@ -37,7 +37,7 @@ class DataTaskPublisherTests: XCTestCase {
         // Apple recommends NOT using .concurrent queue when working with Combine pipelines:
         // https://forums.swift.org/t/runloop-main-or-dispatchqueue-main-when-using-combine-scheduler/26635/4
         self.mockURL = URL(string: "https://fakeurl.com/response")
-        // ignore the testURL and let it pass through and do it's thing
+        // ignore the testURL and let it pass through and do its thing
         Mocker.ignore(testURL!)
         Mocker.ignore(URL(string: test400UrlString)!)
         Mocker.ignore(URL(string: test404UrlString)!)

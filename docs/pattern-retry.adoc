@@ -17,11 +17,11 @@ __See also__::
 
 __Code and explanation__::
 
-When you specify this operator in a pipeline and it receives a subscription, it first tries to request a subscription from it's upstream publisher.
+When you specify this operator in a pipeline and it receives a subscription, it first tries to request a subscription from its upstream publisher.
 If the response to that subscription fails, then it will retry the subscription to the same publisher.
 
 The retry operator can be specified with a number of retries to attempt.
-If no number of retries is specified, it will attempt to retry indefinitely until it receives a .finished completion from it's subscriber.
+If no number of retries is specified, it will attempt to retry indefinitely until it receives a .finished completion from its subscriber.
 If the number of retries is specified and all requests fail, then the `.failure` completion is passed down to the subscriber of this operator.
 
 In practice, this is mostly commonly desired when attempting to request network resources with an unstable connection.

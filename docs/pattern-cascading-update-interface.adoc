@@ -136,25 +136,25 @@ struct GithubAPI { <2>
                         throw APIFailureCondition.invalidServerResponse
                 }
                 return data
-        }
-        .decode(type: GithubAPIUser.self, decoder: JSONDecoder()) <8>
-        .map {
+            }
+            .decode(type: GithubAPIUser.self, decoder: JSONDecoder()) <8>
+            .map {
                 [$0] <9>
-        }
-        .catch { err in <10>
-            // return Publishers.Empty<GithubAPIUser, Never>()
-            // ^^ when I originally wrote this method, I was returning
-            // a GithubAPIUser? optional, and then a GithubAPIUser without
-            // optional. I ended up converting this to return an empty
-            // list as the "error output replacement" so that I could
-            // represent that the current value requested didn't *have* a
-            // correct github API response. When I was returing a single
-            // specific type, using Publishers.Empty was a good way to do a
-            // "no data on failure" error capture scenario.
-            return Just([])
-        }
-        .eraseToAnyPublisher() <11>
-        return publisher
+            }
+            .catch { err in <10>
+                // return Publishers.Empty<GithubAPIUser, Never>()
+                // ^^ when I originally wrote this method, I was returning
+                // a GithubAPIUser? optional, and then a GithubAPIUser without
+                // optional. I ended up converting this to return an empty
+                // list as the "error output replacement" so that I could
+                // represent that the current value requested didn't *have* a
+                // correct github API response. When I was returing a single
+                // specific type, using Publishers.Empty was a good way to do a
+                // "no data on failure" error capture scenario.
+                return Just([])
+            }
+            .eraseToAnyPublisher() <11>
+            return publisher
     }
 }
 ----
@@ -353,7 +353,7 @@ class ViewController: UIViewController {
 ----
 <1> We add a subscriber to our previous controller from that connects notifications of activity from the GithubAPI object to our activity indicator.
 <2> Where the username is updated from the IBAction (from our earlier example <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>) we have the subscriber make the network request and put the results in a new variable (also <<reference#reference-published,published>>) on our ViewController.
-<3> The first of two subscribers on the publisher `$githubUserData`, this pipeline extracts the count of repositories and updates the a UI label instance.
+<3> The first of two subscribers on the publisher `$githubUserData`, this pipeline extracts the count of repositories and updates the UI label instance.
 There is a bit of logic in the middle of the pipeline to return the string "unknown" when the list is empty.
 <4> The second subscriber to the publisher `$githubUserData`, this triggers a follow on network request to request the image data for the github avatar.
 This is a more complex pipeline, extracting the data from the githubUser, assembling a URL, and then requesting it.

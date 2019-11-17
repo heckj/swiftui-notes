@@ -31,7 +31,7 @@ let futureAsyncPublisher = Future<Bool, Error> { promise in <1>
 
 <1> Future itself has you define the return types and takes a closure.
 It hands in a Result object matching the type description, which you interact.
-<2> You can invoke the async API however is relevant, including passing in it's required closure.
+<2> You can invoke the async API however is relevant, including passing in its required closure.
 <3> Within the completion handler, you determine what would cause a failure or a success. A call to `promise(.failure(<FailureType>))` returns the failure.
 <4> Or a call to `promise(.success(<OutputType>))` returns a value.
 

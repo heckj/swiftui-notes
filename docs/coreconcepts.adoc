@@ -387,7 +387,7 @@ Subjects can be used to "inject" values into a stream, by calling the subject's 
 This is useful for integrating existing imperative code with Combine.
 
 A subject can also broadcast values to multiple subscribers.
-If multiple subscribers are connected to a subject, it will fanning out values to the multiple subscribers when `send()` is invoked.
+If multiple subscribers are connected to a subject, it will fan out values to the multiple subscribers when `send()` is invoked.
 A subject is also frequently used to connect or cascade multiple pipelines together, especially to fan out to multiple pipelines.
 
 A subject does not blindly pass through the demand from its subscribers, instead it provides a sort of aggregation point for demand.

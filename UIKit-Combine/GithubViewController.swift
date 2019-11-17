@@ -47,14 +47,14 @@ class GithubViewController: UIViewController {
         // Do any additional setup after loading the view.
 
         let apiActivitySub = GithubAPI.networkActivityPublisher
-        .receive(on: RunLoop.main)
+            .receive(on: RunLoop.main)
             .sink { doingSomethingNow in
                 if (doingSomethingNow) {
                     self.activityIndicator.startAnimating()
                 } else {
                     self.activityIndicator.stopAnimating()
                 }
-        }
+            }
         apiNetworkActivitySubscriber = AnyCancellable(apiActivitySub)
 
         usernameSubscriber = $username
@@ -153,7 +153,7 @@ class GithubViewController: UIViewController {
             // than potentially impacting the UI responsiveness
             .receive(on: RunLoop.main)
             // ^^ and then switch to receive and process the data on the main
-            // queue since we're messin with the UI
+            // queue since we're messing with the UI
             .map { image -> UIImage? in
                 image
             }
@@ -170,7 +170,7 @@ class GithubViewController: UIViewController {
         let _ = repositoryCountLabel.publisher(for: \.text)
             .sink { someValue in
                 print("repositoryCountLabel Updated to \(String(describing: someValue))")
-        }
+            }
     }
 
 }

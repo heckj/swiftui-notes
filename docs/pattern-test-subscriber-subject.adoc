@@ -40,9 +40,9 @@ This kind of testing pattern also works well when you are testing the response o
 A general pattern for using this kind of test construct is:
 
 . set up your subscriber and any pipeline leading to it that you want to include within the test
-. create a PassthroughSubject in the test that produces a output type and failure type to match with your subscriber.
+. create a PassthroughSubject in the test that produces an output type and failure type to match with your subscriber.
 . assert any initial values or preconditions
-. send a the data through the subject
+. send the data through the subject
 . test the results of having sent the data - either directly or asserting on state changes that were expected
 . send additional data if desired
 . test further evolution of state or other changes.

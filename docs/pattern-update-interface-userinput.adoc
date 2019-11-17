@@ -93,7 +93,7 @@ class ViewController: UIViewController {
 Because its a Published property, it provides a publisher reference that we can use to attach additional Combine pipelines to update other variables or elements of the interface.
 <3> We set the variable `username` from within an IBAction, which in turn triggers a data flow if the publisher `$username` has any subscribers.
 <4> We in turn set up a subscriber on the publisher `$username` that does further actions. In this case the overall flow retrives an instance of a GithubAPIUser from Github's REST API.
-<5> The <<reference#reference-throttle,throttle>> is there to keep from triggering a network request on ever request.
+<5> The <<reference#reference-throttle,throttle>> is there to keep from triggering a network request on every request.
 The throttle keeps it to a maximum of 1 request every half-second.
 <6> <<reference#reference-removeduplicates,removeDuplicates>> is there to collapse events from the changing username so that API requests aren't made on rapidly changing values.
 The removeDuplicates prevents redundant requests from being made, should the user edit and the return the previous value.
