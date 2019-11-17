@@ -11,7 +11,7 @@ import Combine
 
 class FuturePublisherTests: XCTestCase {
 
-    enum testFailureCondition: Error {
+    enum TestFailureCondition: Error {
         case anErrorExample
     }
 
@@ -20,7 +20,7 @@ class FuturePublisherTests: XCTestCase {
         DispatchQueue.global(qos: .background).async {
             sleep(.random(in: 1...3))
             if sabotage {
-                completionBlock(false, testFailureCondition.anErrorExample)
+                completionBlock(false, TestFailureCondition.anErrorExample)
             }
             completionBlock(true, nil)
         }

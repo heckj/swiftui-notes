@@ -221,13 +221,13 @@ For example:
 Initializing `Fail` by specifying the types
 [source, swift]
 ----
-let cancellable = Fail<String, Error>(error: testFailureCondition.exampleFailure)
+let cancellable = Fail<String, Error>(error: TestFailureCondition.exampleFailure)
 ----
 
 Initializing `Fail` by providing types as parameters:
 [source, swift]
 ----
-let cancellable = Fail(outputType: String.self, failure: testFailureCondition.exampleFailure)
+let cancellable = Fail(outputType: String.self, failure: TestFailureCondition.exampleFailure)
 ----
 
 [#reference-sequence]
@@ -599,11 +599,11 @@ For example, if you have an object getting passed down that has a boolean proper
 
 [source, swift]
 ----
-struct myStruct {
+struct MyStruct {
     isValid: bool = true
 }
 //
-Just(myStruct())
+Just(MyStruct())
 .map { inValue -> Bool in <1>
   inValue.isValid <2>
 }
@@ -637,7 +637,7 @@ If you are looking at tryMap to decode JSON, you may want to consider using the 
 
 [source, swift]
 ----
-enum myFailure: Error {
+enum MyFailure: Error {
     case notBigEnough
 }
 
@@ -645,7 +645,7 @@ enum myFailure: Error {
 Just(5)
 .tryMap {
   if inValue < 5 { <1>
-      throw myFailure.notBigEnough <2>
+      throw MyFailure.notBigEnough <2>
   }
   return inValue <3>
 }
@@ -1254,7 +1254,7 @@ This can be illustrated with the following code snippet:
 
 [source, swift]
 ----
-enum testFailureCondition: Error {
+enum TestFailureCondition: Error {
     case invalidServerResponse
 }
 
@@ -1273,7 +1273,7 @@ let _ = simplePublisher
 
 simplePublisher.send("oneValue")
 simplePublisher.send("twoValue")
-simplePublisher.send(completion: Subscribers.Completion.failure(testFailureCondition.invalidServerResponse))
+simplePublisher.send(completion: Subscribers.Completion.failure(TestFailureCondition.invalidServerResponse))
 simplePublisher.send("redValue")
 simplePublisher.send("blueValue")
 simplePublisher.send(completion: .finished)
@@ -1624,7 +1624,7 @@ let remoteDataPublisher = urlSession.dataTaskPublisher(for: self.mockURL!)
     .tryMap { data, response -> Data in
         guard let httpResponse = response as? HTTPURLResponse,
             httpResponse.statusCode == 200 else {
-                throw testFailureCondition.invalidServerResponse
+                throw TestFailureCondition.invalidServerResponse
         }
         return data
     }
@@ -1896,7 +1896,7 @@ let _ = foo.$username
     .print(self.debugDescription)
     .tryMap({ myValue -> String in
         if (myValue == "boom") {
-            throw failureCondition.selfDestruct
+            throw FailureCondition.selfDestruct
         }
         return "mappedValue"
     })

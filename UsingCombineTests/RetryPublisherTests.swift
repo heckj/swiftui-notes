@@ -11,7 +11,7 @@ import Combine
 
 class RetryPublisherTests: XCTestCase {
 
-    enum testFailureCondition: Error {
+    enum TestFailureCondition: Error {
         case invalidServerResponse
     }
 
@@ -38,7 +38,7 @@ class RetryPublisherTests: XCTestCase {
         simpleControlledPublisher.send(twoFish)
 
         // with an error response, this prints two results and hangs...
-        simpleControlledPublisher.send(completion: Subscribers.Completion.failure(testFailureCondition.invalidServerResponse))
+        simpleControlledPublisher.send(completion: Subscribers.Completion.failure(TestFailureCondition.invalidServerResponse))
 
         // with a completion, this prints two results and ends
         //simpleControlledPublisher.send(completion: .finished)
@@ -67,7 +67,7 @@ class RetryPublisherTests: XCTestCase {
 
         simpleControlledPublisher.send(oneFish)
         // with an error response, this prints two results and hangs...
-        simpleControlledPublisher.send(completion: Subscribers.Completion.failure(testFailureCondition.invalidServerResponse))
+        simpleControlledPublisher.send(completion: Subscribers.Completion.failure(TestFailureCondition.invalidServerResponse))
         XCTAssertNotNil(cancellable)
         // with a completion, this prints two results and ends
         //simpleControlledPublisher.send(completion: .finished)
@@ -118,7 +118,7 @@ class RetryPublisherTests: XCTestCase {
     func testRetryWithOneShotFailPublisher() {
         // setup
 
-        let cancellable = Fail(outputType: String.self, failure: testFailureCondition.invalidServerResponse)
+        let cancellable = Fail(outputType: String.self, failure: TestFailureCondition.invalidServerResponse)
             .print("(1)>")
             .retry(3)
             .print("(2)>")
@@ -139,7 +139,7 @@ class RetryPublisherTests: XCTestCase {
         //        (1)>: receive subscription: (Empty)
         //        (1)>: receive error: (invalidServerResponse)
         //        (2)>: receive error: (invalidServerResponse)
-        //        ** .sink() received the completion: failure(SwiftUI_NotesTests.CombinePatternTests.testFailureCondition.invalidServerResponse)
+        //        ** .sink() received the completion: failure(SwiftUI_NotesTests.CombinePatternTests.TestFailureCondition.invalidServerResponse)
         //        (2)>: receive subscription: (Retry)
         //        (2)>: request unlimited
 

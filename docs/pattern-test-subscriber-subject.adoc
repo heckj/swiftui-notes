@@ -56,7 +56,7 @@ func testSinkReceiveDataThenError() {
 
     // setup - preconditions <1>
     let expectedValues = ["firstStringValue", "secondStringValue"]
-    enum testFailureCondition: Error {
+    enum TestFailureCondition: Error {
         case anErrorExample
     }
     var countValuesReceived = 0
@@ -80,7 +80,7 @@ func testSinkReceiveDataThenError() {
                 // logging, or hiding as appropriate
                 print("received the error: ", anError)
                 XCTAssertEqual(anError.localizedDescription,
-                               testFailureCondition.anErrorExample.localizedDescription) <5>
+                               TestFailureCondition.anErrorExample.localizedDescription) <5>
                 break
             }
         }, receiveValue: { someValue in <6>
@@ -105,7 +105,7 @@ func testSinkReceiveDataThenError() {
     XCTAssertEqual(countValuesReceived, 2)
     XCTAssertEqual(countCompletionsReceived, 0)
 
-    simplePublisher.send(completion: Subscribers.Completion.failure(testFailureCondition.anErrorExample))  <9>
+    simplePublisher.send(completion: Subscribers.Completion.failure(TestFailureCondition.anErrorExample))  <9>
     XCTAssertEqual(countValuesReceived, 2)
     XCTAssertEqual(countCompletionsReceived, 1)
 

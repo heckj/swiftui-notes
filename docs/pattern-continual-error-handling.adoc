@@ -37,7 +37,7 @@ let remoteDataPublisher = Just(self.testURL!) <1>
         .tryMap { data, response -> Data in <4>
             guard let httpResponse = response as? HTTPURLResponse,
                 httpResponse.statusCode == 200 else {
-                    throw testFailureCondition.invalidServerResponse
+                    throw TestFailureCondition.invalidServerResponse
             }
             return data
         }
