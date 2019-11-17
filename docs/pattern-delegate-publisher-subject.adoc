@@ -168,7 +168,7 @@ class HeadingViewController: UIViewController {
             .receive(on: RunLoop.main)
             .sink { someValue in <5>
                 self.headingLabel.text = String(someValue.trueHeading)
-        }
+            }
         headingSubscriber = AnyCancellable(corelocationsub)
     }
 

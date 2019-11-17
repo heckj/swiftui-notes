@@ -145,10 +145,10 @@ IBAction messages are used to update the <<reference#reference-published,Publish
 This is also converting the output type from the published property of `<String>` to the optional `<String?>`.
 The same logic is also used to trigger updates to the messages label to provide information about what is required.
 <3> Since we are updating user interface elements, we explicitly make those updates wrapped in `DispatchQueue.main.async` to invoke on the main thread.
-<4> <<reference#reference-combinelatest,combineLatets>> takes two publishers and merges them into a single pipeline with an output type that is the combined values of each of the upstream publishers.
+<4> <<reference#reference-combinelatest,combineLatest>> takes two publishers and merges them into a single pipeline with an output type that is the combined values of each of the upstream publishers.
 In this case, the output type is a tuple of `(<String>, <String>)`.
 <5> Rather than use `DispatchQueue.main.async`, we can use the <<reference#reference-receive,receive>> operator to explicitly run the next operator on the main thread, since it will be doing UI updates.
-<6> The two vaildation pipelines are combined with <<reference#reference-combinelatest,combineLatest>>, and the output of those checked and merged into a single tuple output.
+<6> The two validation pipelines are combined with <<reference#reference-combinelatest,combineLatest>>, and the output of those checked and merged into a single tuple output.
 <7> We could store the assignment pipeline as an AnyCancellable? reference to map it to the life of the viewcontroller, but another option is to create something to collect all the cancellable references.
 This starts as an empty set, and any sinks or assignment subscribers can be added to it to keep a reference to them so that they operate over the full lifetime of the view controller.
 <8> If any of the values are nil, the <<reference#reference-map,map>> operator returns nil down the pipeline.

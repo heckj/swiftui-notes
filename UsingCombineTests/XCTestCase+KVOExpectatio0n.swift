@@ -4,7 +4,7 @@
 import XCTest
 
 /// An expectation that is fulfilled when a Key Value Observing (KVO) condition
-/// is met. It's variant of `XCTKVOExpectation` with support for native Swift
+/// is met. It's a variant of `XCTKVOExpectation` with support for native Swift
 /// key paths.
 final class KVOExpectation: XCTestExpectation {
     private var kvoToken: NSKeyValueObservation?

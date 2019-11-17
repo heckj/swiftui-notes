@@ -73,7 +73,7 @@ With the composability of Combine, you can use this to your advantage, creating 
 
 With the https://developer.apple.com/documentation/combine/publisher[publisher protocol] as the key interface, you can replace either side to validate your code in isolation.
 
-For example, if your code was focused on providing it's data from external web services through Combine, you might make the interface to this conform to `AnyPublisher<Data, Error>`.
+For example, if your code was focused on providing its data from external web services through Combine, you might make the interface to this conform to `AnyPublisher<Data, Error>`.
 You could then use that interface to test either side of that pipeline independently.
 
 * You could mock data responses that emulate the underlying API calls and possible responses, including various error conditions.
