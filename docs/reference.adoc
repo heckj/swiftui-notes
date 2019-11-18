@@ -1383,13 +1383,12 @@ __Details__::
 When you specify this operator in a pipeline and it receives a subscription, it first tries to request a subscription from its upstream publisher.
 If the response to that subscription fails, then it will retry the subscription to the same publisher.
 
-The retry operator accepts an optional (but recommended) single parameter that specifies a number of retries to attempt.
-If no number of retries is specified, it will attempt to retry indefinitely until it receives a .finished completion from its subscriber.
+The retry operator accepts a single parameter that specifies a number of retries to attempt.
 
 [NOTE]
 ====
-Using retry without any specific count can result in your pipeline never resolving any data or completions.
-If you use retry without a count, you may also want to use the <<reference#reference-timeout,timeout>> operator to force a completion from the pipeline.
+Using retry with a high count can result in your pipeline not resolving any data or completions for quite a while, depending on how long each attempt takes.
+You may also want to consider also using the <<reference#reference-timeout,timeout>> operator to force a completion from the pipeline.
 ====
 
 If the number of retries is specified and all requests fail, then the `.failure` completion is passed down to the subscriber of this operator.
