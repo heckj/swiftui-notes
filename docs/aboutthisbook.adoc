@@ -29,6 +29,7 @@ Thank you's for reviews, corrections, and updates from:
 * Serhii Kyrylenko
 * Michel Mohrmann
 * Lee O'Mara
+* Zachary Recolan
 * Antoine Weber
 * Paul Wood III
 * Federico Zanetello
