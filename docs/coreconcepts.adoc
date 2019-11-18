@@ -119,12 +119,12 @@ let _ = Just(5) <1>
 
 
 [TIP]
-****
+====
 When you are creating pipelines in Xcode and don't match the types, the error message from Xcode may include a helpful _fixit_.
 In some cases, such as the example above, the compiler is unable to infer the return types of closure provided to `map` without specifying the return type.
 Xcode (11 beta 2 and beta 3) displays this as the error message: `Unable to infer complex closure return type; add explicit type to disambiguate`.
 In the example above, we explicitly specified the type being returned with the line `value -> String in`.
-****
+====
 
 You can view Combine publishers, operators, and subscribers as having two parallel types that both need to be aligned - one for the functional case and one for the error case.
 Designing your pipeline is frequently choosing how to convert one or both of those types and the associated data with it.
