@@ -35,7 +35,7 @@ let myURL = URL(string: "https://postman-echo.com/time/valid?timestamp=2016-10-1
 fileprivate struct PostmanEchoTimeStampCheckResponse: Decodable, Hashable {
     let valid: Bool
 }
-enum testFailureCondition: Error {
+enum TestFailureCondition: Error {
     case invalidServerResponse
 }
 
@@ -44,7 +44,7 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
     .tryMap { data, response -> Data in <1>
                 guard let httpResponse = response as? HTTPURLResponse, <2>
                     httpResponse.statusCode == 200 else { <3>
-                        throw testFailureCondition.invalidServerResponse <4>
+                        throw TestFailureCondition.invalidServerResponse <4>
                 }
                 return data <5>
     }

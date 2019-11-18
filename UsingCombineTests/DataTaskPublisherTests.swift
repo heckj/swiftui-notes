@@ -15,7 +15,7 @@ class DataTaskPublisherTests: XCTestCase {
     var mockURL: URL?
     var myBackgroundQueue: DispatchQueue?
 
-    enum testFailureCondition: Error {
+    enum TestFailureCondition: Error {
         case invalidServerResponse
     }
 
@@ -141,7 +141,7 @@ class DataTaskPublisherTests: XCTestCase {
             .tryMap { data, response -> Data in
                 guard let httpResponse = response as? HTTPURLResponse,
                     httpResponse.statusCode == 200 else {
-                        throw testFailureCondition.invalidServerResponse
+                        throw TestFailureCondition.invalidServerResponse
                 }
                 return data
             }
@@ -195,7 +195,7 @@ class DataTaskPublisherTests: XCTestCase {
             .tryMap { data, response -> Data in
                 guard let httpResponse = response as? HTTPURLResponse,
                     httpResponse.statusCode == 200 else {
-                        throw testFailureCondition.invalidServerResponse
+                        throw TestFailureCondition.invalidServerResponse
                 }
                 return data
             }
@@ -255,7 +255,7 @@ class DataTaskPublisherTests: XCTestCase {
             .tryMap { data, response -> Data in
                 guard let httpResponse = response as? HTTPURLResponse,
                     httpResponse.statusCode == 200 else {
-                        throw testFailureCondition.invalidServerResponse
+                        throw TestFailureCondition.invalidServerResponse
                 }
                 return data
             }
@@ -294,7 +294,7 @@ class DataTaskPublisherTests: XCTestCase {
                 .tryMap { data, response -> Data in
                         guard let httpResponse = response as? HTTPURLResponse,
                             httpResponse.statusCode == 200 else {
-                                throw testFailureCondition.invalidServerResponse
+                                throw TestFailureCondition.invalidServerResponse
                         }
                         return data
                 }

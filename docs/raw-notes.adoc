@@ -22,7 +22,7 @@ https://developer.apple.com/documentation/combine/publishers[Convenience publish
 
 [source,swift]
 ----
-enum sampleError: Error {
+enum SampleError: Error {
     case exampleError
 }
 
@@ -32,7 +32,7 @@ let x = Publishers.Future<String, Error> { promise in
           promise(.success(varname ? username : nil))
       }
   } catch {
-      promise(.failure(sampleError.exampleError))
+      promise(.failure(SampleError.exampleError))
   }
 }
 ----

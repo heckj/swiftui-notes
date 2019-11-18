@@ -11,7 +11,7 @@ import Combine
 
 class CombinePatternTests: XCTestCase {
 
-    enum testFailureCondition: Error {
+    enum TestFailureCondition: Error {
         case invalidServerResponse
     }
 
@@ -34,12 +34,12 @@ class CombinePatternTests: XCTestCase {
                 // this print adds into the console output:
                 //        .sink() received firstStringValue
                 //        .sink() received secondStringValue
-                //        .sink() caught the failure failure(SwiftUI_NotesTests.CombinePatternTests.testFailureCondition.invalidServerResponse)
+                //        .sink() caught the failure failure(SwiftUI_NotesTests.CombinePatternTests.TestFailureCondition.invalidServerResponse)
             })
 
         simplePublisher.send("firstStringValue")
         simplePublisher.send("secondStringValue")
-        simplePublisher.send(completion: Subscribers.Completion.failure(testFailureCondition.invalidServerResponse))
+        simplePublisher.send(completion: Subscribers.Completion.failure(TestFailureCondition.invalidServerResponse))
 
         // this data will never be seen by anything in the pipeline above because we've already sent a completion
         simplePublisher.send(completion: Subscribers.Completion.finished)
@@ -52,7 +52,7 @@ class CombinePatternTests: XCTestCase {
 //        receive value: (secondStringValue)
 //        .sink() received secondStringValue
 //        receive error: (invalidServerResponse)
-//        .sink() caught the failure failure(SwiftUI_NotesTests.CombinePatternTests.testFailureCondition.invalidServerResponse)
+//        .sink() caught the failure failure(SwiftUI_NotesTests.CombinePatternTests.TestFailureCondition.invalidServerResponse)
 
     }
 
@@ -71,7 +71,7 @@ class CombinePatternTests: XCTestCase {
         simplePublisher.send("twoValue")
 
         // uncomment this next line to see the failure mode:
-        // simplePublisher.send(completion: Subscribers.Completion.failure(testFailureCondition.invalidServerResponse))
+        // simplePublisher.send(completion: Subscribers.Completion.failure(TestFailureCondition.invalidServerResponse))
         simplePublisher.send(completion: .finished)
     }
 
@@ -91,7 +91,7 @@ class CombinePatternTests: XCTestCase {
 
         simplePublisher.send("oneValue")
         simplePublisher.send("twoValue")
-        simplePublisher.send(completion: Subscribers.Completion.failure(testFailureCondition.invalidServerResponse))
+        simplePublisher.send(completion: Subscribers.Completion.failure(TestFailureCondition.invalidServerResponse))
         simplePublisher.send("redValue")
         simplePublisher.send("blueValue")
         simplePublisher.send(completion: .finished)

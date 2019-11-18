@@ -46,7 +46,7 @@ class SinkSubscriberTests: XCTestCase {
     func testSinkReceiveDataThenError() {
         // setup - preconditions
         let expectedValues = ["firstStringValue", "secondStringValue"]
-        enum testFailureCondition: Error {
+        enum TestFailureCondition: Error {
             case anErrorExample
         }
         var countValuesReceived = 0
@@ -67,7 +67,7 @@ class SinkSubscriberTests: XCTestCase {
                     // do what you want with the error details, presenting, logging, or hiding as appropriate
                     print("received the error: ", anError)
                     XCTAssertEqual(anError.localizedDescription,
-                                   testFailureCondition.anErrorExample.localizedDescription)
+                                   TestFailureCondition.anErrorExample.localizedDescription)
                     break
                 }
             }, receiveValue: { someValue in
@@ -93,7 +93,7 @@ class SinkSubscriberTests: XCTestCase {
         XCTAssertEqual(countValuesReceived, 2)
         XCTAssertEqual(countCompletionsReceived, 0)
 
-        simplePublisher.send(completion: Subscribers.Completion.failure(testFailureCondition.anErrorExample))
+        simplePublisher.send(completion: Subscribers.Completion.failure(TestFailureCondition.anErrorExample))
         XCTAssertEqual(countValuesReceived, 2)
         XCTAssertEqual(countCompletionsReceived, 1)
 

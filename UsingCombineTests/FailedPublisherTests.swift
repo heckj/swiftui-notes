@@ -11,14 +11,14 @@ import Combine
 
 class FailedPublisherTests: XCTestCase {
 
-    enum testFailureCondition: Error {
+    enum TestFailureCondition: Error {
         case exampleFailure
     }
 
     func testFailPublisher() {
         let expectation = XCTestExpectation(description: self.debugDescription)
 
-        let cancellable = Fail<String, Error>(error: testFailureCondition.exampleFailure)
+        let cancellable = Fail<String, Error>(error: TestFailureCondition.exampleFailure)
             .sink(receiveCompletion: { completion in
                 print(".sink() received the completion", String(describing: completion))
                 switch completion {
@@ -42,7 +42,7 @@ class FailedPublisherTests: XCTestCase {
     func testFailPublisherAltInitializer() {
         let expectation = XCTestExpectation(description: self.debugDescription)
 
-        let cancellable = Fail(outputType: String.self, failure: testFailureCondition.exampleFailure)
+        let cancellable = Fail(outputType: String.self, failure: TestFailureCondition.exampleFailure)
             .sink(receiveCompletion: { completion in
                 print(".sink() received the completion", String(describing: completion))
                 switch completion {
