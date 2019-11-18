@@ -1,10 +1,12 @@
 [#aboutthisbook]
 = About This Book
 
-This is an intermediate to advanced book, focusing on how to use a specific framework (Combine) provided by Apple.
-The work is written with an expectation of a solid understanding of the Swift programming language, including reference and value types, protocols, and comfort with the existing Foundation framework.
+This is an intermediate to advanced book, focusing fairly narrowly on how to use the Combine framework provided by Apple.
+The writing and examples expect that you have a solid understanding of Swift including reference and value types, protocols, and comfort with using common elements from the Foundation framework.
 
-This work provides <<introduction#introduction,a very abbreviated introduction>> to the concept of functional reactive programming, which is what this library is meant to provide.
+If you are also just starting with Swift, https://developer.apple.com/swift/resources/[Apple provides a number of resources] to learn it, and there are truly amazing tutorials and introductions available in book form a number of authors, including https://gumroad.com/l/swift-kickstart[A Swift Kickstart] by Daniel Steinberg and https://www.hackingwithswift.com[Hacking with Swift] by Paul Hudson.
+
+This book provides <<introduction#introduction,a very abbreviated introduction>> to the concept of functional reactive programming, which is what this library is meant to provide.
 
 == Supporting this effort
 
@@ -40,7 +42,7 @@ The https://bitbucket.org/achary/rx-marbles/src/0f5d57bb309491a979f10d07d4aa7ecf
 
 == Author Bio
 
-Joe Heck has broad software engineering development and management experience crossing startups and large companies.
+Joe Heck has broad software engineering development and management experience across startups and large companies.
 He works across all the layers of solutions, from architecture, development, validation, deployment, and operations.
 
 Joe has developed projects ranging from mobile and desktop application development to cloud-based distributed systems.
