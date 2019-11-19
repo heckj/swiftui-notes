@@ -91,7 +91,9 @@ class FuturePublisherTests: XCTestCase {
 
         // the creating the future publisher
         let sut = Future<Bool, Error> { promise in
+            print("invoking Future handler for resolving the provided promise")
             self.asyncAPICall(sabotage: true) { (grantedAccess, err) in
+                print("invoking async completion handler to return a resolved promise")
                 if let err = err {
                     promise(.failure(err))
                 }
@@ -103,11 +105,13 @@ class FuturePublisherTests: XCTestCase {
         .print("after_retry:")
 
 //        output from this test:
+//        invoking Future handler for resolving the provided promise
 //        before_retry:: receive subscription: (Future)
 //        after_retry:: receive subscription: (Retry)
 //        after_retry:: request unlimited
 //        before_retry:: request unlimited
 //         * making async call (delay of 1 seconds)
+//        invoking async completion handler to return a resolved promise
 //        before_retry:: receive error: (anErrorExample)
 //        before_retry:: receive subscription: (Future)
 //        before_retry:: request unlimited
@@ -117,6 +121,12 @@ class FuturePublisherTests: XCTestCase {
 //        before_retry:: receive error: (anErrorExample)
 //        after_retry:: receive error: (anErrorExample)
 //        .sink() received the completion:  failure(UsingCombineTests.FuturePublisherTests.TestFailureCondition.anErrorExample)
+
+        // NOTE(heckj): from this output, it appears that Future maintain's its internal state of any promise resolutions, and
+        // subsequent subscriiption/demand invocations to it as a publisher will not retrigger the provided closures. This
+        // implies that it's rather incompatible with the retry() operator.
+        //
+        // This has been reported to Apple as Feedback : FB7455914
 
         // driving it by attaching it to .sink
         let cancellable = sut.sink(receiveCompletion: { err in
@@ -131,6 +141,7 @@ class FuturePublisherTests: XCTestCase {
         wait(for: [expectation], timeout: 5.0)
         XCTAssertNotNil(cancellable)
     }
+
     func testFutureWithinAFlatMap() {
         let simplePublisher = PassthroughSubject<String, Never>()
         var outputValue: String? = nil
