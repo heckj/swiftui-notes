@@ -118,5 +118,13 @@ A number of additional WWDC19 sessions mention Combine:
 * https://developer.apple.com/videos/play/wwdc2019/610/[Building Collaborative AR Experiences]
 * https://developer.apple.com/videos/play/wwdc2019/223/[Expanding the Sensory Experience with Core Haptics]
 
+== Additional Online Combine Resources
+
+In addition to Apple's documentation, there are a number of other online resources where you can find questions, answers, discussion, and descriptions of how Combine operates.
+
+* The https://forums.swift.org/[Swift Forums] (hosted from the https://swift.org/[swift open source project]) has a https://forums.swift.org/tags/combine[combine tag] with a number of interesting threads. While the Combine framework is *not* open source, some of it's implementation and specifics are discussed in these forums.
+
+* https://stackoverflow.com[Stackoverflow] also has a sizable (and growing) collection of https://stackoverflow.com/questions/tagged/combine[Combine related Q&A].
+
 // force a page break - ignored in HTML rendering
 <<<
