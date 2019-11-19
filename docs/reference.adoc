@@ -89,8 +89,20 @@ It hands in a Result object matching the type description, which you interact.
 <3> Within the completion handler, you determine what would cause a failure or a success. A call to `promise(.failure(<FailureType>))` returns the failure.
 <4> Or a call to `promise(.success(<OutputType>))` returns a value.
 
-If you want to wrap an async API that could return many values over time, Future probably isn't what you want, as it only returns a single value.
+If you want to wrap an async API that could return many values over time, Future isn't what you want to use, as it only returns a single value.
 Instead, you should consider creating your own publisher based on <<reference#reference-passthroughsubject,passthroughSubject>> or <<reference#reference-currentvaluesubject,currentValueSubject>>.
+
+[WARNING]
+====
+As of Combine as it's released in IOS 13.2, Future is also somewhat incompatible with the retry operator.
+The retry operator works by making another subscription to the publisher, and Future doesn't not currently re-invoke the closure you provide upon additional request demands.
+This means that chaining a retry() operator after future will not result in the Future's closure being invoked repeatedly when a `.failure` completion is returned.
+
+The failure of retry and Future to work well together has been submitted to Apple as feedback: FB7455914.
+
+It may be possible to get it to work by recreating the whole Future publisher, as the closure provided appears to be invoked (once) upon creation.
+You can see unit tests illustrating the pipeline lifecycle with the print operator in the tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FuturePublisherTests.swift[`UsingCombineTests/FuturePublisherTests.swift`].
+====
 
 [#reference-published]
 === Published
@@ -1383,13 +1395,12 @@ __Details__::
 When you specify this operator in a pipeline and it receives a subscription, it first tries to request a subscription from its upstream publisher.
 If the response to that subscription fails, then it will retry the subscription to the same publisher.
 
-The retry operator accepts an optional (but recommended) single parameter that specifies a number of retries to attempt.
-If no number of retries is specified, it will attempt to retry indefinitely until it receives a .finished completion from its subscriber.
+The retry operator accepts a single parameter that specifies a number of retries to attempt.
 
 [NOTE]
 ====
-Using retry without any specific count can result in your pipeline never resolving any data or completions.
-If you use retry without a count, you may also want to use the <<reference#reference-timeout,timeout>> operator to force a completion from the pipeline.
+Using retry with a high count can result in your pipeline not resolving any data or completions for quite a while, depending on how long each attempt takes.
+You may also want to consider also using the <<reference#reference-timeout,timeout>> operator to force a completion from the pipeline.
 ====
 
 If the number of retries is specified and all requests fail, then the `.failure` completion is passed down to the subscriber of this operator.
