@@ -19,23 +19,25 @@ __See also__::
 
 __Code and explanation__::
 
-When requesting data from a dataTaskPublisher, there is always the possibility that the request may fail, and instead of data you may receive a `.failure` completion with an error.
-The <<reference#reference-retry,retry>> operator will let you retry that same request for a set number of attempts that you specify.
-The retry operator works by ignoring and passing through any data values, only reacting within the chain when a `.failure` completion is sent.
-In that case, it will retry the subscription to the same publisher.
+When requesting data from a dataTaskPublisher, there is the possibility that the request may fail, and instead of data you may receive a `.failure` completion with an error.
+When it fails, the <<reference#reference-retry,retry>> operator will let you retry that same request for a set number of attempts that you specify.
+When the publisher doesn't send a failure - sending it's result data type - the retry operator passes through the resulting values.
+It only reacts within a combine pipeline when a `.failure` completion is sent.
+
+When it does sense a `.failure` completion, the way it retries is by re-doing the subscription to the operator or publisher to which  it was chained.
 
 The <<reference#reference-retry,retry>> operator is commonly desired when attempting to request network resources with an unstable connection, or other situations where the answer might change if the request happens again after a short period of time.
 If the number of retries specified all fail, then the `.failure` completion is passed down to the subscriber of this operator.
 
 In our example below, we are using retry in combination with a <<reference#reference-delay,delay>> operator.
-The delay operator puts a small random delay in how long the request takes, and is really most useful when the retry operator triggers.
+The delay operator puts a small random delay in how long the request takes.
 This spaces out the retry attempts, so that the retries don't all happen in quick succession.
 
-This example also includes the use of the <<reference#reference-trymap,tryMap>> operator to more fully inspect any URLResponse from the publisher.
+This example also includes the use of the <<reference#reference-trymap,tryMap>> operator to more fully inspect any URLResponse returned from the dataTaskPublisher.
 Any response from the server is encapsaulted by URLSession, and passed forward as a valid response.
-Because of this, URLSession doesn't treat a 404 Not Found http response as an error response.
+Because of this, URLSession doesn't treat a 404 Not Found http response as an error response, nor any 50x error codes.
 Using tryMap lets us inspect the response code that was sent, and verify that it was a 200 response code.
-In this example, if the response code is anything but a 200 response, it throws an exception - which in turn causes the tryMap operator to pass down a `.failure` response rather than data.
+In this example, if the response code is anything but a 200 response, it throws an exception - which in turn causes the tryMap operator to pass down a `.failure` completion rather than data.
 This example sets the tryMap *after* the retry operator so that retry will only re-attempt the request when the site didn't respond.
 
 [source, swift]
