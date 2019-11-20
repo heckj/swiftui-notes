@@ -34,7 +34,7 @@ A subcriber is also described with two associated types, one for Input and one f
 When you connect a subscriber to a publisher, both types must match: Output to Input, and Failure to Failure.
 One way to visualize this is as a series of operations on two types in parallel, where both types need to match in order to plug the components together.
 
-image::diagrams/input-output.svg[publisher output to subscriber input]
+image::diagrams/input_output.svg[publisher output to subscriber input]
 
 The third core concept is an operator - an object that acts both like a subscriber and a publisher.
 Operators are classes that adopt both the https://developer.apple.com/documentation/combine/subscriber[Subscriber protocol] and https://developer.apple.com/documentation/combine/publisher[Publisher protocol].
@@ -134,13 +134,127 @@ More examples, and some common tasks, are detailed in the <<patterns#patterns,se
 // force a page break - ignored in HTML rendering
 <<<
 
+[#coreconcepts-marblediagram]
+== Describing pipeline components with marble diagrams
+
+Any functional reactive pipeline can be tricky to understand.
+A publisher is generating and reporting data, operators are reacting to that data and potentially changing it, and subscribers accepting it.
+That in itself would be complicated, but some elements of Combine also may change when things happen - introducing delays, collapsing multiple values into one, and so forth.
+Because these can be complex to understand, the functional reactive programming community often uses a visual description of what's changing called a *marble diagram*.
+
+As you learn about Combine, you may find yourself looking at other functional reactive programming systems, such as RxSwift or ReactiveExtensions.
+The documentation associated with these systems often use marble diagrams.
+
+These diagrams focus on describing how a specific element changes a stream of data.
+It shows data changing over time, as well as the timing of those changes.
+
+.An exmample marble diagram
+image::diagrams/marble_diagram.svg[marble diagram]
+
+=== How to read a marble diagram:
+
+* The digram centers around whatever element is being described, an operator in this case.
+The name of the operator is often on the central block.
+
+* The lines above and below represent data moving through time.
+The left is earlier and the right is later.
+The symbols on the line represent discrete bits of data.
+
+* It is often assumed that data is flowing downward.
+With this pattern, the top line is indicating the inputs to the operator and the bottom line represents the outputs.
+
+* In some diagrams, the symbols on the top line may differ from the symbols on the bottom line.
+When they are different, the diagram is typically implying that the type of the output is different from the type of the input.
+
+* In other places, you may also see a vertical bar or an `X` on the timeline, or ending the timeline.
+That is used to indicate the end a stream.
+A bar at the end of a line implies the stream has terminated normally as complete.
+An `X` indicates than an error or exception was thrown.
+
+These diagrams often ignore the setup (or teardown) of a pipeline, preferring to focus on one element to describe how that element works.
+
+=== Marble diagrams for Combine
+
+This book uses an expansion of the basic marble diagram.
+
+.An expanded Combine specific marble diagram
+image::diagrams/combine_marble_diagram.svg[combine marble diagram]
+
+The most notable difference are two lines for input and output.
+Since Combine explicitly types both the input and the failure, these are represented separately.
+
+If a publisher is being described, the two lines are below the element, following the pattern that "data flows down".
+An operator, which acts as both a publisher and subscriber, would have two sets - one above and one below.
+And a subscriber has the lines above it.
+
+To illustrate how these diagrams relate to code, lets look at this simple example.
+In this case, we will focus on the map operator and how it can be described with this diagram.
+
+[source, swift]
+----
+let _ = Just(5)
+    .map { value -> String in <1>
+        switch value {
+        case _ where value < 1:
+            return "none"
+        case _ where value == 1:
+            return "one"
+        case _ where value == 2:
+            return "couple"
+        case _ where value == 3:
+            return "few"
+        case _ where value > 8:
+            return "many"
+        default:
+            return "some"
+        }
+    }
+    .sink { receivedValue in
+        print("The end result was \(receivedValue)")
+    }
+----
+<1> the closure provided to the `.map()` function takes in an `<Int>` and transforms it into a `<String>`. Since the failure type of <Never> is not changed, it is passed through.
+
+In this diagram, we will also include the closure from the sample code to show how it relates to the diagram.
+Many combine operators are configured with code provided by you, written in a closure.
+Most diagrams will not include the closure, as it is implied that it's part of the operator that you define as you configure it.
+
+[TIP]
+====
+Most diagrams in this book won't be as complex or detailed as this example.
+Most of these diagrams will focus on describing what the generic operators do.
+This one is more complex to make it easier to understand how the diagrams can be interpretted and and how they relate to any Combine code you create.
+====
+
+.The example map operator from the code above:
+image::diagrams/example_map_operator.svg[map operator]
+
+The input type for this map operator is `<Int>`, which is described with generic syntax on the top line.
+The failure type that is being passed to this operator is `<Never>`, described in the same syntax just below the Input type.
+
+The map operator doesn't change or interact with the failure type, only passing it along.
+To represent that, the failure types - both input (above) and output (below) have been lightened.
+
+A single input value provided (`5`) is represented on the top line.
+The location on the line isn't meaningful in this case, only representing that it is a single value.
+If multiple values were on the line, the ones on the left would be presented to the map operator before any on the right.
+
+When it arrives, the value `5` is passed to the closure as the variable `value`.
+The return type of the closure (`<String>` in this case), defines the output type for the map operator.
+When the code within the closure completes and returns its value.
+In this case, the string `some` is returned for the input value `5`.
+The string `some` is represented on the output line directly below its input value, implying there was no explicit delay.
+
+// force a page break - ignored in HTML rendering
+<<<
+
 [#coreconcepts-lifecycle]
 == Lifecycle of Publishers and Subscribers
 
 Combine is designed such that the subscriber ultimately controls the flow of data, and any related processing that happens in pipelines.
-The term commonly used for this is *back-pressure*.
+This feature of Combine is often described using the term *back-pressure*.
 
-This means that the subscriber provides information for how much information it wants or can accept.
+This means that the subscriber drives the processing within a pipeline by providing information about how much information it wants or can accept.
 When a subscriber is connected to a publisher, it requests data based with a specific https://developer.apple.com/documentation/combine/subscribers/demand[Demand].
 
 [NOTE]
@@ -153,25 +267,37 @@ In practice, this means that you can be a bit more certain of having any pipelin
 There is an https://forums.swift.org/t/combine-receive-on-runloop-main-loses-sent-value-how-can-i-make-it-work/28631/39[extended thread on the swift forums] about this topic, if you are interested in reading the history.
 ====
 
-This request it drives calling all the closures up the composed pipeline, and returning any data available from publishers.
+The demand request is propogated up through the composed pipeline.
+Each operator in turn accepting the request for data and in turn requesting information from the publishers to which it is connected.
 
-With the subscriber driving the process, this also allows Combine to support cancellation.
+When the subscriber drives this process, it allows Combine to support cancellation.
 Subscribers all conform to the https://developer.apple.com/documentation/combine/cancellable[Cancellable] protocol.
 This means they all have a function `cancel()` that can be invoked to terminate a pipeline and stop all related processing.
+
+[TIP]
+====
 When a pipeline has been cancelled, the pipeline is not expected to be restarted.
 Rather than restarting a cancelled pipeline, the developer is expected to create a new pipeline.
+====
 
 The end to end lifecycle is enabled by subscribers and publishers communicating in a well defined sequence:
 
-. When the subscriber is attached to a publisher, it starts with a call to `.subscribe(Subscriber)`.
-. The publisher in turn acknowledges the subscription calling `receive(subscription)`.
-
-** After the subscription has been acknowledged, the subscriber requests _N_ values with `request(_ : Demand)`.
-** The publisher may then (as it has values) sending _N_ (or fewer) values: `receive(_ : Input)`.
+.An The lifecycle of a combine pipeline
+image::diagrams/combine_lifecycle_diagram.svg[combine lifecycle diagram]
+<1> When the subscriber is attached to a publisher, it starts with a call to `.subscribe(Subscriber)`.
+<2> The publisher in turn acknowledges the subscription calling `receive(subscription)`.
+<3> After the subscription has been acknowledged, the subscriber requests _N_ values with `request(_ : Demand)`.
+<4> The publisher may then (as it has values) sending _N_ (or fewer) values: `receive(_ : Input)`.
 A publisher should never send **more** than the demand requested.
-** Also after the subscription has been acknowledged, the subscriber can send a https://developer.apple.com/documentation/combine/subscribers/completion[cancellation] with `.cancel()`
+<5> Also after the subscription has been acknowledged, the subscriber can send a https://developer.apple.com/documentation/combine/subscribers/completion[cancellation] with `.cancel()`
+<6> A publisher may optionally send https://developer.apple.com/documentation/combine/subscribers/completion[completion]: `receive(completion:)`.
+A completion can be either a normal termination, or may be a `.failure` completion, optionally propogating an error type.
+A pipeline that has been cancelled will not send any completions.
 
-. A publisher may optionally send https://developer.apple.com/documentation/combine/subscribers/completion[completion]: `receive(completion:)` which is also how errors are propogated.
+Included in the above diagram is a stacked up set of the example marble diagrams.
+This is to highlight where Combine marble diagrams focus in the overall lifecycle of a pipeline.
+Generally the diagrams infer that all of the setup has been done and data requested.
+The heart of a combine marble diagram is the series of events between when data was requested any any completions or cancellations are triggered.
 
 [#coreconcepts-publishers]
 == Publishers
