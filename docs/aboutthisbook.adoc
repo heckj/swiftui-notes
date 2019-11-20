@@ -39,9 +39,6 @@ Thank you's for reviews, corrections, and updates from:
 
 Thank you all for taking the time and effort to submit a pull request to make this work better!
 
-The marble diagrams in this book are derived using https://pypi.org/project/rxmarbles/[rxmarbles].
-The https://bitbucket.org/achary/rx-marbles/src/0f5d57bb309491a979f10d07d4aa7ecff3e4084e/docs/syntax.md[marble diagram sources format] is documented with the source, and inspired from https://flames-of-code.netlify.com/blog/rx-marbles/[Rx marbles diagram generator].
-
 == Author Bio
 
 Joe Heck has broad software engineering development and management experience across startups and large companies.

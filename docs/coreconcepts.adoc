@@ -294,6 +294,11 @@ A publisher should never send **more** than the demand requested.
 A completion can be either a normal termination, or may be a `.failure` completion, optionally propogating an error type.
 A pipeline that has been cancelled will not send any completions.
 
+Included in the above diagram is a stacked up set of the example marble diagrams.
+This is to highlight where Combine marble diagrams focus in the overall lifecycle of a pipeline.
+Generally the diagrams infer that all of the setup has been done and data requested.
+The heart of a combine marble diagram is the series of events between when data was requested any any completions or cancellations are triggered.
+
 [#coreconcepts-publishers]
 == Publishers
 
