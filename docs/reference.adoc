@@ -63,7 +63,7 @@ It's ideal for when you want to make a single request, or get a single response,
 
 The obvious example that everyone immediately thinks about is URLSession.
 Fortunately, <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> exists to make a call with a URLSession and return a publisher.
-However, if you already have an API object that wraps the direct calls to URLSession, then making a single request using Future can great way to integrate the result into a Combine pipeline.
+However, if you already have an API object that wraps the direct calls to URLSession, then making a single request using Future can be a great way to integrate the result into a Combine pipeline.
 
 There are a number of other APIs that exist in the Apple frameworks that use a completion closure.
 An example of one is requesting permission to access the contacts store in Contacts.
