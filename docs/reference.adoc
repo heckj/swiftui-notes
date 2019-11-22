@@ -7,7 +7,7 @@ reference preamble goes here...
 ====
 This is intended to extend Apple's documentation, not replace it.
 
-* The documentation associated with IOS 13 GM.
+* The documentation associated with iOS 13 GM.
 
 things to potentially include for each segment
 
@@ -94,7 +94,7 @@ Instead, you should consider creating your own publisher based on <<reference#re
 
 [WARNING]
 ====
-As of Combine as it's released in IOS 13.2, Future is also somewhat incompatible with the retry operator.
+As of Combine as it's released in iOS 13.2, Future is also somewhat incompatible with the retry operator.
 The retry operator works by making another subscription to the publisher, and Future doesn't not currently re-invoke the closure you provide upon additional request demands.
 This means that chaining a retry() operator after future will not result in the Future's closure being invoked repeatedly when a `.failure` completion is returned.
 
@@ -483,7 +483,7 @@ let _ = foo.publisher(for: \.intValue)
 
 [NOTE]
 ====
-KVO publisher access implies that with MacOS 10.15 release or IOS 13, most of Appkit and UIKit interface instances will be accessible as publishers.
+KVO publisher access implies that with macOS 10.15 release or iOS 13, most of Appkit and UIKit interface instances will be accessible as publishers.
 Relying on the interface element's state to trigger updates into pipelines can lead to your state being very tightly bound to the interface elements, rather than your model.
 You may be better served by explicitly creating your own state to react to from a <<reference#reference-published,Published>> property wrapper.
 ====
