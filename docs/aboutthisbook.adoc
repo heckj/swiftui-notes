@@ -28,6 +28,7 @@ Michael Critz designed and provided the cover art.
 Thank you's for reviews, corrections, and updates from:
 
 * Mycroft Canner
+* Max Desiatov
 * Nanu Jogi
 * Serhii Kyrylenko
 * Michel Mohrmann
