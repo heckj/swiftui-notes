@@ -148,7 +148,7 @@ The documentation associated with these systems often use marble diagrams.
 These diagrams focus on describing how a specific element changes a stream of data.
 It shows data changing over time, as well as the timing of those changes.
 
-.An exmample marble diagram
+.An example marble diagram
 image::diagrams/marble_diagram.svg[marble diagram]
 
 === How to read a marble diagram:
