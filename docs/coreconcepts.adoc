@@ -29,7 +29,7 @@ Publishers and subscribers are meant to be connected, and make up the core of Co
 A subscriber is responsible for requesting data and accepting the data (and possible failures) provided by a publisher.
 In Combine, the subscriber initiates the request for data, and controls the amount of data it receives.
 It can be thought of as "driving the action" within Combine, as without a subscriber, the other components in Combine are idle.
-A subcriber is also described with two associated types, one for Input and one for Failure.
+A subscriber is also described with two associated types, one for Input and one for Failure.
 
 When you connect a subscriber to a publisher, both types must match: Output to Input, and Failure to Failure.
 One way to visualize this is as a series of operations on two types in parallel, where both types need to match in order to plug the components together.
@@ -143,7 +143,7 @@ That in itself would be complicated, but some elements of Combine also may chang
 Because these can be complex to understand, the functional reactive programming community often uses a visual description of what's changing called a *marble diagram*.
 
 As you learn about Combine, you may find yourself looking at other functional reactive programming systems, such as RxSwift or ReactiveExtensions.
-The documentation associated with these systems often use marble diagrams.
+The documentation associated with these systems often uses marble diagrams.
 
 These diagrams focus on describing how a specific element changes a stream of data.
 It shows data changing over time, as well as the timing of those changes.
@@ -153,7 +153,7 @@ image::diagrams/marble_diagram.svg[marble diagram]
 
 === How to read a marble diagram:
 
-* The digram centers around whatever element is being described, an operator in this case.
+* The diagram centers around whatever element is being described, an operator in this case.
 The name of the operator is often on the central block.
 
 * The lines above and below represent data moving through time.
@@ -187,7 +187,7 @@ If a publisher is being described, the two lines are below the element, followin
 An operator, which acts as both a publisher and subscriber, would have two sets - one above and one below.
 And a subscriber has the lines above it.
 
-To illustrate how these diagrams relate to code, lets look at this simple example.
+To illustrate how these diagrams relate to code, let's look at this simple example.
 In this case, we will focus on the map operator and how it can be described with this diagram.
 
 [source, swift]
@@ -223,7 +223,7 @@ Most diagrams will not include the closure, as it is implied that it's part of t
 ====
 Most diagrams in this book won't be as complex or detailed as this example.
 Most of these diagrams will focus on describing what the generic operators do.
-This one is more complex to make it easier to understand how the diagrams can be interpretted and and how they relate to any Combine code you create.
+This one is more complex to make it easier to understand how the diagrams can be interpretted and how they relate to any Combine code you create.
 ====
 
 .The example map operator from the code above:
@@ -267,7 +267,7 @@ In practice, this means that you can be a bit more certain of having any pipelin
 There is an https://forums.swift.org/t/combine-receive-on-runloop-main-loses-sent-value-how-can-i-make-it-work/28631/39[extended thread on the swift forums] about this topic, if you are interested in reading the history.
 ====
 
-The demand request is propogated up through the composed pipeline.
+The demand request is propagated up through the composed pipeline.
 Each operator in turn accepting the request for data and in turn requesting information from the publishers to which it is connected.
 
 When the subscriber drives this process, it allows Combine to support cancellation.
@@ -297,7 +297,7 @@ A pipeline that has been cancelled will not send any completions.
 Included in the above diagram is a stacked up set of the example marble diagrams.
 This is to highlight where Combine marble diagrams focus in the overall lifecycle of a pipeline.
 Generally the diagrams infer that all of the setup has been done and data requested.
-The heart of a combine marble diagram is the series of events between when data was requested any any completions or cancellations are triggered.
+The heart of a combine marble diagram is the series of events between when data was requested any completions or cancellations are triggered.
 
 [#coreconcepts-publishers]
 == Publishers
