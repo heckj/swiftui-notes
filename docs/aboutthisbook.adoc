@@ -34,6 +34,7 @@ Thank you's for reviews, corrections, and updates from:
 * Michel Mohrmann
 * Lee O'Mara
 * Zachary Recolan
+* Andrius Shiaulis
 * Antoine Weber
 * Paul Wood III
 * Federico Zanetello
