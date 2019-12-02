@@ -33,11 +33,19 @@ struct ContentView : View {
 
     }
 
+    @State private var currentStatusValue = "ok"
+
+    var fiveSecTimer = Timer.TimerPublisher(interval: 5.0, runLoop: RunLoop.main, mode: .default)
+
     var body: some View {
         VStack {
-            Text(model.foo)
+
+            Text("\(model.foo)")
                 .font(.title)
                 .foregroundColor(.blue)
+                .onReceive(fiveSecTimer, perform: { someVal in
+                    self.model.foo = someVal.description
+                })
 
             Text("so here's something simpler")
                 .font(.caption)
@@ -45,7 +53,7 @@ struct ContentView : View {
 
             Spacer()
 
-            MapView()
+            Text("...")
         }
     }
 }

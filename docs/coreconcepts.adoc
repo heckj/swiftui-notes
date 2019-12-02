@@ -574,9 +574,9 @@ struct MyView : View {
     @State private var currentStatusValue = "ok"
     var body: some View {
         Text("Current status: \(currentStatusValue)")
-    }
-    .onReceive(MyPublisher.currentStatusPublisher) { newStatus in
-        self.currentStatusValue = newStatus
+            .onReceive(MyPublisher.currentStatusPublisher) { newStatus in
+                self.currentStatusValue = newStatus
+            }
     }
 }
 ----
