@@ -145,6 +145,52 @@ class FuturePublisherTests: XCTestCase {
         XCTAssertNotNil(cancellable)
     }
 
+    func testResolvedFutureSuccess() {
+        // setup
+        let expectation = XCTestExpectation(description: self.debugDescription)
+
+        let resolvedSuccessAsPublisher = Future<Bool, Error> { promise in
+            promise(.success(Bool()))
+        }.eraseToAnyPublisher()
+
+        let cancellable = resolvedSuccessAsPublisher.sink(receiveCompletion: { completion in
+            print(".sink() received the completion: ", String(describing: completion))
+            XCTAssertNotNil(completion)
+            expectation.fulfill()
+        }, receiveValue: { value in
+            print(".sink() received value: ", value)
+        })
+
+        wait(for: [expectation], timeout: 1.0)
+        XCTAssertNotNil(cancellable)
+
+    }
+
+    func testResolvedFutureFailure() {
+        // setup
+        let expectation = XCTestExpectation(description: self.debugDescription)
+
+        enum ExampleFailure: Error {
+            case oneCase
+        }
+
+        let resolvedFailureAsPublisher = Future<Bool, Error> { promise in
+            promise(.failure(ExampleFailure.oneCase))
+        }.eraseToAnyPublisher()
+
+        let cancellable = resolvedFailureAsPublisher.sink(receiveCompletion: { err in
+            print(".sink() received the completion: ", String(describing: err))
+            XCTAssertNotNil(err)
+            expectation.fulfill()
+        }, receiveValue: { value in
+            print(".sink() received value: ", value)
+            XCTFail("no value should be returned")
+        })
+
+        wait(for: [expectation], timeout: 1.0)
+        XCTAssertNotNil(cancellable)
+    }
+
     func testDeferredFuturePublisherWithRetry() {
         // setup
         let expectation = XCTestExpectation(description: self.debugDescription)

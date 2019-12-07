@@ -35,6 +35,31 @@ It hands in a Result object matching the type description, which you interact.
 <3> Within the completion handler, you determine what would cause a failure or a success. A call to `promise(.failure(<FailureType>))` returns the failure.
 <4> Or a call to `promise(.success(<OutputType>))` returns a value.
 
+If you want to return a resolved promise as a Future publisher, you can do so by immediately returning the result you desire within Future's closure.
+
+The following example returns a single value as a success, with a boolean `true` value.
+You could just as easily return `false`, and the publisher would still act as a successful promise.
+
+[source, swift]
+----
+let resolvedSuccessAsPublisher = Future<Bool, Error> { promise in
+    promise(.success(true))
+}.eraseToAnyPublisher()
+----
+
+An example of returning a Future publisher that immediately resolves as an error:
+
+[source, swift]
+----
+enum ExampleFailure: Error {
+    case oneCase
+}
+
+let resolvedFailureAsPublisher = Future<Bool, Error> { promise in
+    promise(.failure(ExampleFailure.oneCase))
+}.eraseToAnyPublisher()
+----
+
 // force a page break - in HTML rendering is just a <HR>
 <<<
 '''
