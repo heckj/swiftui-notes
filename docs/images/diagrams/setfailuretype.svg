@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xl="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="156 112 500 208" width="500" height="208">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xl="http://www.w3.org/1999/xlink" version="1.1" viewBox="142 112 514 208" width="514" height="208">
   <defs>
-    <font-face font-family="Helvetica Neue" font-size="16" panose-1="2 0 5 3 0 0 0 2 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="951.9958" descent="-212.99744" font-weight="400">
-      <font-face-src>
-        <font-face-name name="HelveticaNeue"/>
-      </font-face-src>
-    </font-face>
     <font-face font-family="Helvetica Neue" font-size="16" panose-1="2 0 5 3 0 0 0 2 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="951.9958" descent="-212.99744" font-weight="400">
       <font-face-src>
         <font-face-name name="HelveticaNeue"/>
@@ -14,9 +9,9 @@
     </font-face>
   </defs>
   <metadata> Produced by OmniGraffle 7.12.1 
-    <dc:date>2019-12-07 20:03:09 +0000</dc:date>
+    <dc:date>2019-12-07 20:19:53 +0000</dc:date>
   </metadata>
-  <g id="setFailureType" stroke-opacity="1" stroke="none" stroke-dasharray="none" fill="none" fill-opacity="1">
+  <g id="setFailureType" stroke="none" stroke-dasharray="none" fill-opacity="1" stroke-opacity="1" fill="none">
     <title>setFailureType</title>
     <g id="setFailureType: Layer 1">
       <title>Layer 1</title>
@@ -33,29 +28,29 @@
       </g>
       <g id="Group_9">
         <g id="Graphic_12">
-          <path d="M 166.42857 150.4 L 158.2 162.1 L 166.42857 173.8 L 207.57143 173.8 L 215.8 162.1 L 207.57143 150.4 Z" fill="#ffd579" fill-opacity=".5"/>
-          <text transform="translate(163.2 152.876)" fill="black">
-            <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="2.7679992" y="15">Never</tspan>
+          <path d="M 154.08571 150.4 L 143.8 162.1 L 154.08571 173.8 L 205.51429 173.8 L 215.8 162.1 L 205.51429 150.4 Z" fill="#ffd579" fill-opacity=".5"/>
+          <text transform="translate(148.8 152.876)" fill="black">
+            <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="9.968" y="15">Never</tspan>
           </text>
         </g>
         <g id="Line_11">
-          <path d="M 166.42857 150.4 L 158.2 162.1 L 166.42857 173.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          <path d="M 154.08571 150.4 L 143.8 162.1 L 154.08571 173.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
         </g>
         <g id="Line_10">
-          <path d="M 207.57143 150.4 L 215.8 162.1 L 207.57143 173.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          <path d="M 205.51429 150.4 L 215.8 162.1 L 205.51429 173.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
         </g>
       </g>
       <g id="Group_5">
         <g id="Line_8">
-          <path d="M 166.4 116.2 L 158.2 127.9 L 166.4 139.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          <path d="M 154.05714 116.2 L 143.8 127.9 L 154.05714 139.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
         </g>
         <g id="Line_7">
-          <path d="M 207.4 116.2 L 215.6 127.9 L 207.4 139.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          <path d="M 205.34286 116.2 L 215.6 127.9 L 205.34286 139.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
         </g>
         <g id="Graphic_6">
-          <path d="M 166.4 116.2 L 158.2 127.9 L 166.4 139.6 L 207.4 139.6 L 215.6 127.9 L 207.4 116.2 Z" fill="#0096ff" fill-opacity=".5"/>
-          <text transform="translate(163.2 118.676)" fill="black">
-            <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="2.5160008" y="15">String</tspan>
+          <path d="M 154.05714 116.2 L 143.8 127.9 L 154.05714 139.6 L 205.34286 139.6 L 215.6 127.9 L 205.34286 116.2 Z" fill="#0096ff" fill-opacity=".5"/>
+          <text transform="translate(148.8 118.676)" fill="black">
+            <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="9.716" y="15">String</tspan>
           </text>
         </g>
       </g>
@@ -69,29 +64,29 @@
       </g>
       <g id="Group_65">
         <g id="Graphic_68">
-          <path d="M 166.42857 294.4 L 158.2 306.1 L 166.42857 317.8 L 207.57143 317.8 L 215.8 306.1 L 207.57143 294.4 Z" fill="#ffd579" fill-opacity=".5"/>
-          <text transform="translate(163.2 296.876)" fill="black">
-            <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="6.471999" y="15">Error</tspan>
+          <path d="M 154.08571 294.4 L 143.8 306.1 L 154.08571 317.8 L 205.51429 317.8 L 215.8 306.1 L 205.51429 294.4 Z" fill="#ffd579" fill-opacity=".5"/>
+          <text transform="translate(148.8 296.876)" fill="black">
+            <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="13.672" y="15">Error</tspan>
           </text>
         </g>
         <g id="Line_67">
-          <path d="M 166.42857 294.4 L 158.2 306.1 L 166.42857 317.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          <path d="M 154.08571 294.4 L 143.8 306.1 L 154.08571 317.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
         </g>
         <g id="Line_66">
-          <path d="M 207.57143 294.4 L 215.8 306.1 L 207.57143 317.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          <path d="M 205.51429 294.4 L 215.8 306.1 L 205.51429 317.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
         </g>
       </g>
       <g id="Group_61">
         <g id="Line_64">
-          <path d="M 166.4 260.2 L 158.2 271.9 L 166.4 283.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          <path d="M 154.05714 260.2 L 143.8 271.9 L 154.05714 283.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
         </g>
         <g id="Line_63">
-          <path d="M 207.4 260.2 L 215.6 271.9 L 207.4 283.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          <path d="M 205.34286 260.2 L 215.6 271.9 L 205.34286 283.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
         </g>
         <g id="Graphic_62">
-          <path d="M 166.4 260.2 L 158.2 271.9 L 166.4 283.6 L 207.4 283.6 L 215.6 271.9 L 207.4 260.2 Z" fill="#0096ff" fill-opacity=".5"/>
-          <text transform="translate(163.2 262.676)" fill="black">
-            <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="2.5160008" y="15">String</tspan>
+          <path d="M 154.05714 260.2 L 143.8 271.9 L 154.05714 283.6 L 205.34286 283.6 L 215.6 271.9 L 205.34286 260.2 Z" fill="#0096ff" fill-opacity=".5"/>
+          <text transform="translate(148.8 262.676)" fill="black">
+            <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="9.716" y="15">String</tspan>
           </text>
         </g>
       </g>
