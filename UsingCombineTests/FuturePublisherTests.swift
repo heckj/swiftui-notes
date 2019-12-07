@@ -88,6 +88,66 @@ class FuturePublisherTests: XCTestCase {
     func testFuturePublisherShowingFailureWithRetry() {
         // setup
         let expectation = XCTestExpectation(description: self.debugDescription)
+        var asyncAPICallCount = 0;
+        var futureClosureHandlerCount = 0;
+
+        // example of a asynchronous function to be called from within a Future and its completion closure
+        func instrumentedAsyncAPICall(sabotage: Bool, completion completionBlock: @escaping ((Bool, Error?) -> Void)) {
+            DispatchQueue.global(qos: .background).async {
+                let delay = Int.random(in: 1...3)
+                print(" * making async call (delay of \(delay) seconds)")
+                asyncAPICallCount+=1
+                sleep(UInt32(delay))
+                if sabotage {
+                    completionBlock(false, TestFailureCondition.anErrorExample)
+                }
+                completionBlock(true, nil)
+            }
+        }
+
+        let deferredFuturePublisher = Deferred {
+            return Future<Bool, Error> { promise in
+                futureClosureHandlerCount += 1
+                // setting "sabotage: true" in the asyncAPICall tells the test code to return a
+                // failure result, which will illustrate "retry" better.
+                instrumentedAsyncAPICall(sabotage: true) { (grantedAccess, err) in
+                    print("invoking async completion handler to return a resolved promise")
+                    // NOTE(heckj): the closure resolving the API call into a Promise result
+                    // is called more than 3 times - 5 in this example, although I don't know
+                    // why that is. The underlying API call, and the closure within the future
+                    // are each called 3 times - validated below in the assertions.
+                    if let err = err {
+                       promise(.failure(err))
+                    }
+                    promise(.success(grantedAccess))
+                }
+            }
+        }.eraseToAnyPublisher()
+        .retry(2)
+
+        XCTAssertEqual(asyncAPICallCount,0);
+        XCTAssertEqual(futureClosureHandlerCount,0);
+
+        let cancellable = deferredFuturePublisher.sink(receiveCompletion: { err in
+            print(".sink() received the completion: ", String(describing: err))
+
+            // the end result should have 3 calls (the original, plus 2 retries,
+            // made to the api endpoint defined in the Future
+            XCTAssertEqual(asyncAPICallCount, 3)
+            XCTAssertEqual(futureClosureHandlerCount,3);
+            expectation.fulfill()
+        }, receiveValue: { value in
+            print(".sink() received value: ", value)
+            XCTFail("no value should be returned")
+        })
+
+        wait(for: [expectation], timeout: 10.0)
+        XCTAssertNotNil(cancellable)
+    }
+
+    func testDeferredFuturePublisherWithRetry() {
+        // setup
+        let expectation = XCTestExpectation(description: self.debugDescription)
 
         // the creating the future publisher
         let sut = Future<Bool, Error> { promise in
@@ -103,30 +163,6 @@ class FuturePublisherTests: XCTestCase {
         .print("before_retry:")
         .retry(2)
         .print("after_retry:")
-
-//        output from this test:
-//        invoking Future handler for resolving the provided promise
-//        before_retry:: receive subscription: (Future)
-//        after_retry:: receive subscription: (Retry)
-//        after_retry:: request unlimited
-//        before_retry:: request unlimited
-//         * making async call (delay of 1 seconds)
-//        invoking async completion handler to return a resolved promise
-//        before_retry:: receive error: (anErrorExample)
-//        before_retry:: receive subscription: (Future)
-//        before_retry:: request unlimited
-//        before_retry:: receive error: (anErrorExample)
-//        before_retry:: receive subscription: (Future)
-//        before_retry:: request unlimited
-//        before_retry:: receive error: (anErrorExample)
-//        after_retry:: receive error: (anErrorExample)
-//        .sink() received the completion:  failure(UsingCombineTests.FuturePublisherTests.TestFailureCondition.anErrorExample)
-
-        // NOTE(heckj): from this output, it appears that Future maintain's its internal state of any promise resolutions, and
-        // subsequent subscriiption/demand invocations to it as a publisher will not retrigger the provided closures. This
-        // implies that it's rather incompatible with the retry() operator.
-        //
-        // This has been reported to Apple as Feedback : FB7455914
 
         // driving it by attaching it to .sink
         let cancellable = sut.sink(receiveCompletion: { err in
