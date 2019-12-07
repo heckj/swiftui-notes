@@ -23,21 +23,24 @@ If you are so inclined, feel free to fork the project and send me https://github
 
 == Acknowledgements
 
+.Thank you
+****
 Michael Critz designed and provided the cover art.
 
-Thank you's for reviews, corrections, and updates from:
+Reviews, corrections, and updates from:
 
-* Mycroft Canner
-* Max Desiatov
-* Nanu Jogi
-* Serhii Kyrylenko
-* Michel Mohrmann
-* Lee O'Mara
-* Zachary Recolan
-* Andrius Shiaulis
-* Antoine Weber
-* Paul Wood III
-* Federico Zanetello
+Mycroft Canner,
+Max Desiatov,
+Nanu Jogi,
+Serhii Kyrylenko,
+Michel Mohrmann,
+Lee O'Mara,
+Zachary Recolan,
+Andrius Shiaulis,
+Antoine Weber,
+Paul Wood III,
+Federico Zanetello
+****
 
 Thank you all for taking the time and effort to submit a pull request to make this work better!
 
