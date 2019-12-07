@@ -63,4 +63,28 @@ class FailedPublisherTests: XCTestCase {
         XCTAssertNotNil(cancellable)
     }
 
+    func testSetFailureTypePublisher() {
+        let expectation = XCTestExpectation(description: self.debugDescription)
+
+        let initialSequence = ["one", "two", "red", "blue"]
+
+        let cancellable = initialSequence.publisher
+            .setFailureType(to: TestFailureCondition.self)
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let anError):
+                    print("received error: ", anError)
+                    break
+                }
+                expectation.fulfill()
+            }, receiveValue: { responseValue in
+                print(".sink() data received \(responseValue)")
+            })
+
+        wait(for: [expectation], timeout: 1.0)
+        XCTAssertNotNil(cancellable)
+    }
 }

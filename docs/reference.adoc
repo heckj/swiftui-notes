@@ -584,6 +584,8 @@ __Summary__::
 
 scan acts like an accumulator, collecting and modifying values according to a closure you provide, and publishing intermediate results with each change from upstream.
 
+image::diagrams/scan.svg[scan operator, align="center"]
+
 __Constraints on connected publisher__::
 
 * __none__
@@ -615,6 +617,8 @@ __Usage__::
 
 __Details__::
 
+Scan lets you accumulate values or otherwise modify a type as changes flow through the pipeline.
+You can use this to collect values into an array, implement a counter, or any number of other interesting use cases.
 
 [#reference-tryscan]
 ==== tryScan
@@ -648,6 +652,9 @@ __Usage__::
 * unit tests illustrating using tryScan : https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ScanPublisherTests.swift[`UsingCombineTests/ScanPublisherTests.swift`]
 
 __Details__::
+
+tryScan lets you accumulate values or otherwise modify a type as changes flow through the pipeline while also supporting an error state.
+If either the combined and updates values, or the incoming value, matches logic you define within the closure, you can throw an error, terminating the pipeline.
 
 [#reference-map]
 ==== map
@@ -803,11 +810,29 @@ In Swift, this looks like:
 [#reference-setfailuretype]
 ==== setFailureType
 
-* setFailureType
+__Summary__::
 
-https://developer.apple.com/documentation/combine/publishers/setfailuretype
+The publisher cannot actually fail with the specified type and instead just finishes normally. Use this publisher type when you need to match the error types for two otherwise mismatched publishers within a pipeline.
 
-The publisher cannot actually fail with the specified type and instead just finishes normally. Use this publisher type when you need to match the error types for two mismatched publishers.
+image::diagrams/setfailuretype.svg[setfailuretype operator, align="center"]
+
+__Constraints on connected publisher__::
+
+- The upstream publisher must have a failure type of `<Never>`.
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/setfailuretype[`setFailureType`]
+
+__Usage__::
+
+* unit tests illustrating setFailureType: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FailedPublisherTests.swift[`UsingCombineTests/FailedPublisherTests.swift`]
+
+__Details__::
+
+setFailureType is an operator for transforming the error type within a pipeline, specifically from `<Never>` to some error type you may want to produce.
+setFailureType does not induce an error, but changes the types of the pipeline.
+
+
+This can be especially convenient if you need to match an operator or subscriber that expects a failure type other than <Never> when you are working with a test or single-value publisher such as <<reference#reference-just,Just>> or <<reference#reference-just,Sequence>>.
 
 [#reference-operators-filtering]
 === Filtering elements
