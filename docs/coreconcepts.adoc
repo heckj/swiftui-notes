@@ -175,19 +175,18 @@ These diagrams often ignore the setup (or teardown) of a pipeline, preferring to
 
 === Marble diagrams for Combine
 
-This book uses an expansion of the basic marble diagram.
+This book uses an expansion of the basic marble diagram, modified slightly to match some of the specifics of Combine.
+The most notable difference are two lines for input and output.
+Since Combine explicitly types both the input and the failure, these are represented separately.
 
 .An expanded Combine specific marble diagram
 image::diagrams/combine_marble_diagram.svg[combine marble diagram]
-
-The most notable difference are two lines for input and output.
-Since Combine explicitly types both the input and the failure, these are represented separately.
 
 If a publisher is being described, the two lines are below the element, following the pattern that "data flows down".
 An operator, which acts as both a publisher and subscriber, would have two sets - one above and one below.
 And a subscriber has the lines above it.
 
-To illustrate how these diagrams relate to code, let's look at this simple example.
+To illustrate how these diagrams relate to code, let's look at a simple example.
 In this case, we will focus on the map operator and how it can be described with this diagram.
 
 [source, swift]
@@ -215,19 +214,15 @@ let _ = Just(5)
 ----
 <1> the closure provided to the `.map()` function takes in an `<Int>` and transforms it into a `<String>`. Since the failure type of <Never> is not changed, it is passed through.
 
-In this diagram, we will also include the closure from the sample code to show how it relates to the diagram.
-Many combine operators are configured with code provided by you, written in a closure.
-Most diagrams will not include the closure, as it is implied that it's part of the operator that you define as you configure it.
-
-[TIP]
-====
-Most diagrams in this book won't be as complex or detailed as this example.
-Most of these diagrams will focus on describing what the generic operators do.
-This one is more complex to make it easier to understand how the diagrams can be interpretted and how they relate to any Combine code you create.
-====
+Applying our diagram style to this code snippet.
+This diagram goes further than others in this book will; we include the closure from the sample code to show how it relates to the diagram.
 
 .The example map operator from the code above:
 image::diagrams/example_map_operator.svg[map operator]
+
+Many combine operators are configured with code provided by you, written in a closure.
+Most diagrams will not include the closure or showing you how they link up.
+It will be implied that any code you provide through a closure to an operator in combine will be used within the box, rather than explicitly detailed as done in this diagram.
 
 The input type for this map operator is `<Int>`, which is described with generic syntax on the top line.
 The failure type that is being passed to this operator is `<Never>`, described in the same syntax just below the Input type.
@@ -244,6 +239,13 @@ The return type of the closure (`<String>` in this case), defines the output typ
 When the code within the closure completes and returns its value.
 In this case, the string `some` is returned for the input value `5`.
 The string `some` is represented on the output line directly below its input value, implying there was no explicit delay.
+
+[TIP]
+====
+Most diagrams in this book won't be as complex or detailed as this example.
+Most of these diagrams will focus on describing what the generic operators do.
+This one is more complex to make it easier to understand how the diagrams can be interpretted and how they relate to any Combine code you create.
+====
 
 // force a page break - ignored in HTML rendering
 <<<
