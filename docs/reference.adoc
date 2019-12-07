@@ -580,12 +580,74 @@ Scene Publisher (from https://developer.apple.com/documentation/realitykit[Reali
 [#reference-scan]
 ==== scan
 
-* scan
+__Summary__::
+
+scan acts like an accumulator, collecting and modifying values according to a closure you provide, and publishing intermediate results with each change from upstream.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/scan
+
+While the published docs are unfortunately anemic, the generated swift headers has some detail:
+
+[source, swift]
+----
+/// Transforms elements from the upstream publisher by providing the current element to a closure along with the last value returned by the closure.
+///
+///     let pub = (0...5)
+///         .publisher
+///         .scan(0, { return $0 + $1 })
+///         .sink(receiveValue: { print ("\($0)", terminator: " ") })
+///      // Prints "0 1 3 6 10 15 ".
+///
+///
+/// - Parameters:
+///   - initialResult: The previous result returned by the `nextPartialResult` closure.
+///   - nextPartialResult: A closure that takes as its arguments the previous value returned by the closure and the next element emitted from the upstream publisher.
+/// - Returns: A publisher that transforms elements by applying a closure that receives its previous return value and the next element from the upstream publisher.
+----
+
+__Usage__::
+
+* unit tests illustrating using scan : https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ScanPublisherTests.swift[`UsingCombineTests/ScanPublisherTests.swift`]
+
+__Details__::
+
 
 [#reference-tryscan]
 ==== tryScan
 
-* tryScan
+__Summary__::
+
+tryScan is a variant of the scan operator which allows for the provided closure to throw an error and cancel the pipeline.
+The closure provided updates and modifies a value with based on any inputs from an upstream publisher and publishing intermediate results.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/tryscan
+
+While the published docs are unfortunately anemic, the generated swift headers has some detail:
+
+[source, swift]
+----
+/// Transforms elements from the upstream publisher by providing the current element to an error-throwing closure along with the last value returned by the closure.
+///
+/// If the closure throws an error, the publisher fails with the error.
+/// - Parameters:
+///   - initialResult: The previous result returned by the `nextPartialResult` closure.
+///   - nextPartialResult: An error-throwing closure that takes as its arguments the previous value returned by the closure and the next element emitted from the upstream publisher.
+/// - Returns: A publisher that transforms elements by applying a closure that receives its previous return value and the next element from the upstream publisher.
+----
+
+__Usage__::
+
+* unit tests illustrating using tryScan : https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ScanPublisherTests.swift[`UsingCombineTests/ScanPublisherTests.swift`]
+
+__Details__::
 
 [#reference-map]
 ==== map
@@ -742,6 +804,10 @@ In Swift, this looks like:
 ==== setFailureType
 
 * setFailureType
+
+https://developer.apple.com/documentation/combine/publishers/setfailuretype
+
+The publisher cannot actually fail with the specified type and instead just finishes normally. Use this publisher type when you need to match the error types for two mismatched publishers.
 
 [#reference-operators-filtering]
 === Filtering elements
