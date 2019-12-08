@@ -628,6 +628,8 @@ __Summary__::
 tryScan is a variant of the scan operator which allows for the provided closure to throw an error and cancel the pipeline.
 The closure provided updates and modifies a value with based on any inputs from an upstream publisher and publishing intermediate results.
 
+image::diagrams/tryscan.svg[tryscan operator, align="center"]
+
 __Constraints on connected publisher__::
 
 * __none__
@@ -662,6 +664,8 @@ If either the combined and updates values, or the incoming value, matches logic 
 __Summary__::
 
 map is most commonly used to convert one data type into another along a pipeline.
+
+image::diagrams/map.svg[map operator, align="center"]
 
 __Constraints on connected publisher__::
 
