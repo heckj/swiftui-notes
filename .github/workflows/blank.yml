@@ -16,8 +16,8 @@ jobs:
     - name: Show what's in Applications
       run: ls -al /Applications
 
-    - name: try switching to Xcode 11.2 (beta)
-      run: sudo xcode-select -s /Applications/Xcode_11.2.app
+    - name: "switch to Xcode version 11.3"
+      run: sudo xcode-select -s /Applications/Xcode_11.3.app
 
     - name: xcodebuild --help
       run: xcodebuild --help
