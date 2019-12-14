@@ -167,11 +167,11 @@ With this pattern, the top line is indicating the inputs to the operator and the
 When they are different, the diagram is typically implying that the type of the output is different from the type of the input.
 
 * In other places, you may also see a vertical bar or an `X` on the timeline, or ending the timeline.
-That is used to indicate the end a stream.
-A bar at the end of a line implies the stream has terminated normally as complete.
-An `X` indicates than an error or exception was thrown.
+That is used to indicate the end of a stream.
+A bar at the end of a line implies the stream has terminated normally.
+An `X` indicates that an error or exception was thrown.
 
-These diagrams often ignore the setup (or teardown) of a pipeline, preferring to focus on one element to describe how that element works.
+These diagrams intentionally ignore the setup (or teardown) of a pipeline, preferring to focus on one element to describe how that element works.
 
 === Marble diagrams for Combine
 
