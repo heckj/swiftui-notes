@@ -41,6 +41,6 @@ jobs:
       run: |
         xcodebuild -scheme SwiftUI-Notes \
         -configuration Debug \
-        -sdk iphonesimulator13.2 \
-        -destination 'platform=iOS Simulator,OS=13.2,name=iPhone 8' \
+        -sdk iphonesimulator13.3 \
+        -destination 'platform=iOS Simulator,OS=13.3,name=iPhone 8' \
         test -showBuildTimingSummary
