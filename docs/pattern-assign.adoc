@@ -3,7 +3,7 @@
 
 __Goal__::
 
-* To use the results of a pipeline to set a value, often a property on a user interface view or control, but any KVO compliant object can be the target
+* To use the results of a pipeline to set a value, often a property on a user interface view or control, but any KVO compliant object can be the target.
 
 __References__::
 
