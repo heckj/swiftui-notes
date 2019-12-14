@@ -17,7 +17,7 @@ __See also__::
 
 __Code and explanation__::
 
-Sink creates an all-purpose subscriber to capture or react the data from a Combine pipeline, while also supporting cancellation and the <<coreconcepts#coreconcepts-lifecycle,publisher subscriber lifecycle>>.
+Sink creates an all-purpose subscriber to capture or react to the data from a Combine pipeline, while also supporting cancellation and the <<coreconcepts#coreconcepts-lifecycle,publisher subscriber lifecycle>>.
 
 .simple sink
 [source, swift]
