@@ -55,7 +55,7 @@ cancellablePipeline.cancel() <2>
 ----
 
 <1> Sinks are created by chaining the code from a publisher or pipeline, and terminate the pipeline.
-When the sink is created or invoked on a publisher, it implicitly starts <<coreconcepts#coreconcepts-lifecycle,the lifecycle>> with the `subscribe` and will request unlimited data.
+When the sink is created or invoked on a publisher, it implicitly starts <<coreconcepts#coreconcepts-lifecycle,the lifecycle>> with the `subscribe` method and will request unlimited data.
 <2> Creating a sink is cancellable subscriber, so at any time you can take the reference that terminated with sink and invoke `.cancel()` on it to invalidate and shut down the pipeline.
 
 // force a page break - in HTML rendering is just a <HR>
