@@ -399,7 +399,7 @@ Operators can also help with error handling and retry logic, buffering and prefe
 
 [cols="3*^"]
 |===
-3+h| Mathematic opertions on elements
+3+h| Mathematic operations on elements
 | <<reference#reference-comparison,comparison>>
 | <<reference#reference-trycomparison,tryComparison>>
 | <<reference#reference-count,count>>
