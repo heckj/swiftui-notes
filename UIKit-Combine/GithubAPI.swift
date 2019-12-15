@@ -69,18 +69,13 @@ struct GithubAPI {
             .map {
                 [$0]
         }
-        .catch { err in
-            // return Publishers.Empty<GithubAPIUser, Never>()
+        .replaceError(with: [])
             // ^^ when I originally wrote this method, I was returning
             // a GithubAPIUser? optional, and then a GithubAPIUser without
             // optional. I ended up converting this to return an empty
             // list as the "error output replacement" so that I could
             // represent that the current value requested didn't *have* a
-            // correct github API response. When I was returing a single
-            // specific type, using Publishers.Empty was a good way to do a
-            // "no data on failure" error capture scenario.
-            return Just([])
-        }
+            // correct github API response.
         .eraseToAnyPublisher()
         return publisher
     }
