@@ -1679,9 +1679,44 @@ The delay operator also requires a scheduler, where the delay is explicitly invo
 [#reference-measureinterval]
 ==== measureInterval
 
-* measureInterval
-** Measures and emits the time interval between events received from an upstream publisher.
-** requires Failure to be `<Never>`
+__Summary__::
+
+measureInterval measures and emits the time interval between events received from an upstream publisher, in turn publishing a value of SchedulerTimeType.Stride (which includes a magnitude and interval since the last value).
+The specific upstream value is ignored beyond the detail of the time at which it was received.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/measureinterval[`measureInterval`]
+
+Output types:
+
+- https://developer.apple.com/documentation/dispatch/dispatchqueue/schedulertimetype/stride[DispatchQueue.SchedulerTimeType.Stride]
+- https://developer.apple.com/documentation/foundation/operationqueue/schedulertimetype/stride[OperationQueue.SchedulerTimeType.Stride]
+- https://developer.apple.com/documentation/foundation/runloop/schedulertimetype/stride[RunLoop.SchedulerTimeType.Stride]
+- https://developer.apple.com/documentation/combine/immediatescheduler/schedulertimetype/stride[Immediate.SchedulerTimeType.Stride]
+
+__Usage__::
+
+* unit tests illustrating using throttle: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MeasureIntervalTests.swift[`UsingCombineTests/MeasureIntervalTests.swift`]
+
+__Details__::
+
+The operator takes a single parameter, the scheduler to be used.
+The output type is the type SchedulerTimeType.Stride for the scheduler you designate.
+
+For example:
+
+[source, swift]
+----
+.measureInterval(using: q) // Output type is DispatchQueue.SchedulerTimeType.Stride
+----
+
+The `magnitude` (an Int) the stride is the number of nanoseconds since the last value, which is generally in nanoseconds.
+You can also use the `interval` (a https://developer.apple.com/documentation/dispatch/dispatchtimeinterval[`DispatchTimeInterval`]) which carries with it the specific units of the interval.
+
+These values are not guaranteed on a high resolution timer, so use the values judiciously.
 
 [#reference-throttle]
 ==== throttle
