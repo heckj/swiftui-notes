@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xl="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="142 112 514 208" width="514" height="208">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xl="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="142 112 514 208" width="514" height="208">
   <defs>
     <font-face font-family="Helvetica Neue" font-size="16" panose-1="2 0 5 3 0 0 0 2 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="951.9958" descent="-212.99744" font-weight="400">
       <font-face-src>
@@ -9,9 +9,9 @@
     </font-face>
   </defs>
   <metadata> Produced by OmniGraffle 7.12.1 
-    <dc:date>2019-12-08 16:07:41 +0000</dc:date>
+    <dc:date>2019-12-15 03:09:33 +0000</dc:date>
   </metadata>
-  <g id="setfailuretype" fill="none" stroke-dasharray="none" stroke="none" stroke-opacity="1" fill-opacity="1">
+  <g id="setfailuretype" fill-opacity="1" stroke="none" stroke-dasharray="none" fill="none" stroke-opacity="1">
     <title>setfailuretype</title>
     <g id="setfailuretype: Layer 1">
       <title>Layer 1</title>

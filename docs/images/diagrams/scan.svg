@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xl="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="142 112 514 208" width="514" height="208">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xl="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="142 112 514 208" width="514" height="208">
   <defs>
     <font-face font-family="Courier" font-size="16" units-per-em="1000" underline-position="-178.22266" underline-thickness="57.61719" slope="0" x-height="456.54297" cap-height="586.91406" ascent="753.90625" descent="-246.09375" font-weight="400">
       <font-face-src>
@@ -14,9 +14,9 @@
     </font-face>
   </defs>
   <metadata> Produced by OmniGraffle 7.12.1 
-    <dc:date>2019-12-08 16:07:41 +0000</dc:date>
+    <dc:date>2019-12-15 03:09:33 +0000</dc:date>
   </metadata>
-  <g id="scan" fill="none" stroke-dasharray="none" stroke="none" stroke-opacity="1" fill-opacity="1">
+  <g id="scan" fill-opacity="1" stroke="none" stroke-dasharray="none" fill="none" stroke-opacity="1">
     <title>scan</title>
     <g id="scan: Layer 1">
       <title>Layer 1</title>
@@ -29,7 +29,6 @@
         <rect x="223" y="181" width="432" height="72" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
         <text transform="translate(243 188.5)" fill="black">
           <tspan font-family="Courier" font-size="16" font-weight="400" fill="black" x="0" y="15">.scan(&quot;&quot;, { acc, current -&gt; String in</tspan>
-          <tspan font-family="Courier" font-size="16" font-weight="400" fill="black" x="0" y="34">    return acc + current</tspan>
           <tspan font-family="Courier" font-size="16" font-weight="400" fill="black" x="0" y="53">})</tspan>
         </text>
       </g>
@@ -141,6 +140,11 @@
         <path d="M 486.7 260.2 L 502.9 260.2 C 508.3 260.2 511 260.2 514.24 260.776 C 516.94 261.352 519.64 262.792 520.72 264.232 C 521.8 265.96 521.8 267.4 521.8 270.28 L 521.8 278.92 C 521.8 281.8 521.8 283.24 520.72 284.968 C 519.64 286.408 516.94 287.848 514.24 288.424 C 511 289 508.3 289 502.9 289 L 486.7 289 C 481.3 289 478.6 289 475.36 288.424 C 472.66 287.848 469.96 286.408 468.88 284.968 C 467.8 283.24 467.8 281.8 467.8 278.92 L 467.8 270.28 C 467.8 267.4 467.8 265.96 468.88 264.232 C 469.96 262.792 472.66 261.352 475.36 260.776 C 478.6 260.2 481.3 260.2 486.7 260.2 M 486.7 260.2" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
         <text transform="translate(472.8 265.376)" fill="black">
           <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="8.664" y="15">abc</tspan>
+        </text>
+      </g>
+      <g id="Graphic_76">
+        <text transform="translate(282 207.6)" fill="black">
+          <tspan font-family="Courier" font-size="16" font-weight="400" fill="black" x="0" y="15">return acc + current</tspan>
         </text>
       </g>
     </g>
