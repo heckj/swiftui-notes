@@ -986,8 +986,40 @@ If the closure throws an error, a failure completion will be propogated down the
 [#reference-replaceerror]
 ==== replaceError
 
-* replaceError
-** requires Failure to be `<Never>`
+__Summary__::
+
+A publisher that replaces any errors with an output value that matches the upstream Output type.
+
+__Constraints on connected publisher__::
+
+* none
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/replaceerror[`replaceError`]
+
+__Usage__::
+
+* unit tests illustrating using tryRemoveDuplicates: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ChangingErrorTests.swift[`UsingCombineTests/ChangingErrorTests.swift`]
+
+__Details__::
+
+Where <<reference-maperror>> transforms an error, `replaceError` captures the error and returns a value that matches the Output type of the upstream publisher.
+If you don't care about the specifics of the error itself, it can be a more convenient operator than using <<reference-catch>> to handle an error condition.
+
+[source, swift]
+----
+.replaceError(with: "foo")
+----
+
+is more compact than
+
+[source, swift]
+----
+.catch { err in
+    return Just("foo")
+}
+----
+
+<<reference-catch>> would be the preferrable error handler if you wanted to return another publisher rather than a singular value.
 
 [#reference-replacenil]
 ==== replaceNil
@@ -1554,8 +1586,40 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
 [#reference-maperror]
 ==== mapError
 
-* mapError
-** Converts any failure from the upstream publisher into a new error.
+__Summary__::
+
+Converts any failure from the upstream publisher into a new error.
+
+__Constraints on connected publisher__::
+
+* Failure type is some instance of `Error`
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/maperror[`mapError`]
+
+__Usage__::
+
+* unit tests illustrating switchToLatest: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ChangingErrorTests.swift[`UsingCombineTests/ChangingErrorTests.swift`]
+
+__Details__::
+
+mapError is an operator that allows you to transform the type of the FailureType by providing a closure where you can convert errors from upstream publishers into a new type.
+mapError is similar to <<reference-replaceerror>>, but replaceError ignores any upstream errors and returns a single kind of error, where this operator lets you construct using the error provided by the upstream publisher.
+
+[source, swift]
+----
+.mapError { error -> ChangingErrorTests.APIError in
+    // if it's our kind of error already, we can return it directly
+    if let error = error as? APIError {
+        return error
+    }
+    // if it is a URLError, we can convert it into our more general error kind
+    if let urlerror = error as? URLError {
+        return APIError.networkError(from: urlerror)
+    }
+    // if all else fails, return the unknown error condition
+    return APIError.unknown
+}
+----
 
 [#reference-operators-adaptingtypes]
 === Adapting publisher types

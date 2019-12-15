@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A02707A23A6D576002545C4 /* ChangingErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A02707923A6D576002545C4 /* ChangingErrorTests.swift */; };
 		1A02E8A622D7C1B8008CCCAE /* SwitchAndFlatMapPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A02E8A522D7C1B8008CCCAE /* SwitchAndFlatMapPublisherTests.swift */; };
 		1A02E8A822D7C219008CCCAE /* RetryPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A02E8A722D7C219008CCCAE /* RetryPublisherTests.swift */; };
 		1A02E8AA22D7C9BF008CCCAE /* DebounceAndRemoveDuplicatesPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A02E8A922D7C9BF008CCCAE /* DebounceAndRemoveDuplicatesPublisherTests.swift */; };
@@ -86,6 +87,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1A02707923A6D576002545C4 /* ChangingErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangingErrorTests.swift; sourceTree = "<group>"; };
 		1A02E8A522D7C1B8008CCCAE /* SwitchAndFlatMapPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchAndFlatMapPublisherTests.swift; sourceTree = "<group>"; };
 		1A02E8A722D7C219008CCCAE /* RetryPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetryPublisherTests.swift; sourceTree = "<group>"; };
 		1A02E8A922D7C9BF008CCCAE /* DebounceAndRemoveDuplicatesPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebounceAndRemoveDuplicatesPublisherTests.swift; sourceTree = "<group>"; };
@@ -305,6 +307,7 @@
 				1A65598A22E2421F00FEFBF5 /* MergingPipelineTests.swift */,
 				1A02E8A922D7C9BF008CCCAE /* DebounceAndRemoveDuplicatesPublisherTests.swift */,
 				1A4DD4A723A6C3EB0033BF58 /* MeasureIntervalTests.swift */,
+				1A02707923A6D576002545C4 /* ChangingErrorTests.swift */,
 				1A02E8AB22D7DE53008CCCAE /* HandleEventsPublisherTests.swift */,
 				1AC8123E22D69C4C0044AAAB /* PublisherTests.swift */,
 				1AFF21DA22CFFF0C0039C303 /* SubscribeReceiveAssignTests.swift */,
@@ -585,6 +588,7 @@
 				1A02E8AC22D7DE53008CCCAE /* HandleEventsPublisherTests.swift in Sources */,
 				1A4DD4A823A6C3EB0033BF58 /* MeasureIntervalTests.swift in Sources */,
 				1A06E711239C28DD0029329D /* ScanPublisherTests.swift in Sources */,
+				1A02707A23A6D576002545C4 /* ChangingErrorTests.swift in Sources */,
 				1A5B2704230098140006B8EE /* FailedPublisherTests.swift in Sources */,
 				1AB7DD1F22F0EF2E00294402 /* TimerPublisherTests.swift in Sources */,
 				1A06C84822F0A8E90035C1AD /* NotificationCenterPublisherTests.swift in Sources */,
