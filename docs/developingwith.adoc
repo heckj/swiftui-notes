@@ -67,7 +67,7 @@ Publishers.FlatMap<Publishers.Map<Publishers.Catch<Future<String, Error>, Just<S
 
 When you want to expose the code, all of that composition detail can be very distracting and make your code harder to use.
 
-To clean up that interface, and provide a nice API boundary, there are type erased classes which can wrap either publishers or subscribers.
+To clean up that interface, and provide a nice API boundary, there are type-erased classes which can wrap either publishers or subscribers.
 These explicitly hide the type complexity that builds up from chained functions in Swift.
 
 The two classes used to expose simplified types for subscribers and publishers are:

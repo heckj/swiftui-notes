@@ -244,7 +244,7 @@ The string `some` is represented on the output line directly below its input val
 ====
 Most diagrams in this book won't be as complex or detailed as this example.
 Most of these diagrams will focus on describing what the generic operators do.
-This one is more complex to make it easier to understand how the diagrams can be interpretted and how they relate to any Combine code you create.
+This one is more complex to make it easier to understand how the diagrams can be interpreted and how they relate to any Combine code you create.
 ====
 
 // force a page break - ignored in HTML rendering
