@@ -182,6 +182,4 @@ class FilteringOperatorTests: XCTestCase {
         XCTAssertEqual(receivedList, ["one", ""])
         XCTAssertNotNil(cancellable)
     }
-
-
 }

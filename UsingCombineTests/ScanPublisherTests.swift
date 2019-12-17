@@ -84,6 +84,44 @@ class ScanPublisherTests: XCTestCase {
         XCTAssertNotNil(cancellable)
     }
 
+    func testScanCounter() {
+        let simplePublisher = PassthroughSubject<String, Error>()
+
+        var outputHolder: Int?
+        let cancellable = simplePublisher
+            .scan(0, { prevVal, newValueFromPublisher -> Int in
+                return prevVal + newValueFromPublisher.count
+            })
+            .print(self.debugDescription)
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion:", String(describing: completion))
+                switch completion {
+                case .failure(let anError):
+                    print(".sink() received completion error: ", anError)
+                    XCTFail("no error should be received")
+                    break
+                case .finished:
+                    break
+                }
+            }, receiveValue: { receivedValue in
+                print(".sink() received \(receivedValue)")
+                outputHolder = receivedValue
+            })
+
+        simplePublisher.send("a")
+        XCTAssertEqual(outputHolder, 1)
+
+        simplePublisher.send("b")
+        XCTAssertEqual(outputHolder, 2)
+
+        simplePublisher.send("c")
+        XCTAssertEqual(outputHolder, 3)
+
+        simplePublisher.send(completion: Subscribers.Completion.finished)
+        XCTAssertEqual(outputHolder, 3)
+        XCTAssertNotNil(cancellable)
+    }
+
     func testTryScanString() {
 
         enum TestFailure: Error {

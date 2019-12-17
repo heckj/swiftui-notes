@@ -620,6 +620,21 @@ __Details__::
 Scan lets you accumulate values or otherwise modify a type as changes flow through the pipeline.
 You can use this to collect values into an array, implement a counter, or any number of other interesting use cases.
 
+If you want to be able to throw an error from within the closure doing the accumulation to indicate an error condition, use the <<reference-tryscan,tryScan>> operator.
+If you want to accumulate and process values, but refrain from publishing any results until the upstream publisher completes, consider using the <<reference-reduce>> or <<reference-tryreduce,tryReduce>> operators.
+
+When you create a scan operator, you provide an initial value (of the type determined by the upstream publisher) and a closure that takes two parameters - the result returned from the previous invocation of the closure and a new value from the upstream publisher.
+You do not need to maintain the type of the upstream publisher, but can convert the type in your closure, returning whatever is appropriate to your needs.
+
+For example, the following scan operator implementation counts the number of characters in strings provided by an upstream publisher, publishing an updated count every time a new string is received:
+
+[source, swift]
+----
+.scan(0, { prevVal, newValueFromPublisher -> Int in
+    return prevVal + newValueFromPublisher.count
+})
+----
+
 [#reference-tryscan]
 ==== tryScan
 
@@ -1177,16 +1192,64 @@ If you want to convert an optional type into a concrete type, simply ignoring or
 [#reference-reduce]
 ==== reduce
 
-* reduce
-** A publisher that applies a closure to all received elements and produces an accumulated value when the upstream publisher finishes.
-** requires Failure to be `<Never>`
-** there's a varient `tryReduce` for use with a provided error-throwing closure.
+__Summary__::
 
+A publisher that applies a closure to all received elements and produces an accumulated value when the upstream publisher finishes.
+
+image::diagrams/reduce.svg[reduce operator, align="center"]
+
+__Constraints on connected publisher__::
+
+* none
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/reduce[`reduce`]
+
+__Usage__::
+
+* unit tests illustrating using reduce: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ReducingOperatorTests.swift[`UsingCombineTests/ReducingOperatorTests.swift`]
+
+__Details__::
+
+Very similar in function to the <<reference-scan>> operator, `reduce` collects values produced within a stream.
+The big difference between `scan` and `reduce` is that `reduce` does not trigger any values until the upstream publisher completes successfully.
+
+When you create a reduce operator, you provide an initial value (of the type determined by the upstream publisher) and a closure that takes two parameters - the result returned from the previous invocation of the closure and a new value from the upstream publisher.
+
+Like scan, you don't need to maintain the type of the upstream publisher, but can convert the type in your closure, returning whatever is appropriate to your needs.
+
+An example of reduce that collects strings and appends them together:
+
+[source, swift]
+----
+.reduce("", { prevVal, newValueFromPublisher -> String in
+    return prevVal+newValueFromPublisher
+})
+----
+
+The reduce operator is excellent at converting a stream that provides many values over time into one that provides a single value upon completion.
 
 [#reference-tryreduce]
 ==== tryReduce
 
-* tryReduce
+__Summary__::
+
+A publisher that applies a closure to all received elements and produces an accumulated value when the upstream publisher finishes, while also allowing the closure to throw an exception, terminating the pipeline.
+
+__Constraints on connected publisher__::
+
+* none
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/tryreduce[`tryReduce`]
+
+__Usage__::
+
+* unit tests illustrating using tryReduce: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ReducingOperatorTests.swift[`UsingCombineTests/ReducingOperatorTests.swift`]
+
+__Details__::
+
+tryReduce is a variation of the <<reference-reduce>> operator that allows for the closure to throw an error.
+If the exception path is taken, the tryReduce operator will not publish any output values to downstream subscribers.
+Like `reduce`, the `tryReduce` will only publish a single downstream result upon a `finished` completion from the upstream publisher.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
