@@ -848,6 +848,8 @@ __Summary__::
 
 Calls a closure with each received element and publishes any returned optional that has a value.
 
+image::diagrams/compactmap.svg[compactMap operator, align="center"]
+
 __Constraints on connected publisher__::
 
 * __none__
@@ -1044,6 +1046,8 @@ __Summary__::
 
 Replaces an empty stream with the provided element.
 If the upstream publisher finishes without producing any elements, this publisher emits the provided element, then finishes normally.
+
+image::diagrams/replaceempty.svg[replaceEmpty operator, align="center"]
 
 __Constraints on connected publisher__::
 
