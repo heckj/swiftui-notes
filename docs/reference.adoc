@@ -844,14 +844,74 @@ This can be especially convenient if you need to match an operator or subscriber
 [#reference-compactmap]
 ==== compactMap
 
-* compactMap
-** republishes all non-nil results of calling a closure with each received element.
-** there's a variant `tryCompactMap` for use with a provided error-throwing closure.
+__Summary__::
+
+Calls a closure with each received element and publishes any returned optional that has a value.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/compactmap[`compactMap`]
+
+__Usage__::
+
+* unit tests illustrating using compactMap: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FilteringOperatorTests.swift[`UsingCombineTests/FilteringOperatorTests.swift`]
+
+__Details__::
+
+compactMap is very similiar to the <<reference-map>> operator, with the exception that it expects the closure to return an optional value, and drops any nil values from published responses.
+This is the combine equivalent of the https://developer.apple.com/documentation/swift/sequence/2950916-compactmap[`compactMap`] function which iterates through a https://developer.apple.com/documentation/swift/sequence[`Sequence`] and returns a sequence of any non-nil values.
+
+It can also be used to process results from an upstream publisher that produces an optional Output type, and collapse those into an unwrapped type.
+The simplest version of this just returns the incoming value directly, which will filter out the `nil` values.
+
+[source, swift]
+----
+.compactMap {
+    return $0
+}
+----
+
+There is also a variation of this operator, the <<reference-trycompactmap,tryCompactMap>> operator, which allows the provided closure to throw an Error and cancel the stream on invalid conditions.
+
+If you want to convert an optional type into a concrete type, always replacing the `nil` with an explicit value, you should likely use the <<reference-replacenil,replaceNil>> operator.
 
 [#reference-trycompactmap]
 ==== tryCompactMap
 
-* tryCompactMap
+__Summary__::
+
+Calls a closure with each received element and publishes any returned optional that has a value, or optionally throw an Error cancelling the pipeline.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/trycompactmap[`tryCompactMap`]
+
+__Usage__::
+
+* unit tests illustrating using tryCompactMap: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FilteringOperatorTests.swift[`UsingCombineTests/FilteringOperatorTests.swift`]
+
+__Details__::
+
+tryCompactMap is a variant of the <<reference-compactmap,compactMap>> operator, allowing the values processed to throw an `Error` condition.
+
+[source, swift]
+----
+.tryCompactMap { someVal -> String? in <1>
+    if (someVal == "boom") {
+        throw TestExampleError.example
+    }
+    return someVal
+}
+----
+
+<1> If you specify the return type within the closure, it should be an optional value.
+The operator that invokes the closure is responsible for filtering the non-`nil` values it publishes.
+
+If you want to convert an optional type into a concrete type, always replacing the `nil` with an explicit value, you should likely use the <<reference-replacenil,replaceNil>> operator.
 
 [#reference-filter]
 ==== filter
@@ -980,8 +1040,33 @@ If the closure throws an error, a failure completion will be propogated down the
 [#reference-replaceempty]
 ==== replaceEmpty
 
-* replaceEmpty
-** requires Failure to be `<Never>`
+__Summary__::
+
+Replaces an empty stream with the provided element.
+If the upstream publisher finishes without producing any elements, this publisher emits the provided element, then finishes normally.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/replaceempty[`replaceEmpty`]
+
+__Usage__::
+
+* unit tests illustrating using replaceEmpty: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ChangingErrorTests.swift[`UsingCombineTests/ChangingErrorTests.swift`]
+
+__Details__::
+
+replaceEmpty will only produce a result if it has not received any values before it receives a `finished` completion.
+This operator will not trigger on an error passing through it, so if no value has been received with a `failure` completion is triggered, it will simply not provide a value.
+The operator takes a single parameter, `with` where you specify the replacement value.
+
+[source, swift]
+----
+.replaceEmpty(with: "-replacement-")
+----
+
+This operator is useful specifically when you want a stream to always provide a value, even if an upstream publisher may not propogate one.
 
 [#reference-replaceerror]
 ==== replaceError
@@ -1024,9 +1109,35 @@ is more compact than
 [#reference-replacenil]
 ==== replaceNil
 
-* replaceNil
-** requires Failure to be `<Never>`
-** Replaces nil elements in the stream with the proviced element.
+__Summary__::
+
+Replaces nil elements in the stream with the provided element.
+
+__Constraints on connected publisher__::
+
+* The output type of the upstream publisher must be an optional type
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/empty/3343774-replacenil[`replaceNil`]
+
+__Usage__::
+
+* unit tests illustrating using replaceNil: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FilteringOperatorTests.swift[`UsingCombineTests/FilteringOperatorTests.swift`]
+
+__Details__::
+
+Used when the output type is an optional type, the replaceNil operator replaces any nil instances provided by the upstream publisher with a value provided by the user.
+The operator takes a single parameter, `with` where you specify the replacement value.
+The type of the replacement should be a non-optional version of the type provided by the upstream publisher.
+
+[source, swift]
+----
+.replaceNil(with: "-replacement-")
+----
+
+This operator can also be viewed as a way of converting an optional type to an explicit type, where optional values have a pre-determined placeholder.
+Or put another way, the replaceNil operator is a Combine specific variant of the swift coallescing operator that you might use when unwrapping an optional.
+
+If you want to convert an optional type into a concrete type, simply ignoring or collapsing the nil values, you should likely use the <<reference-compactmap,compactMap>> (or <<reference-trycompactmap,tryCompactMap>>) operator.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<

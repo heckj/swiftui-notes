@@ -11,6 +11,10 @@ import Combine
 
 class FilteringOperatorTests: XCTestCase {
 
+    enum TestExampleError: Error {
+        case example
+    }
+
     func testReplaceNil() {
 
         let passSubj = PassthroughSubject<String?, Never>()
@@ -82,6 +86,38 @@ class FilteringOperatorTests: XCTestCase {
         XCTAssertNotNil(cancellable)
     }
 
+    func testReplaceEmptyWithFailure() {
+
+        let passSubj = PassthroughSubject<String, Error>()
+        // no initial value is propogated from a PassthroughSubject
+
+        var receivedList: [String] = []
+
+        let cancellable = passSubj
+            .print(self.debugDescription)
+            .replaceEmpty(with: "-replacement-")
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                switch completion {
+                case .finished:
+                    XCTFail()
+                    break
+                case .failure(let anError):
+                    print("received error: ", anError)
+                    break
+                }
+            }, receiveValue: { responseValue in
+                print(".sink() data received \(responseValue)")
+                receivedList.append(responseValue)
+                XCTFail()
+            })
+
+        passSubj.send(completion: Subscribers.Completion.failure(TestExampleError.example))
+
+        XCTAssertEqual(receivedList, [])
+        XCTAssertNotNil(cancellable)
+    }
+
     func testCompactMap() {
 
         let passSubj = PassthroughSubject<String?, Never>()
@@ -109,10 +145,6 @@ class FilteringOperatorTests: XCTestCase {
     }
 
     func testTryCompactMap() {
-
-        enum TestExampleError: Error {
-            case example
-        }
 
         let passSubj = PassthroughSubject<String?, Never>()
         // no initial value is propogated from a PassthroughSubject
