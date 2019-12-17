@@ -1433,7 +1433,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using max: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MathOperatorTests.swift[`UsingCombineTests/MathOperatorTests.swift`]
+* unit tests illustrating using tryMax: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MathOperatorTests.swift[`UsingCombineTests/MathOperatorTests.swift`]
 
 __Details__::
 
@@ -1500,7 +1500,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using min: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MathOperatorTests.swift[`UsingCombineTests/MathOperatorTests.swift`]
+* unit tests illustrating using tryMin: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MathOperatorTests.swift[`UsingCombineTests/MathOperatorTests.swift`]
 
 __Details__::
 
@@ -1510,8 +1510,24 @@ A variation of the <<reference-min>> operator that takes a closure to define ord
 [#reference-count]
 ==== count
 
-* count
-** publishes the number of items received from the upstream publisher
+__Summary__::
+
+count publishes the number of items received from the upstream publisher
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/count[`count`]
+
+__Usage__::
+
+* unit tests illustrating using count: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MathOperatorTests.swift[`UsingCombineTests/MathOperatorTests.swift`]
+
+__Details__::
+
+The operator will not provide any results under the upstream published has sent a `finished` completion.
+If the upstream publisher sends a `failure` completion, then no values will be published and the `failure` completion will be forwarded.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
