@@ -1167,22 +1167,96 @@ If you want to convert an optional type into a concrete type, simply ignoring or
 
 [#reference-collect]
 ==== collect
-* collect
-** multiple variants
-*** buffers items
-*** `collect()` Collects all received elements, and emits a single array of the collection when the upstream publisher finishes.
-*** `collect(Int)` collects N elements and emits as an array
-*** `collect(.byTime)` or `collect(.byTimeOrCount)`
 
-[#reference-collectbycount]
-==== collectByCount
+__Summary__::
 
-* collectByCount
+Collects all received elements, and emits a single array of the collection when the upstream publisher finishes.
 
-[#reference-collectbytime]
-==== collectByTime
+__Constraints on connected publisher__::
 
-* collectByTime
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/collect[`collect`]
+
+__Usage__::
+
+* unit tests illustrating using collect: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ReducingOperatorTests.swift[`UsingCombineTests/ReducingOperatorTests.swift`]
+
+__Details__::
+
+There are two primary forms of collect, one you specify without any parameters, and one you provide a `count` parameter.
+Collect can also take a more complex form, with a defined strategy for how to buffer and send on items.
+
+For the version without any parameters, for example:
+
+[source, swift]
+----
+.collect()
+----
+
+The operator will collect all elements from an upstream publisher, holding those in memory until the upstream publisher sends a completion.
+Upon receiving the `finished` completion, the operator will publish an array of all the values collected.
+If the upstream publisher fails with an error, the collect operator forwards the error to the downstream receiver instead of sending its output.
+
+[WARNING]
+====
+This operator uses an unbounded amount of memory to store the received values.
+====
+
+Collect without any parameters will request an unlimited number of elements from its upstream publisher.
+It only sends the collected array to its downstream after a request whose demand is greater than 0 items.
+
+The second variation of collect takes a single parameter (`count`), which influences how many values it buffers and when it sends results.
+
+[source, swift]
+----
+.collect(3)
+----
+
+This version of collect will buffer up to the specified `count` number of elements.
+When it has received the count specified, it emits a single array of the collection.
+
+If the upstream publisher finishes before filling the buffer, this publisher sends an array of all the items it has received upon receiving a `finished` completion.
+This may be fewer than `count` elements.
+
+If the upstream publisher fails with an error, this publisher forwards the error to the downstream receiver instead of sending its output.
+
+The more complex form of collect operates on a provided strategy of how to collect values and when to emit.
+
+As of iOS 13.3 there are two strategies published in https://developer.apple.com/documentation/combine/publishers/timegroupingstrategy[`Publishers.TimeGroupingStrategy`]:
+
+* `byTime`
+* `byTimeOrCount`
+
+`byTime` allows you to specify a scheduler on which to operate, and a time interval stride over which to run.
+It collects all values received within that stride and publishes any values it has received from its upstream publisher during that interval.
+Like the parameterless version of `collect`, this will consume an unbounded amount of memory during that stride interval to collect values.
+
+[source, swift]
+----
+let q = DispatchQueue(label: self.debugDescription)
+
+let cancellable = publisher
+    .collect(.byTime(q, 1.0))
+----
+
+`byTime` operates very similarly to <<reference-throttle>> with its defined Scheduler and Stride, but where throttle collapses the values over a sequence of time, `collect(.byTime(q, 1.0))` will buffer and capture those values.
+When the time stride interval is exceeded, the collected set will be sent to the operator's subscriber.
+
+`byTimeOrCount` also takes a scheduler and a time interval stride, and in addition allows you to specify an upper bound on the count of items received before the operator sends the collected values to its subscriber.
+The ability to provide a count allows you to have some confidence about the maximum amount of memory that the operator will consume while buffering values.
+
+If either of the count or time interval provided are ellapsed, the collect operator will forward the currently collected set to its subscribers.
+If a `finished` completion is received, the currently collected set will be immediately sent to it's subscribers.
+If a `failure` completion is received, any currently buffered values are dropped and the `failure` completion is forwarded to collect's subscribers.
+
+[source, swift]
+----
+let q = DispatchQueue(label: self.debugDescription)
+
+let cancellable = publisher
+    .collect(.byTimeOrCount(q, 1.0, 5))
+----
 
 [#reference-ignoreoutput]
 ==== ignoreOutput

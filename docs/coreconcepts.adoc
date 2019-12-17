@@ -389,12 +389,12 @@ Operators can also help with error handling and retry logic, buffering and prefe
 |===
 3+h| Reducing elements
 | <<reference#reference-collect,collect>>
-| <<reference#reference-collectbycount,collectByCount>>
-| <<reference#reference-collectbytime,collectByTime>>
-
 | <<reference#reference-reduce,reduce>>
 | <<reference#reference-tryreduce,tryReduce>>
+
 | <<reference#reference-ignoreoutput,ignoreOutput>>
+|
+|
 |===
 
 [cols="3*^"]
