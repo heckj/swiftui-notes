@@ -1261,7 +1261,48 @@ let cancellable = publisher
 [#reference-ignoreoutput]
 ==== ignoreOutput
 
-* ignoreOutput
+__Summary__::
+
+A publisher that ignores all upstream elements, but passes along a completion state (finish or failed).
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/ignoreoutput[`ignoreOutput`]
+
+__Usage__::
+
+* unit tests illustrating using ignoreOutput: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ReducingOperatorTests.swift[`UsingCombineTests/ReducingOperatorTests.swift`]
+
+__Details__::
+
+If you only want to know if a stream has finished (or failed), then `ignoreOutput` may be what you want.
+
+[source, swift]
+----
+.ignoreOutput()
+.sink(receiveCompletion: { completion in
+    print(".sink() received the completion", String(describing: completion))
+    switch completion {
+    case .finished: <2>
+        finishReceived = true
+        break
+    case .failure(let anError): <3>
+        print("received error: ", anError)
+        failureReceived = true
+        break
+    }
+}, receiveValue: { _ in <1>
+    print(".sink() data received")
+})
+
+----
+
+<1> No data will ever be presented to a downstream subscriber of `ignoreOutput`, so the `receiveValue` closure will never be invoked.
+<2> When the stream completes, it will invoke `receiveCompletion`.
+You can switch on the case from that completion to respond to the success.
+<3> Or you can due further processing based on receiving a failure.
 
 [#reference-reduce]
 ==== reduce

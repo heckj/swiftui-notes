@@ -417,4 +417,93 @@ class ReducingOperatorTests: XCTestCase {
         XCTAssertNotNil(cancellable)
         wait(for: [expectation], timeout: 5.0)
     }
+
+
+    func testIgnoreOutputSuccess() {
+        let passSubj = PassthroughSubject<Int, Error>()
+        // no initial value is propogated from a PassthroughSubject
+
+        var finishReceived = false;
+        var failureReceived = false;
+        var dataCallbackReceived = false;
+
+        let cancellable = passSubj
+        .ignoreOutput()
+        .sink(receiveCompletion: { completion in
+            print(".sink() received the completion", String(describing: completion))
+            switch completion {
+            case .finished:
+                finishReceived = true
+                break
+            case .failure(let anError):
+                print("received error: ", anError)
+                failureReceived = true
+                break
+            }
+        }, receiveValue: { _ in
+            print(".sink() data received")
+            dataCallbackReceived = true
+        })
+
+        passSubj.send(1)
+        XCTAssertFalse(finishReceived)
+        XCTAssertFalse(failureReceived)
+        XCTAssertFalse(dataCallbackReceived)
+
+        passSubj.send(2)
+        XCTAssertFalse(finishReceived)
+        XCTAssertFalse(failureReceived)
+        XCTAssertFalse(dataCallbackReceived)
+
+        passSubj.send(completion: Subscribers.Completion.finished)
+        XCTAssertTrue(finishReceived)
+        XCTAssertFalse(failureReceived)
+        XCTAssertFalse(dataCallbackReceived)
+
+        XCTAssertNotNil(cancellable)
+    }
+
+    func testIgnoreOutputFailure() {
+        let passSubj = PassthroughSubject<Int, Error>()
+        // no initial value is propogated from a PassthroughSubject
+
+        var finishReceived = false;
+        var failureReceived = false;
+        var dataCallbackReceived = false;
+
+        let cancellable = passSubj
+        .ignoreOutput()
+        .sink(receiveCompletion: { completion in
+            print(".sink() received the completion", String(describing: completion))
+            switch completion {
+            case .finished:
+                finishReceived = true
+                break
+            case .failure(let anError):
+                print("received error: ", anError)
+                failureReceived = true
+                break
+            }
+        }, receiveValue: { _ in
+            print(".sink() data received")
+            dataCallbackReceived = true
+        })
+
+        passSubj.send(1)
+        XCTAssertFalse(finishReceived)
+        XCTAssertFalse(failureReceived)
+        XCTAssertFalse(dataCallbackReceived)
+
+        passSubj.send(2)
+        XCTAssertFalse(finishReceived)
+        XCTAssertFalse(failureReceived)
+        XCTAssertFalse(dataCallbackReceived)
+
+        passSubj.send(completion: Subscribers.Completion.failure(TestExampleError.nilValue))
+        XCTAssertFalse(finishReceived)
+        XCTAssertTrue(failureReceived)
+        XCTAssertFalse(dataCallbackReceived)
+
+        XCTAssertNotNil(cancellable)
+    }
 }
