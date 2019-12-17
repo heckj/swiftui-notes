@@ -78,6 +78,10 @@ class ChangingErrorTests: XCTestCase {
         let expectation = XCTestExpectation(description: self.debugDescription)
         let publisher = Fail<String, ChangingErrorTests.TestExampleError>(error: TestExampleError.example)
 
+        // Making a publisher that's constrained to fail is causing some semnatic compiler warnings below,
+        // as the logic choices are rather predetermined by the choice of publisher. I'm leaving the logic
+        // as it is because I think it's more representative of an actual use case as opposed to our specific
+        // test case example while illustrates the operation of mapError
         let cancellable = publisher
         .mapError { error -> ChangingErrorTests.APIError in
             // if it's our kind of error already, we can return it directly
