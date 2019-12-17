@@ -400,9 +400,13 @@ Operators can also help with error handling and retry logic, buffering and prefe
 [cols="3*^"]
 |===
 3+h| Mathematic operations on elements
-| <<reference#reference-comparison,comparison>>
-| <<reference#reference-trycomparison,tryComparison>>
+| <<reference#reference-max,max>>
+| <<reference#reference-trymax,tryMax>>
 | <<reference#reference-count,count>>
+
+| <<reference#reference-min,min>>
+| <<reference#reference-min,tryMin>>
+|
 |===
 
 [cols="3*^"]
