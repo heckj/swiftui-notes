@@ -1376,27 +1376,136 @@ Like `reduce`, the `tryReduce` will only publish a single downstream result upon
 [#reference-max]
 ==== max
 
-* max
-** Available when Output conforms to Comparable.
-** Publishes the maximum value received from the upstream publisher, after it finishes.
+__Summary__::
+
+Publishes the max value of all values received upon completion of the upstream publisher.
+
+__Constraints on connected publisher__::
+
+* The output type of the upstream publisher must conform to https://developer.apple.com/documentation/swift/comparable[`Comparable`]
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/sequence/3211183-max[`max`]
+
+__Usage__::
+
+* unit tests illustrating using max: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MathOperatorTests.swift[`UsingCombineTests/MathOperatorTests.swift`]
+
+__Details__::
+
+`max` can be set up with either no parameters, or taking a closure.
+If defined as an operator with no parameters, the Output type of the upstream publisher must conform to https://developer.apple.com/documentation/swift/comparable[`Comparable`].
+
+[source, swift]
+----
+.max()
+----
+
+If what you are publishing doesn't conform to https://developer.apple.com/documentation/swift/comparable[`Comparable`], then you may specify a closure to provide the ordering for the operator.
+
+[source, swift]
+----
+.max { (struct1, struct2) -> Bool in
+    return struct1.property1 < struct2.property1
+    // returning boolean true to order struct2 greater than struct1
+    // the underlying method parameter for this closure hints to it:
+    // `areInIncreasingOrder`
+}
+----
+
+The parameter name of the closure hints to how it should be provided, being named `areInIncreasingOrder`.
+The closure will take two values of the output type of the upstream publisher, and within it you should provide a boolean result indicating if they are in increasing order.
+
+The operator will not provide any results under the upstream published has sent a `finished` completion.
+If the upstream publisher sends a `failure` completion, then no values will be published and the `failure` completion will be forwarded.
+
+[#reference-trymax]
+==== tryMax
+
+__Summary__::
+
+Publishes the max value of all values received upon completion of the upstream publisher.
+
+__Constraints on connected publisher__::
+
+* The output type of the upstream publisher must conform to https://developer.apple.com/documentation/swift/comparable[`Comparable`]
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/sequence/3344605-trymax[`tryMax`]
+
+__Usage__::
+
+* unit tests illustrating using max: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MathOperatorTests.swift[`UsingCombineTests/MathOperatorTests.swift`]
+
+__Details__::
+
+A variation of the <<reference-max>> operator that takes a closure to define ordering, and it also allowed to throw an error.
 
 [#reference-min]
 ==== min
-** Publishes the minimum value received from the upstream publisher, after it finishes.
-** Available when Output conforms to Comparable.
+
+__Summary__::
+
+Publishes the minimum value of all values received upon completion of the upstream publisher.
+
+__Constraints on connected publisher__::
+
+* The output type of the upstream publisher must conform to https://developer.apple.com/documentation/swift/comparable[`Comparable`]
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/sequence/3211194-min[`min`]
+
+__Usage__::
+
+* unit tests illustrating using min: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MathOperatorTests.swift[`UsingCombineTests/MathOperatorTests.swift`]
+
+__Details__::
+
+`min` can be set up with either no parameters, or taking a closure.
+If defined as an operator with no parameters, the Output type of the upstream publisher must conform to https://developer.apple.com/documentation/swift/comparable[`Comparable`].
+
+[source, swift]
+----
+.min()
+----
+
+If what you are publishing doesn't conform to https://developer.apple.com/documentation/swift/comparable[`Comparable`], then you may specify a closure to provide the ordering for the operator.
+
+[source, swift]
+----
+.min { (struct1, struct2) -> Bool in
+    return struct1.property1 < struct2.property1
+    // returning boolean true to order struct2 greater than struct1
+    // the underlying method parameter for this closure hints to it:
+    // `areInIncreasingOrder`
+}
+----
+
+The parameter name of the closure hints to how it should be provided, being named `areInIncreasingOrder`.
+The closure will take two values of the output type of the upstream publisher, and within it you should provide a boolean result indicating if they are in increasing order.
+
+The operator will not provide any results under the upstream published has sent a `finished` completion.
+If the upstream publisher sends a `failure` completion, then no values will be published and the `failure` completion will be forwarded.
 
 
-[#reference-comparison]
-==== comparison
+[#reference-trymin]
+==== tryMin
 
-* comparison
-** republishes items from another publisher only if each new item is in increasing order from the previously-published item.
-** there's a variant `tryComparson` which fails if the ordering logic throws an error
+__Summary__::
 
-[#reference-trycomparison]
-==== tryComparison
+Publishes the minimum value of all values received upon completion of the upstream publisher.
 
-* tryComparison
+__Constraints on connected publisher__::
+
+* The output type of the upstream publisher must conform to https://developer.apple.com/documentation/swift/comparable[`Comparable`]
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/sequence/3344606-trymin[`tryMin`]
+
+__Usage__::
+
+* unit tests illustrating using min: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MathOperatorTests.swift[`UsingCombineTests/MathOperatorTests.swift`]
+
+__Details__::
+
+A variation of the <<reference-min>> operator that takes a closure to define ordering, and it also allowed to throw an error.
+
 
 [#reference-count]
 ==== count
