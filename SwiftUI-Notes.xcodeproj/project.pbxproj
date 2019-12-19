@@ -30,6 +30,7 @@
 		1A5B27062300982C0006B8EE /* SequencePublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5B27052300982C0006B8EE /* SequencePublisherTests.swift */; };
 		1A5B27082300983D0006B8EE /* DeferredPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5B27072300983D0006B8EE /* DeferredPublisherTests.swift */; };
 		1A5B270A2300985A0006B8EE /* ObservableObjectPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5B27092300985A0006B8EE /* ObservableObjectPublisherTests.swift */; };
+		1A5F04AA23AC22E8009E51D9 /* CriteriaOperatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5F04A923AC22E8009E51D9 /* CriteriaOperatorTests.swift */; };
 		1A6006E122D267F10030A471 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006E022D267F10030A471 /* AppDelegate.swift */; };
 		1A6006E322D267F10030A471 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006E222D267F10030A471 /* SceneDelegate.swift */; };
 		1A6006E522D267F10030A471 /* GithubViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6006E422D267F10030A471 /* GithubViewController.swift */; };
@@ -111,6 +112,7 @@
 		1A5B27052300982C0006B8EE /* SequencePublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequencePublisherTests.swift; sourceTree = "<group>"; };
 		1A5B27072300983D0006B8EE /* DeferredPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeferredPublisherTests.swift; sourceTree = "<group>"; };
 		1A5B27092300985A0006B8EE /* ObservableObjectPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableObjectPublisherTests.swift; sourceTree = "<group>"; };
+		1A5F04A923AC22E8009E51D9 /* CriteriaOperatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CriteriaOperatorTests.swift; sourceTree = "<group>"; };
 		1A6006DE22D267F10030A471 /* UIKit-Combine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "UIKit-Combine.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A6006E022D267F10030A471 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1A6006E222D267F10030A471 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -314,6 +316,7 @@
 				1A02E8A922D7C9BF008CCCAE /* DebounceAndRemoveDuplicatesPublisherTests.swift */,
 				1AEA20D723A70002008E9F62 /* FilteringOperatorTests.swift */,
 				1ADEDC0B23A951920006256D /* ReducingOperatorTests.swift */,
+				1A5F04A923AC22E8009E51D9 /* CriteriaOperatorTests.swift */,
 				1ABDDC1523A978D90043693A /* MathOperatorTests.swift */,
 				1A4DD4A723A6C3EB0033BF58 /* MeasureIntervalTests.swift */,
 				1A02707923A6D576002545C4 /* ChangingErrorTests.swift */,
@@ -602,6 +605,7 @@
 				1A5B2704230098140006B8EE /* FailedPublisherTests.swift in Sources */,
 				1AB7DD1F22F0EF2E00294402 /* TimerPublisherTests.swift in Sources */,
 				1A06C84822F0A8E90035C1AD /* NotificationCenterPublisherTests.swift in Sources */,
+				1A5F04AA23AC22E8009E51D9 /* CriteriaOperatorTests.swift in Sources */,
 				1A5B27062300982C0006B8EE /* SequencePublisherTests.swift in Sources */,
 				1AC8123F22D69C4C0044AAAB /* PublisherTests.swift in Sources */,
 				1AFF21DD22D003D20039C303 /* XCTestCase+KVOExpectatio0n.swift in Sources */,
