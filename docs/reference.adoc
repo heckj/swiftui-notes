@@ -1539,32 +1539,146 @@ If the upstream publisher sends a `failure` completion, then no values will be p
 [#reference-allsatisfy]
 ==== allSatisfy
 
-* allSatisfy
-** Publishes a single Boolean value that indicates whether all received elements pass a given predicate.
-** there's a variant `tryAllSatisfy` when the predicate can throw errors
+__Summary__::
+
+A publisher that publishes a single Boolean value that indicates whether all received elements pass a given predicate.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/allsatisfy[`allSatisfy`]
+
+__Usage__::
+
+* unit tests illustrating using combineLatest: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/CriteriaOperatorTests.swift[`UsingCombineTests/CriteriaOperatorTests.swift`]
+
+__Details__::
+
+Similiar to the <<reference-containswhere,containsWhere>> operator, you provide this operator with a closure.
+The type of the incoming value to this closuremust match the Output type of the upstream publisher, and the closure must return a Boolean.
+
+The operator will compare any incoming values, only responding when the upstream publisher sends a `finished` completion.
+At that point, the `allSatisfies` operator will return a single boolean value indicating if all the values received matched (or not) based on processing through the provided closure.
 
 [#reference-tryallsatisfy]
 ==== tryAllSatisfy
 
-* tryAllSatisfy
+__Summary__::
+
+A publisher that publishes a single Boolean value that indicates whether all received elements pass a given throwing predicate.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/tryallsatisfy[`tryAllSatisfy`]
+
+__Usage__::
+
+* unit tests illustrating using combineLatest: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/CriteriaOperatorTests.swift[`UsingCombineTests/CriteriaOperatorTests.swift`]
+
+__Details__::
+
+Similiar to the <<reference-trycontainswhere,tryContainsWhere>> operator, you provide this operator with a closure which may also throw an error.
+The type of the incoming value to this closuremust match the Output type of the upstream publisher, and the closure must return a Boolean.
+
+The operator will compare any incoming values, only responding when the upstream publisher sends a `finished` completion.
+At that point, the `allSatisfies` operator will return a single boolean value indicating if all the values received matched (or not) based on processing through the provided closure.
+
+If the operator receives a `failure` completion from the upstream publisher, or throws an error itself, then no data values will be published to subscribers.
+In those cases, the operator will only return (or forward) the `failure` completion.
 
 [#reference-contains]
 ==== contains
 
-* contains
-** emits a Boolean value when a specified element is received from its upstream publisher.
-** variant `containsWhere` when a provided predicate is satisfied
-** variant `tryContainsWhere` when a provided predicate is satisfied but could throw errors
+__Summary__::
+
+A publisher that emits a Boolean value when a specified element is received from its upstream publisher.
+
+__Constraints on connected publisher__::
+
+* The upstream publisher's output value must conform to the https://developer.apple.com/documentation/swift/equatable[`Equatable`] protocol
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/contains[`contains`]
+
+__Usage__::
+
+* unit tests illustrating using combineLatest: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/CriteriaOperatorTests.swift[`UsingCombineTests/CriteriaOperatorTests.swift`]
+
+__Details__::
+
+The simplest form of contains accepts a single parameter.
+The type of this parameter must match the Output type of the upstream publisher.
+
+The operator will compare any incoming values, only responding when the incoming value is equatable to the parameter provided.
+When it does find a match, the operator returns a single boolean value (`true`) and then terminates the stream.
+Any further values published from the upstream provider are then ignored.
+
+If the upstream published sends a `finished` completion before any values do match, the operator will publish a single boolean (`false`) and then terminate the stream.
 
 [#reference-containswhere]
 ==== containsWhere
 
-* containsWhere
+__Summary__::
+
+A publisher that emits a Boolean value upon receiving an element that satisfies the predicate closure.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/containswhere[`containsWhere`]
+
+__Usage__::
+
+* unit tests illustrating using combineLatest: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/CriteriaOperatorTests.swift[`UsingCombineTests/CriteriaOperatorTests.swift`]
+
+__Details__::
+
+A more flexible version of the <<reference-contains>> operator.
+Instead of taking a single parameter value to match, you provide a closure which takes in a single value (of the type provided by the upstream publisher) and returns a boolean.
+
+Like <<reference-contains>>, it will compare multiple incoming values, only responding when the incoming value is equatable to the parameter provided.
+When it does find a match, the operator returns a single boolean value and then terminates the stream.
+Any further values published from the upstream provider are then ignored.
+
+If the upstream published sends a `finished` completion before any values do match, the operator will publish a single boolean (`false`) and then terminate the stream.
+
+If you want a variant of this functionality that checks multiple incoming values to determine if all of them match, you should consider using the <<reference-allsatisfy>> operator.
 
 [#reference-trycontainswhere]
 ==== tryContainsWhere
 
-* tryContainsWhere
+__Summary__::
+
+A publisher that emits a Boolean value upon receiving an element that satisfies the throwing predicate closure.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/trycontainswhere[`tryContainsWhere`]
+
+__Usage__::
+
+* unit tests illustrating using combineLatest: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/CriteriaOperatorTests.swift[`UsingCombineTests/CriteriaOperatorTests.swift`]
+
+__Details__::
+
+A variation of the <<reference-trycontains>> operator which allows the closure to throw an error.
+You provide a closure which takes in a single value (of the type provided by the upstream publisher) and returns a boolean.
+This closure may also throw an error.
+If the closure throws an error, then the operator will return no values, only the error to any subscribers, terminating the pipeline.
+
+Like <<reference-contains>>, it will compare multiple incoming values, only responding when the incoming value is equatable to the parameter provided.
+When it does find a match, the operator returns a single boolean value and then terminates the stream.
+Any further values published from the upstream provider are then ignored.
+
+If the upstream published sends a `finished` completion before any values do match, the operator will publish a single boolean (`false`) and then terminate the stream.
+
+If the operator receives a `failure` completion from the upstream publisher, or throws an error itself, then no data values will be published to subscribers.
+In those cases, the operator will only return (or forward) the `failure` completion.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
