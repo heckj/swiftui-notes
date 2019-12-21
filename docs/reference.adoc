@@ -2363,7 +2363,7 @@ This operator is frequently used with <<reference#reference-removeduplicates,rem
 ====
 In iOS 13.2 the behavior for setting `latest` to false appears to have changed from previous releases.
 This was reported to apple as Feedback FB7424221.
-This behavior changed against in Xcode 11.3 (iOS 13.3), most notably in changes when the upstream publisher starts with an initial value (such as @Published).
+This behavior changed again in Xcode 11.3 (iOS 13.3), most notably in changes when the upstream publisher starts with an initial value (such as @Published).
 This results in extraneous early results (in iOS 13.3).
 After the initial sliding window expires the results get far more consistent.
 
