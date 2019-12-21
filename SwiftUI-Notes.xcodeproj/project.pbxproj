@@ -42,6 +42,7 @@
 		1A65598B22E2421F00FEFBF5 /* MergingPipelineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A65598A22E2421F00FEFBF5 /* MergingPipelineTests.swift */; };
 		1A71C40222ECDDA80094D95C /* BreakpointPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A71C40122ECDDA80094D95C /* BreakpointPublisherTests.swift */; };
 		1A7C604122D0155E00D7675C /* DataTaskPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C604022D0155E00D7675C /* DataTaskPublisherTests.swift */; };
+		1AA038B623AEA8390090E1C9 /* SequentialOperatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA038B523AEA8390090E1C9 /* SequentialOperatorTests.swift */; };
 		1AA72DB022B5536200FB8297 /* ExampleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA72DAF22B5536200FB8297 /* ExampleModel.swift */; };
 		1AA801E622DAA8CD00702286 /* LocationHeadingProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA801E522DAA8CD00702286 /* LocationHeadingProxy.swift */; };
 		1AA801E822DAA93F00702286 /* GithubAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA801E722DAA93F00702286 /* GithubAPI.swift */; };
@@ -128,6 +129,7 @@
 		1A65598A22E2421F00FEFBF5 /* MergingPipelineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MergingPipelineTests.swift; sourceTree = "<group>"; };
 		1A71C40122ECDDA80094D95C /* BreakpointPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakpointPublisherTests.swift; sourceTree = "<group>"; };
 		1A7C604022D0155E00D7675C /* DataTaskPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTaskPublisherTests.swift; sourceTree = "<group>"; };
+		1AA038B523AEA8390090E1C9 /* SequentialOperatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequentialOperatorTests.swift; sourceTree = "<group>"; };
 		1AA72DAF22B5536200FB8297 /* ExampleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleModel.swift; sourceTree = "<group>"; };
 		1AA801E522DAA8CD00702286 /* LocationHeadingProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHeadingProxy.swift; sourceTree = "<group>"; };
 		1AA801E722DAA93F00702286 /* GithubAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GithubAPI.swift; sourceTree = "<group>"; };
@@ -317,6 +319,7 @@
 				1AEA20D723A70002008E9F62 /* FilteringOperatorTests.swift */,
 				1ADEDC0B23A951920006256D /* ReducingOperatorTests.swift */,
 				1A5F04A923AC22E8009E51D9 /* CriteriaOperatorTests.swift */,
+				1AA038B523AEA8390090E1C9 /* SequentialOperatorTests.swift */,
 				1ABDDC1523A978D90043693A /* MathOperatorTests.swift */,
 				1A4DD4A723A6C3EB0033BF58 /* MeasureIntervalTests.swift */,
 				1A02707923A6D576002545C4 /* ChangingErrorTests.swift */,
@@ -607,6 +610,7 @@
 				1A06C84822F0A8E90035C1AD /* NotificationCenterPublisherTests.swift in Sources */,
 				1A5F04AA23AC22E8009E51D9 /* CriteriaOperatorTests.swift in Sources */,
 				1A5B27062300982C0006B8EE /* SequencePublisherTests.swift in Sources */,
+				1AA038B623AEA8390090E1C9 /* SequentialOperatorTests.swift in Sources */,
 				1AC8123F22D69C4C0044AAAB /* PublisherTests.swift in Sources */,
 				1AFF21DD22D003D20039C303 /* XCTestCase+KVOExpectatio0n.swift in Sources */,
 				1AFF21DB22CFFF0C0039C303 /* SubscribeReceiveAssignTests.swift in Sources */,
