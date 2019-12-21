@@ -1891,56 +1891,226 @@ The <<reference-trylastwhere,tryLastWhere>> operator is a variant of the <<refer
 [#reference-dropuntiloutput]
 ==== dropUntilOutput
 
-* dropUntilOutput
+__Summary__::
+
+A publisher that ignores elements from the upstream publisher until it receives an element from second publisher.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/dropuntiloutput[`dropUntilOutput`]
+
+__Usage__::
+
+* unit tests illustrating using dropUntilOutput: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+
+__Details__::
+
+[source, swift]
+----
+.drop(untilOutputFrom: triggerPublisher)
+----
 
 [#reference-dropwhile]
 ==== dropWhile
 
-* dropWhile
+__Summary__::
+
+A publisher that omits elements from an upstream publisher until a given closure returns false.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/dropwhile[`dropWhile`]
+
+__Usage__::
+
+* unit tests illustrating using dropWhile: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+
+__Details__::
+
+[source, swift]
+----
+.drop { upstreamValue -> Bool in
+    return upstreamValue.count > 3
+}
+----
+
 
 [#reference-trydropwhile]
 ==== tryDropWhile
 
-* tryDropWhile
+__Summary__::
+
+A publisher that omits elements from an upstream publisher until a given error-throwing closure returns false.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/trydropwhile[`tryDropWhile`]
+
+__Usage__::
+
+* unit tests illustrating using dropWhile: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+
+__Details__::
+
+[source, swift]
+----
+.tryDrop { upstreamValue -> Bool in
+    return upstreamValue.count > 3
+}
+----
 
 [#reference-prepend]
 ==== prepend
 
-* prepend
+__Summary__::
+
+A publisher that emits all of one publisher’s elements before those from another publisher.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/concatenate[`concatenate`]
+
+__Usage__::
+
+* unit tests illustrating using prepend: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+
+__Details__::
+
+[source, swift]
+----
+.prepend(anotherPublisher)
+----
+
+
 
 [#reference-drop]
 ==== drop
-* drop
-** multiple variants
-** requires Failure to be `<Never>`
-** Ignores elements from the upstream publisher until it receives an element from a second publisher.
-** or `drop(while: {})`
+
+__Summary__::
+
+A publisher that omits a specified number of elements before republishing later elements.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/drop[`drop`]
+
+__Usage__::
+
+* unit tests illustrating using drop: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+
+__Details__::
+
+[source, swift]
+----
+.drop(untilOutputFrom: triggerPublisher)
+----
 
 [#reference-prefixuntiloutput]
 ==== prefixUntilOutput
 
-* prefixUntilOutput
-** Republishes elements until another publisher emits an element.
-** requires Failure to be `<Never>`
+__Summary__::
+
+Republishes elements until another publisher emits an element. After the second publisher publishes an element, the publisher returned by this method finishes.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/prefixuntiloutput[`prefixUntilOutput`]
+
+__Usage__::
+
+* unit tests illustrating using prefixUntilOutput: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+
+__Details__::
+
+[source, swift]
+----
+.tryDrop { upstreamValue -> Bool in
+    return upstreamValue.count > 3
+}
+----
 
 [#reference-prefixwhile]
 ==== prefixWhile
 
-* prefixWhile
-** Republishes elements until another publisher emits an element.
-** requires Failure to be `<Never>`
+__Summary__::
+
+A publisher that republishes elements while a predicate closure indicates publishing should continue.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/prefixwhile[`prefixWhile`]
+
+__Usage__::
+
+* unit tests illustrating using prefixWhile: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+
+__Details__::
+
+[source, swift]
+----
+----
 
 [#reference-tryprefixwhile]
 ==== tryPrefixWhile
 
-* tryPrefixWhile
-** Republishes elements until another publisher emits an element.
-** requires Failure to be `<Never>`
+__Summary__::
+
+A publisher that republishes elements while an error-throwing predicate closure indicates publishing should continue.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/tryprefixwhile[`tryPrefixWhile`]
+
+__Usage__::
+
+* unit tests illustrating using tryPrefixWhile: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+
+__Details__::
+
+[source, swift]
+----
+----
 
 [#reference-output]
 ==== output
 
 * output
+
+__Summary__::
+
+A publisher that publishes elements specified by a range in the sequence of published elements.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/output[`output`]
+
+__Usage__::
+
+* unit tests illustrating using output: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+
+__Details__::
+
+[source, swift]
+----
+----
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
@@ -2033,10 +2203,6 @@ If an upstream publisher completes with a normal finish, the merge operator cont
 In the unlikely event that two values are provided at the same time from upstream publishers, the merge operator will interleave the values in the order upstream publishers are specified when the operator is initialized.
 
 If you want to mix different upstream publisher types into a single stream, then you likely want to use either <<reference#reference-combinelatest,combineLatest>> or <<reference#reference-zip,zip>>, depending on how you want the timing of values to be handled.
-
-[source, swift]
-----
-----
 
 Other operators that merge multiple upstream pipelines include <<reference#reference-combinelatest,combineLatest>> and <<reference#reference-zip,zip>>.
 If your upstream publishers have different types, but you want interleaved values to be propogated as they are available, use <<reference#reference-combinelatest,combineLatest>>.
