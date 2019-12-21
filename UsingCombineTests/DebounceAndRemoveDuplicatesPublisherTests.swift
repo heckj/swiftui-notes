@@ -330,7 +330,7 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         // different behavior again.
         //
         //XCTAssertEqual(receivedList, [-1, 5, 6]) // iOS 13.2.2
-        XCTAssertEqual(receivedList, [-1, 3, 6]) // iOS 13.3
+        XCTAssertEqual(receivedList, [-1, 3, 5]) // iOS 13.3
         XCTAssertEqual(foo.intValue, 6)
         XCTAssertNotNil(cancellable)
     }
