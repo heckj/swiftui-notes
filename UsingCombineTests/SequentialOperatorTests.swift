@@ -1504,4 +1504,646 @@ class SequentialOperatorTests: XCTestCase {
 
         XCTAssertNotNil(cancellable)
     }
+
+    func testPrependWithPublisher() {
+        let firstSubj = PassthroughSubject<String, Error>()
+        // no initial value is propogated from a PassthroughSubject
+
+        let secondSubj = PassthroughSubject<String, Error>()
+
+        var responses = [String]()
+        var terminatedStream = false
+        var errorReceived = false
+
+        let cancellable = secondSubj
+        .prepend(firstSubj) // aka Concatenate
+        .sink(receiveCompletion: { completion in
+            print(".sink() received the completion", String(describing: completion))
+            terminatedStream = true
+            switch completion {
+            case .finished:
+                break
+            case .failure(let anError):
+                errorReceived = true
+                print("received error: ", anError)
+                break
+        }
+        }, receiveValue: { responseValue in
+            responses.append(responseValue)
+            print(".sink() data received \(responseValue)")
+        })
+
+        XCTAssertEqual(responses.count, 0)
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("first-1")
+        XCTAssertEqual(responses, ["first-1"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        // all values from secondSubj will be ignored until first subject sends finished
+        secondSubj.send("first-2")
+        XCTAssertEqual(responses, ["first-1"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("second-1")
+        XCTAssertEqual(responses, ["first-1", "second-1"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        // all values from secondSubj will be ignored until first subject sends finished
+        secondSubj.send("second-2")
+        XCTAssertEqual(responses, ["first-1", "second-1"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("third-1")
+        XCTAssertEqual(responses, ["first-1", "second-1", "third-1"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        // all values from secondSubj will be ignored until first subject sends finished
+        secondSubj.send("third-2")
+        XCTAssertEqual(responses, ["first-1", "second-1", "third-1"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send(completion: Subscribers.Completion.finished)
+        XCTAssertEqual(responses, ["first-1", "second-1", "third-1"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        secondSubj.send("final-2")
+        XCTAssertEqual(responses, ["first-1", "second-1", "third-1", "final-2"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        secondSubj.send(completion: Subscribers.Completion.finished)
+        XCTAssertEqual(responses, ["first-1", "second-1", "third-1", "final-2"])
+        XCTAssertTrue(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        XCTAssertNotNil(cancellable)
+    }
+
+    func testPrependWithSequence() {
+        let firstSubj = PassthroughSubject<String, Error>()
+        // no initial value is propogated from a PassthroughSubject
+
+        var responses = [String]()
+        var terminatedStream = false
+        var errorReceived = false
+
+        let cancellable = firstSubj
+        .prepend(["one", "two"])
+        .sink(receiveCompletion: { completion in
+            print(".sink() received the completion", String(describing: completion))
+            terminatedStream = true
+            switch completion {
+            case .finished:
+                break
+            case .failure(let anError):
+                errorReceived = true
+                print("received error: ", anError)
+                break
+        }
+        }, receiveValue: { responseValue in
+            responses.append(responseValue)
+            print(".sink() data received \(responseValue)")
+        })
+
+        XCTAssertEqual(responses, ["one", "two"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("first-1")
+        XCTAssertEqual(responses, ["one", "two", "first-1"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send(completion: Subscribers.Completion.finished)
+        XCTAssertEqual(responses, ["one", "two", "first-1"])
+        XCTAssertTrue(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        XCTAssertNotNil(cancellable)
+    }
+
+    func testPrependWithSingleValue() {
+        let firstSubj = PassthroughSubject<String, Error>()
+        // no initial value is propogated from a PassthroughSubject
+
+        var responses = [String]()
+        var terminatedStream = false
+        var errorReceived = false
+
+        let cancellable = firstSubj
+        .prepend("singlevalue")
+        .sink(receiveCompletion: { completion in
+            print(".sink() received the completion", String(describing: completion))
+            terminatedStream = true
+            switch completion {
+            case .finished:
+                break
+            case .failure(let anError):
+                errorReceived = true
+                print("received error: ", anError)
+                break
+        }
+        }, receiveValue: { responseValue in
+            responses.append(responseValue)
+            print(".sink() data received \(responseValue)")
+        })
+
+        XCTAssertEqual(responses, ["singlevalue"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("first-1")
+        XCTAssertEqual(responses, ["singlevalue", "first-1"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send(completion: Subscribers.Completion.finished)
+        XCTAssertEqual(responses, ["singlevalue", "first-1"])
+        XCTAssertTrue(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        XCTAssertNotNil(cancellable)
+    }
+
+    func testPrefix() {
+        let firstSubj = PassthroughSubject<String, Error>()
+        // no initial value is propogated from a PassthroughSubject
+
+        var responses = [String]()
+        var terminatedStream = false
+        var errorReceived = false
+
+        let cancellable = firstSubj
+        .prefix(2) // only two values published will propogate
+        .sink(receiveCompletion: { completion in
+            print(".sink() received the completion", String(describing: completion))
+            terminatedStream = true
+            switch completion {
+            case .finished:
+                break
+            case .failure(let anError):
+                errorReceived = true
+                print("received error: ", anError)
+                break
+        }
+        }, receiveValue: { responseValue in
+            responses.append(responseValue)
+            print(".sink() data received \(responseValue)")
+        })
+
+        XCTAssertEqual(responses, [])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("first-1")
+        XCTAssertEqual(responses, ["first-1"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("second-1")
+        // pipeline terminates after second value with `.prefix(2)`
+        XCTAssertEqual(responses, ["first-1", "second-1"])
+        XCTAssertTrue(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("third-1")
+        XCTAssertEqual(responses, ["first-1", "second-1"])
+        XCTAssertTrue(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send(completion: Subscribers.Completion.finished)
+        XCTAssertEqual(responses, ["first-1", "second-1"])
+        XCTAssertTrue(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        XCTAssertNotNil(cancellable)
+    }
+
+    func testPrefixWhile() {
+        let firstSubj = PassthroughSubject<String, Error>()
+        // no initial value is propogated from a PassthroughSubject
+
+        var responses = [String]()
+        var terminatedStream = false
+        var errorReceived = false
+
+        let cancellable = firstSubj
+        .prefix { upstreamValue -> Bool in
+            return upstreamValue.count > 3
+        }
+        .sink(receiveCompletion: { completion in
+            print(".sink() received the completion", String(describing: completion))
+            terminatedStream = true
+            switch completion {
+            case .finished:
+                break
+            case .failure(let anError):
+                errorReceived = true
+                print("received error: ", anError)
+                break
+        }
+        }, receiveValue: { responseValue in
+            responses.append(responseValue)
+            print(".sink() data received \(responseValue)")
+        })
+
+        XCTAssertEqual(responses, [])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        // values allowed through until prefix condition is triggered
+        firstSubj.send("-initial-")
+        XCTAssertEqual(responses, ["-initial-"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("one")
+        // pipeline terminates after prefixWhile triggers true
+        XCTAssertEqual(responses, ["-initial-"])
+        XCTAssertTrue(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("-two-")
+        XCTAssertEqual(responses, ["-initial-"])
+        XCTAssertTrue(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        XCTAssertNotNil(cancellable)
+    }
+
+    func testTryPrefixWhile() {
+        let firstSubj = PassthroughSubject<String, Error>()
+        // no initial value is propogated from a PassthroughSubject
+
+        var responses = [String]()
+        var terminatedStream = false
+        var errorReceived = false
+
+        let cancellable = firstSubj
+        .tryPrefix { upstreamValue -> Bool in
+            if (upstreamValue == "boom") {
+                throw TestExampleError.invalidValue
+            }
+            return upstreamValue.count > 3
+        }
+        .sink(receiveCompletion: { completion in
+            print(".sink() received the completion", String(describing: completion))
+            terminatedStream = true
+            switch completion {
+            case .finished:
+                break
+            case .failure(let anError):
+                errorReceived = true
+                print("received error: ", anError)
+                break
+        }
+        }, receiveValue: { responseValue in
+            responses.append(responseValue)
+            print(".sink() data received \(responseValue)")
+        })
+
+        XCTAssertEqual(responses, [])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        // values allowed through until prefix condition is triggered
+        firstSubj.send("-initial-")
+        XCTAssertEqual(responses, ["-initial-"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("one")
+        // pipeline terminates after prefixWhile triggers true
+        XCTAssertEqual(responses, ["-initial-"])
+        XCTAssertTrue(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("-two-")
+        XCTAssertEqual(responses, ["-initial-"])
+        XCTAssertTrue(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        XCTAssertNotNil(cancellable)
+    }
+
+    func testTryPrefixWhileError() {
+        let firstSubj = PassthroughSubject<String, Error>()
+        // no initial value is propogated from a PassthroughSubject
+
+        var responses = [String]()
+        var terminatedStream = false
+        var errorReceived = false
+
+        let cancellable = firstSubj
+        .tryPrefix { upstreamValue -> Bool in
+            if (upstreamValue == "boom") {
+                throw TestExampleError.invalidValue
+            }
+            return upstreamValue.count > 3
+        }
+        .sink(receiveCompletion: { completion in
+            print(".sink() received the completion", String(describing: completion))
+            terminatedStream = true
+            switch completion {
+            case .finished:
+                break
+            case .failure(let anError):
+                errorReceived = true
+                print("received error: ", anError)
+                break
+        }
+        }, receiveValue: { responseValue in
+            responses.append(responseValue)
+            print(".sink() data received \(responseValue)")
+        })
+
+        XCTAssertEqual(responses, [])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        // values allowed through until prefix condition is triggered
+        firstSubj.send("-initial-")
+        XCTAssertEqual(responses, ["-initial-"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("boom")
+        XCTAssertEqual(responses, ["-initial-"])
+        XCTAssertTrue(terminatedStream)
+        XCTAssertTrue(errorReceived)
+
+        XCTAssertNotNil(cancellable)
+    }
+
+    func testPrefixUntilOutput() {
+        let firstSubj = PassthroughSubject<String, Error>()
+        let secondSubj = PassthroughSubject<String, Error>()
+        // no initial value is propogated from a PassthroughSubject
+
+        var responses = [String]()
+        var terminatedStream = false
+        var errorReceived = false
+
+        let cancellable = firstSubj
+        .prefix(untilOutputFrom: secondSubj)
+        .sink(receiveCompletion: { completion in
+            print(".sink() received the completion", String(describing: completion))
+            terminatedStream = true
+            switch completion {
+            case .finished:
+                break
+            case .failure(let anError):
+                errorReceived = true
+                print("received error: ", anError)
+                break
+        }
+        }, receiveValue: { responseValue in
+            responses.append(responseValue)
+            print(".sink() data received \(responseValue)")
+        })
+
+        XCTAssertEqual(responses, [])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        // values allowed through until prefix condition is triggered
+        firstSubj.send("-initial-")
+        XCTAssertEqual(responses, ["-initial-"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        secondSubj.send("one")
+        // pipeline terminates after prefixWhile triggers true
+        XCTAssertEqual(responses, ["-initial-"])
+        XCTAssertTrue(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        XCTAssertNotNil(cancellable)
+    }
+
+    func testPrefixUntilOutputFirstError() {
+        let firstSubj = PassthroughSubject<String, Error>()
+        let secondSubj = PassthroughSubject<String, Error>()
+        // no initial value is propogated from a PassthroughSubject
+
+        var responses = [String]()
+        var terminatedStream = false
+        var errorReceived = false
+
+        let cancellable = firstSubj
+        .prefix(untilOutputFrom: secondSubj)
+        .sink(receiveCompletion: { completion in
+            print(".sink() received the completion", String(describing: completion))
+            terminatedStream = true
+            switch completion {
+            case .finished:
+                break
+            case .failure(let anError):
+                errorReceived = true
+                print("received error: ", anError)
+                break
+        }
+        }, receiveValue: { responseValue in
+            responses.append(responseValue)
+            print(".sink() data received \(responseValue)")
+        })
+
+        XCTAssertEqual(responses, [])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        // values allowed through until prefix condition is triggered
+        firstSubj.send("-initial-")
+        XCTAssertEqual(responses, ["-initial-"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send(completion: Subscribers.Completion.failure(TestExampleError.invalidValue))
+        XCTAssertEqual(responses, ["-initial-"])
+        XCTAssertTrue(terminatedStream)
+        XCTAssertTrue(errorReceived)
+
+        XCTAssertNotNil(cancellable)
+    }
+
+    func testPrefixUntilOutputSecondError() {
+        let firstSubj = PassthroughSubject<String, Error>()
+        let secondSubj = PassthroughSubject<String, Error>()
+        // no initial value is propogated from a PassthroughSubject
+
+        var responses = [String]()
+        var terminatedStream = false
+        var errorReceived = false
+
+        let cancellable = firstSubj
+        .prefix(untilOutputFrom: secondSubj)
+        .sink(receiveCompletion: { completion in
+            print(".sink() received the completion", String(describing: completion))
+            terminatedStream = true
+            switch completion {
+            case .finished:
+                break
+            case .failure(let anError):
+                errorReceived = true
+                print("received error: ", anError)
+                break
+        }
+        }, receiveValue: { responseValue in
+            responses.append(responseValue)
+            print(".sink() data received \(responseValue)")
+        })
+
+        XCTAssertEqual(responses, [])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        // values allowed through until prefix condition is triggered
+        firstSubj.send("-initial-")
+        XCTAssertEqual(responses, ["-initial-"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        // triggering an error on the Prefix publisher doesn't ever trigger the prefix, and leaves the pipeline operational
+        secondSubj.send(completion: Subscribers.Completion.failure(TestExampleError.invalidValue))
+        XCTAssertEqual(responses, ["-initial-"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("-second-")
+        XCTAssertEqual(responses, ["-initial-", "-second-"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send(completion: Subscribers.Completion.finished)
+        XCTAssertEqual(responses, ["-initial-", "-second-"])
+        XCTAssertTrue(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        XCTAssertNotNil(cancellable)
+    }
+
+    func testOutput() {
+        let firstSubj = PassthroughSubject<String, Error>()
+        // no initial value is propogated from a PassthroughSubject
+
+        var responses = [String]()
+        var terminatedStream = false
+        var errorReceived = false
+
+        let cancellable = firstSubj
+        .output(at: 3) // selection is 0-indexed, so this will select the 4th item published
+        .sink(receiveCompletion: { completion in
+            print(".sink() received the completion", String(describing: completion))
+            terminatedStream = true
+            switch completion {
+            case .finished:
+                break
+            case .failure(let anError):
+                errorReceived = true
+                print("received error: ", anError)
+                break
+        }
+        }, receiveValue: { responseValue in
+            responses.append(responseValue)
+            print(".sink() data received \(responseValue)")
+        })
+
+        XCTAssertEqual(responses, [])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("one")
+        XCTAssertEqual(responses, [])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("two")
+        XCTAssertEqual(responses, [])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("three")
+        XCTAssertEqual(responses, [])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("four")
+        XCTAssertEqual(responses, ["four"])
+        XCTAssertTrue(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("five")
+        XCTAssertEqual(responses, ["four"])
+        XCTAssertTrue(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        XCTAssertNotNil(cancellable)
+    }
+
+    func testOutputWithRange() {
+        let firstSubj = PassthroughSubject<String, Error>()
+        // no initial value is propogated from a PassthroughSubject
+
+        var responses = [String]()
+        var terminatedStream = false
+        var errorReceived = false
+
+        let cancellable = firstSubj
+        .output(in: 2...3) // range selection is 0-indexed, so this will select the 3rd and 4th item published
+        .sink(receiveCompletion: { completion in
+            print(".sink() received the completion", String(describing: completion))
+            terminatedStream = true
+            switch completion {
+            case .finished:
+                break
+            case .failure(let anError):
+                errorReceived = true
+                print("received error: ", anError)
+                break
+        }
+        }, receiveValue: { responseValue in
+            responses.append(responseValue)
+            print(".sink() data received \(responseValue)")
+        })
+
+        XCTAssertEqual(responses, [])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("one")
+        XCTAssertEqual(responses, [])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("two")
+        XCTAssertEqual(responses, [])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("three")
+        XCTAssertEqual(responses, ["three"])
+        XCTAssertFalse(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("four")
+        XCTAssertEqual(responses, ["three", "four"])
+        XCTAssertTrue(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        firstSubj.send("five")
+        XCTAssertEqual(responses, ["three", "four"])
+        XCTAssertTrue(terminatedStream)
+        XCTAssertFalse(errorReceived)
+
+        XCTAssertNotNil(cancellable)
+    }
 }
