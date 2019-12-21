@@ -436,7 +436,7 @@ Operators can also help with error handling and retry logic, buffering and prefe
 | <<reference#reference-trydropwhile,tryDropWhile>>
 | <<reference#reference-dropuntiloutput,dropUntilOutput>>
 
-| <<reference#reference-concatenate,concatenate>>
+| <<reference#reference-prepend,prepend>>
 | <<reference#reference-drop,drop>>
 | <<reference#reference-prefixuntiloutput,prefixUntilOutput>>
 
