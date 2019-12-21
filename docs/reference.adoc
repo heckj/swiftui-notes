@@ -286,6 +286,19 @@ If the subscribe requests a single element at a time, then individual elements w
 
 If the type within the sequence is denoted as Optional, and a nil value is included within the sequence, that will be sent as an instance of the optional type.
 
+Combine also provides an extension onto the Sequence protocol so that anything that corresponds to it can act as a sequence publisher.
+It does so by making a `.publisher` property available, which implicitly creates a <<reference-sequence,Publishers.Sequence>> publisher.
+
+[source, swift]
+----
+let initialSequence = ["one", "two", "red", "blue"]
+_ = initialSequence.publisher
+    .sink {
+        print($0)
+    }
+}
+----
+
 [#reference-deferred]
 === Deferred
 
@@ -570,12 +583,10 @@ Scene Publisher (from https://developer.apple.com/documentation/realitykit[Reali
 [#reference-operators]
 == Operators
 
-//NOTE(heckj) make xref link back to coreconcepts:operators
+The concepts chapter has an overview of all the available <<coreconcepts#coreconcepts-operators,Operators>>.
 
 [#reference-operators-mapping]
 === Mapping elements
-
-// NOTE(heckj): add xref link to reference section when written
 
 [#reference-scan]
 ==== scan
@@ -1690,35 +1701,192 @@ In those cases, the operator will only return (or forward) the `failure` complet
 [#reference-first]
 ==== first
 
-* first
-** requires Failure to be `<Never>`
-** publishes the first element to satisfy a provided predicate
+__Summary__::
+
+Publishes the first element of a stream and then finishes.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/first[`first`]
+
+__Usage__::
+
+* unit tests illustrating using first: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+
+__Details__::
+
+The <<reference-first>> operator, when used without any parameters, will pass through only the first value it receives, and then send a `finish` completion message to any subscribers.
+If no values are received before the first operator receives a `finish` completion from upstream publishers, the stream is terminated and no values are published.
+
+[source, swift]
+----
+.first()
+----
+
+If you want a set number of values from the front of the stream you can also use <<reference-prefix>> or it's variants: <<reference-prefixwhile,prefixWhile>> and <<reference-tryprefixwhile,tryPrefixWhile>>.
+
+If you want a set number of values from the middle the stream by count, you may want to use <<reference-output>>, which allows you to select either a single value, or a range value from the sequence of values received by this operator.
 
 [#reference-firstwhere]
 ==== firstWhere
 
-* firstWhere
+__Summary__::
+
+A publisher that only publishes the first element of a stream to satisfy a predicate closure.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/firstwhere[`firstWhere`]
+
+__Usage__::
+
+* unit tests illustrating using firstWhere: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+
+__Details__::
+
+The <<reference-firstwhere,firstWhere>> operator is similiar to <<reference-first>>, but instead lets you specify if the value should be the first value published by evaluating a closure.
+The closure provided should accept a value of the type provided by the upstream publisher, returning a bool.
+
+[source, swift]
+----
+.first { (incomingobject) -> Bool in
+    return incomingobject.count > 3 <1>
+}
+----
+
+<1> The first value received that satisfies this closure - that is, has count greater than 3 - is published.
+
+If you want to support an error condition that will terminate the pipeline within this closure, use <<reference-tryfirstwhere,tryFirstWhere>>.
 
 [#reference-tryfirstwhere]
 ==== tryFirstWhere
 
-* tryFirstWhere
+__Summary__::
+
+A publisher that only publishes the first element of a stream to satisfy a throwing predicate closure.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/tryfirstwhere[`tryFirstWhere`]
+
+__Usage__::
+
+* unit tests illustrating using tryFirstWhere: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+
+__Details__::
+
+The <<reference-tryfirstwhere,tryFirstWhere>> operator is a variant of <<reference-firstwhere,firstWhere>> that accepts a closure that can throw an error.
+The closure provided should accept a value of the type provided by the upstream publisher, returning a bool.
+
+[source, swift]
+----
+.tryFirst { (incomingobject) -> Bool in
+    if (incomingobject == "boom") {
+        throw TestExampleError.invalidValue
+    }
+    return incomingobject.count > 3
+}
+----
 
 [#reference-last]
 ==== last
 
-* last
-** requires Failure to be `<Never>`
+__Summary__::
+
+A publisher that only publishes the last element of a stream, once the stream finishes.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/last[`last`]
+
+__Usage__::
+
+* unit tests illustrating using last: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+
+__Details__::
+
+The <<reference-last>> operator waits until the upstream publisher sends a `finished` completion, and then publishes the last value it received.
+If no values were received prior to receiving the `finished` completion, no values are published to subscribers.
+
+[source, swift]
+----
+.last()
+----
+
 ** publishes the last element to satisfy a provided predicate
 
 [#reference-lastwhere]
 ==== lastWhere
-* lastWhere
+
+__Summary__::
+
+A publisher that only publishes the last element of a stream that satisfies a predicate closure, once the stream finishes.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/lastwhere[`lastWhere`]
+
+__Usage__::
+
+* unit tests illustrating using lastWhere: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+
+__Details__::
+
+The <<reference-lastwhere,lastWhere>> operator takes a single closure, accepting a value matching the output type of the upstream publisher, and returning a boolean.
+The operator publishes a value when the upstream published completes with a `finished` completion.
+The value published will be the last one to satisfy the provide closure.
+If no values satisfied the closure, then no values are published and the pipeline is terminated normally with a `finished` completion.
+
+[source, swift]
+----
+.last { (incomingobject) -> Bool in
+    return incomingobject.count > 3 <1>
+}
+----
+
+<1> publishes the last value that has a length greater than 3.
 
 [#reference-trylastwhere]
 ==== tryLastWhere
 
-* tryLastWhere
+__Summary__::
+
+A publisher that only publishes the last element of a stream that satisfies a error-throwing predicate closure, once the stream finishes.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/trylastwhere[`tryLastWhere`]
+
+__Usage__::
+
+* unit tests illustrating using tryLastWhere: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+
+__Details__::
+
+The <<reference-trylastwhere,tryLastWhere>> operator is a variant of the <<reference-lastwhere,lastWhere>> operator that accepts a closure that also throws an error.
+[source, swift]
+----
+.tryLast { (incomingobject) -> Bool in
+    if (incomingobject == "boom") {
+        throw TestExampleError.invalidValue
+    }
+    return incomingobject.count > 3
+}
+----
+
+<1> publishes the last value that has a length greater than 3.
 
 [#reference-dropuntiloutput]
 ==== dropUntilOutput
@@ -1735,10 +1903,10 @@ In those cases, the operator will only return (or forward) the `failure` complet
 
 * tryDropWhile
 
-[#reference-concatenate]
-==== concatenate
+[#reference-prepend]
+==== prepend
 
-* concatenate
+* prepend
 
 [#reference-drop]
 ==== drop
