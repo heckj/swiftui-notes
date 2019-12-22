@@ -1677,7 +1677,7 @@ __Usage__::
 
 __Details__::
 
-A variation of the <<reference-trycontains>> operator which allows the closure to throw an error.
+A variation of the <<reference-trycontainswhere,tryContainsWhere>> operator which allows the closure to throw an error.
 You provide a closure which takes in a single value (of the type provided by the upstream publisher) and returns a boolean.
 This closure may also throw an error.
 If the closure throws an error, then the operator will return no values, only the error to any subscribers, terminating the pipeline.
@@ -1725,7 +1725,7 @@ If no values are received before the first operator receives a `finish` completi
 .first()
 ----
 
-If you want a set number of values from the front of the stream you can also use <<reference-prefix>> or it's variants: <<reference-prefixwhile,prefixWhile>> and <<reference-tryprefixwhile,tryPrefixWhile>>.
+If you want a set number of values from the front of the stream you can also use <<reference-prefixuntiloutput,prefixUntilOutput>> or it's variants: <<reference-prefixwhile,prefixWhile>> and <<reference-tryprefixwhile,tryPrefixWhile>>.
 
 If you want a set number of values from the middle the stream by count, you may want to use <<reference-output>>, which allows you to select either a single value, or a range value from the sequence of values received by this operator.
 
@@ -1956,7 +1956,7 @@ It is instead a trigger that activates once, and propogates all values after it 
 }
 ----
 
-If you want to use this mechanism, but with a publisher as the trigger instead of a closure, use the <<reference-dropwuntiloutput,dropUntilOutput>> operator.
+If you want to use this mechanism, but with a publisher as the trigger instead of a closure, use the <<reference-dropuntiloutput,dropUntilOutput>> operator.
 
 [#reference-trydropwhile]
 ==== tryDropWhile
@@ -2024,7 +2024,7 @@ secondPublisher
 .prepend(firstPublisher)
 ----
 
-The <<reference-preppend>> operator is often used with single or sequence values that don't error.
+The <<reference-prepend>> operator is often used with single or sequence values that don't error.
 If the publishers do accept a failure type, then all values will be published from the prefix publisher even if the suffix publisher receives a `failure` completion before it is complete.
 Once the prefix publisher completes, the error will propogated.
 
