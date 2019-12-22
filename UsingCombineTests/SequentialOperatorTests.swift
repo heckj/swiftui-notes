@@ -739,6 +739,7 @@ class SequentialOperatorTests: XCTestCase {
         passSubj.send("world")
         XCTAssertEqual(responses.count, 0)
         XCTAssertTrue(terminatedStream)
+        XCTAssertTrue(receivedError)
 
         XCTAssertNotNil(cancellable)
     }
@@ -1922,7 +1923,7 @@ class SequentialOperatorTests: XCTestCase {
         XCTAssertFalse(errorReceived)
 
         secondSubj.send("one")
-        // pipeline terminates after prefixWhile triggers true
+        // pipeline terminates after prefixUntilOutput triggers true
         XCTAssertEqual(responses, ["-initial-"])
         XCTAssertTrue(terminatedStream)
         XCTAssertFalse(errorReceived)

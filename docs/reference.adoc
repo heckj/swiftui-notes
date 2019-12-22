@@ -1876,17 +1876,19 @@ __Usage__::
 __Details__::
 
 The <<reference-trylastwhere,tryLastWhere>> operator is a variant of the <<reference-lastwhere,lastWhere>> operator that accepts a closure that also throws an error.
+
 [source, swift]
 ----
 .tryLast { (incomingobject) -> Bool in
-    if (incomingobject == "boom") {
+    if (incomingobject == "boom") { <2>
         throw TestExampleError.invalidValue
     }
-    return incomingobject.count > 3
+    return incomingobject.count > 3 <1>
 }
 ----
 
 <1> publishes the last value that has a length greater than 3.
+<2> Logic that triggers an error, which will terminate the pipeline.
 
 [#reference-dropuntiloutput]
 ==== dropUntilOutput
@@ -1907,10 +1909,20 @@ __Usage__::
 
 __Details__::
 
+The <<reference-dropuntiloutput,dropUntilOutput>> operator uses another publisher as a trigger, stopping output through a pipeline until a value is received.
+Values received from the upstream publisher are ignored and dropped until the trigger is activated.
+
+Any value propogated through the trigger publisher will cause the switch to activate, and allow future values through the pipeline.
+
+Errors are still propogated from the upstream publisher, terminating the pipeline with a `failure` completion.
+An error (`failure` completion) on either the upstream publisher or the trigger publisher will be propogated to any subscribers and terminate the pipeline.
+
 [source, swift]
 ----
 .drop(untilOutputFrom: triggerPublisher)
 ----
+
+If you want to use this mechanism, but with a closure determining values from the upstream publisher, use the <<reference-dropwhile,dropWhile>> operator.
 
 [#reference-dropwhile]
 ==== dropWhile
@@ -1931,6 +1943,12 @@ __Usage__::
 
 __Details__::
 
+The <<reference-dropwhile,dropWhile>> operator takes a single closure, which accepts an input value of the output type of the upstream publisher, and returns a bool.
+This closure is used to determine a trigger condition, after which values are allowed to propogate.
+
+This isn't the same as the <<reference-filter>> operator, acting on each value.
+It is instead a trigger that activates once, and propogates all values after it is activated until the upstream publisher finishes.
+
 [source, swift]
 ----
 .drop { upstreamValue -> Bool in
@@ -1938,6 +1956,7 @@ __Details__::
 }
 ----
 
+If you want to use this mechanism, but with a publisher as the trigger instead of a closure, use the <<reference-dropwuntiloutput,dropUntilOutput>> operator.
 
 [#reference-trydropwhile]
 ==== tryDropWhile
@@ -1958,6 +1977,8 @@ __Usage__::
 
 __Details__::
 
+This is a variant of the <<reference-dropwhile>> operator that accepts a closure that can also throw an error.
+
 [source, swift]
 ----
 .tryDrop { upstreamValue -> Bool in
@@ -1974,7 +1995,7 @@ A publisher that emits all of one publisher’s elements before those from anoth
 
 __Constraints on connected publisher__::
 
-* __none__
+* Both publishers must match on Output and Failure types.
 
 __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/concatenate[`concatenate`]
 
@@ -1984,12 +2005,48 @@ __Usage__::
 
 __Details__::
 
+The <<reference-prepend>> operator will act as a merging of two pipelines.
+Also known as `Publishers.Concatenate`, it accepts all values from one publisher, publishing them to subscribers.
+Once the first publisher is complete, the second publisher is used to provide values until it is complete.
+
+The most general form of this can be invoked directly as:
+
 [source, swift]
 ----
-.prepend(anotherPublisher)
+Publishers.Concatenate(prefix: firstPublisher, suffix: secondPublisher)
 ----
 
+This is equivalent to the form directly in a pipeline:
 
+[source, swift]
+----
+secondPublisher
+.prepend(firstPublisher)
+----
+
+The <<reference-preppend>> operator is often used with single or sequence values that don't error.
+If the publishers do accept a failure type, then all values will be published from the prefix publisher even if the suffix publisher receives a `failure` completion before it is complete.
+Once the prefix publisher completes, the error will propogated.
+
+The <<reference-prepend>> operator also has convenience operators to send a single value, or a sequence.
+
+[source, swift]
+----
+secondPublisher
+.prepend(["one", "two"]) <1>
+----
+
+<1> the sequence values will be published immediately on a subscriber requesting demand, and further demand will be propogated upward to secondPublisher.
+Values produced from secondPublisher will then be published until it completes.
+
+[source, swift]
+----
+secondPublisher
+.prepend("one") <1>
+----
+
+<1> the single value will be published immediately on a subscriber requesting demand, and further demand will be propogated upward to secondPublisher.
+Values produced from secondPublisher will then be published until it completes.
 
 [#reference-drop]
 ==== drop
@@ -2010,10 +2067,21 @@ __Usage__::
 
 __Details__::
 
+The simplest form of the <<reference-drop>> operator drops a single value and then allows all further values to propogate through the pipeline.
+
 [source, swift]
 ----
-.drop(untilOutputFrom: triggerPublisher)
+.dropFirst()
 ----
+
+A varient of this operator allows a count of values to be specified
+
+[source, swift]
+----
+.dropFirst(3) <1>
+----
+
+<1> drops the first three values received from the upstream publisher before propogating any further values published to downstream subscribers.
 
 [#reference-prefixuntiloutput]
 ==== prefixUntilOutput
@@ -2034,11 +2102,12 @@ __Usage__::
 
 __Details__::
 
+The <<reference-prefixuntiloutput,prefixUntilOutput>> will propogate values from an upstream publisher until a second publisher is used as a trigger.
+Once the trigger is activated by receiving a value, the operator will terminate the stream.
+
 [source, swift]
 ----
-.tryDrop { upstreamValue -> Bool in
-    return upstreamValue.count > 3
-}
+.prefix(untilOutputFrom: secondPublisher)
 ----
 
 [#reference-prefixwhile]
@@ -2060,8 +2129,15 @@ __Usage__::
 
 __Details__::
 
+The <<reference-prefixwhile,prefixWhile>> operator takes a single closure, with an input matching the output type of the upstream publisher, and returns a boolean.
+This closure is evaluated on the data from the upstream publisher, and while it returns `true` the values are propogated to the subscriber.
+Once the value returns `false`, the operator terminates the stream with a `finished` completion.
+
 [source, swift]
 ----
+.prefix { upstreamValue -> Bool in
+    return upstreamValue.count > 3
+}
 ----
 
 [#reference-tryprefixwhile]
@@ -2083,8 +2159,13 @@ __Usage__::
 
 __Details__::
 
+The <<reference-tryprefixwhile,tryPrefixWhile>> operator is a variant of <<reference-prefixwhile,prefixWhile>> that accepts a closure may also through an error.
+
 [source, swift]
 ----
+.prefix { upstreamValue -> Bool in
+    return upstreamValue.count > 3
+}
 ----
 
 [#reference-output]
@@ -2108,9 +2189,27 @@ __Usage__::
 
 __Details__::
 
+The <<reference-output>> operator takes a single parameter, either an integer or a swift range.
+This value is used to select a specific value, or sequence of values, from an upstream publisher to send to subscribers.
+
+This is effectively "choosing values" from the middle of the stream.
+If the upstream publisher completes before the values is received, the `finished` completion will be propogated to the subscriber.
+
 [source, swift]
 ----
+.output(at: 3) <1>
 ----
+
+<1> The selection is 0-indexed (count starts at 0), so this will select the fourth item published from the upstream publisher to propogate.
+
+The alternate form takes a swift range descriptor:
+
+[source, swift]
+----
+.output(at: 2...3) <1>
+----
+
+<1> The selection is 0-indexed (count starts at 0), so this will select the third and fourth item published from the upstream publisher to propogate.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
