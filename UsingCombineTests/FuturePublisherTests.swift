@@ -38,8 +38,9 @@ class FuturePublisherTests: XCTestCase {
             self.asyncAPICall(sabotage: false) { (grantedAccess, err) in
                 if let err = err {
                     promise(.failure(err))
+                } else {
+                    promise(.success(grantedAccess))
                 }
-                promise(.success(grantedAccess))
             }
         }
 
@@ -66,8 +67,9 @@ class FuturePublisherTests: XCTestCase {
             self.asyncAPICall(sabotage: true) { (grantedAccess, err) in
                 if let err = err {
                     promise(.failure(err))
+                } else {
+                    promise(.success(grantedAccess))
                 }
-                promise(.success(grantedAccess))
             }
         }
 
@@ -118,8 +120,9 @@ class FuturePublisherTests: XCTestCase {
                     // are each called 3 times - validated below in the assertions.
                     if let err = err {
                        promise(.failure(err))
+                    } else {
+                        promise(.success(grantedAccess))
                     }
-                    promise(.success(grantedAccess))
                 }
             }
         }.eraseToAnyPublisher()
@@ -202,8 +205,9 @@ class FuturePublisherTests: XCTestCase {
                 print("invoking async completion handler to return a resolved promise")
                 if let err = err {
                     promise(.failure(err))
+                } else {
+                    promise(.success(grantedAccess))
                 }
-                promise(.success(grantedAccess))
             }
         }
         .print("before_retry:")
