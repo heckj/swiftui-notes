@@ -97,7 +97,7 @@ Apple's developer documentation is hosted at https://developer.apple.com/documen
 
 === WWDC content
 
-Apple provides video, slides, and some sample code in sessions it's developer conferences.
+Apple provides video, slides, and some sample code in sessions at its developer conferences.
 Details on Combine are primarily from https://developer.apple.com/videos/play/wwdc2019[WWDC 2019].
 
 A number of these introduce and go into some depth on Combine:
@@ -122,7 +122,7 @@ A number of additional WWDC19 sessions mention Combine:
 
 In addition to Apple's documentation, there are a number of other online resources where you can find questions, answers, discussion, and descriptions of how Combine operates.
 
-* The https://forums.swift.org/[Swift Forums] (hosted from the https://swift.org/[swift open source project]) has a https://forums.swift.org/tags/combine[combine tag] with a number of interesting threads. While the Combine framework is *not* open source, some of it's implementation and specifics are discussed in these forums.
+* The https://forums.swift.org/[Swift Forums] (hosted from the https://swift.org/[swift open source project]) has a https://forums.swift.org/tags/combine[combine tag] with a number of interesting threads. While the Combine framework is *not* open source, some of its implementation and specifics are discussed in these forums.
 
 * https://stackoverflow.com[Stackoverflow] also has a sizable (and growing) collection of https://stackoverflow.com/questions/tagged/combine[Combine related Q&A].
 

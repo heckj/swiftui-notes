@@ -3,7 +3,7 @@
 
 Developing with Combine can take any of a number of different forms.
 
-A common starting point is composing pipelines, leveraging existing publishers, operators, and subcribers.
+A common starting point is composing pipelines, leveraging existing publishers, operators, and subscribers.
 A number of examples within this book highlight various patterns, many of which are aimed at providing declarative responses to user inputs within interfaces.
 
 You may also want to create APIs that integrate more easily into Combine.
