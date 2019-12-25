@@ -1,6 +1,10 @@
 [#aboutthisbook]
 = About This Book
 
+Version: {revnumber}
+
+Version Date: {revdate}
+
 This is an intermediate to advanced book, focusing fairly narrowly on how to use the Combine framework provided by Apple.
 The writing and examples expect that you have a solid understanding of Swift including reference and value types, protocols, and comfort with using common elements from the Foundation framework.
 
