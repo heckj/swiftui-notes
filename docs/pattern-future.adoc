@@ -22,7 +22,7 @@ let futureAsyncPublisher = Future<Bool, Error> { promise in <1>
     CNContactStore().requestAccess(for: .contacts) { grantedAccess, err in <2>
         // err is an optional
         if let err = err { <3>
-            promise(.failure(err))
+            return promise(.failure(err))
         }
         return promise(.success(grantedAccess)) <4>
     }

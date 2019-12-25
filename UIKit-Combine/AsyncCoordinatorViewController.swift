@@ -67,8 +67,9 @@ class AsyncCoordinatorViewController: UIViewController {
             self.randomAsyncAPI() { (result, err) in
                 if let err = err {
                     promise(.failure(err))
+                } else {
+                    promise(.success(result))
                 }
-                promise(.success(result))
             }
         }
         .receive(on: RunLoop.main)

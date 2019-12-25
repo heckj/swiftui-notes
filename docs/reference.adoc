@@ -115,9 +115,9 @@ let deferredPublisher = Deferred { <1>
     return Future<Bool, Error> { promise in <2>
         self.asyncAPICall(sabotage: false) { (grantedAccess, err) in
             if let err = err {
-                promise(.failure(err))
+                return promise(.failure(err))
             }
-            promise(.success(grantedAccess))
+            return promise(.success(grantedAccess))
         }
     }
 }.eraseToAnyPublisher()

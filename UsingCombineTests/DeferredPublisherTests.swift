@@ -38,9 +38,9 @@ class DeferredPublisherTests: XCTestCase {
             return Future<Bool, Error> { promise in
                 self.asyncAPICall(sabotage: false) { (grantedAccess, err) in
                     if let err = err {
-                       promise(.failure(err))
+                       return promise(.failure(err))
                     }
-                    promise(.success(grantedAccess))
+                    return promise(.success(grantedAccess))
                 }
             }
         }.eraseToAnyPublisher()
