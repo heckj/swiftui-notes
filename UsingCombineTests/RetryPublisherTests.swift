@@ -175,35 +175,41 @@ class RetryPublisherTests: XCTestCase {
                 // setting "sabotage: true" in the asyncAPICall tells the test code to return a
                 // failure result, which will illustrate "retry" better.
                 instrumentedAsyncAPICall(sabotage: true) { (grantedAccess, err) in
-                    // print("invoking async completion handler to return a resolved promise " + msTimeFormatter.string(from: Date()))
                     // NOTE(heckj): the closure resolving the API call into a Promise result
                     // is called far more than 3 times - 5 in this example, although I don't know
                     // why that is. The underlying API call, and the closure within the future
                     // are each called 3 times - validated below in the assertions.
                     if let err = err {
-                        // print(" --> async call returned a failure")
-                        promise(.failure(err))
-                    } else {
-                        // print(" --> async call returned a success")
-                        promise(.success("allowed!"))
+                        return promise(.failure(err))
                     }
+                    return promise(.success("allowed!"))
                 }
             }
         }
-        .print("upstream publisher")
         .eraseToAnyPublisher()
 
         // this test is an idea proposed by anachev (ref: https://github.com/heckj/swiftui-notes/issues/164)
         // on how to enable a "delay on error only". I have an example of using retry() with a random delay
         // elsewhere in the book (https://heckj.github.io/swiftui-notes/#patterns-retry), but it *always*
         // delays the call - which isn't an ideal solution.
+        // This was his suggestion at an attempt to do better.
+
         let resultPublisher = upstreamPublisher.catch { error -> AnyPublisher<String, Error> in
             print(msTimeFormatter.string(from: Date()) + "delaying on error for ~3 seconds ")
             return Publishers.Delay(upstream: upstreamPublisher,
                                     interval: 3,
                                     tolerance: 1,
-                                    scheduler: DispatchQueue.global()).eraseToAnyPublisher()
-        }.retry(2)
+                                    scheduler: DispatchQueue.global())
+                // moving retry into this block reduces the number of duplicate requests
+                // In effect, there's the original request, and the `retry(2)` here will operate
+                // two additional retries on the otherwise one-shot publisher that is initiated with
+                // the `Publishers.Delay()` just above. Just starting this publisher with delay makes
+                // an additional request, so the total number of requests ends up being 4 (assuming all
+                // fail). However, no delay is introduced in this sequence if the original request
+                // is successful.
+                .retry(2)
+                .eraseToAnyPublisher()
+        }
 
         XCTAssertEqual(asyncAPICallCount,0);
         XCTAssertEqual(futureClosureHandlerCount,0);
@@ -214,8 +220,10 @@ class RetryPublisherTests: XCTestCase {
             // The surprise here is that the underlying asynchronous API call is made not 3 times, but 6 times.
             // From the output in the test, which includes timestamps down to the ms to make it easier to see WHEN
             // things are happening, the retry process ends up double-invoking the upstream publisher.
-            XCTAssertEqual(asyncAPICallCount, 6)
-            XCTAssertEqual(futureClosureHandlerCount, 6);
+            XCTAssertEqual(asyncAPICallCount, 4)
+            // the original request is 1, and then the Publishers.Delay() initiated request with a retry(2) are the others
+            XCTAssertEqual(futureClosureHandlerCount, 4);
+            // the original request is 1, and then the Publishers.Delay() initiated request with a retry(2) are the others
             expectation.fulfill()
         }, receiveValue: { value in
             print(".sink() received value: ", value)
@@ -225,5 +233,4 @@ class RetryPublisherTests: XCTestCase {
         wait(for: [expectation], timeout: 30.0)
         XCTAssertNotNil(cancellable)
     }
-
 }
