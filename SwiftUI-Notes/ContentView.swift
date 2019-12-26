@@ -29,13 +29,7 @@ struct MapView: UIViewRepresentable {
 struct ContentView : View {
     @ObservedObject var model: ExampleModel
 
-    func clickityButton() {
-
-    }
-
     @State private var currentStatusValue = "ok"
-
-    var fiveSecTimer = Timer.TimerPublisher(interval: 5.0, runLoop: RunLoop.main, mode: .default)
 
     var body: some View {
         VStack {
@@ -43,9 +37,6 @@ struct ContentView : View {
             Text("\(model.foo)")
                 .font(.title)
                 .foregroundColor(.blue)
-                .onReceive(fiveSecTimer, perform: { someVal in
-                    self.model.foo = someVal.description
-                })
 
             Text("so here's something simpler")
                 .font(.caption)
