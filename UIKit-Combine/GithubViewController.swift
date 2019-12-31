@@ -75,7 +75,13 @@ class GithubViewController: UIViewController {
             // using a sink to get the results from the API search lets us
             // get not only the user, but also any errors attempting to get it.
             .receive(on: RunLoop.main)
-            .assign(to: \.githubUserData, on: self)
+            .sink(receiveValue: { retreivedGithubUserData in
+                // stash the resulting data locally
+                self.githubUserData = retreivedGithubUserData
+                // and push the retrieved data into the model attached to the AppDelegate
+                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                appDelegate?.applicationWideModelReference = retreivedGithubUserData
+            })
 
         // using .assign() on the other hand (which returns an
         // AnyCancellable) *DOES* require a Failure type of <Never>
