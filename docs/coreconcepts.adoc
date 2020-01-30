@@ -337,7 +337,7 @@ Combine provides a number of additional convenience publishers:
 
 A number of Apple APIs outside of Combine provide publishers as well.
 
-* SwiftUI provides https://developer.apple.com/documentation/swiftui/observedobject[`@ObservedObject`] which can be used to create a publisher.
+* <<reference#reference-swiftui,SwiftUI>> provides the https://developer.apple.com/documentation/swiftui/observedobject[`@ObservedObject`] property wrapper, which implicitly creates a publisher.
 
 * Foundation
 ** <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>
