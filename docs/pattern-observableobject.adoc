@@ -1,9 +1,9 @@
-[#patterns-bindableobject]
-== Using BindableObject with SwiftUI models as a publisher source
+[#pattern-observableobject]
+== Using ObservableObject with SwiftUI models as a publisher source
 
 __Goal__::
 
-* SwiftUI includes @Binding and the BindableObject protocol, which provides a publishing source to alerts to model objects changing.
+* SwiftUI includes @ObservedObject and the ObservableObject protocol, which provides a publishing source to alerts to model objects changing.
 
 __References__::
 

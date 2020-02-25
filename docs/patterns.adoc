@@ -61,7 +61,7 @@ include::pattern-notificationcenter.adoc[]
 == SwiftUI Integration
 
 :leveloffset: +1
-include::pattern-bindableobject.adoc[]
+include::pattern-observableobject.adoc[]
 :leveloffset: -1
 
 [#patterns-testing-and-debugging]
