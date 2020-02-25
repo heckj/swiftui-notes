@@ -299,7 +299,7 @@ A pipeline that has been cancelled will not send any completions.
 Included in the above diagram is a stacked up set of the example marble diagrams.
 This is to highlight where Combine marble diagrams focus in the overall lifecycle of a pipeline.
 Generally the diagrams infer that all of the setup has been done and data requested.
-The heart of a combine marble diagram is the series of events between when data was requested any completions or cancellations are triggered.
+The heart of a combine marble diagram is the series of events between when data was requested and any completions or cancellations are triggered.
 
 [#coreconcepts-publishers]
 == Publishers
