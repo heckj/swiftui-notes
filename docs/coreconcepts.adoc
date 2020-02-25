@@ -540,8 +540,7 @@ This protocol is supported by a number of declarative components within SwiftUI.
 While https://developer.apple.com/documentation/combine/subscriber[`subscriber`] is the protocol used to receive data throughout a pipeline, _the Subscriber_ typically refers to the end of a pipeline.
 
 There are two subscribers built-in to Combine: <<reference#reference-assign,assign>> and <<reference#reference-sink,sink>>.
-
-There is notably a subscriber also built in to SwiftUI: <<reference#reference-onreceive,onReceive>>.
+There is a subscriber built in to SwiftUI: <<reference#reference-onreceive,onReceive>>.
 
 Subscribers can support cancellation, which terminates a subscription and shuts down all the stream processing prior to any Completion sent by the publisher.
 Both `Assign` and `Sink` conform to the https://developer.apple.com/documentation/combine/cancellable[cancellable protocol].
