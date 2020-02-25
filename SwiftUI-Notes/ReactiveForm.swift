@@ -58,8 +58,15 @@ struct ReactiveForm: View {
     }
 }
 
+// MARK: - SwiftUI VIEW DEBUG
+
+#if DEBUG
+var localModel = ReactiveFormModel()
+
 struct ReactiveForm_Previews: PreviewProvider {
     static var previews: some View {
-        ReactiveForm(model: ReactiveFormModel())
+        ReactiveForm(model: localModel)
     }
 }
+#endif
+

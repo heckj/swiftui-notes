@@ -65,8 +65,16 @@ struct HeadingView: View {
     }
 }
 
+// MARK: - SwiftUI VIEW DEBUG
+
+#if DEBUG
+var locproxy = LocationProxy()
+
 struct HeadingView_Previews: PreviewProvider {
     static var previews: some View {
-        HeadingView(locationModel: LocationProxy())
+        HeadingView(locationModel: locproxy)
     }
 }
+#endif
+
+
