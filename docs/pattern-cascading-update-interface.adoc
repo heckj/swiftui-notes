@@ -11,7 +11,7 @@ __References__::
 * The GithubAPI is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubAPI.swift[UIKit-Combine/GithubAPI.swift]
 
 * Publishers:
-<<reference#reference-published,Published>>,
+<<reference#reference-published,@Published>>,
 <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>,
 <<reference#reference-just,Just>>,
 <<reference#reference-empty,Empty>>
@@ -43,9 +43,9 @@ The example provided expands on a publisher updating from <<patterns#patterns-up
 
 The general pattern of this view starts with a textfield that accepts user input:
 
-1. We using an IBAction to update the <<reference#reference-published,Published>> username variable.
+1. We using an IBAction to update the <<reference#reference-published,@Published>> username variable.
 2. We have a subscriber (`usernameSubscriber`) attached `$username` publisher reference, which attempts to retrieve the GitHub user from the API.
-The resulting variable `githubUserData` (also <<reference#reference-published,Published>>) is a list of GitHub user objects.
+The resulting variable `githubUserData` (also <<reference#reference-published,@Published>>) is a list of GitHub user objects.
 Even though we only expect a single value here, we use a list because we can conveniently return an empty list on failure scenarios: unable to access the API or the username isn't registered at GitHub.
 3. We have a "secondary" subscriber `apiNetworkActivitySubscriber` which another publisher from the GithubAPI object that provides values when the GithubAPI object starts or finishes making network requests.
 4. We have a another subscriber `repositoryCountSubscriber` attached to `$githubUserData` that pulls the repository count off the github user data object and assigns it as the count to be displayed.
@@ -69,10 +69,10 @@ Likewise when the resulting pipelines assign or update UI elements, the <<refere
 
 [WARNING]
 ====
-If you want to have the UI continuously updated from changes propogating through <<reference#reference-published,Published>> properties, make sure that any configured pipelines have a <Never> failure type.
+If you want to have the UI continuously updated from changes propogating through <<reference#reference-published,@Published>> properties, make sure that any configured pipelines have a <Never> failure type.
 This is required for the <<reference#reference-assign,assign>> operator.
 But more importantly, it's a source of bugs when using a <<reference#reference-sink,sink>> operator.
-If the pipeline from a <<reference#reference-published,Published>> variable terminates in a <<reference#reference-sink,sink>> that accepts an Error failure type, the sink will send a termination signal if an error occures, which stops the pipeline from further processing even when the variable is updated.
+If the pipeline from a <<reference#reference-published,@Published>> variable terminates in a <<reference#reference-sink,sink>> that accepts an Error failure type, the sink will send a termination signal if an error occures, which stops the pipeline from further processing even when the variable is updated.
 ====
 
 .https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubAPI.swift[UIKit-Combine/GithubAPI.swift]
@@ -352,7 +352,7 @@ class ViewController: UIViewController {
 }
 ----
 <1> We add a subscriber to our previous controller from that connects notifications of activity from the GithubAPI object to our activity indicator.
-<2> Where the username is updated from the IBAction (from our earlier example <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>) we have the subscriber make the network request and put the results in a new variable (also <<reference#reference-published,published>>) on our ViewController.
+<2> Where the username is updated from the IBAction (from our earlier example <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>) we have the subscriber make the network request and put the results in a new variable (also <<reference#reference-published,@Published>>) on our ViewController.
 <3> The first of two subscribers on the publisher `$githubUserData`, this pipeline extracts the count of repositories and updates the UI label instance.
 There is a bit of logic in the middle of the pipeline to return the string "unknown" when the list is empty.
 <4> The second subscriber to the publisher `$githubUserData`, this triggers a follow on network request to request the image data for the github avatar.
@@ -368,7 +368,7 @@ In this example, we attach a publisher that triggers a print statement that the 
 ====
 While we could simply attach pipelines to UI elements as we're updating them, it more closely couples interactions to the actual UI elements themselves.
 While easy and direct, it is often a good idea to make explicit state and updates to seperate out actions and data for debugging and understandability.
-In the example above, we use two <<reference#reference-published,published>> properties to hold the state associated with the current view.
+In the example above, we use two <<reference#reference-published,@Published>> properties to hold the state associated with the current view.
 One of which is updated by an IBAction, and the second updated declaratively using a Combine publisher pipeline.
 All other UI elements are updated publishers hanging from those properties getting updated.
 ====

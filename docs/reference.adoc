@@ -125,73 +125,6 @@ let deferredPublisher = Deferred { <1>
 <1> The closure provided in to Deferred will be invoked as demand requests come to the publisher.
 <2> Which in turn resolves the underlying api call to generate the result as a Promise, with internal closures to resolve the promise.
 
-[#reference-published]
-=== Published
-
-__Summary__::
-
-A property wrapper that adds a Combine publisher to any property
-
-__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/published[Published]
-
-__Usage__::
-
-* <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>
-* <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>>
-* unit tests illustrating using Published: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`]
-
-__Details__::
-
-Published is part of Combine, but allows you to wrap a property, enabling you to get a publisher that triggers data updates whenever the property is changed.
-The publisher's output type is inferred from the type of the property, and the error type of the provided publisher is <Never>.
-
-A smaller examples of how it can be used:
-
-[source, swift]
-----
-@Published var username: String = "" <1>
-
-$username <2>
-    .sink { someString in
-        print("value of username updated to: ", someString)
-    }
-
-$username <3>
-    .assign(\.text, on: myLabel)
-
-@Published private var githubUserData: [GithubAPIUser] = [] <4>
-----
-
-<1> `@Published` wraps the property, username, and will generate events whenever the property is changed.
-If there is a subscriber at initialization time, the subscriber will also receive the initial value being set.
-The publisher for the property is available at the same scope, and with the same permissions, as the property itself.
-<2> The publisher is accessible as `$username`, of type `Published<String>.publisher`.
-<3> A Published property can have more than one subscriber pipeline triggering from it.
-<4> If you're publishing your own type, you may find it convenient to publish an array of that type as the property, even if you only reference a single value.
-This allows you represent an "Empty" result that is still a concrete result within Combine pipelines, as <<reference#reference-assign,assign>> and <<reference#reference-sink,sink>> subscribers will only trigger updates on non-nil values.
-
-If the publisher generated from `@Published` receives a cancellation from any subscriber, it is expected to, and will cease, reporting property changes.
-Because of this expectation, it is common to arrange pipelines from these publishers that have an error type of `<Never>` and do all error handling within the pipelines.
-For example, if a <<reference#reference-sink,sink>> subscriber is set up to capture errors from a pipeline originating from a @Published property, when the error is received, the sink will send a `cancel` message, causing the publisher to cease generating any updates on change.
-This is illustrated in the test `testPublishedSinkWithError` at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`]
-
-Additional examples of how to arrange error handling for a continous publisher like `@Published` can be found at <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>.
-
-[WARNING]
-====
-Using `@Published` should only be done within reference types - that is, within classes.
-An early beta (2) allowed @Published wrapped within a struct.
-As of beta5, the compiler will not throw an error if this is attempted:
-
-[source]
-----
-<unknown>:0: error: 'wrappedValue' is unavailable: @Published is only available on properties of classes
-	     Combine.Published:5:16: note: 'wrappedValue' has been explicitly marked unavailable here
-	         public var wrappedValue: Value { get set }
-                        ^
-----
-====
-
 [#reference-empty]
 === Empty
 
@@ -429,6 +362,73 @@ Classes implementing ObservedObject are also expected to use @Published to provi
 
 It can also be used locally to watch for updates to a reference-type model.
 
+[#reference-published]
+=== @Published
+
+__Summary__::
+
+A property wrapper that adds a Combine publisher to any property
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/published[Published]
+
+__Usage__::
+
+* <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>
+* <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>>
+* unit tests illustrating using Published: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`]
+
+__Details__::
+
+Published is part of Combine, but allows you to wrap a property, enabling you to get a publisher that triggers data updates whenever the property is changed.
+The publisher's output type is inferred from the type of the property, and the error type of the provided publisher is <Never>.
+
+A smaller examples of how it can be used:
+
+[source, swift]
+----
+@Published var username: String = "" <1>
+
+$username <2>
+    .sink { someString in
+        print("value of username updated to: ", someString)
+    }
+
+$username <3>
+    .assign(\.text, on: myLabel)
+
+@Published private var githubUserData: [GithubAPIUser] = [] <4>
+----
+
+<1> `@Published` wraps the property, username, and will generate events whenever the property is changed.
+If there is a subscriber at initialization time, the subscriber will also receive the initial value being set.
+The publisher for the property is available at the same scope, and with the same permissions, as the property itself.
+<2> The publisher is accessible as `$username`, of type `Published<String>.publisher`.
+<3> A Published property can have more than one subscriber pipeline triggering from it.
+<4> If you're publishing your own type, you may find it convenient to publish an array of that type as the property, even if you only reference a single value.
+This allows you represent an "Empty" result that is still a concrete result within Combine pipelines, as <<reference#reference-assign,assign>> and <<reference#reference-sink,sink>> subscribers will only trigger updates on non-nil values.
+
+If the publisher generated from `@Published` receives a cancellation from any subscriber, it is expected to, and will cease, reporting property changes.
+Because of this expectation, it is common to arrange pipelines from these publishers that have an error type of `<Never>` and do all error handling within the pipelines.
+For example, if a <<reference#reference-sink,sink>> subscriber is set up to capture errors from a pipeline originating from a @Published property, when the error is received, the sink will send a `cancel` message, causing the publisher to cease generating any updates on change.
+This is illustrated in the test `testPublishedSinkWithError` at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`]
+
+Additional examples of how to arrange error handling for a continous publisher like `@Published` can be found at <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>.
+
+[WARNING]
+====
+Using `@Published` should only be done within reference types - that is, within classes.
+An early beta (2) allowed @Published wrapped within a struct.
+As of beta5, the compiler will not throw an error if this is attempted:
+
+[source]
+----
+<unknown>:0: error: 'wrappedValue' is unavailable: @Published is only available on properties of classes
+	     Combine.Published:5:16: note: 'wrappedValue' has been explicitly marked unavailable here
+	         public var wrappedValue: Value { get set }
+                        ^
+----
+====
+
 // force a page break - in HTML rendering is just a <HR>
 <<<
 '''
@@ -585,7 +585,7 @@ let _ = foo.publisher(for: \.intValue)
 ====
 KVO publisher access implies that with macOS 10.15 release or iOS 13, most of Appkit and UIKit interface instances will be accessible as publishers.
 Relying on the interface element's state to trigger updates into pipelines can lead to your state being very tightly bound to the interface elements, rather than your model.
-You may be better served by explicitly creating your own state to react to from a <<reference#reference-published,Published>> property wrapper.
+You may be better served by explicitly creating your own state to react to from a <<reference#reference-published,@Published>> property wrapper.
 ====
 
 [#reference-datataskpublisher]
