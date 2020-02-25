@@ -321,6 +321,20 @@ This provides a means of deferring the setup of the publisher until it's actuall
 
 The Deferred publisher is particularly useful with <<reference#reference-future,Future>>, which does not wait on demand to start the resolution of underlying (wrapped) asynchronous APIs.
 
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''
+
+[#reference-swiftui]
+=== SwiftUI
+
+SwiftUI uses a variety of property wrappers within its Views to reference and display content from outside of those views.
+@ObservedObject, @EnvironmentObject, @State, and @Published are the most common that relate to Combine.
+SwiftUI uses these property wrappers to create a publisher that will inform SwiftUI when those models have changed, creating a objectWillChange publisher.
+Having an object conform to ObservableObject will also get a default objectWillChange publisher.
+
+SwiftUI uses <<reference-observableobjectpublisher>> for the class that implements the publishers on reference objects marked with @ObservedObject.
+
 [#reference-observableobjectpublisher]
 === ObservableObjectPublisher
 
@@ -348,23 +362,6 @@ SwiftUI views use the `@ObservedObject` property wrapper to know when to invalid
 Classes implementing ObservedObject are also expected to use @Published to provide notifications of changes on specific properties, or to optionally provide a custom announcement that indicates the object has changed.
 
 It can also be used locally to watch for updates to a reference-type model.
-
-// force a page break - in HTML rendering is just a <HR>
-<<<
-'''
-
-[#reference-swiftui]
-=== SwiftUI
-
-SwiftUI uses a variety of property wrappers within its Views to reference and display content from outside of those views.
-@Published, @ObservedObject, and @EnvironmentObject are the most common that also relate to Combine.
-SwiftUI also includes @Binding, which uses the Combine framework for similiar change notifications across SwiftUI views.
-
-* @ObjectBinding (swiftUI)
-* BindableObject
-
-* often linked with method `didChange` to publish changes to model objects
-** `@ObjectBinding var model: MyModel`
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
