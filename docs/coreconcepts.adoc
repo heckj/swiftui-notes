@@ -318,19 +318,18 @@ The other option is a separate `.connect()` call on the publisher itself.
 
 Combine provides a number of additional convenience publishers:
 
-//TODO(heckj) - convert to xref to reference sections on these operators
 [cols="3*^"]
 |===
 | <<reference#reference-just,Just>>
 | <<reference#reference-future,Future>>
-| <<reference#reference-published,@Published>>
+| <<reference#reference-deferred,Deferred>>
 
 | <<reference#reference-empty,Empty>>
 | <<reference#reference-sequence,Sequence>>
 | <<reference#reference-fail,Fail>>
 
-| <<reference#reference-deferred,Deferred>>
-| <<reference#reference-observableobjectpublisher,ObservableObjectPublisher>>
+| <<reference#reference-observableobject,ObservableObject>>
+| <<reference#reference-published,@Published>>
 |
 
 |===
@@ -541,6 +540,8 @@ This protocol is supported by a number of declarative components within SwiftUI.
 While https://developer.apple.com/documentation/combine/subscriber[`subscriber`] is the protocol used to receive data throughout a pipeline, _the Subscriber_ typically refers to the end of a pipeline.
 
 There are two subscribers built-in to Combine: <<reference#reference-assign,assign>> and <<reference#reference-sink,sink>>.
+
+There is notably a subscriber also built in to SwiftUI: <<reference#reference-onreceive,onReceive>>.
 
 Subscribers can support cancellation, which terminates a subscription and shuts down all the stream processing prior to any Completion sent by the publisher.
 Both `Assign` and `Sink` conform to the https://developer.apple.com/documentation/combine/cancellable[cancellable protocol].
