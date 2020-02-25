@@ -11,7 +11,7 @@ __References__::
 * The ViewController with this code is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/FormViewController.swift[UIKit-Combine/FormViewController.swift]
 
 * Publishers:
-<<reference#reference-published,Published>>,
+<<reference#reference-published,@Published>>,
 * Operators:
 <<reference#reference-combinelatest,combineLatest>>,
 <<reference#reference-map,map>>,
@@ -43,7 +43,7 @@ If any of these rules aren't met, then we want the submit button to be disabled 
 
 This is achieved by setting up a cascade of pipelines that link and merge together.
 
-* At the base, there are <<reference#reference-published,Published>> property matching each of the user input fields.
+* At the base, there are <<reference#reference-published,@Published>> property matching each of the user input fields.
 <<reference#reference-combinelatest,combineLatest>> is used to take the continually published updates from the value2 properties and merge them into a single pipeline.
 A <<reference#reference-map,map>> operator enforces the rule about characters required and that the values need to be the same.
 If the values don't match the required output, we pass a nil value down the pipeline.
@@ -140,7 +140,7 @@ class FormViewController: UIViewController {
 ----
 
 <1> The start of this code follows the same patterns laid out in <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>.
-IBAction messages are used to update the <<reference#reference-published,Published>> properties, triggering updates to any subscribers attached.
+IBAction messages are used to update the <<reference#reference-published,@Published>> properties, triggering updates to any subscribers attached.
 <2> The first of the validation pipelines uses a <<reference#reference-map,map>> operator to take the string value intput and convert it to nil if it doesn't match the validation rules.
 This is also converting the output type from the published property of `<String>` to the optional `<String?>`.
 The same logic is also used to trigger updates to the messages label to provide information about what is required.
