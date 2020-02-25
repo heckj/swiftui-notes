@@ -3527,7 +3527,7 @@ cancellablePublisher.cancel() // when invoked, this invalidates the pipeline
 // no further data will be received by the sink
 ----
 
-Similiar to publishers having a type-erased struct <<reference-anypublisher,AnyPublisher>> to expose publishers through an API, subscribers have an equivalent: <<reference-anycancellable,AnyCancellable>>. This is often used with `sink` to convert the resulting type into AnyCancellable.
+Similiar to publishers having a type-erased struct <<reference-erasetoanypublisher,AnyPublisher>> to expose publishers through an API, subscribers have an equivalent: <<reference-anycancellable,AnyCancellable>>. This is often used with `sink` to convert the resulting type into AnyCancellable.
 
 [#reference-onreceive]
 === onReceive
