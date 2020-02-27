@@ -2279,7 +2279,7 @@ The alternate form takes a swift range descriptor:
 '''
 
 [#reference-operators-combinepublishers]
-=== Combining elements from multiple publishers
+=== Mixing elements from multiple publishers
 
 [#reference-combinelatest]
 ==== combineLatest
@@ -2410,7 +2410,7 @@ If your upstream publishers have the same type and you want a stream of single v
 '''
 
 [#reference-operators-handlingerrors]
-=== Handling errors
+=== Error Handling
 
 See <<patterns#patterns-general-error-handling,Error Handling>> for more detail on how you can design error handling.
 
@@ -3290,9 +3290,6 @@ That is - don't create the queue with `attributes: .concurrent`.
 
 [#reference-erasetoanysubscriber]
 ==== eraseToAnySubscriber
-
-[#reference-erasetoanysubject]
-==== eraseToAnySubject
 
 // force a page break - in HTML rendering is just a <HR>
 <<<

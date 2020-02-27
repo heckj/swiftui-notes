@@ -36,7 +36,7 @@ A good example of this is the use of returning a pipeline returning a list in th
 Ultimately, using Combine is grounded at both ends by the originating publisher, and how it is providing data (when it is available), and the subscriber ultimately consuming the data.
 
 [#developingwith-types]
-== Swift types and exposing pipelines or subscribers
+== Swift types with Combine publishers and subscribers
 
 When you compose pipelines within Swift, the chaining of functions results in the type being exposed as nesting generic types.
 If you are creating a pipeline, and then wanting to provide that as an API to another part of your code, the type definition for the exposed property or function can be exceptionally complex.
@@ -133,7 +133,7 @@ Any operators following them will also be invoked on their scheduler, giving the
 
 If you want to be explicit about which thread context an operator or subsequent operation will run within, define it with the <<reference#reference-receive,receive>> operator.
 
-== Developing to use Combine
+== Leveraging Combine with your development
 
 There are two common paths to developing code leveraging Combine.
 

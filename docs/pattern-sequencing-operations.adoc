@@ -1,5 +1,5 @@
 [#patterns-sequencing-operations]
-== Sequencing operations with Combine
+== Sequencing asynchronous operations
 
 __Goal__::
 
