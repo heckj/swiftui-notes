@@ -3,7 +3,7 @@
 
 __Goal__::
 
-* One of the common use cases is requesting JSON data from a URL and decoding it.
+* One common use case is requesting JSON data from a URL and decoding it.
 
 __References__::
 
@@ -24,9 +24,8 @@ __Code and explanation__::
 This can be readily accomplished with Combine using
 <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> followed by a series of operators that process the
 data.
-Minimally, this is <<reference#reference-map,map>> and <<reference#reference-decode,decode>> before going into your subscriber.
-
-https://developer.apple.com/documentation/foundation/urlsession/3329708-datataskpublisher[dataTaskPublisher] on https://developer.apple.com/documentation/foundation/urlsession[URLSession].
+Minimally, https://developer.apple.com/documentation/foundation/urlsession/3329708-datataskpublisher[dataTaskPublisher] on https://developer.apple.com/documentation/foundation/urlsession[URLSession]
+uses <<reference#reference-map,map>> and <<reference#reference-decode,decode>> before going to the subscriber.
 
 The simplest case of using this might be:
 
@@ -58,12 +57,16 @@ let cancellableSink = remoteDataPublisher
     })
 ----
 
-<1> Commonly you'll have a struct defined that supports at least https://developer.apple.com/documentation/swift/decodable[Decodable] (if not the full https://developer.apple.com/documentation/swift/codable[Codable protocol]). This struct can be defined to only pull the pieces you're interested in from the JSON provided over the network.
-<2> dataTaskPublisher is instantiated from URLSession. You can configure your own options on URLSession, or use the general shared session as you require.
-<3> The data that is returns down the pipeline is a tuple: `(data: Data, response: URLResponse)`. The <<reference#reference-map,map>> operator is used to get the data and drop the URL response, returning just Data down the pipeline.
-<4> <<reference#reference-decode,decode>> is used to load the data and attempt to transform it into the struct defined. Decode can throw an error itself if the decode fails. If it succeeds, the object passed down the pipeline will be the struct from the JSON data.
-<5> If the decoding happened without errors, the finished completion will be triggered, and the value will also be passed to the receiveValue closure.
-<6> If the a failure happened (either with the original network request or the decoding), the error will be passed into with the `.failure` completion.
+<1> Commonly you will have a struct defined that supports at least https://developer.apple.com/documentation/swift/decodable[Decodable] (if not the full https://developer.apple.com/documentation/swift/codable[Codable protocol]). This struct can be defined to only pull the pieces you are interested in from the JSON provided over the network.
+The complete JSON payload does not need to be defined.
+<2> `dataTaskPublisher` is instantiated from `URLSession`. You can configure your own options on `URLSession`, or use a shared session.
+<3> The data that is returned is a tuple: `(data: Data, response: URLResponse)`.
+The <<reference#reference-map,map>> operator is used to get the data and drops the `URLResponse`, returning just `Data` down the pipeline.
+<4> <<reference#reference-decode,decode>> is used to load the data and attempt to parse it.
+Decode can throw an error itself if the decode fails.
+If it succeeds, the object passed down the pipeline will be the struct from the JSON data.
+<5> If the decoding completed without errors, the finished completion will be triggered and the value will be passed to the `receiveValue` closure.
+<6> If the a failure happens (either with the original network request or the decoding), the error will be passed into with the `failure` closure.
 <7> Only if the data succeeded with request and decoding will this closure get invoked, and the data format received will be an instance of the struct `PostmanEchoTimeStampCheckResponse`.
 
 

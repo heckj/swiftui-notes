@@ -15,7 +15,7 @@ __References__::
 * Operators:
 <<reference#reference-combinelatest,combineLatest>>,
 <<reference#reference-map,map>>,
-<<reference#reference-receive,receive>>,
+<<reference#reference-receive,receive>>
 * Subscribers:
 <<reference#reference-assign,assign>>
 

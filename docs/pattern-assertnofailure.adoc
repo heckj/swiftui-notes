@@ -11,12 +11,13 @@ __References__::
 
 __See also__::
 
-* << link to other patterns>>
+* <<reference#reference-catch,catch>>x
+* <<reference#reference-flatmap,flatMap>>
 
 __Code and explanation__::
 
 Useful in testing invariants in pipelines, the assertNoFailure operator also converts the failure type to `<Never>`.
-The operator will cause the application to terminate (and tests to crash to a debugger) if the assertion is triggered.
+The operator will cause the application to terminate (or tests to crash to a debugger) if the assertion is triggered.
 
 This is useful for verifying the invariant of having dealt with an error.
 If you are sure you handled the errors and need to map a pipeline which technically can generate a failure type of `<Error>` to a subscriber that requires a failure type of `<Never>`.
