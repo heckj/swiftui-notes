@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xl="http://www.w3.org/1999/xlink" version="1.1" viewBox="228 180 500 506" width="500" height="506">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xl="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" version="1.1" viewBox="228 180 500 506" width="500" height="506">
   <defs>
-    <font-face font-family="Helvetica Neue" font-size="16" panose-1="2 0 5 3 0 0 0 2 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="951.9958" descent="-212.99744" font-weight="400">
+    <font-face font-family="Gill Sans" font-size="20" panose-1="2 11 5 2 2 1 4 2 2 3" units-per-em="1000" underline-position="-75.19531" underline-thickness="49.80469" slope="0" x-height="449.70703" cap-height="687.0117" ascent="917.9688" descent="-230.46875" font-weight="400">
       <font-face-src>
-        <font-face-name name="HelveticaNeue"/>
+        <font-face-name name="GillSans"/>
       </font-face-src>
     </font-face>
   </defs>
-  <metadata> Produced by OmniGraffle 7.12.1 
-    <dc:date>2019-11-20 17:12:50 +0000</dc:date>
+  <metadata> Produced by OmniGraffle 7.13 
+    <dc:date>2020-02-27 20:24:12 +0000</dc:date>
   </metadata>
-  <g id="combine_pipeline_diagram_1" stroke-dasharray="none" stroke="none" stroke-opacity="1" fill="none" fill-opacity="1">
-    <title>combine_pipeline_diagram 1</title>
-    <g id="combine_pipeline_diagram_1: Layer 1">
+  <g id="combine_pipeline_diagram" stroke-opacity="1" stroke-dasharray="none" stroke="none" fill-opacity="1" fill="none">
+    <title>combine_pipeline_diagram</title>
+    <g id="combine_pipeline_diagram: Layer 1">
       <title>Layer 1</title>
       <g id="Graphic_2">
         <path d="M 295 307.9 L 295 302.5 L 716 302.5 L 716 299.8 L 727 305.2 L 716 310.6 L 716 307.9 Z" fill="white"/>
@@ -22,8 +22,8 @@
       <g id="Graphic_3">
         <rect x="295" y="325" width="360" height="72" fill="white"/>
         <rect x="295" y="325" width="360" height="72" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-        <text transform="translate(300 351.776)" fill="black">
-          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="144.632" y="15">operator</tspan>
+        <text transform="translate(300 349.5)" fill="black">
+          <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="138.65723" y="18">operator</tspan>
         </text>
       </g>
       <g id="Group_9">
@@ -55,15 +55,15 @@
       <g id="Graphic_35">
         <rect x="295" y="181" width="360" height="72" fill="white"/>
         <rect x="295" y="181" width="360" height="72" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-        <text transform="translate(300 207.776)" fill="black">
-          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="142.104" y="15">publisher</tspan>
+        <text transform="translate(300 205.5)" fill="black">
+          <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="138.01758" y="18">publisher</tspan>
         </text>
       </g>
       <g id="Graphic_36">
         <rect x="295" y="613" width="360" height="72" fill="white"/>
         <rect x="295" y="613" width="360" height="72" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-        <text transform="translate(300 639.776)" fill="black">
-          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="137.368" y="15">subscriber</tspan>
+        <text transform="translate(300 637.5)" fill="black">
+          <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="133.02246" y="18">subscriber</tspan>
         </text>
       </g>
       <g id="Graphic_69">
@@ -99,8 +99,8 @@
       <g id="Graphic_80">
         <rect x="295" y="469" width="360" height="72" fill="white"/>
         <rect x="295" y="469" width="360" height="72" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-        <text transform="translate(300 495.776)" fill="black">
-          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="144.632" y="15">operator</tspan>
+        <text transform="translate(300 493.5)" fill="black">
+          <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="138.65723" y="18">operator</tspan>
         </text>
       </g>
       <g id="Graphic_79">
