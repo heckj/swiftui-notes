@@ -8,7 +8,7 @@ a declarative Swift API for processing values over time.
 
 Combine is Apple's take on a functional reactive programming library, akin to https://github.com/ReactiveX/RxSwift[RxSwift].
 RxSwift itself is a port of http://reactivex.io[ReactiveX].
-Apple's framework uses many of the same functional reactive concepts that can be found in other languages and libraries, applying the staticly-typed nature of Swift to their solution.
+Combine uses many of the same functional reactive concepts that can be found in other languages and libraries, applying the staticly typed nature of Swift to their solution.
 
 [NOTE]
 ====
@@ -16,25 +16,26 @@ If you are already familar with RxSwift there is https://medium.com/gett-enginee
 built and inspired by the data collected at
 https://github.com/freak4pc/rxswift-to-combine-cheatsheet.
 
-Another good overview is a post https://www.caseyliss.com/2019/6/17/combine-wheres-the-beef[Combine: Where's the Beef?] by Casey Liss describing how Combine maps back to RxSwift and RxCocoa's concepts, and where it is different.
+Another good overview is a post https://www.caseyliss.com/2019/6/17/combine-wheres-the-beef[Combine: Where's the Beef?] by Casey Liss describing how Combine maps back to RxSwift and RxCocoa's concepts, and where there are differences.
 ====
 
 == Functional reactive programming
 
 https://en.wikipedia.org/wiki/Functional_reactive_programming[Functional reactive programming], also known as data-flow programming, builds on the concepts of https://en.wikipedia.org/wiki/Functional_programming[functional programming].
 Where functional programming applies to lists of elements, functional reactive programming is applied to streams of elements.
-The kinds of functions in functional programming, such as `map`, `filter`, and `reduce` all have analogues that can be applied to streams.
-In addition, functional reactive programming includes functions to split streams, create pipelines of operations to transform the data within a stream, and merge streams.
+The kinds of functions in functional programming, such as `map`, `filter`, and `reduce` have analogues that can be applied to streams.
+In addition to functional programming primitives, functional reactive programming includes functions to split and merge streams.
+Like functional programming, you may create operations to transform the data flowing through the stream.
 
 There are many parts of the systems we program that can be viewed as asynchronous streams of information - events, objects, or pieces of data.
-Programming practices defined the Observer pattern for watching a single object, getting notified of changes and updates.
-If you view this over time, these updates make up a stream of objects.
-Functional reactive programming, or Combine in this case, allows you to create code that describes what happens when getting data in a stream.
+The observer pattern watches a single object, providing notifications of changes and updates.
+If you view these notifications over time, they make up a stream of objects.
+Functional reactive programming, Combine in this case, allows you to create code that describes what happens when getting data in a stream.
 
 You may want to create logic to watch more than one element that is changing.
 You may also want to include logic that does additional asynchronous operations, some of which may fail.
-You may also want to change the content of the streams based on timing, or change the timing of the content.
-Handling the flow of these event streams, the timing, errors when they happen, and coordinating how a system responds to all those events is at the heart of this kind of programming.
+You may want to change the content of the streams based on timing, or change the timing of the content.
+Handling the flow of these event streams, the timing, errors when they happen, and coordinating how a system responds to all those events is at the heart of functional reactive programming.
 
 A solution based on functional reactive programming is particularly effective when programming user interfaces.
 Or more generally for creating pipelines that process data from external sources or rely on asynchronous APIs.
@@ -42,17 +43,18 @@ Or more generally for creating pipelines that process data from external sources
 == Combine specifics
 
 Applying these concepts to a strongly typed language like Swift is part of what Apple has created in Combine.
-Combine embeds the concept of back-pressure, which allows the subscriber to control how much information it gets at once and needs to process.
-In addition, it supports efficient operation with the notion of streams that are cancellable and driven primarily by the subscriber.
+Combine extends functional reactive programming by embedding the concept of back-pressure.
+Back-pressure is the idea that the subscriber should control how much information it gets at once and needs to process.
+This leads to efficient operation with the added notion that the volume of data processed through a stream is controllable as well as cancellable.
 
-Combine is set up to be composed, and includes affordances to integrate existing code to incrementally support adoption.
+Combine elements are set up to be composed, including affordances to integrate existing code to incrementally support adoption.
 
-Combine is supported by a couple of Apple's other frameworks.
+Combine is leveraged by some of Apple's other frameworks.
 SwiftUI is the obvious example that has the most attention, with both subscriber and publisher elements.
 RealityKit also has publishers that you can use to react to events.
 And Foundation has a number of Combine specific additions including NotificationCenter, URLSession, and Timer as publishers.
 
-Any asynchronous operation API _can_ be leveraged with Combine.
+Any asynchronous API _can_ be leveraged with Combine.
 For example, you could use some of the APIs in the Vision framework, composing data flowing to it, and from it, by leveraging Combine.
 
 [sidebar]
@@ -63,15 +65,15 @@ Pipeline is not a term that Apple is (yet?) using in its documentation.
 
 == When to use Combine
 
-Combine fits most naturally when you want to set up a something that is "immediately" reactive to a variety of inputs.
+Combine fits most naturally when you want to set up something that reacts to a variety of inputs.
 User interfaces fit very naturally into this pattern.
 
-The classic examples in functional reactive programming and user interfaces frequently show form validation, where user events such as changing text fields, taps, or mouse-clicks on UI elements make up the data being streamed.
-Combine takes this quite a bit further, enabling watching of properties, binding to objects, sending and receiving higher level events from UI controls, and supporting integration with almost all of Apple's existing API ecosystem.
+The classic examples using functional reactive programming in user interfaces frequently show form validation, where user events such as changing text fields, taps, or mouse-clicks on UI elements make up the data being streamed.
+Combine takes this further, enabling watching of properties, binding to objects, sending and receiving higher level events from UI controls, and supporting integration with almost all of Apple's existing API ecosystem.
 
 Some things you can do with Combine include:
 
-* You can set up pipelines to enable the button for submission only when values entered into the fields are valid.
+* You can set up pipelines to enable a button for submission only when values entered into the fields are valid.
 * A pipeline can also do asynchronous actions (such as checking with a network service) and using the values returned to choose how and what to update within a view.
 * Pipelines can also be used to react to a user typing dynamically into a text field and updating the user interface view based on what they're typing.
 
@@ -85,6 +87,7 @@ One of Apple's examples with Combine include a pipeline to fall back to getting 
 
 Many of the pipelines you create with Combine will only be a few operations.
 Even with just a few operations, Combine can still make it much easier to view and understand what's happening when you compose a pipeline.
+Combine pipelines are a declarative way to define what processing should happen to a stream of values over time.
 
 // force a page break - ignored in HTML rendering
 <<<
@@ -95,10 +98,17 @@ icon:apple[size=2x,set=fab]
 The https://developer.apple.com/documentation/combine[online documentation for Combine] can be found at https://developer.apple.com/documentation/combine.
 Apple's developer documentation is hosted at https://developer.apple.com/documentation/.
 
-=== WWDC content
+=== WWDC 2019 content
 
 Apple provides video, slides, and some sample code in sessions at its developer conferences.
 Details on Combine are primarily from https://developer.apple.com/videos/play/wwdc2019[WWDC 2019].
+
+[NOTE]
+====
+Combine has evolved since its initial release at WWDC 2019.
+Some of the content in these presentations are now slightly dated or changed from what currently exists.
+The majority of this content is still immensely valuable in getting an introduction or feel for what Combine is and can do.
+====
 
 A number of these introduce and go into some depth on Combine:
 
