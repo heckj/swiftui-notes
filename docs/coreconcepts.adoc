@@ -2,7 +2,7 @@
 = Core Concepts
 
 [#coreconcepts-publisher-subscriber]
-== Publisher, Subscriber
+== Publisher and Subscriber
 
 Two key concepts, described in Swift with protocols, are https://developer.apple.com/documentation/combine/publisher[*publisher*] and https://developer.apple.com/documentation/combine/subscriber[*subscriber*].
 
@@ -135,7 +135,7 @@ More examples, and some common tasks, are detailed in the <<patterns#patterns,se
 <<<
 
 [#coreconcepts-marblediagram]
-== Describing pipeline components with marble diagrams
+== Describing pipelines with marble diagrams
 
 Any functional reactive pipeline can be tricky to understand.
 A publisher is generating and reporting data, operators are reacting to that data and potentially changing it, and subscribers accepting it.

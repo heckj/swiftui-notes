@@ -88,7 +88,7 @@ Even with just a few operations, Combine can still make it much easier to view a
 
 // force a page break - ignored in HTML rendering
 <<<
-== Apple's Documentation
+== Apple's 2019 Documentation
 
 icon:apple[size=2x,set=fab]
 
