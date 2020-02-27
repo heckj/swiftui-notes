@@ -5,24 +5,21 @@ Version: {revnumber}
 
 Version Date: {revdate}
 
-This is an intermediate to advanced book, focusing fairly narrowly on how to use the Combine framework provided by Apple.
-The writing and examples expect that you have a solid understanding of Swift including reference and value types, protocols, and comfort with using common elements from the Foundation framework.
+This is an intermediate to advanced book, focusing narrowly on how to use the Combine framework.
+The writing and examples expect that you have a solid understanding of Swift including reference and value types, protocols, and familiarity with using common elements from the Foundation framework.
 
-If you are also just starting with Swift, https://developer.apple.com/swift/resources/[Apple provides a number of resources] to learn it, and there are truly amazing tutorials and introductions available in book form a number of authors, including https://gumroad.com/l/swift-kickstart[A Swift Kickstart] by Daniel Steinberg and https://www.hackingwithswift.com[Hacking with Swift] by Paul Hudson.
+If you are starting with Swift, https://developer.apple.com/swift/resources/[Apple provides a number of resources] to learn it.
+There are truly amazing tutorials and introductions available as books from a number of authors, including https://gumroad.com/l/swift-kickstart[A Swift Kickstart] by Daniel Steinberg and https://www.hackingwithswift.com[Hacking with Swift] by Paul Hudson.
 
-This book provides <<introduction#introduction,a very abbreviated introduction>> to the concept of functional reactive programming, which is what this library is meant to provide.
+This book provides <<introduction#introduction,a very abbreviated introduction>> to the concept of functional reactive programming, which is what Combine is meant to provide.
 
 == Supporting this effort
 
-**_This is a work in progress. Please support this effort by http://gumroad.com/l/usingcombine[purchasing a copy]._**
+**_If you find the content useful, please purchase a copy of the DRM-free PDF or ePub version at http://gumroad.com/l/usingcombine._**
 
 The book is https://heckj.github.io/swiftui-notes/[available online] at no cost.
-If you find the content useful, please consider supporting the effort with a purchase of the PDF or ePub version at http://gumroad.com/l/usingcombine.
-The money collected for sales of this book will go to hiring editors (copyediting and technical editing), and if sufficient funds exist, hiring graphic design for diagrams.
 
-The content for this book, including sample code and tests, are sourced from the GitHub repository: https://github.com/heckj/swiftui-notes.
-
-To report a problem (typo, grammar, or technical fault), please https://github.com/heckj/swiftui-notes/issues/new/choose[Open an issue] in GitHub.
+To report a problem (typo, grammar, or technical fault) please https://github.com/heckj/swiftui-notes/issues/new/choose[Open an issue] in GitHub.
 If you are so inclined, feel free to fork the project and send me https://github.com/heckj/swiftui-notes/compare?expand=1[pull requests] with updates or corrections.
 
 == Acknowledgements
@@ -71,18 +68,20 @@ He writes online across a variety of topics at https://rhonabwy.com/.
 
 == Where to get this book
 
-The contents of this book are available as https://heckj.github.io/swiftui-notes/[HTML].
+The online version of this book is available online as https://heckj.github.io/swiftui-notes/[HTML], provided at no cost.
 
-You may also purchase the PDF or ePub at http://gumroad.com/l/usingcombine.
-Any purchases will support the development of this book, including technical review, copy editing, and graphics work.
+DRM-free PDF or ePub versions are available for purchase at http://gumroad.com/l/usingcombine.
 
 Updates of the content will be made to the online version as development continues.
 Larger updates and announcements will also be provided through https://gumroad.com/heckj[the author's profile at Gumroad].
 
-The contents of this book, as well as example code and unit tests referenced from the book, are link in an Xcode project (`SwiftUI-Notes.xcodeproj`), sourced from the GitHub repository https://github.com/heckj/swiftui-notes[heckj/swiftui-notes].
-The project includes unit tests illustrating the behavior of Combine and example code showing Combine integration with UIKit and SwiftUI.
+The content for this book, including sample code and tests, are sourced from the GitHub repository: https://github.com/heckj/swiftui-notes.
 
 === Download the project
+
+The contents of this book, as well as example code and unit tests referenced from the book, are linked in an Xcode project (`SwiftUI-Notes.xcodeproj`).
+the Xcode project includes fully operational sample code that shows examples of Combine integrating with UIKit and SwiftUI.
+The project also includes extensive unit tests excercising the framework to illustrate the behavior of framework components.
 
 The project associated with this book requires Xcode 11 and MacOS 10.14 or later.
 
