@@ -16,9 +16,9 @@
   <metadata> Produced by OmniGraffle 7.13 
     <dc:date>2020-02-27 23:26:06 +0000</dc:date>
   </metadata>
-  <g id="throttle_false" stroke-opacity="1" stroke="none" stroke-dasharray="none" fill="none" fill-opacity="1">
-    <title>throttle_false</title>
-    <g id="throttle_false: Layer 1">
+  <g id="throttle_false_13_2_2" stroke-opacity="1" stroke="none" stroke-dasharray="none" fill="none" fill-opacity="1">
+    <title>throttle_false_13.2.2</title>
+    <g id="throttle_false_13_2_2: Layer 1">
       <title>Layer 1</title>
       <g id="Graphic_2">
         <path d="M 223 250.3 L 223 244.9 L 788 244.9 L 788 242.2 L 799 247.6 L 788 253 L 788 250.3 Z" fill="white"/>
@@ -218,31 +218,25 @@
         </text>
       </g>
       <g id="Graphic_141">
-        <path d="M 250.9 346.6 L 264.4 360.1 L 250.9 373.6 L 237.4 360.1 Z" fill="white"/>
-        <path d="M 250.9 346.6 L 264.4 360.1 L 250.9 373.6 L 237.4 360.1 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-        <text transform="translate(246.045 350.33)" fill="black">
+        <title>Diamond</title>
+        <path d="M 254.5 346.6 L 268 360.1 L 254.5 373.6 L 241 360.1 Z" fill="white"/>
+        <path d="M 254.5 346.6 L 268 360.1 L 254.5 373.6 L 241 360.1 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(249.645 350.33)" fill="black">
           <tspan font-family="Gill Sans" font-size="16" font-weight="400" fill="black" x="1.125" y="15">1</tspan>
         </text>
       </g>
       <g id="Graphic_140">
-        <path d="M 457.9 346.6 L 471.4 360.1 L 457.9 373.6 L 444.4 360.1 Z" fill="white"/>
-        <path d="M 457.9 346.6 L 471.4 360.1 L 457.9 373.6 L 444.4 360.1 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-        <text transform="translate(453.045 350.33)" fill="black">
+        <path d="M 461.5 346.6 L 475 360.1 L 461.5 373.6 L 448 360.1 Z" fill="white"/>
+        <path d="M 461.5 346.6 L 475 360.1 L 461.5 373.6 L 448 360.1 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(456.645 350.33)" fill="black">
           <tspan font-family="Gill Sans" font-size="16" font-weight="400" fill="black" x="1.125" y="15">3</tspan>
         </text>
       </g>
       <g id="Graphic_139">
-        <path d="M 655.9 346.6 L 669.4 360.1 L 655.9 373.6 L 642.4 360.1 Z" fill="white"/>
-        <path d="M 655.9 346.6 L 669.4 360.1 L 655.9 373.6 L 642.4 360.1 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-        <text transform="translate(651.045 350.33)" fill="black">
+        <path d="M 659.5 346.6 L 673 360.1 L 659.5 373.6 L 646 360.1 Z" fill="white"/>
+        <path d="M 659.5 346.6 L 673 360.1 L 659.5 373.6 L 646 360.1 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(654.645 350.33)" fill="black">
           <tspan font-family="Gill Sans" font-size="16" font-weight="400" fill="black" x="1.125" y="15">5</tspan>
-        </text>
-      </g>
-      <g id="Graphic_142">
-        <path d="M 279.7 346.6 L 293.2 360.1 L 279.7 373.6 L 266.2 360.1 Z" fill="white"/>
-        <path d="M 279.7 346.6 L 293.2 360.1 L 279.7 373.6 L 266.2 360.1 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-        <text transform="translate(274.845 350.33)" fill="black">
-          <tspan font-family="Gill Sans" font-size="16" font-weight="400" fill="black" x="1.125" y="15">2</tspan>
         </text>
       </g>
     </g>
