@@ -1,45 +1,41 @@
 [#developingwith]
 = Developing with Combine
 
-Developing with Combine can take any of a number of different forms.
-
 A common starting point is composing pipelines, leveraging existing publishers, operators, and subscribers.
 A number of examples within this book highlight various patterns, many of which are aimed at providing declarative responses to user inputs within interfaces.
 
 You may also want to create APIs that integrate more easily into Combine.
 For example, creating a publisher that encapsulates a remote API, returning a single result or a series of results.
-
 Or you might be creating a subscriber to consume and process data over time.
 
 == Reasoning about pipelines
 
-When developing with Combine, there are two broader patterns of how publishers are used that frequently recur: one-shot and continuous.
+When developing with Combine, there are two broader patterns of publishers are that frequently recur: expecting a publisher to return a single value and complete and expecting a publisher to return many values over time.
 
 The first is what I'm calling a "one-shot" publisher or pipeline.
 These publishers are expected to create a single response (or perhaps no response) and then terminate normally.
 
 The second is what I'm calling a "continuous" publisher.
-These publishers, or more often pipelines, are expected to be always active and providing the means to respond to ongoing events, either user initiated or another source.
+These publishers and associated pipelines are expected to be always active and providing the means to respond to ongoing events.
 In this case, the lifetime of the pipeline is significant longer, and it is often not desirable to have such pipelines fail or terminate.
 
 When you are thinking about your development and how to use Combine, it is often beneficial to think about pipelines as being one of these types, and mixing them together to achieve your goals.
+For example, the pattern <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>> explicitly uses one-shot pipelines to support error handling on a continual pipeline.
 
-For example, the pattern <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>> in this book explicitly uses one-shot pipelines to support error handling on a continual pipeline.
+When you are creating an instance of a publisher or a pipeline, it is worthwhile to be thinking about how you want it to work - to either be a one-shot, or continous.
+This choice will inform how you handle errors or if you want to deal with operators that manipulate the timing of the events (such as <<reference#reference-debounce,debounce>> or <<reference#reference-throttle,throttle>>).
 
-When you are creating an instance of a publisher or a pipeline, it is worthwhile to be thinking about how you want it to work - to either be a one-shot, or continual.
-This choice will often inform if you do with error handling or if you want to deal with operators that manipulate the timing of the events (such as <<reference#reference-debounce,debounce>> or <<reference#reference-throttle,throttle>>).
+In addition to how much data the pipeline or publisher will provide you will often want to think about what type pair the pipeline is expected to provide.
+A number of pipelines are more about transforming data through various types, and handling possible error conditions in that processing.
+An example of this is returning a pipeline returning a list in the example <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>> to provide a means to represent an "empty" result, even though the list is never expected to have more than 1 item within it.
 
-In addition to how much data the pipeline or publisher will provide, and the expectations that come from that, you will often want to think concretely about what type the pipeline provides.
-Quite a number of pipelines are more about transforming data through various types, and handling possible error conditions in that processing.
-A good example of this is the use of returning a pipeline returning a list in the pattern <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>> to provide a means to represent an "empty" result, even though the list is never expected to have more than 1 item within it.
-
-Ultimately, using Combine is grounded at both ends by the originating publisher, and how it is providing data (when it is available), and the subscriber ultimately consuming the data.
+Ultimately, using Combine types are grounded at both ends; by the originating publisher, and how it is providing data (when it is available), and the subscriber ultimately consuming the data.
 
 [#developingwith-types]
 == Swift types with Combine publishers and subscribers
 
-When you compose pipelines within Swift, the chaining of functions results in the type being exposed as nesting generic types.
-If you are creating a pipeline, and then wanting to provide that as an API to another part of your code, the type definition for the exposed property or function can be exceptionally complex.
+When you compose pipelines within Swift, the chaining of functions results in the type being aggregared as nested generic types.
+If you are creating a pipeline, and then wanting to provide that as an API to another part of your code, the type definition for the exposed property or function can be exceptionally (and un-usefully) complex for the developer.
 
 To illustrate the exposed type complexity, if you created a publisher from a PassthroughSubject such as:
 
@@ -65,7 +61,7 @@ The resulting type is:
 Publishers.FlatMap<Publishers.Map<Publishers.Catch<Future<String, Error>, Just<String>>, String>, PassthroughSubject<String, Never>>
 ----
 
-When you want to expose the code, all of that composition detail can be very distracting and make your code harder to use.
+When you want to expose the subject, all of that composition detail can be very distracting and make your code harder to use.
 
 To clean up that interface, and provide a nice API boundary, there are type-erased classes which can wrap either publishers or subscribers.
 These explicitly hide the type complexity that builds up from chained functions in Swift.
@@ -102,8 +98,8 @@ AnyPublisher<String, Never>
 ----
 
 This same technique can be immensely useful when constructing smaller pipelines within closures.
-For example, when you want to return a publisher in the closure for a <<reference#reference-flatmap>> operator, you can have a much simpler time reasoning about types by explicitly asserting the closure should expect `AnyPublisher` with the relevant associated types.
-An example of this can be seen in <<patterns#patterns-sequencing-operations,Sequencing operations with Combine>>.
+For example, when you want to return a publisher in the closure for a <<reference#reference-flatmap>> operator, you get simpler reasoning about types by explicitly asserting the closure should expect `AnyPublisher`.
+An example of this can be seen in the pattern <<patterns#patterns-sequencing-operations,Sequencing operations with Combine>>.
 
 [#developingwith-threads]
 == Pipelines and threads
@@ -115,7 +111,7 @@ Composed pipelines can run across a single queue, or transfer across a number of
 Combine allows for publishers to specify the scheduler used when either receiving from an upstream publisher (in the case of operators), or when sending to a downstream subscriber.
 This is critical when working with a subscriber that updates UI elements, as that should always be called on the main thread.
 
-You may see this in code as an operator, for example:
+For example, you may see this in code as an operator:
 
 [source, swift]
 ----
@@ -131,7 +127,10 @@ These also have an impact on the queue executing the work - both for themselves 
 These operators all take a `scheduler` parameter, which switches to the relevant thread or queue to do the work.
 Any operators following them will also be invoked on their scheduler, giving them an impact somewhat like <<reference#reference-receive,receive>>.
 
+[TIP]
+====
 If you want to be explicit about which thread context an operator or subsequent operation will run within, define it with the <<reference#reference-receive,receive>> operator.
+====
 
 == Leveraging Combine with your development
 

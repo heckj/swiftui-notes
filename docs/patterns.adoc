@@ -4,14 +4,6 @@
 Included are a series of patterns and examples of Publishers, Subscribers, and pipelines.
 These examples are meant to illustrate how to use the Combine framework to accomplish various tasks.
 
-[NOTE]
-====
-__Since this is a work in progress:__
-if you have a suggestion for a pattern or recipe, I'm happy to consider it.
-
-Please https://github.com/heckj/swiftui-notes/issues/new/choose[Open an issue] in GitHub to request something.
-====
-
 include::pattern-sink.adoc[]
 include::pattern-assign.adoc[]
 include::pattern-datataskpublisher-decode.adoc[]
