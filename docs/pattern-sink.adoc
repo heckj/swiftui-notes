@@ -24,12 +24,12 @@ Sink creates an all-purpose subscriber to capture or react to the data from a Co
 ----
 let cancellablePipeline = publishingSource.sink { someValue in <1>
     // do what you want with the resulting value passed down
-    // be aware that depending on the data type being returned, you may get this closure invoked
-    // multiple times.
+    // be aware that depending on the publisher, this closure
+    // may be invoked multiple times.
     print(".sink() received \(someValue)")
 })
 ----
-<1> The simple version of a sink is very compact, with a single trailing closure that only receives data when presented through the pipeline.
+<1> The simple version of a sink is very compact, with a single trailing closure receiving data when presented through the pipeline.
 
 .sink with completions and data
 [source, swift]
@@ -37,25 +37,27 @@ let cancellablePipeline = publishingSource.sink { someValue in <1>
 let cancellablePipeline = publishingSource.sink(receiveCompletion: { completion in <1>
     switch completion {
     case .finished:
-        // no associated data, but you can react to knowing the request has been completed
+        // no associated data, but you can react to knowing the
+        // request has been completed
         break
     case .failure(let anError):
-        // do what you want with the error details, presenting, logging, or hiding as appropriate
+        // do what you want with the error details, presenting,
+        // logging, or hiding as appropriate
         print("received the error: ", anError)
         break
     }
 }, receiveValue: { someValue in
     // do what you want with the resulting value passed down
-    // be aware that depending on the data type being returned, you may get this closure invoked
-    // multiple times.
+    // be aware that depending on the publisher, this closure
+    // may be invoked multiple times.
     print(".sink() received \(someValue)")
 })
 
 cancellablePipeline.cancel() <2>
 ----
 
-<1> Sinks are created by chaining the code from a publisher or pipeline, and terminate the pipeline.
-When the sink is created or invoked on a publisher, it implicitly starts <<coreconcepts#coreconcepts-lifecycle,the lifecycle>> with the `subscribe` method and will request unlimited data.
+<1> Sinks are created by chaining the code from a publisher or pipeline, and provide an end point for the pipeline.
+When the sink is created or invoked on a publisher, it implicitly starts <<coreconcepts#coreconcepts-lifecycle,the lifecycle>> with the `subscribe` method, requesting unlimited data.
 <2> Sinks are cancellable subscribers. At any time you can take the reference that terminated with sink and invoke `.cancel()` on it to invalidate and shut down the pipeline.
 
 // force a page break - in HTML rendering is just a <HR>
