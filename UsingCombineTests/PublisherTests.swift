@@ -33,7 +33,7 @@ class PublisherTests: XCTestCase {
         @Published var username: String = ""
     }
 
-    enum failureCondition: Error {
+    enum FailureCondition: Error {
         case selfDestruct
     }
 
@@ -162,7 +162,7 @@ class PublisherTests: XCTestCase {
             .print(self.debugDescription)
             .tryMap({ myValue -> String in
                 if (myValue == "boom") {
-                    throw failureCondition.selfDestruct
+                    throw FailureCondition.selfDestruct
                 }
                 return "mappedValue"
             })

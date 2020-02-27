@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xl="http://www.w3.org/1999/xlink" version="1.1" viewBox="156 114 500 206" width="500" height="206">
+  <defs>
+    <font-face font-family="Helvetica Neue" font-size="16" panose-1="2 0 5 3 0 0 0 2 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="951.9958" descent="-212.99744" font-weight="400">
+      <font-face-src>
+        <font-face-name name="HelveticaNeue"/>
+      </font-face-src>
+    </font-face>
+  </defs>
+  <metadata> Produced by OmniGraffle 7.12.1 
+    <dc:date>2019-11-20 17:12:50 +0000</dc:date>
+  </metadata>
+  <g id="Combine_Marble_Diagram" stroke-dasharray="none" stroke="none" stroke-opacity="1" fill="none" fill-opacity="1">
+    <title>combine_marble_diagram</title>
+    <g id="Combine_Marble_Diagram: Layer 1">
+      <title>Layer 1</title>
+      <g id="Graphic_2">
+        <path d="M 223 163.9 L 223 158.5 L 644 158.5 L 644 155.8 L 655 161.2 L 644 166.6 L 644 163.9 Z" fill="white"/>
+        <path d="M 223 163.9 L 223 158.5 L 644 158.5 L 644 155.8 L 655 161.2 L 644 166.6 L 644 163.9 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_3">
+        <rect x="223" y="181" width="360" height="72" fill="white"/>
+        <rect x="223" y="181" width="360" height="72" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(228 207.776)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="144.632" y="15">operator</tspan>
+        </text>
+      </g>
+      <g id="Group_9">
+        <g id="Graphic_12">
+          <path d="M 166.42857 150.4 L 158.2 162.1 L 166.42857 173.8 L 207.57143 173.8 L 215.8 162.1 L 207.57143 150.4 Z" fill="#ffd579" fill-opacity=".5"/>
+        </g>
+        <g id="Line_11">
+          <path d="M 166.42857 150.4 L 158.2 162.1 L 166.42857 173.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_10">
+          <path d="M 207.57143 150.4 L 215.8 162.1 L 207.57143 173.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+      </g>
+      <g id="Group_5">
+        <g id="Line_8">
+          <path d="M 166.4 116.2 L 158.2 127.9 L 166.4 139.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_7">
+          <path d="M 207.4 116.2 L 215.6 127.9 L 207.4 139.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Graphic_6">
+          <path d="M 166.4 116.2 L 158.2 127.9 L 166.4 139.6 L 207.4 139.6 L 215.6 127.9 L 207.4 116.2 Z" fill="#0096ff" fill-opacity=".5"/>
+        </g>
+      </g>
+      <g id="Graphic_16">
+        <path d="M 223 131.5 L 223 126.1 L 644 126.1 L 644 123.4 L 655 128.8 L 644 134.2 L 644 131.5 Z" fill="white"/>
+        <path d="M 223 131.5 L 223 126.1 L 644 126.1 L 644 123.4 L 655 128.8 L 644 134.2 L 644 131.5 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_69">
+        <path d="M 223 307.9 L 223 302.5 L 644 302.5 L 644 299.8 L 655 305.2 L 644 310.6 L 644 307.9 Z" fill="white"/>
+        <path d="M 223 307.9 L 223 302.5 L 644 302.5 L 644 299.8 L 655 305.2 L 644 310.6 L 644 307.9 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Group_65">
+        <g id="Graphic_68">
+          <path d="M 166.42857 294.4 L 158.2 306.1 L 166.42857 317.8 L 207.57143 317.8 L 215.8 306.1 L 207.57143 294.4 Z" fill="#ffd579" fill-opacity=".5"/>
+        </g>
+        <g id="Line_67">
+          <path d="M 166.42857 294.4 L 158.2 306.1 L 166.42857 317.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_66">
+          <path d="M 207.57143 294.4 L 215.8 306.1 L 207.57143 317.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+      </g>
+      <g id="Group_61">
+        <g id="Line_64">
+          <path d="M 166.4 260.2 L 158.2 271.9 L 166.4 283.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_63">
+          <path d="M 207.4 260.2 L 215.6 271.9 L 207.4 283.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Graphic_62">
+          <path d="M 166.4 260.2 L 158.2 271.9 L 166.4 283.6 L 207.4 283.6 L 215.6 271.9 L 207.4 260.2 Z" fill="#0096ff" fill-opacity=".5"/>
+        </g>
+      </g>
+      <g id="Graphic_60">
+        <path d="M 223 275.5 L 223 270.1 L 644 270.1 L 644 267.4 L 655 272.8 L 644 278.2 L 644 275.5 Z" fill="white"/>
+        <path d="M 223 275.5 L 223 270.1 L 644 270.1 L 644 267.4 L 655 272.8 L 644 278.2 L 644 275.5 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+    </g>
+  </g>
+</svg>

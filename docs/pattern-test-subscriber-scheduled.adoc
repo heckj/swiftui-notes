@@ -67,7 +67,7 @@ This really only shows when debugging test failures, and is convenient as a remi
 A definite downside to this technique is that it forces the test to take a minimum amount of time matching the maximum queue delay in the test.
 
 Another option is a 3rd party library named EntwineTest, which was inspired by the RxTest library.
-EntwineTest is part of Entwine, a swift library that expands on Combine with some helpers.
+EntwineTest is part of Entwine, a Swift library that expands on Combine with some helpers.
 The library can be found on Github at https://github.com/tcldr/Entwine.git, available under the MIT license.
 
 One of the key elements included in EnwtineTest is a virtual time scheduler, as well as additional classes that schedule (TestablePublisher) and collect and record (TestableSubscriber) the timing of results while using this scheduler.
@@ -95,7 +95,7 @@ func testExampleUsingVirtualTimeScheduler() {
 }
 ----
 
-<1> Using the virtual time scheduler requires you create one at the start of the test, initializing it's clock to a starting value.
+<1> Using the virtual time scheduler requires you create one at the start of the test, initializing its clock to a starting value.
 The virtual time scheduler in EntwineTest will commence subscription at the value `200` and times out at `900` if the pipeline isn't complete by that time.
 <2> You create your pipeline, along with any publishers or subscribers, as normal.
 EntwineTest also offers a testable publisher and a testable subscriber that could be used as well.

@@ -15,7 +15,7 @@ class DataTaskPublisherTests: XCTestCase {
     var mockURL: URL?
     var myBackgroundQueue: DispatchQueue?
 
-    enum testFailureCondition: Error {
+    enum TestFailureCondition: Error {
         case invalidServerResponse
     }
 
@@ -37,7 +37,7 @@ class DataTaskPublisherTests: XCTestCase {
         // Apple recommends NOT using .concurrent queue when working with Combine pipelines:
         // https://forums.swift.org/t/runloop-main-or-dispatchqueue-main-when-using-combine-scheduler/26635/4
         self.mockURL = URL(string: "https://fakeurl.com/response")
-        // ignore the testURL and let it pass through and do it's thing
+        // ignore the testURL and let it pass through and do its thing
         Mocker.ignore(testURL!)
         Mocker.ignore(URL(string: test400UrlString)!)
         Mocker.ignore(URL(string: test404UrlString)!)
@@ -120,7 +120,7 @@ class DataTaskPublisherTests: XCTestCase {
                     print("received error: ", anError)
                     // URL doesn't exist, so a failure should be triggered
                     // normally, the error description would be "A server with the specified hostname could not be found."
-                    // but out mocking system screws with the errors
+                    // but our mocking system screws with the errors
                     // XCTAssertEqual(anError.localizedDescription, "A server with the specified hostname could not be found.")
                     expectation.fulfill()
                 }
@@ -141,7 +141,7 @@ class DataTaskPublisherTests: XCTestCase {
             .tryMap { data, response -> Data in
                 guard let httpResponse = response as? HTTPURLResponse,
                     httpResponse.statusCode == 200 else {
-                        throw testFailureCondition.invalidServerResponse
+                        throw TestFailureCondition.invalidServerResponse
                 }
                 return data
             }
@@ -195,7 +195,7 @@ class DataTaskPublisherTests: XCTestCase {
             .tryMap { data, response -> Data in
                 guard let httpResponse = response as? HTTPURLResponse,
                     httpResponse.statusCode == 200 else {
-                        throw testFailureCondition.invalidServerResponse
+                        throw TestFailureCondition.invalidServerResponse
                 }
                 return data
             }
@@ -255,7 +255,7 @@ class DataTaskPublisherTests: XCTestCase {
             .tryMap { data, response -> Data in
                 guard let httpResponse = response as? HTTPURLResponse,
                     httpResponse.statusCode == 200 else {
-                        throw testFailureCondition.invalidServerResponse
+                        throw TestFailureCondition.invalidServerResponse
                 }
                 return data
             }
@@ -294,7 +294,7 @@ class DataTaskPublisherTests: XCTestCase {
                 .tryMap { data, response -> Data in
                         guard let httpResponse = response as? HTTPURLResponse,
                             httpResponse.statusCode == 200 else {
-                                throw testFailureCondition.invalidServerResponse
+                                throw TestFailureCondition.invalidServerResponse
                         }
                         return data
                 }

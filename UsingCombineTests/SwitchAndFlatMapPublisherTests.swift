@@ -16,7 +16,7 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
         var ip: String
     }
 
-    enum testFailureCondition: Error {
+    enum TestFailureCondition: Error {
         case invalidServerResponse
     }
 

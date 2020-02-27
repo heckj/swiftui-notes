@@ -1,0 +1,180 @@
+[#pattern-observableobject]
+== Using ObservableObject with SwiftUI models as a publisher source
+
+__Goal__::
+
+* SwiftUI includes @ObservedObject and the ObservableObject protocol, which provides a means of exterrnalizing state for a SwiftUI view while alerting SwiftUI to the model changing.
+
+__References__::
+
+* <<reference#reference-published,@Published>>
+* <<reference#reference-observableobject,ObservableObject>>
+* <<reference#reference-currentvaluesubject,currentValueSubject>>
+* <<reference#reference-combinelatest,combineLatest>>
+* <<reference#reference-map>>
+* <<reference#reference-onreceive,onReceive>>
+
+__See also__::
+
+The SwiftUI example code:
+
+* https://github.com/heckj/swiftui-notes/blob/master/SwiftUI-Notes/ReactiveForm.swift[`SwiftUI-Notes/ReactiveForm.swift`]
+* https://github.com/heckj/swiftui-notes/blob/master/SwiftUI-Notes/ReactiveFormModel.swift[`SwiftUI-Notes/ReactiveFormModel.swift`]
+
+__Code and explanation__::
+
+SwiftUI views are declarative structures that are rendererd based on some known state, being invalidated and updated when that state changes.
+We can use Combine to provide reactive updates to manipulate this state and expose it back to SwiftUI.
+The example provided here is a simple form entry input, with the goal of providing reactive and dynamic feedback based on the inputs to two fields.
+
+The following rules are encoded into Combine piplines:
+1. the two fields need to be identical - as in entering a password or email address and then validating it by a second entry.
+2. the value entered is required to be a minimum of 5 characters in length.
+3. A button to submit is enabled or disabled based on the results of these rules.
+
+This is accomplished with SwiftUI by externalizing the state into properties on a class and referencing that class into the model using the `ObservableObject` protocol.
+Two properties are directly represented: `firstEntry` and `secondEntry` as Strings using the <<reference-published,@Published>> property wrapper to allow SwiftUI to bind to their updates, as well as update them.
+A third property `submitAllowed` is exposed as a Combine publisher to be used within the view, which maintains the @State internally to the view.
+A fourth property - an array of Strings called `validationMessages` - is computed within the Combine pipelines from the first two properties, and also exposed to SwiftUI using the <<reference-published,@Published>> property wrapper.
+
+
+.https://github.com/heckj/swiftui-notes/blob/master/SwiftUI-Notes/ReactiveFormModel.swift[SwiftUI-Notes/ReactiveFormModel.swift]
+[source, swift]
+----
+import Foundation
+import Combine
+
+class ReactiveFormModel : ObservableObject {
+
+    @Published var firstEntry: String = "" {
+        didSet {
+            firstEntryPublisher.send(self.firstEntry) <1>
+        }
+    }
+    private let firstEntryPublisher = CurrentValueSubject<String, Never>("") <2>
+
+    @Published var secondEntry: String = "" {
+        didSet {
+            secondEntryPublisher.send(self.secondEntry)
+        }
+    }
+    private let secondEntryPublisher = CurrentValueSubject<String, Never>("")
+
+    @Published var validationMessages = [String]()
+    private var cancellableSet: Set<AnyCancellable> = []
+
+    var submitAllowed: AnyPublisher<Bool, Never>
+
+    init() {
+
+        let validationPipeline = Publishers.CombineLatest(firstEntryPublisher, secondEntryPublisher) <3>
+            .map { (arg) -> [String] in <4>
+                var diagMsgs = [String]()
+                let (value, value_repeat) = arg
+                if !(value_repeat == value) {
+                    diagMsgs.append("Values for fields must match.")
+                }
+                if (value.count < 5 || value_repeat.count < 5) {
+                    diagMsgs.append("Please enter values of at least 5 characters.")
+                }
+                return diagMsgs
+            }
+
+        submitAllowed = validationPipeline <5>
+            .map { stringArray in
+                return stringArray.count < 1
+            }
+            .eraseToAnyPublisher()
+
+        let _ = validationPipeline <6>
+            .assign(to: \.validationMessages, on: self)
+            .store(in: &cancellableSet)
+    }
+}
+----
+
+<1> The firstEntry and secondEntry properties are both set with default values of an empty string.
+<2> These properties are then also mirrored with a <<reference#reference-currentvaluesubject,currentValueSubject>>, which is updated using `didSet` from each of the `@Published` properties. This drives the combine piplines defined below to trigger the reactive updates when the values are changed from the SwiftUI view.
+<3> <<reference#reference-combinelatest,combineLatest>> is used to merge updates from either of `firstEntry` or `secondEntry` so that updates will be triggered from either source.
+<4> <<reference#reference-map>> takes the input values and uses them to determine and publish a list of validating messages. This overall flow is the source for two follow on pipelines.
+<5> The first of the follow on pipelines uses the list of validation messages to determine a true or false Boolean publisher that is used to enable, or disable, the submit button.
+<6> The second of the follow on pipelines takes the validation messages and updates them locally on this ObservedObject reference for SwiftUI to watch and use as it sees fit.
+
+The two different methods of exposing state changes - as a publisher, or as external state, are presented as examples for how you can utilize either pattern.
+The submit button enable/disable choice could be exposed as a `@Published` property, and the validation messages could be exposed as a publisher of `<String[], Never>`.
+If the need involves tracking as explicit state, it is likely cleaner and less directly coupled by exposing `@Published` properties - but either mechanism can be used.
+
+The model above is coupled to a SwiftUI View declaration that uses the externalized state.
+
+.https://github.com/heckj/swiftui-notes/blob/master/SwiftUI-Notes/ReactiveForm.swift[SwiftUI-Notes/ReactiveForm.swift]
+[source, swift]
+----
+
+import SwiftUI
+
+struct ReactiveForm: View {
+
+    @ObservedObject var model: ReactiveFormModel <1>
+    // $model is a ObservedObject<ExampleModel>.Wrapper
+    // and $model.objectWillChange is a Binding<ObservableObjectPublisher>
+    @State private var buttonIsDisabled = true <2>
+    // $buttonIsDisabled is a Binding<Bool>
+
+    var body: some View {
+        VStack {
+            Text("Reactive Form")
+                .font(.headline)
+
+            Form {
+                TextField("first entry", text: $model.firstEntry) <3>
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .lineLimit(1)
+                    .multilineTextAlignment(.center)
+                    .padding()
+
+                TextField("second entry", text: $model.secondEntry)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .multilineTextAlignment(.center)
+                    .padding()
+
+                VStack {
+                    ForEach(model.validationMessages, id: \.self) { msg in <4>
+                        Text(msg)
+                            .foregroundColor(.red)
+                            .font(.callout)
+                    }
+                }
+            }
+
+            Button(action: {}) {
+                Text("Submit")
+            }.disabled(buttonIsDisabled)
+                .onReceive(model.submitAllowed) { submitAllowed in <5>
+                    self.buttonIsDisabled = !submitAllowed
+            }
+            .padding()
+            .background(RoundedRectangle(cornerRadius: 10)
+                .stroke(Color.blue, lineWidth: 1)
+            )
+
+            Spacer()
+        }
+    }
+}
+
+struct ReactiveForm_Previews: PreviewProvider {
+    static var previews: some View {
+        ReactiveForm(model: ReactiveFormModel())
+    }
+}
+----
+
+<1> The model is exposed to SwiftUI using `@ObservedObject`.
+<2> `@State` buttonIsDisabled is declared locally to this view, with a default value of `true`.
+<3> The projected value from the property wrapper (`$model.firstEntry` and `$model.secondEntry`) are used to pass a Binding to the TextField view element. The `Binding` will trigger updates back on the reference model when the user changes a value, and will let SwiftUI's components know that changes are about to happen if the exposed model is changing.
+<4> The validation messages, which are generated and assigned within the model is invisible to SwiftUI here as a combine publisher pipeline. Instead this only reacts to the model changes being exposed by those values changing, irregardless of what mechanism changed them.
+<5> As an example of how to use a published with <<reference#reference-onreceive,onReceive>>, an `onReceive` subscriber is used to listen to a publisher which is exposed from the model reference. In this case, we take the value and store is locally as `@State` within the SwiftUI view, but it could also be used after some transformation if that logic were more relevant to just the view display of the resulting values. In this case, we use it with `disabled` on `Button` to enabled SwiftUI to enable or disable that UI element based on the value stored in the `@State`.
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

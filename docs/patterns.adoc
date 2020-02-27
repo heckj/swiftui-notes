@@ -61,19 +61,19 @@ include::pattern-notificationcenter.adoc[]
 == SwiftUI Integration
 
 :leveloffset: +1
-include::pattern-bindableobject.adoc[]
+include::pattern-observableobject.adoc[]
 :leveloffset: -1
 
 [#patterns-testing-and-debugging]
 == Testing and Debugging
 
-The Publisher/Subscriber interface in combine is beautifully suited to be an easily testable interface.
+The Publisher/Subscriber interface in Combine is beautifully suited to be an easily testable interface.
 
 With the composability of Combine, you can use this to your advantage, creating APIs that present, or consume, code that conforms to https://developer.apple.com/documentation/combine/publisher[Publisher].
 
 With the https://developer.apple.com/documentation/combine/publisher[publisher protocol] as the key interface, you can replace either side to validate your code in isolation.
 
-For example, if your code was focused on providing it's data from external web services through Combine, you might make the interface to this conform to `AnyPublisher<Data, Error>`.
+For example, if your code was focused on providing its data from external web services through Combine, you might make the interface to this conform to `AnyPublisher<Data, Error>`.
 You could then use that interface to test either side of that pipeline independently.
 
 * You could mock data responses that emulate the underlying API calls and possible responses, including various error conditions.

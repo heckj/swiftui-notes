@@ -9,6 +9,8 @@ __References__::
 
 * <<reference#reference-catch,catch>>
 * <<reference#reference-retry,retry>>
+* <<reference#reference-delay,delay>>
+* <<reference#reference-trymap,tryMap>>
 
 __See also__::
 
@@ -17,17 +19,26 @@ __See also__::
 
 __Code and explanation__::
 
-When you specify this operator in a pipeline and it receives a subscription, it first tries to request a subscription from it's upstream publisher.
-If the response to that subscription fails, then it will retry the subscription to the same publisher.
+When requesting data from a dataTaskPublisher, there is the possibility that the request may fail, and instead of data you may receive a `.failure` completion with an error.
+When it fails, the <<reference#reference-retry,retry>> operator will let you retry that same request for a set number of attempts that you specify.
+When the publisher doesn't send a failure - sending it's result data type - the retry operator passes through the resulting values.
+It only reacts within a combine pipeline when a `.failure` completion is sent.
 
-The retry operator can be specified with a number of retries to attempt.
-If no number of retries is specified, it will attempt to retry indefinitely until it receives a .finished completion from it's subscriber.
-If the number of retries is specified and all requests fail, then the `.failure` completion is passed down to the subscriber of this operator.
+When it does sense a `.failure` completion, the way it retries is by re-doing the subscription to the operator or publisher to which  it was chained.
 
-In practice, this is mostly commonly desired when attempting to request network resources with an unstable connection.
-If you use a retry operator, you should add a specific number of retries so that the subscription doesn't effectively get into an infinite loop.
+The <<reference#reference-retry,retry>> operator is commonly desired when attempting to request network resources with an unstable connection, or other situations where the answer might change if the request happens again after a short period of time.
+If the number of retries specified all fail, then the `.failure` completion is passed down to the subscriber of this operator.
 
-An example of the above example using retry in combination with a delay:
+In our example below, we are using retry in combination with a <<reference#reference-delay,delay>> operator.
+The delay operator puts a small random delay in how long the request takes.
+This spaces out the retry attempts, so that the retries don't all happen in quick succession.
+
+This example also includes the use of the <<reference#reference-trymap,tryMap>> operator to more fully inspect any URLResponse returned from the dataTaskPublisher.
+Any response from the server is encapsaulted by URLSession, and passed forward as a valid response.
+Because of this, URLSession doesn't treat a 404 Not Found http response as an error response, nor any 50x error codes.
+Using tryMap lets us inspect the response code that was sent, and verify that it was a 200 response code.
+In this example, if the response code is anything but a 200 response, it throws an exception - which in turn causes the tryMap operator to pass down a `.failure` completion rather than data.
+This example sets the tryMap *after* the retry operator so that retry will only re-attempt the request when the site didn't respond.
 
 [source, swift]
 ----
@@ -37,7 +48,7 @@ let remoteDataPublisher = urlSession.dataTaskPublisher(for: self.mockURL!)
     .tryMap { data, response -> Data in <3>
         guard let httpResponse = response as? HTTPURLResponse,
             httpResponse.statusCode == 200 else {
-                throw testFailureCondition.invalidServerResponse
+                throw TestFailureCondition.invalidServerResponse
         }
         return data
     }
@@ -46,9 +57,9 @@ let remoteDataPublisher = urlSession.dataTaskPublisher(for: self.mockURL!)
     .eraseToAnyPublisher()
 ----
 
-<1> the delay operator will delay further processing on the pipeline, in this case for a random selection of 1 to 5 seconds. By adding delay here in the pipeline, it will always occur, even if the original request is successful.
-<2> retry is specified as trying 3 times. If you specify retry without any options, it will retry infinitely, and may cause your pipeline to never resolve any values or completions.
-<3> tryMap is being used to investigate errors after the retry so that retry will only re-attempt the request when the site didn't respond.
+<1> The <<reference#reference-delay,delay>> operator will hold the results flowing through the pipeline for a short duration, in this case for a random selection of 1 to 5 seconds. By adding delay here in the pipeline, it will always occur, even if the original request is successful.
+<2> Retry is specified as trying 3 times.
+<3> tryMap is being used to inspect the data result from dataTaskPublisher and return a `.failure` completion if the response from the server is valid, but not a 200 HTTP response code.
 
 [WARNING]
 ====

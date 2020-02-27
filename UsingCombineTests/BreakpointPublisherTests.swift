@@ -11,7 +11,7 @@ import Combine
 
 class BreakpointPublisherTests: XCTestCase {
 
-    enum testFailureCondition: Error {
+    enum TestFailureCondition: Error {
         case invalidServerResponse
     }
 
@@ -27,7 +27,7 @@ class BreakpointPublisherTests: XCTestCase {
         // this sets up the chain of whatever it's going to do
         let cancellable = publisher
             .tryMap { stringValue in
-                throw testFailureCondition.invalidServerResponse
+                throw TestFailureCondition.invalidServerResponse
             }
             .breakpointOnError()
             .sink(

@@ -11,6 +11,56 @@ import Combine
 
 class DeferredPublisherTests: XCTestCase {
 
+
+    enum TestFailureCondition: Error {
+        case anErrorExample
+    }
+
+    // example of a asynchronous function to be called from within a Future and its completion closure
+    func asyncAPICall(sabotage: Bool, completion completionBlock: @escaping ((Bool, Error?) -> Void)) {
+        DispatchQueue.global(qos: .background).async {
+            let delay = Int.random(in: 1...3)
+            print(" * making async call (delay of \(delay) seconds)")
+            sleep(UInt32(delay))
+            if sabotage {
+                completionBlock(false, TestFailureCondition.anErrorExample)
+            }
+            completionBlock(true, nil)
+        }
+    }
+
+    func testDeferredFuturePublisher() {
+        // setup
+        var outputValue: Bool = false
+        let expectation = XCTestExpectation(description: self.debugDescription)
+
+        let deferredPublisher = Deferred {
+            return Future<Bool, Error> { promise in
+                self.asyncAPICall(sabotage: false) { (grantedAccess, err) in
+                    if let err = err {
+                       return promise(.failure(err))
+                    }
+                    return promise(.success(grantedAccess))
+                }
+            }
+        }.eraseToAnyPublisher()
+
+        // the creating the future publisher
+
+        // driving it by attaching it to .sink
+        let cancellable = deferredPublisher.sink(receiveCompletion: { err in
+            print(".sink() received the completion: ", String(describing: err))
+            expectation.fulfill()
+        }, receiveValue: { value in
+            print(".sink() received value: ", value)
+            outputValue = value
+        })
+
+        wait(for: [expectation], timeout: 5.0)
+        XCTAssertTrue(outputValue)
+        XCTAssertNotNil(cancellable)
+    }
+
     func testDeferredPublisher() {
         let expectation = XCTestExpectation(description: self.debugDescription)
 

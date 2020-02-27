@@ -74,4 +74,77 @@ class SequencePublisherTests: XCTestCase {
         XCTAssertEqual(receiveCount, 5)
         XCTAssertEqual(collectedSequence, initialSequence)
     }
+
+    func testConvenienceArraySequencePublisher() {
+        let expectation = XCTestExpectation(description: self.debugDescription)
+
+        let initialSequence = ["one", "two", "red", "blue"]
+
+        var receiveCount = 0
+        var collectedSequence: [String] = []
+
+        _ = initialSequence.publisher
+            .sink {
+                print($0)
+            }
+
+        let cancellable = initialSequence.publisher
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let anError):
+                    XCTFail("No failure should be received from empty")
+                    print("received error: ", anError)
+                    break
+                }
+                expectation.fulfill()
+            }, receiveValue: { valueReceived in
+                receiveCount += 1
+                collectedSequence.append(valueReceived)
+                print(".sink() data received \(valueReceived)")
+            })
+
+        wait(for: [expectation], timeout: 1.0)
+        XCTAssertNotNil(cancellable)
+        XCTAssertEqual(receiveCount, 4)
+        XCTAssertEqual(collectedSequence, initialSequence)
+    }
+
+    func testConvenienceMapSequencePublisher() {
+        let expectation = XCTestExpectation(description: self.debugDescription)
+
+        let associativeArray: [String:String] = ["one": "two", "red": "blue"]
+
+        var receiveCount = 0
+        var collectedSequence: [(String, String)] = []
+
+        let cancellable = associativeArray.publisher
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let anError):
+                    XCTFail("No failure should be received from empty")
+                    print("received error: ", anError)
+                    break
+                }
+                expectation.fulfill()
+            }, receiveValue: { valueReceived in
+                receiveCount += 1
+                collectedSequence.append(valueReceived)
+                print(".sink() data received \(valueReceived)")
+            })
+
+        wait(for: [expectation], timeout: 1.0)
+        XCTAssertNotNil(cancellable)
+        XCTAssertEqual(receiveCount, 2)
+        // ordering is not guaranteed...
+//        XCTAssertEqual(collectedSequence[0].0, "one")
+//        XCTAssertEqual(collectedSequence[0].1, "two")
+//        XCTAssertEqual(collectedSequence[1].0, "red")
+//        XCTAssertEqual(collectedSequence[1].1, "blue")
+    }
 }

@@ -18,11 +18,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 
-        // Use a UIHostingController as window root view controller
-        let window = UIWindow(frame: UIScreen.main.bounds)
-        window.rootViewController = UIHostingController(rootView: ContentView(model: ExampleModel()))
-        self.window = window
-        window.makeKeyAndVisible()
+        // Create the model that backs the data in our view
+        let model = ReactiveFormModel()
+
+        // Create the SwiftUI view that provides the window contents.
+        let contentView = ContentView(model: model)
+
+        // Use a UIHostingController as window root view controller.
+        if let windowScene = scene as? UIWindowScene {
+            let window = UIWindow(windowScene: windowScene)
+            window.rootViewController = UIHostingController(rootView: contentView)
+            self.window = window
+            window.makeKeyAndVisible()
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -52,6 +60,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
+
 
 }
 

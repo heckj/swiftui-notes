@@ -26,7 +26,7 @@ When you are testing a publisher, or something that creates a publisher, you may
 Combine, being driven by its subscribers, can set up a sync that initiates the data flow.
 You can use an https://developer.apple.com/documentation/xctest/xctestexpectation[XCTestExpectation] to wait an explicit amount of time for the test to run to completion.
 
-A general pattern for using this with combine includes:
+A general pattern for using this with Combine includes:
 
 . set up the expectation within the test
 . establish the code you are going to test
@@ -75,7 +75,7 @@ The code we are testing here is dataTaskPublisher retrieving data from a preset 
 The publisher is invoked by attaching the <<reference#reference-sink,sink>> subscriber to it.
 Without the expectation, the code will still run, but the test running structure wouldn't wait to see if there were any exceptions.
 The expectation within the test "holds the test" waiting for a response to let the operators do their work.
-<2> In this case, the test is expected to complete successfully and terminate normally, therefore thethe `expectation.fulfill()` invocation is set within the receiveCompletion closure,  specifically linked to a received `.finished` completion.
+<2> In this case, the test is expected to complete successfully and terminate normally, therefore the `expectation.fulfill()` invocation is set within the receiveCompletion closure,  specifically linked to a received `.finished` completion.
 <3> Since we don't expect a failure, we also have an explicit XCTFail() invocation if we receive a `.failure` completion.
 <4> We have a few additional assertions within the receiveValue.
 Since this publisher set returns a single value and then terminates, we can make easily make inline assertions about the data received.

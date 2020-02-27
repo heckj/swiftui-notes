@@ -14,15 +14,15 @@ __References__::
 
 __See also__::
 
-* <<patterns#patterns-delegate-publisher-subject,Creating a repeating publisher by wrapping a delegate based API>
+* <<patterns#patterns-delegate-publisher-subject,Creating a repeating publisher by wrapping a delegate based API>>
 * The ViewController with this code is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/AsyncCoordinatorViewController.swift[UIKit-Combine/AsyncCoordinatorViewController.swift]
 
 __Code and explanation__::
 
-Any asynchronous (or synchronous) set of tasks that need to happen in a specific order can also be coordinated using a combine pipeline.
+Any asynchronous (or synchronous) set of tasks that need to happen in a specific order can also be coordinated using a Combine pipeline.
 By using <<reference#reference-future,Future>> operator, the very act of completing an asynchronous call can be captured, and sequencing operators provides the structure of that coordination.
 
-For example, by wrapping an asynchronous API calls with the <<reference#reference-future,Future>> publisher and then chaining them together with the <<reference#reference-flatmap,flatMap>> operator, you invoke the wrapped asynchronous API calls in the order of the pipeline.
+For example, by wrapping any asynchronous API calls with the <<reference#reference-future,Future>> publisher and then chaining them together with the <<reference#reference-flatmap,flatMap>> operator, you invoke the wrapped asynchronous API calls in the order of the pipeline.
 Multiple parallel asynchronous efforts can be created by creating multiple pipelines, with <<reference#reference-future,Future>> or another publisher.
 You can wait for all parallel pipelines to complete before continuing by merging them together with the <<reference#reference-zip,zip>> operator.
 
@@ -36,7 +36,7 @@ In those cases, the data results needed can be passed directly the pipeline.
 An example of this sequencing follows below.
 In this example, buttons (arranged visually to show the ordering of actions) are highlighted when they complete.
 The whole sequence is triggered by a seperate button action, which also resets the state of all the buttons and cancels any existing running sequence if it's not yet finished.
-In this example, the asynchronous API call is a call that simple takes a random amount of time to complete to provide an example of how the timing works.
+In this example, the asynchronous API call is a call that simply takes a random amount of time to complete to provide an example of how the timing works.
 
 The workflow that is created is represented in steps:
 
@@ -112,8 +112,9 @@ class AsyncCoordinatorViewController: UIViewController {
             self.randomAsyncAPI() { (result, err) in
                 if let err = err {
                     promise(.failure(err))
+                } else {
+                    promise(.success(result))
                 }
-                promise(.success(result))
             }
         }
         .receive(on: RunLoop.main)
@@ -183,7 +184,7 @@ The <<reference#reference-print,print>> operator in the pipeline is for debuggin
 <5> Each step is represented by the invocation of a <<reference#reference-future,Future>> publisher, followed immediately by pipeline elements to switch to the main thread and then update a UIButton's background to show the step has completed.
 This is encapsulated in a `createFuturePublisher` call, using <<reference#reference-erasetoanypublisher,eraseToAnyPublisher>> to simplify the type being returned.
 <6> The <<reference#reference-map,map>> operator is used to create this specific side effect of updating the a UIbutton to show the step has been completed.
-<7> The creation of the overall pipeline and it's structure of serial and parallel tasks is created from the combination of calls to `createFuturePublisher` along with the operators <<reference#reference-flatmap,flatMap>> and  <<reference#reference-zip,zip>>.
+<7> The creation of the overall pipeline and its structure of serial and parallel tasks is created from the combination of calls to `createFuturePublisher` along with the operators <<reference#reference-flatmap,flatMap>> and  <<reference#reference-zip,zip>>.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<

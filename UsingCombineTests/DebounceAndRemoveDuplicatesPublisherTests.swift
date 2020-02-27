@@ -270,8 +270,10 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         let q = DispatchQueue(label: self.debugDescription)
         let expectation = XCTestExpectation(description: self.debugDescription)
         let foo = HoldingClass()
-        var receivedCount = 0
-        var lastReceivedSinkValue = -1
+        // watching the @Published object always starts with an initial value propogated of it's
+        // value at the time of subscription
+
+        var receivedList: [Int] = []
 
         let cancellable = foo.$intValue
             .throttle(for: 0.5, scheduler: q, latest: false)
@@ -279,41 +281,60 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
             .sink { someValue in
                 print("sink invoked on queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
                 print("value updated to: ", someValue)
-                receivedCount += 1
-                lastReceivedSinkValue = someValue
+                receivedList.append(someValue)
         }
 
         q.asyncAfter(deadline: .now() + 0.1, execute: {
             print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
             foo.intValue = 1
+            // this value is collapsed by the throttle and not passed through to sink
+        })
+        q.asyncAfter(deadline: .now() + 0.2, execute: {
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+            foo.intValue = 2
+            // this value is collapsed by the throttle and not passed through to sink
         })
         q.asyncAfter(deadline: .now() + 0.6, execute: {
             print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
-            foo.intValue = 2
+            foo.intValue = 3
+        })
+        q.asyncAfter(deadline: .now() + 0.7, execute: {
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+            foo.intValue = 4
+            // this value is collapsed by the throttle and not passed through to sink
         })
         q.asyncAfter(deadline: .now() + 1.1, execute: {
             print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
-            foo.intValue = 3
+            foo.intValue = 5
         })
         q.asyncAfter(deadline: .now() + 1.2, execute: {
             print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
-            foo.intValue = 4
+            foo.intValue = 6
+            // this value is collapsed by the throttle and not passed through to sink
         })
 
-        q.asyncAfter(deadline: .now() + 2, execute: {
+        q.asyncAfter(deadline: .now() + 3, execute: {
             expectation.fulfill()
         })
 
         wait(for: [expectation], timeout: 5.0)
 
-        XCTAssertEqual(receivedCount, 3)
+        XCTAssertEqual(receivedList.count, 3)
 
-        // of the values send at 1.1 and 1.2 seconds in, the first value is returned down the pipeline
-        XCTAssertEqual(lastReceivedSinkValue, 3)
-        XCTAssertEqual(foo.intValue, 4)
+        // NOTE(heckj): this changed in Xcode 11.2 (iOS 13.2):
+        // of the values sent at 1.1 and 1.2 seconds in, the second value is returned down the pipeline
+        // and prior to that it returned the first value - so the value of "false" for recent from throttle
+        // doesn't appear to be respected. - reported as FB7424221
+        //
+        // This updated again in Xcode 11.3 (iOS 13.3), and now throttle(true) and throttle(false) exhibit
+        // different behavior again.
+        //
+        //XCTAssertEqual(receivedList, [-1, 5, 6]) // iOS 13.2.2
+        XCTAssertEqual(receivedList, [-1, 3, 5]) // iOS 13.3
+        XCTAssertEqual(foo.intValue, 6)
         XCTAssertNotNil(cancellable)
     }
-
+    
     func testThrottleLatestTrue() {
 
         class HoldingClass {
@@ -323,33 +344,46 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         let q = DispatchQueue(label: self.debugDescription)
         let expectation = XCTestExpectation(description: self.debugDescription)
         let foo = HoldingClass()
-        var receivedCount = 0
-        var lastReceivedSinkValue = -1
+        // watching the @Published object always starts with an initial value propogated of it's
+        // value at the time of subscription
+
+        var receivedList: [Int] = []
 
         let cancellable = foo.$intValue
             .throttle(for: 0.5, scheduler: q, latest: true)
             .print(self.debugDescription)
             .sink { someValue in
                 print("value updated to: ", someValue)
-                receivedCount += 1
-                lastReceivedSinkValue = someValue
+                receivedList.append(someValue)
         }
 
         q.asyncAfter(deadline: .now() + 0.1, execute: {
             print("Updating to foo.intValue on background queue")
             foo.intValue = 1
+            // this value gets collapsed and not propogated
+        })
+        q.asyncAfter(deadline: .now() + 0.2, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.intValue = 2
+            // this value gets collapsed and not propogated
         })
         q.asyncAfter(deadline: .now() + 0.6, execute: {
             print("Updating to foo.intValue on background queue")
-            foo.intValue = 2
+            foo.intValue = 3
+        })
+        q.asyncAfter(deadline: .now() + 0.7, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.intValue = 4
+            // this value gets collapsed and not propogated
         })
         q.asyncAfter(deadline: .now() + 1.1, execute: {
             print("Updating to foo.intValue on background queue")
-            foo.intValue = 3
+            foo.intValue = 5
+            // this value gets collapsed and not propogated
         })
         q.asyncAfter(deadline: .now() + 1.2, execute: {
-            print("Updating to foo.intValue on background queue")
-            foo.intValue = 4
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+            foo.intValue = 6
         })
 
         q.asyncAfter(deadline: .now() + 3, execute: {
@@ -358,10 +392,364 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
 
         wait(for: [expectation], timeout: 5.0)
 
-        XCTAssertEqual(receivedCount, 3)
-        // of the values send at 1.1 and 1.2 seconds in, the second value is returned down the pipeline
-        XCTAssertEqual(foo.intValue, 4)
-        XCTAssertEqual(lastReceivedSinkValue, 4)
+        XCTAssertEqual(receivedList.count, 3)
+        // The values sent at 0.1 and 0.2 seconds in get collapsed, being within the 0.5 sec window
+        // and requesting just the "latest" value - so the total number of events received by the sink
+        // is fewer than the number sent.
+        // XCTAssertEqual(receivedList, [2, 5, 6]) // iOS 13.2.2
+        XCTAssertEqual(receivedList, [-1, 3, 6]) // iOS 13.3
+        XCTAssertEqual(foo.intValue, 6)
+        XCTAssertNotNil(cancellable)
+    }
+
+    func SKIP_testSubjectThrottleLatestAtWindowFalse() {
+        // I'm setting this test to generally skip, since it's not going to consistently run
+        // in the same fashion under CI as it does on my laptop. Since I'm pushing out values
+        // right at the edge of the timing window in this test case, the results are hyper-sensitive
+        // to slightly slower systems (such as VMs as in the CI system)
+
+        let foo = PassthroughSubject<Int, Never>()
+        // no initial value is propogated from a PassthroughSubject
+
+        print("testing queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+        let q = DispatchQueue(label: self.debugDescription)
+        let expectation = XCTestExpectation(description: self.debugDescription)
+        var receivedList: [Int] = []
+
+        let cancellable = foo
+            .throttle(for: 0.5, scheduler: q, latest: false)
+            .print(self.debugDescription)
+            .sink { someValue in
+                print("sink invoked on queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+                print("value updated to: ", someValue)
+                receivedList.append(someValue)
+        }
+
+        q.asyncAfter(deadline: .now() + 0.1, execute: {
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+            foo.send(1);
+        })
+        q.asyncAfter(deadline: .now() + 0.2, execute: {
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+            foo.send(2);
+            // this value is collapsed by the throttle and not passed through to sink
+        })
+        q.asyncAfter(deadline: .now() + 0.6, execute: {
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+            foo.send(3);
+        // this value is collapsed by the throttle and not passed through to sink
+        })
+        q.asyncAfter(deadline: .now() + 0.7, execute: {
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+            foo.send(4);
+        })
+        q.asyncAfter(deadline: .now() + 1.1, execute: {
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+            foo.send(5);
+        })
+        q.asyncAfter(deadline: .now() + 1.2, execute: {
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+            foo.send(6);
+            // this value is collapsed by the throttle and not passed through to sink
+        })
+
+        q.asyncAfter(deadline: .now() + 3, execute: {
+            expectation.fulfill()
+        })
+
+        wait(for: [expectation], timeout: 5.0)
+
+        XCTAssertEqual(receivedList.count, 3)
+
+        // NOTE(heckj): this changed in Xcode 11.2 (iOS 13.2):
+        // of the values sent at 1.1 and 1.2 seconds in, the second value is returned down the pipeline
+        // and prior to that it returned the first value - so the value of "false" for recent from throttle
+        // doesn't appear to be respected. - reported as FB7424221
+        //
+        // This updated again in Xcode 11.3 (iOS 13.3), and now throttle(true) and throttle(false) exhibit
+        // different behavior again.
+        //
+        //XCTAssertEqual(receivedList, [3, 5]) // iOS 13.2.2
+        XCTAssertEqual(receivedList, [1, 4, 5]) // iOS 13.3
+        XCTAssertNotNil(cancellable)
+    }
+
+    func SKIP_testSubjectThrottleLatestAtWindowTrue() {
+        // I'm setting this test to generally skip, since it's not going to consistently run
+        // in the same fashion under CI as it does on my laptop. Since I'm pushing out values
+        // right at the edge of the timing window in this test case, the results are hyper-sensitive
+        // to slightly slower systems (such as VMs as in the CI system)
+
+        let foo = PassthroughSubject<Int, Never>()
+        // no initial value is propogated from a PassthroughSubject
+
+        let q = DispatchQueue(label: self.debugDescription)
+        let expectation = XCTestExpectation(description: self.debugDescription)
+        var receivedList: [Int] = []
+
+        let cancellable = foo
+            .throttle(for: 0.5, scheduler: q, latest: true)
+            .print(self.debugDescription)
+            .sink { someValue in
+                print("value updated to: ", someValue)
+                receivedList.append(someValue)
+        }
+
+        q.asyncAfter(deadline: .now() + 0.1, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.send(1)
+        })
+        q.asyncAfter(deadline: .now() + 0.2, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.send(2)
+            // this value gets collapsed and not propogated
+        })
+        q.asyncAfter(deadline: .now() + 0.6, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.send(3)
+            // this value gets collapsed and not propogated
+        })
+        q.asyncAfter(deadline: .now() + 0.7, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.send(4)
+        })
+        q.asyncAfter(deadline: .now() + 1.1, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.send(5)
+            // this value gets collapsed and not propogated
+        })
+        q.asyncAfter(deadline: .now() + 1.2, execute: {
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+            foo.send(6)
+        })
+
+        q.asyncAfter(deadline: .now() + 3, execute: {
+            expectation.fulfill()
+        })
+
+        wait(for: [expectation], timeout: 5.0)
+
+        XCTAssertEqual(receivedList.count, 3)
+        // The values sent at 0.1 and 0.2 seconds in get collapsed, being within the 0.5 sec window
+        // and requesting just the "latest" value - so the total number of events received by the sink
+        // is fewer than the number sent.
+        // XCTAssertEqual(receivedList, [3, 6]) // iOS 13.2.2
+        XCTAssertEqual(receivedList, [1, 4, 6]) // iOS 13.3
+        XCTAssertNotNil(cancellable)
+    }
+
+    func testSpreadoutSubjectThrottleLatestFalse() {
+
+        let foo = PassthroughSubject<Int, Never>()
+        // no initial value is propogated from a PassthroughSubject
+
+        print("testing queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+        let q = DispatchQueue(label: self.debugDescription)
+        let expectation = XCTestExpectation(description: self.debugDescription)
+        var receivedList: [Int] = []
+
+        let cancellable = foo
+            .throttle(for: 0.5, scheduler: q, latest: false)
+            .print(self.debugDescription)
+            .sink { someValue in
+                print("sink invoked on queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+                print("value updated to: ", someValue)
+                receivedList.append(someValue)
+        }
+
+        q.asyncAfter(deadline: .now() + 0.1, execute: {
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+            foo.send(1);
+        })
+        q.asyncAfter(deadline: .now() + 0.2, execute: {
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+            foo.send(2);
+        })
+        q.asyncAfter(deadline: .now() + 0.8, execute: {
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+            foo.send(3);
+        })
+        q.asyncAfter(deadline: .now() + 0.9, execute: {
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+            foo.send(4);
+            // this value is collapsed by the throttle and not passed through to sink
+        })
+        q.asyncAfter(deadline: .now() + 1.5, execute: {
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+            foo.send(5);
+        })
+        q.asyncAfter(deadline: .now() + 1.6, execute: {
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+            foo.send(6);
+            // this value is collapsed by the throttle and not passed through to sink
+        })
+
+        q.asyncAfter(deadline: .now() + 3, execute: {
+            expectation.fulfill()
+        })
+
+        wait(for: [expectation], timeout: 5.0)
+
+        XCTAssertEqual(receivedList.count, 4)
+        //XCTAssertEqual(receivedList, [1, 3, 5]) // iOS 13.2.2
+        XCTAssertEqual(receivedList, [1, 2, 3, 5]) // iOS 13.3
+        XCTAssertNotNil(cancellable)
+    }
+
+    func testSpreadoutSubjectThrottleLatestTrue() {
+
+        let foo = PassthroughSubject<Int, Never>()
+        // no initial value is propogated from a PassthroughSubject
+
+        let q = DispatchQueue(label: self.debugDescription)
+        let expectation = XCTestExpectation(description: self.debugDescription)
+        var receivedList: [Int] = []
+
+        let cancellable = foo
+            .throttle(for: 0.5, scheduler: q, latest: true)
+            .print(self.debugDescription)
+            .sink { someValue in
+                print("value updated to: ", someValue)
+                receivedList.append(someValue)
+        }
+
+        q.asyncAfter(deadline: .now() + 0.1, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.send(1)
+        })
+        q.asyncAfter(deadline: .now() + 0.2, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.send(2)
+        })
+        q.asyncAfter(deadline: .now() + 0.8, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.send(3)
+            // this value gets collapsed and not propogated
+        })
+        q.asyncAfter(deadline: .now() + 0.9, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.send(4)
+        })
+        q.asyncAfter(deadline: .now() + 1.5, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.send(5)
+            // this value gets collapsed and not propogated
+        })
+        q.asyncAfter(deadline: .now() + 1.6, execute: {
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+            foo.send(6)
+        })
+
+        q.asyncAfter(deadline: .now() + 3, execute: {
+            expectation.fulfill()
+        })
+
+        wait(for: [expectation], timeout: 5.0)
+
+        XCTAssertEqual(receivedList.count, 4)
+        // XCTAssertEqual(receivedList, [2, 4, 6]) // iOS 13.2.2
+        XCTAssertEqual(receivedList, [1, 2, 4, 6]) // iOS 13.3
+        XCTAssertNotNil(cancellable)
+    }
+
+    func testSubjectDebounce() {
+
+        let foo = PassthroughSubject<Int, Never>()
+        // no initial value is propogated from a PassthroughSubject
+
+        let q = DispatchQueue(label: self.debugDescription)
+        let expectation = XCTestExpectation(description: self.debugDescription)
+        var receivedList: [Int] = []
+
+        let cancellable = foo
+            .debounce(for: 0.5, scheduler: q)
+            .print(self.debugDescription)
+            .sink { someValue in
+                print("value updated to: ", someValue)
+                receivedList.append(someValue)
+            }
+
+        // this is the same timing pattern as the throttle tests above, for comparison
+        q.asyncAfter(deadline: .now() + 0.1, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.send(1)
+            // this value gets collapsed and not propogated
+        })
+        q.asyncAfter(deadline: .now() + 0.2, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.send(2)
+            // this value gets collapsed and not propogated
+        })
+        q.asyncAfter(deadline: .now() + 0.6, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.send(3)
+            // this value gets collapsed and not propogated
+        })
+        q.asyncAfter(deadline: .now() + 0.7, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.send(4)
+        })
+        q.asyncAfter(deadline: .now() + 1.1, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.send(5)
+            // this value gets collapsed and not propogated
+        })
+        q.asyncAfter(deadline: .now() + 1.2, execute: {
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+            foo.send(6)
+        })
+
+        q.asyncAfter(deadline: .now() + 3, execute: {
+            expectation.fulfill()
+        })
+
+        wait(for: [expectation], timeout: 5.0)
+        XCTAssertEqual(receivedList, [6]) // iOS 13.2.2 and 13.3
+        XCTAssertNotNil(cancellable)
+    }
+
+    func testSubjectDebounceWithBreak() {
+
+        let foo = PassthroughSubject<Int, Never>()
+        // no initial value is propogated from a PassthroughSubject
+
+        let q = DispatchQueue(label: self.debugDescription)
+        let expectation = XCTestExpectation(description: self.debugDescription)
+        var receivedList: [Int] = []
+
+        let cancellable = foo
+            .debounce(for: 0.5, scheduler: q)
+            .print(self.debugDescription)
+            .sink { someValue in
+                print("value updated to: ", someValue)
+                receivedList.append(someValue)
+            }
+
+        q.asyncAfter(deadline: .now() + 0.1, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.send(1)
+            // this value gets collapsed and not propogated
+        })
+        q.asyncAfter(deadline: .now() + 0.2, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.send(2)
+        })
+        q.asyncAfter(deadline: .now() + 1.1, execute: {
+            print("Updating to foo.intValue on background queue")
+            foo.send(3)
+            // this value gets collapsed and not propogated
+        })
+        q.asyncAfter(deadline: .now() + 1.2, execute: {
+            print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+            foo.send(4)
+        })
+
+        q.asyncAfter(deadline: .now() + 3, execute: {
+            expectation.fulfill()
+        })
+
+        wait(for: [expectation], timeout: 5.0)
+        XCTAssertEqual(receivedList, [2, 4]) // iOS 13.2.2 and 13.3
         XCTAssertNotNil(cancellable)
     }
 }

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xl="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="88 115 698 149" width="698" height="149">
+  <defs>
+    <font-face font-family="Helvetica Neue" font-size="16" panose-1="2 0 5 3 0 0 0 2 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="951.9958" descent="-212.99744" font-weight="400">
+      <font-face-src>
+        <font-face-name name="HelveticaNeue"/>
+      </font-face-src>
+    </font-face>
+  </defs>
+  <metadata> Produced by OmniGraffle 7.12.1 
+    <dc:date>2019-11-12 18:40:18 +0000</dc:date>
+  </metadata>
+  <g id="Pipeline" stroke-opacity="1" stroke-dasharray="none" fill-opacity="1" fill="none" stroke="none">
+    <title>Pipeline</title>
+    <g id="Pipeline: Layer 1">
+      <title>Layer 1</title>
+      <g id="Graphic_6">
+        <rect x="89" y="119" width="120" height="110" fill="white"/>
+        <rect x="89" y="119" width="120" height="110" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_5">
+        <rect x="100" y="130" width="99" height="39" fill="#0096ff" fill-opacity=".5"/>
+        <rect x="100" y="130" width="99" height="39" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      </g>
+      <g id="Graphic_4">
+        <path d="M 99 219 L 199 219 L 179 179 L 119 179 Z" fill="#ffd579" fill-opacity=".5"/>
+        <path d="M 99 219 L 199 219 L 179 179 L 119 179 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      </g>
+      <g id="Graphic_3">
+        <text transform="translate(104 124)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="1.272" y="33">Output Type</tspan>
+        </text>
+      </g>
+      <g id="Graphic_2">
+        <text transform="translate(94 180.4)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="31.296" y="15">Failure</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="38.256" y="33.448">Type</tspan>
+        </text>
+      </g>
+      <g id="Graphic_9">
+        <rect x="296.6" y="119" width="279.2" height="110" fill="white"/>
+        <rect x="296.6" y="119" width="279.2" height="110" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_8">
+        <rect x="307.6" y="130" width="99" height="39" fill="#0096ff" fill-opacity=".5"/>
+        <rect x="307.6" y="130" width="99" height="39" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      </g>
+      <g id="Graphic_7">
+        <path d="M 306.6 219 L 406.6 219 L 386.6 179 L 326.6 179 Z" fill="#ffd579" fill-opacity=".5"/>
+        <path d="M 306.6 219 L 406.6 219 L 386.6 179 L 326.6 179 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      </g>
+      <g id="Graphic_10">
+        <text transform="translate(311.6 124)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="7.8" y="33">Input Type</tspan>
+        </text>
+      </g>
+      <g id="Graphic_11">
+        <text transform="translate(301.6 180.4)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="31.296" y="15">Failure</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="38.256" y="33.448">Type</tspan>
+        </text>
+      </g>
+      <g id="Graphic_14">
+        <path d="M 215.8 184.6 L 215.8 163 L 273.4 163 L 273.4 152.2 L 291.4 173.8 L 273.4 195.4 L 273.4 184.6 Z" fill="white"/>
+        <path d="M 215.8 184.6 L 215.8 163 L 273.4 163 L 273.4 152.2 L 291.4 173.8 L 273.4 195.4 L 273.4 184.6 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_18">
+        <rect x="466.8" y="127.2" width="99" height="39" fill="#0096ff" fill-opacity=".5"/>
+        <rect x="466.8" y="127.2" width="99" height="39" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      </g>
+      <g id="Graphic_17">
+        <path d="M 465.8 216.2 L 565.8 216.2 L 545.8 176.2 L 485.8 176.2 Z" fill="#ffd579" fill-opacity=".5"/>
+        <path d="M 465.8 216.2 L 565.8 216.2 L 545.8 176.2 L 485.8 176.2 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      </g>
+      <g id="Graphic_16">
+        <text transform="translate(470.8 121.2)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="1.272" y="33">Output Type</tspan>
+        </text>
+      </g>
+      <g id="Graphic_15">
+        <text transform="translate(460.8 177.6)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="31.296" y="15">Failure</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="38.256" y="33.448">Type</tspan>
+        </text>
+      </g>
+      <g id="Graphic_24">
+        <rect x="662.2" y="116.2" width="122.4" height="110" fill="white"/>
+        <rect x="662.2" y="116.2" width="122.4" height="110" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_23">
+        <rect x="673.2" y="127.2" width="99" height="39" fill="#0096ff" fill-opacity=".5"/>
+        <rect x="673.2" y="127.2" width="99" height="39" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      </g>
+      <g id="Graphic_22">
+        <path d="M 672.2 216.2 L 772.2 216.2 L 752.2 176.2 L 692.2 176.2 Z" fill="#ffd579" fill-opacity=".5"/>
+        <path d="M 672.2 216.2 L 772.2 216.2 L 752.2 176.2 L 692.2 176.2 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      </g>
+      <g id="Graphic_21">
+        <text transform="translate(677.2 121.2)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="7.8" y="33">Input Type</tspan>
+        </text>
+      </g>
+      <g id="Graphic_20">
+        <text transform="translate(667.2 177.6)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="31.296" y="15">Failure</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="38.256" y="33.448">Type</tspan>
+        </text>
+      </g>
+      <g id="Graphic_25">
+        <path d="M 581 184.6 L 581 163 L 638.6 163 L 638.6 152.2 L 656.6 173.8 L 638.6 195.4 L 638.6 184.6 Z" fill="white"/>
+        <path d="M 581 184.6 L 581 163 L 638.6 163 L 638.6 152.2 L 656.6 173.8 L 638.6 195.4 L 638.6 184.6 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_26">
+        <text transform="translate(112.8 240)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="0" y="15">Publisher</tspan>
+        </text>
+      </g>
+      <g id="Graphic_27">
+        <text transform="translate(413.08 240)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="0" y="15">Operator</tspan>
+        </text>
+      </g>
+      <g id="Graphic_28">
+        <text transform="translate(689.04 240)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="7105427e-19" y="15">Subscriber</tspan>
+        </text>
+      </g>
+    </g>
+  </g>
+</svg>

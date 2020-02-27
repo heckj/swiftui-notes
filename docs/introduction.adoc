@@ -41,7 +41,7 @@ Or more generally for creating pipelines that process data from external sources
 
 == Combine specifics
 
-Applying these concepts to a strongly typed language like swift is part of what Apple has created in Combine.
+Applying these concepts to a strongly typed language like Swift is part of what Apple has created in Combine.
 Combine embeds the concept of back-pressure, which allows the subscriber to control how much information it gets at once and needs to process.
 In addition, it supports efficient operation with the notion of streams that are cancellable and driven primarily by the subscriber.
 
@@ -97,7 +97,7 @@ Apple's developer documentation is hosted at https://developer.apple.com/documen
 
 === WWDC content
 
-Apple provides video, slides, and some sample code in sessions it's developer conferences.
+Apple provides video, slides, and some sample code in sessions at its developer conferences.
 Details on Combine are primarily from https://developer.apple.com/videos/play/wwdc2019[WWDC 2019].
 
 A number of these introduce and go into some depth on Combine:
@@ -117,6 +117,14 @@ A number of additional WWDC19 sessions mention Combine:
 
 * https://developer.apple.com/videos/play/wwdc2019/610/[Building Collaborative AR Experiences]
 * https://developer.apple.com/videos/play/wwdc2019/223/[Expanding the Sensory Experience with Core Haptics]
+
+== Additional Online Combine Resources
+
+In addition to Apple's documentation, there are a number of other online resources where you can find questions, answers, discussion, and descriptions of how Combine operates.
+
+* The https://forums.swift.org/[Swift Forums] (hosted from the https://swift.org/[swift open source project]) has a https://forums.swift.org/tags/combine[combine tag] with a number of interesting threads. While the Combine framework is *not* open source, some of its implementation and specifics are discussed in these forums.
+
+* https://stackoverflow.com[Stackoverflow] also has a sizable (and growing) collection of https://stackoverflow.com/questions/tagged/combine[Combine related Q&A].
 
 // force a page break - ignored in HTML rendering
 <<<

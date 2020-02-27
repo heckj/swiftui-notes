@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xl="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="79 109 402 148" width="402" height="148">
+  <defs>
+    <font-face font-family="Helvetica Neue" font-size="16" panose-1="2 0 5 3 0 0 0 2 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="951.9958" descent="-212.99744" font-weight="400">
+      <font-face-src>
+        <font-face-name name="HelveticaNeue"/>
+      </font-face-src>
+    </font-face>
+  </defs>
+  <metadata> Produced by OmniGraffle 7.12.1 
+    <dc:date>2019-11-12 18:32:27 +0000</dc:date>
+  </metadata>
+  <g id="Basic_Types_alt" stroke="none" fill-opacity="1" fill="none" stroke-dasharray="none" stroke-opacity="1">
+    <title>Basic Types alt</title>
+    <g id="Basic_Types_alt: Layer 1">
+      <title>Layer 1</title>
+      <g id="Graphic_6">
+        <rect x="80" y="110" width="400" height="119" fill="white"/>
+        <rect x="80" y="110" width="400" height="119" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_4">
+        <text transform="translate(136.032 215)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="0" y="33">Output Type</tspan>
+        </text>
+      </g>
+      <g id="Graphic_5">
+        <text transform="translate(336.056 215)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="47606363e-20" y="33">Failure Type</tspan>
+        </text>
+      </g>
+      <g id="Group_16">
+        <g id="Graphic_13">
+          <path d="M 319 129 L 299 169 L 319 209 L 419 209 L 439 169 L 419 129 Z" fill="#ffd579" fill-opacity=".5"/>
+        </g>
+        <g id="Line_12">
+          <path d="M 319 129 L 299 169 L 319 209" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_11">
+          <path d="M 419 129 L 439 169 L 419 209" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+      </g>
+      <g id="Group_15">
+        <g id="Line_7">
+          <path d="M 129 129 L 109 169 L 129 209" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_8">
+          <path d="M 229 129 L 249 169 L 229 209" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Graphic_14">
+          <path d="M 129 129 L 109 169 L 129 209 L 229 209 L 249 169 L 229 129 Z" fill="#0096ff" fill-opacity=".5"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

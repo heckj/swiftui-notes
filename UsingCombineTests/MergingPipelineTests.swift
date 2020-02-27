@@ -115,7 +115,7 @@ class MergingPipelineTests: XCTestCase {
 
     func testCombineLatestWithFailure() {
         // setup
-        enum testFailureCondition: Error {
+        enum TestFailureCondition: Error {
             case example
         }
 
@@ -126,7 +126,7 @@ class MergingPipelineTests: XCTestCase {
             (100, .input("a")),
             (200, .input("b")),
             (350, .input("c")),
-            (400, .completion(.failure(testFailureCondition.example)))
+            (400, .completion(.failure(TestFailureCondition.example)))
         ])
         let testablePublisher2: TestablePublisher<Int, Error> = testScheduler.createRelativeTestablePublisher([
             (100, .input(1)),
@@ -153,7 +153,7 @@ class MergingPipelineTests: XCTestCase {
 //             (450, .input(("b", 2))),
 //             (500, .input(("b", 3))),
 //             (550, .input(("c", 3))),
-//             (600, .completion(failure(UsingCombineTests.MergingPipelineTests.(unknown context at $108734d68).(unknown context at $108734dd8).testFailureCondition.example)))
+//             (600, .completion(failure(UsingCombineTests.MergingPipelineTests.(unknown context at $108734d68).(unknown context at $108734dd8).TestFailureCondition.example)))
 //        terminating one of the streams completing with .failure terminates all of the pipeline
 //            ])
 
@@ -298,7 +298,7 @@ class MergingPipelineTests: XCTestCase {
         // run the virtual time scheduler
         let testableSubscriber = testScheduler.start { return mergedPipeline }
         // print(testableSubscriber.recordedOutput)
-        
+
         let expected: TestSequence<(String), Never> = [
             (200, .subscription),
             (300, .input("a")),

@@ -138,16 +138,16 @@ class SwiftUI_CombineTests: XCTestCase {
      */
 
     func testAnyFuture_FailingAFuture() {
-        enum sampleError: Error {
+        enum SampleError: Error {
             case exampleError
             case aDifferentError
         }
 
         // A generic Future that always returns a Failure
-        let badPlace = Future<String, sampleError> { promise in
+        let badPlace = Future<String, SampleError> { promise in
             // promise is Result<Any, Error> and this is expect to return Void
             // you generally call promise with .success() or .failure() enclosing relevant information (or results)
-            promise(.failure(sampleError.exampleError))
+            promise(.failure(SampleError.exampleError))
         }
 
         // NOTE(heckj) I'm not entirely clear on how you can/should check failure path of a result chain
@@ -172,11 +172,11 @@ class SwiftUI_CombineTests: XCTestCase {
 
         /*
         let _ = badPlace
-            .mapError({ someError -> sampleError in // -> sampleError is because the compiler can't infer the type...
+            .mapError({ someError -> SampleError in // -> SampleError is because the compiler can't infer the type...
                 XCTAssertNil(someError) // by itself this errors with: Cannot convert value of type '()' to closure result type '_'
-                // XCTAssertEqual(sampleError.exampleError, someError)
+                // XCTAssertEqual(SampleError.exampleError, someError)
                 // This doesn't work, compiler error: "Protocol type 'Error' cannot conform to 'Equatable' because only concrete types can conform to protocols"
-                return sampleError.aDifferentError
+                return SampleError.aDifferentError
             })
          */
 

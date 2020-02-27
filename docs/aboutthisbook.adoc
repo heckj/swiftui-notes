@@ -1,6 +1,17 @@
 [#aboutthisbook]
 = About This Book
 
+Version: {revnumber}
+
+Version Date: {revdate}
+
+This is an intermediate to advanced book, focusing fairly narrowly on how to use the Combine framework provided by Apple.
+The writing and examples expect that you have a solid understanding of Swift including reference and value types, protocols, and comfort with using common elements from the Foundation framework.
+
+If you are also just starting with Swift, https://developer.apple.com/swift/resources/[Apple provides a number of resources] to learn it, and there are truly amazing tutorials and introductions available in book form a number of authors, including https://gumroad.com/l/swift-kickstart[A Swift Kickstart] by Daniel Steinberg and https://www.hackingwithswift.com[Hacking with Swift] by Paul Hudson.
+
+This book provides <<introduction#introduction,a very abbreviated introduction>> to the concept of functional reactive programming, which is what this library is meant to provide.
+
 == Supporting this effort
 
 **_This is a work in progress. Please support this effort by http://gumroad.com/l/usingcombine[purchasing a copy]._**
@@ -16,20 +27,32 @@ If you are so inclined, feel free to fork the project and send me https://github
 
 == Acknowledgements
 
+.Thank you
+****
 Michael Critz designed and provided the cover art.
 
-Thank you's for reviews, corrections, and updates from:
+Reviews, corrections, and updates from:
 
-* Nanu Jogi
-* Michael Mohrmann
-* Lee O'Mara
-* Paul Wood III
+Mycroft Canner,
+Max Desiatov,
+Nanu Jogi,
+Serhii Kyrylenko,
+Michel Mohrmann,
+Lee O'Mara,
+Kai Özer,
+Zachary Recolan,
+Dave Reed,
+Andrius Shiaulis,
+Antoine Weber,
+Paul Wood III,
+Federico Zanetello
+****
 
 Thank you all for taking the time and effort to submit a pull request to make this work better!
 
 == Author Bio
 
-Joe Heck has broad software engineering development and management experience crossing startups and large companies.
+Joe Heck has broad software engineering development and management experience across startups and large companies.
 He works across all the layers of solutions, from architecture, development, validation, deployment, and operations.
 
 Joe has developed projects ranging from mobile and desktop application development to cloud-based distributed systems.
@@ -57,11 +80,11 @@ Updates of the content will be made to the online version as development continu
 Larger updates and announcements will also be provided through https://gumroad.com/heckj[the author's profile at Gumroad].
 
 The contents of this book, as well as example code and unit tests referenced from the book, are link in an Xcode project (`SwiftUI-Notes.xcodeproj`), sourced from the GitHub repository https://github.com/heckj/swiftui-notes[heckj/swiftui-notes].
-The project includes unit tests illustrating the behavior of combine and example code showing Combine integration with UIKit and SwiftUI.
+The project includes unit tests illustrating the behavior of Combine and example code showing Combine integration with UIKit and SwiftUI.
 
 === Download the project
 
-The project associated with this book requires Xcode v11 (which has been released as beta3 as of this writing) and MacOS 10.14 or later.
+The project associated with this book requires Xcode 11 and MacOS 10.14 or later.
 
 image::welcomeToXcode.png[Welcome to Xcode,406,388]
 
