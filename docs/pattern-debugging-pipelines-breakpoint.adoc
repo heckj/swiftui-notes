@@ -17,7 +17,7 @@ __See also__::
 
 __Code and explanation__::
 
-You can easily set a breakpoint within any closure to any operator within a pipeline, triggering the debugger to activate to inspect the data.
+You can set a breakpoint within any closure to any operator within a pipeline, triggering the debugger to activate to inspect the data.
 Since the <<reference#reference-map,map>> operator is frequently used for simple output type conversions, it is often an excellent candidate that has a closure you can use.
 If you want to see into the control messages, then a breakpoint within any of the closures provided to <<reference#reference-handleevents,handleEvents>> makes a very convenient target.
 

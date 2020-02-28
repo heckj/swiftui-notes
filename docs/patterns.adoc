@@ -69,7 +69,7 @@ With the https://developer.apple.com/documentation/combine/publisher[publisher p
 For example, if your code was focused on providing its data from external web services through Combine, you might make the interface to this conform to `AnyPublisher<Data, Error>`.
 You could then use that interface to test either side of that pipeline independently.
 
-* You could mock data responses that emulate the underlying API calls and possible responses, including various error conditions.
+* You can mock data responses that emulate the underlying API calls and possible responses, including various error conditions.
 This might include returning data from a publisher created with <<reference#reference-just,Just>> or <<reference#reference-fail,Fail>>, or something more complex using <<reference#reference-future,Future>>.
 None of these options require you to make actual network interface calls.
 

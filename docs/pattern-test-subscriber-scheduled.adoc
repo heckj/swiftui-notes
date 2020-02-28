@@ -3,7 +3,7 @@
 
 __Goal__::
 
-* For testing a pipeline, or subscriber, when part of what you want to test is the timing of the pipeline.
+* For testing a pipeline, or subscriber, when what you want to test is the timing of the pipeline.
 
 __References__::
 
@@ -58,8 +58,8 @@ func testKVOPublisher() {
 }
 ----
 
-<1> This adds a DispatchQueue to your test, conveniently naming the queue after the test itself.
-This really only shows when debugging test failures, and is convenient as a reminder of what's happening in the test code vs. any other background queues that might be in use.
+<1> This adds a `DispatchQueue` to your test, naming the queue after the test itself.
+This really only shows when debugging test failures, and is convenient as a reminder of what is happening in the test code vs. any other background queues that might be in use.
 <2> `.asyncAfter` is used along with the deadline parameter to define when a call gets made.
 <3> The simplest form embeds any relevant assertions into the subscriber or around the subscriber. Additionally, invoking the `.fulfill()` on your expectation as the last queued entry you send lets the test know that it is now complete.
 <4> Make sure that when you set up the wait that allow for sufficient time for your queue'd calls to be invoked.
@@ -70,7 +70,7 @@ Another option is a 3rd party library named EntwineTest, which was inspired by t
 EntwineTest is part of Entwine, a Swift library that expands on Combine with some helpers.
 The library can be found on Github at https://github.com/tcldr/Entwine.git, available under the MIT license.
 
-One of the key elements included in EnwtineTest is a virtual time scheduler, as well as additional classes that schedule (TestablePublisher) and collect and record (TestableSubscriber) the timing of results while using this scheduler.
+One of the key elements included in EnwtineTest is a virtual time scheduler, as well as additional classes that schedule (`TestablePublisher`) and collect and record (`TestableSubscriber`) the timing of results while using this scheduler.
 
 An example of this from the EntwineTest project README is included:
 
