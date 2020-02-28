@@ -1623,7 +1623,9 @@ If the upstream publisher sends a `.failure` completion, then no values will be 
 
 __Summary__::
 
-A publisher that publishes a single Boolean value that indicates whether all received elements pass a given predicate.
+A publisher that publishes a single Boolean value that indicates whether all received elements pass a provided predicate.
+
+image::diagrams/allsatisfy.svg[allSatisfy operator, align="center"]
 
 __Constraints on connected publisher__::
 
@@ -1633,15 +1635,18 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using combineLatest: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/CriteriaOperatorTests.swift[`UsingCombineTests/CriteriaOperatorTests.swift`]
+* unit tests illustrating using `allSatisfy`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/CriteriaOperatorTests.swift[`UsingCombineTests/CriteriaOperatorTests.swift`]
 
 __Details__::
 
-Similiar to the <<reference-containswhere,containsWhere>> operator, you provide this operator with a closure.
+Similiar to the <<reference-containswhere,containsWhere>> operator, this operator is provided with a closure.
 The type of the incoming value to this closuremust match the Output type of the upstream publisher, and the closure must return a Boolean.
 
-The operator will compare any incoming values, only responding when the upstream publisher sends a `finished` completion.
+The operator will compare any incoming values, only responding when the upstream publisher sends a `.finished` completion.
 At that point, the `allSatisfies` operator will return a single boolean value indicating if all the values received matched (or not) based on processing through the provided closure.
+
+If the operator receives a `.failure` completion from the upstream publisher, or throws an error itself, then no data values will be published to subscribers.
+In those cases, the operator will only return (or forward) the `.failure` completion.
 
 [#reference-tryallsatisfy]
 ==== tryAllSatisfy
@@ -1658,18 +1663,18 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using combineLatest: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/CriteriaOperatorTests.swift[`UsingCombineTests/CriteriaOperatorTests.swift`]
+* unit tests illustrating using `tryAllSatisfy`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/CriteriaOperatorTests.swift[`UsingCombineTests/CriteriaOperatorTests.swift`]
 
 __Details__::
 
 Similiar to the <<reference-trycontainswhere,tryContainsWhere>> operator, you provide this operator with a closure which may also throw an error.
-The type of the incoming value to this closuremust match the Output type of the upstream publisher, and the closure must return a Boolean.
+The type of the incoming value to this closure must match the Output type of the upstream publisher, and the closure must return a Boolean.
 
-The operator will compare any incoming values, only responding when the upstream publisher sends a `finished` completion.
-At that point, the `allSatisfies` operator will return a single boolean value indicating if all the values received matched (or not) based on processing through the provided closure.
+The operator will compare any incoming values, only responding when the upstream publisher sends a `.finished` completion.
+At that point, the `tryAllSatisfies` operator will return a single boolean value indicating if all the values received matched (or not) based on processing through the provided closure.
 
-If the operator receives a `failure` completion from the upstream publisher, or throws an error itself, then no data values will be published to subscribers.
-In those cases, the operator will only return (or forward) the `failure` completion.
+If the operator receives a `.failure` completion from the upstream publisher, or throws an error itself, then no data values will be published to subscribers.
+In those cases, the operator will only return (or forward) the `.failure` completion.
 
 [#reference-contains]
 ==== contains
@@ -1677,6 +1682,8 @@ In those cases, the operator will only return (or forward) the `failure` complet
 __Summary__::
 
 A publisher that emits a Boolean value when a specified element is received from its upstream publisher.
+
+image::diagrams/contains.svg[contains operator, align="center"]
 
 __Constraints on connected publisher__::
 
@@ -1686,18 +1693,18 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using combineLatest: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/CriteriaOperatorTests.swift[`UsingCombineTests/CriteriaOperatorTests.swift`]
+* unit tests illustrating using `contains`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/CriteriaOperatorTests.swift[`UsingCombineTests/CriteriaOperatorTests.swift`]
 
 __Details__::
 
-The simplest form of contains accepts a single parameter.
+The simplest form of `contains` accepts a single parameter.
 The type of this parameter must match the Output type of the upstream publisher.
 
 The operator will compare any incoming values, only responding when the incoming value is equatable to the parameter provided.
 When it does find a match, the operator returns a single boolean value (`true`) and then terminates the stream.
 Any further values published from the upstream provider are then ignored.
 
-If the upstream published sends a `finished` completion before any values do match, the operator will publish a single boolean (`false`) and then terminate the stream.
+If the upstream published sends a `.finished` completion before any values do match, the operator will publish a single boolean (`false`) and then terminate the stream.
 
 [#reference-containswhere]
 ==== containsWhere
@@ -1705,6 +1712,8 @@ If the upstream published sends a `finished` completion before any values do mat
 __Summary__::
 
 A publisher that emits a Boolean value upon receiving an element that satisfies the predicate closure.
+
+image::diagrams/containswhere.svg[containsWhere operator, align="center"]
 
 __Constraints on connected publisher__::
 
@@ -1714,7 +1723,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using combineLatest: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/CriteriaOperatorTests.swift[`UsingCombineTests/CriteriaOperatorTests.swift`]
+* unit tests illustrating using `containsWhere`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/CriteriaOperatorTests.swift[`UsingCombineTests/CriteriaOperatorTests.swift`]
 
 __Details__::
 
@@ -1722,12 +1731,12 @@ A more flexible version of the <<reference-contains>> operator.
 Instead of taking a single parameter value to match, you provide a closure which takes in a single value (of the type provided by the upstream publisher) and returns a boolean.
 
 Like <<reference-contains>>, it will compare multiple incoming values, only responding when the incoming value is equatable to the parameter provided.
-When it does find a match, the operator returns a single boolean value and then terminates the stream.
-Any further values published from the upstream provider are then ignored.
+When it does find a match, the operator returns a single boolean value and  terminates the stream.
+Any further values published from the upstream provider are ignored.
 
-If the upstream published sends a `finished` completion before any values do match, the operator will publish a single boolean (`false`) and then terminate the stream.
+If the upstream published sends a `.finished` completion before any values do match, the operator will publish a single boolean (`false`) and terminates the stream.
 
-If you want a variant of this functionality that checks multiple incoming values to determine if all of them match, you should consider using the <<reference-allsatisfy>> operator.
+If you want a variant of this functionality that checks multiple incoming values to determine if all of them match, consider using the <<reference-allsatisfy>> operator.
 
 [#reference-trycontainswhere]
 ==== tryContainsWhere
@@ -1744,7 +1753,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using combineLatest: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/CriteriaOperatorTests.swift[`UsingCombineTests/CriteriaOperatorTests.swift`]
+* unit tests illustrating using `tryContainsWhere`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/CriteriaOperatorTests.swift[`UsingCombineTests/CriteriaOperatorTests.swift`]
 
 __Details__::
 
@@ -1754,13 +1763,13 @@ This closure may also throw an error.
 If the closure throws an error, then the operator will return no values, only the error to any subscribers, terminating the pipeline.
 
 Like <<reference-contains>>, it will compare multiple incoming values, only responding when the incoming value is equatable to the parameter provided.
-When it does find a match, the operator returns a single boolean value and then terminates the stream.
-Any further values published from the upstream provider are then ignored.
+When it does find a match, the operator returns a single boolean value and terminates the stream.
+Any further values published from the upstream provider are ignored.
 
-If the upstream published sends a `finished` completion before any values do match, the operator will publish a single boolean (`false`) and then terminate the stream.
+If the upstream published sends a `.finished` completion before any values do match, the operator will publish a single boolean (`false`) and terminates the stream.
 
-If the operator receives a `failure` completion from the upstream publisher, or throws an error itself, then no data values will be published to subscribers.
-In those cases, the operator will only return (or forward) the `failure` completion.
+If the operator receives a `.failure` completion from the upstream publisher, or throws an error itself, no data values will be published to subscribers.
+In those cases, the operator will only return (or forward) the `.failure` completion.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
