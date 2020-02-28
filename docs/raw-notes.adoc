@@ -1,56 +1,16 @@
 [#raw-notes]
 = Raw Notes
 
-// NOTE(heckj): merge the content from these notes into the reference section
+Words and phrases to look for and destroy:
 
-== Publishers
+"simply"
+"just"
 
-protocol documentation: https://developer.apple.com/documentation/combine/publisher[Publisher]
+Look for an verify:
 
-A publisher defines how values (and errors) are produced, and allows the registration of a subscriber.
+"stream" vs pipeline
 
-NotificationCenter.default.publisher -> `<Notification>`, `<Never>`
+Things to verify are consistent:
 
-KeyValueObserving
-
-https://developer.apple.com/documentation/combine/publishers[Convenience publishers]
-
-
-
-
-* Future example:
-
-[source,swift]
-----
-enum SampleError: Error {
-    case exampleError
-}
-
-let x = Publishers.Future<String, Error> { promise in
-  do {
-      try self.myFunctionCall(someVariable) { varname in
-          promise(.success(varname ? username : nil))
-      }
-  } catch {
-      promise(.failure(SampleError.exampleError))
-  }
-}
-----
-
-* can be used within a Flatmap in an operator sequence to do your own processing/logic within a stream, call out to an external service, etc.
-* commonly used when making external service calls over the network.
-
-
-== Operators Not in reference
-
-* abortOnError
-
-* log
-
-* prepend
-** Prefixes a Publisher’s output with the specified sequence.
-** requires Failure to be `<Never>`
-
-* append
-** Append a Publisher’s output with the specified sequence.
-** requires Failure to be `<Never>`
+`.failure` completion
+`.finished` completion
