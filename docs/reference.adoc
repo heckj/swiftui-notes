@@ -1246,6 +1246,8 @@ __Summary__::
 
 Collects all received elements, and emits a single array of the collection when the upstream publisher finishes.
 
+image::diagrams/collect.svg[collect operator, align="center"]
+
 __Constraints on connected publisher__::
 
 * __none__
@@ -1254,12 +1256,12 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using collect: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ReducingOperatorTests.swift[`UsingCombineTests/ReducingOperatorTests.swift`]
+* unit tests illustrating using `collect`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ReducingOperatorTests.swift[`UsingCombineTests/ReducingOperatorTests.swift`]
 
 __Details__::
 
-There are two primary forms of collect, one you specify without any parameters, and one you provide a `count` parameter.
-Collect can also take a more complex form, with a defined strategy for how to buffer and send on items.
+There are two primary forms of `collect`, one you specify without any parameters, and one you provide a `count` parameter.
+`Collect` can also take a more complex form, with a defined strategy for how to buffer and send on items.
 
 For the version without any parameters, for example:
 
@@ -1269,25 +1271,25 @@ For the version without any parameters, for example:
 ----
 
 The operator will collect all elements from an upstream publisher, holding those in memory until the upstream publisher sends a completion.
-Upon receiving the `finished` completion, the operator will publish an array of all the values collected.
-If the upstream publisher fails with an error, the collect operator forwards the error to the downstream receiver instead of sending its output.
+Upon receiving the `.finished` completion, the operator will publish an array of all the values collected.
+If the upstream publisher fails with an error, the `collect` operator forwards the error to the downstream receiver instead of sending its output.
 
 [WARNING]
 ====
 This operator uses an unbounded amount of memory to store the received values.
 ====
 
-Collect without any parameters will request an unlimited number of elements from its upstream publisher.
+`Collect` without any parameters will request an unlimited number of elements from its upstream publisher.
 It only sends the collected array to its downstream after a request whose demand is greater than 0 items.
 
-The second variation of collect takes a single parameter (`count`), which influences how many values it buffers and when it sends results.
+The second variation of `collect` takes a single parameter (`count`), which influences how many values it buffers and when it sends results.
 
 [source, swift]
 ----
 .collect(3)
 ----
 
-This version of collect will buffer up to the specified `count` number of elements.
+This version of `collect` will buffer up to the specified `count` number of elements.
 When it has received the count specified, it emits a single array of the collection.
 
 If the upstream publisher finishes before filling the buffer, this publisher sends an array of all the items it has received upon receiving a `finished` completion.
@@ -1295,7 +1297,7 @@ This may be fewer than `count` elements.
 
 If the upstream publisher fails with an error, this publisher forwards the error to the downstream receiver instead of sending its output.
 
-The more complex form of collect operates on a provided strategy of how to collect values and when to emit.
+The more complex form of `collect` operates on a provided strategy of how to collect values and when to emit.
 
 As of iOS 13.3 there are two strategies published in https://developer.apple.com/documentation/combine/publishers/timegroupingstrategy[`Publishers.TimeGroupingStrategy`]:
 
@@ -1320,9 +1322,9 @@ When the time stride interval is exceeded, the collected set will be sent to the
 `byTimeOrCount` also takes a scheduler and a time interval stride, and in addition allows you to specify an upper bound on the count of items received before the operator sends the collected values to its subscriber.
 The ability to provide a count allows you to have some confidence about the maximum amount of memory that the operator will consume while buffering values.
 
-If either of the count or time interval provided are ellapsed, the collect operator will forward the currently collected set to its subscribers.
-If a `finished` completion is received, the currently collected set will be immediately sent to it's subscribers.
-If a `failure` completion is received, any currently buffered values are dropped and the `failure` completion is forwarded to collect's subscribers.
+If either of the count or time interval provided are ellapsed, the `collect` operator will forward the currently collected set to its subscribers.
+If a `.finished` completion is received, the currently collected set will be immediately sent to it's subscribers.
+If a `.failure` completion is received, any currently buffered values are dropped and the `failure` completion is forwarded to collect's subscribers.
 
 [source, swift]
 ----
@@ -1347,7 +1349,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using ignoreOutput: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ReducingOperatorTests.swift[`UsingCombineTests/ReducingOperatorTests.swift`]
+* unit tests illustrating using `ignoreOutput`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ReducingOperatorTests.swift[`UsingCombineTests/ReducingOperatorTests.swift`]
 
 __Details__::
 
@@ -1402,11 +1404,11 @@ __Details__::
 Very similar in function to the <<reference-scan>> operator, `reduce` collects values produced within a stream.
 The big difference between `scan` and `reduce` is that `reduce` does not trigger any values until the upstream publisher completes successfully.
 
-When you create a reduce operator, you provide an initial value (of the type determined by the upstream publisher) and a closure that takes two parameters - the result returned from the previous invocation of the closure and a new value from the upstream publisher.
+When you create a `reduce` operator, you provide an initial value (of the type determined by the upstream publisher) and a closure that takes two parameters - the result returned from the previous invocation of the closure and a new value from the upstream publisher.
 
-Like scan, you don't need to maintain the type of the upstream publisher, but can convert the type in your closure, returning whatever is appropriate to your needs.
+Like `scan`, you don't need to maintain the type of the upstream publisher, but can convert the type in your closure, returning whatever is appropriate to your needs.
 
-An example of reduce that collects strings and appends them together:
+An example of `reduce` that collects strings and appends them together:
 
 [source, swift]
 ----
@@ -1415,7 +1417,7 @@ An example of reduce that collects strings and appends them together:
 })
 ----
 
-The reduce operator is excellent at converting a stream that provides many values over time into one that provides a single value upon completion.
+The `reduce` operator is excellent at converting a stream that provides many values over time into one that provides a single value upon completion.
 
 [#reference-tryreduce]
 ==== tryReduce
@@ -1432,13 +1434,13 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using tryReduce: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ReducingOperatorTests.swift[`UsingCombineTests/ReducingOperatorTests.swift`]
+* unit tests illustrating using `tryReduce`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ReducingOperatorTests.swift[`UsingCombineTests/ReducingOperatorTests.swift`]
 
 __Details__::
 
-tryReduce is a variation of the <<reference-reduce>> operator that allows for the closure to throw an error.
-If the exception path is taken, the tryReduce operator will not publish any output values to downstream subscribers.
-Like `reduce`, the `tryReduce` will only publish a single downstream result upon a `finished` completion from the upstream publisher.
+`tryReduce` is a variation of the <<reference-reduce>> operator that allows for the closure to throw an error.
+If the exception path is taken, the `tryReduce` operator will not publish any output values to downstream subscribers.
+Like `reduce`, the `tryReduce` will only publish a single downstream result upon a `.finished` completion from the upstream publisher.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
@@ -1454,6 +1456,8 @@ __Summary__::
 
 Publishes the max value of all values received upon completion of the upstream publisher.
 
+image::diagrams/max.svg[max operator, align="center"]
+
 __Constraints on connected publisher__::
 
 * The output type of the upstream publisher must conform to https://developer.apple.com/documentation/swift/comparable[`Comparable`]
@@ -1462,7 +1466,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using max: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MathOperatorTests.swift[`UsingCombineTests/MathOperatorTests.swift`]
+* unit tests illustrating using `max`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MathOperatorTests.swift[`UsingCombineTests/MathOperatorTests.swift`]
 
 __Details__::
 
@@ -1489,15 +1493,15 @@ If what you are publishing doesn't conform to https://developer.apple.com/docume
 The parameter name of the closure hints to how it should be provided, being named `areInIncreasingOrder`.
 The closure will take two values of the output type of the upstream publisher, and within it you should provide a boolean result indicating if they are in increasing order.
 
-The operator will not provide any results under the upstream published has sent a `finished` completion.
-If the upstream publisher sends a `failure` completion, then no values will be published and the `failure` completion will be forwarded.
+The operator will not provide any results under the upstream published has sent a `.finished` completion.
+If the upstream publisher sends a `failure` completion, then no values will be published and the `.failure` completion will be forwarded.
 
 [#reference-trymax]
 ==== tryMax
 
 __Summary__::
 
-Publishes the max value of all values received upon completion of the upstream publisher.
+Publishes the `max` value of all values received upon completion of the upstream publisher.
 
 __Constraints on connected publisher__::
 
@@ -1507,7 +1511,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using tryMax: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MathOperatorTests.swift[`UsingCombineTests/MathOperatorTests.swift`]
+* unit tests illustrating using `tryMax`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MathOperatorTests.swift[`UsingCombineTests/MathOperatorTests.swift`]
 
 __Details__::
 
@@ -1520,6 +1524,8 @@ __Summary__::
 
 Publishes the minimum value of all values received upon completion of the upstream publisher.
 
+image::diagrams/min.svg[min operator, align="center"]
+
 __Constraints on connected publisher__::
 
 * The output type of the upstream publisher must conform to https://developer.apple.com/documentation/swift/comparable[`Comparable`]
@@ -1528,7 +1534,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using min: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MathOperatorTests.swift[`UsingCombineTests/MathOperatorTests.swift`]
+* unit tests illustrating using `min`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MathOperatorTests.swift[`UsingCombineTests/MathOperatorTests.swift`]
 
 __Details__::
 
@@ -1555,8 +1561,8 @@ If what you are publishing doesn't conform to https://developer.apple.com/docume
 The parameter name of the closure hints to how it should be provided, being named `areInIncreasingOrder`.
 The closure will take two values of the output type of the upstream publisher, and within it you should provide a boolean result indicating if they are in increasing order.
 
-The operator will not provide any results under the upstream published has sent a `finished` completion.
-If the upstream publisher sends a `failure` completion, then no values will be published and the `failure` completion will be forwarded.
+The operator will not provide any results under the upstream published has sent a `.finished` completion.
+If the upstream publisher sends a `.failure` completion, then no values will be published and the `failure` completion will be forwarded.
 
 
 [#reference-trymin]
@@ -1574,7 +1580,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using tryMin: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MathOperatorTests.swift[`UsingCombineTests/MathOperatorTests.swift`]
+* unit tests illustrating using `tryMin`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MathOperatorTests.swift[`UsingCombineTests/MathOperatorTests.swift`]
 
 __Details__::
 
@@ -1588,6 +1594,8 @@ __Summary__::
 
 count publishes the number of items received from the upstream publisher
 
+image::diagrams/count.svg[count operator, align="center"]
+
 __Constraints on connected publisher__::
 
 * __none__
@@ -1596,12 +1604,12 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using count: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MathOperatorTests.swift[`UsingCombineTests/MathOperatorTests.swift`]
+* unit tests illustrating using `count`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MathOperatorTests.swift[`UsingCombineTests/MathOperatorTests.swift`]
 
 __Details__::
 
-The operator will not provide any results under the upstream published has sent a `finished` completion.
-If the upstream publisher sends a `failure` completion, then no values will be published and the `failure` completion will be forwarded.
+The operator will not provide any results under the upstream published has sent a `.finished` completion.
+If the upstream publisher sends a `.failure` completion, then no values will be published and the `failure` completion will be forwarded.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
