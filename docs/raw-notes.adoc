@@ -12,5 +12,8 @@ Look for an verify:
 
 Things to verify are consistent:
 
+`finished` -> `.finished`
+`failure` -> `.failure`
+
 `.failure` completion
 `.finished` completion
