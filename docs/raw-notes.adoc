@@ -5,6 +5,9 @@ Words and phrases to look for and destroy:
 
 "simply"
 "just"
+"and then"
+"are then"
+"you should"
 
 Look for an verify:
 
