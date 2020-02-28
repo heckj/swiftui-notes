@@ -26,33 +26,33 @@ __Usage__::
 
 __Details__::
 
-Often used within a closure to <<reference#reference-flatmap,flatMap>> in error handling, it can see a one-shot pipeline for use in error handling of continuous values.
+Often used within a closure to <<reference#reference-flatmap,flatMap>> in error handling, it creates a single-response pipeline for use in error handling of continuous values.
 
 [#reference-future]
 === Future
 
 __Summary__::
 
-A future is initialized with a closure that eventually resolves to a single output value or failure completion.
+A `Future` is initialized with a closure that eventually resolves to a single output value or failure completion.
 
 __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/future[Future].
 
 __Usage__::
 
-* unit tests illustrating using Future: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FuturePublisherTests.swift[`UsingCombineTests/FuturePublisherTests.swift`]
+* unit tests illustrating using `Future`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FuturePublisherTests.swift[`UsingCombineTests/FuturePublisherTests.swift`]
 
 __Details__::
 
-Future is a publisher that let's you combine in any asynchronous call and use that call to generate a value or a completion as a Publisher.
-It's ideal for when you want to make a single request, or get a single response, where the API you are using has a completion handler closure.
+`Future` is a publisher that let's you combine in any asynchronous call and use that call to generate a value or a completion as a publisher.
+It is ideal for when you want to make a single request, or get a single response, where the API you are using has a completion handler closure.
 
-The obvious example that everyone immediately thinks about is URLSession.
-Fortunately, <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> exists to make a call with a URLSession and return a publisher.
-However, if you already have an API object that wraps the direct calls to URLSession, then making a single request using Future can be a great way to integrate the result into a Combine pipeline.
+The obvious example that everyone immediately thinks about is `URLSession`.
+Fortunately, <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> exists to make a call with a `URLSession` and return a publisher.
+If you already have an API object that wraps the direct calls to `URLSession`, then making a single request using `Future` can be a great way to integrate the result into a Combine pipeline.
 
-There are a number of other APIs that exist in the Apple frameworks that use a completion closure.
+There are a number of APIs in the Apple frameworks that use a completion closure.
 An example of one is requesting permission to access the contacts store in Contacts.
-An example of wrapping that request for access into a publisher using Future might be:
+An example of wrapping that request for access into a publisher using `Future` might be:
 
 [source, swift]
 ----
@@ -68,31 +68,32 @@ let futureAsyncPublisher = Future<Bool, Error> { promise in <1>
 }
 ----
 
-<1> Future itself has you define the return types and takes a closure.
+<1> `Future` itself has you define the return types and takes a closure.
 It hands in a Result object matching the type description, which you interact.
 <2> You can invoke the async API however is relevant, including passing in its required closure.
-<3> Within the completion handler, you determine what would cause a failure or a success. A call to `promise(.failure(<FailureType>))` returns the failure.
+<3> Within the completion handler, you determine what would cause a failure or a success.
+A call to `promise(.failure(<FailureType>))` returns the failure.
 <4> Or a call to `promise(.success(<OutputType>))` returns a value.
 
-If you want to wrap an async API that could return many values over time, you should not use Future directly, as it only returns a single value.
-Instead, you should consider creating your own publisher based on <<reference#reference-passthroughsubject,passthroughSubject>> or <<reference#reference-currentvaluesubject,currentValueSubject>>, or wrapping the Future publisher with <<reference#reference-deferred,Deferred>>.
+If you want to wrap an async API that could return many values over time, you should not use `Future` directly, as it only returns a single value.
+Instead, you should consider creating your own publisher based on <<reference#reference-passthroughsubject,passthroughSubject>> or <<reference#reference-currentvaluesubject,currentValueSubject>>, or wrapping the `Future` publisher with <<reference#reference-deferred,Deferred>>.
 
 [WARNING]
 ====
 Future creates and invokes its closure to do the asynchronous request *at the time of creation*, not when the publisher receives a demand request.
-This can be extremely counter-intuitive, as many other publishers invoke their closures when demand is placed to them.
-This also means that you can't directly link a Future publisher to an operator like retry.
+This can be counter-intuitive, as many other publishers invoke their closures when they receive demand.
+This also means that you can't directly link a Future publisher to an operator like `retry`.
 
-The retry operator works by making another subscription to the publisher, and Future doesn't not currently re-invoke the closure you provide upon additional request demands.
-This means that chaining a retry() operator after future will not result in the Future's closure being invoked repeatedly when a `.failure` completion is returned.
+The `retry` operator works by making another subscription to the publisher, and `Future` doesn't not currently re-invoke the closure you provide upon additional request demands.
+This means that chaining a `retry` operator after `Future` will not result in Future's closure being invoked repeatedly when a `.failure` completion is returned.
 
-The failure of the retry operator and Future to work together directly has been submitted to Apple as feedback: FB7455914.
+The failure of the `retry` and `Future` to work together directly has been submitted to Apple as feedback: `FB7455914`.
 
-The Future publisher can be wrapped with Deferred to have it work based on demand, rather than as a one-shot at the time of creation of the publisher.
-You can see unit tests illustrating Future wrapped with Deferred in the tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FuturePublisherTests.swift[`UsingCombineTests/FuturePublisherTests.swift`].
+The `Future` publisher can be wrapped with `Deferred` to have it work based on demand, rather than as a one-shot at the time of creation of the publisher.
+You can see unit tests illustrating Future wrapped with `Deferred` in the tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FuturePublisherTests.swift[`UsingCombineTests/FuturePublisherTests.swift`].
 ====
 
-If you are wanting repeated requests to a Future (for example, wanting to use a a retry operator to retry failed requests), wrap the Future publisher with Deferred.
+If you are wanting repeated requests to a `Future` (for example, wanting to use a a retry operator to retry failed requests), wrap the Future publisher with `Deferred`.
 
 [source, swift]
 ----
@@ -107,8 +108,8 @@ let deferredPublisher = Deferred { <1>
     }
 }.eraseToAnyPublisher()
 ----
-<1> The closure provided in to Deferred will be invoked as demand requests come to the publisher.
-<2> Which in turn resolves the underlying api call to generate the result as a Promise, with internal closures to resolve the promise.
+<1> The closure provided in to `Deferred` will be invoked as demand requests come to the publisher.
+<2> This in turn resolves the underlying api call to generate the result as a Promise, with internal closures to resolve the promise.
 
 [#reference-empty]
 === Empty
@@ -129,20 +130,20 @@ __Usage__::
 
 __Details__::
 
-Empty is useful in error handling scenarios where with publishers where the value is an optional, or where you want to resolve an error by simply not sending anything.
+`Empty` is useful in error handling scenarios where the value is an optional, or where you want to resolve an error by simply not sending anything.
 Empty can be invoked to be a publisher of any output and failure type combination.
 
-Empty is most commonly used where you need to return a publisher, but don't want to propogate any values (a possible error handling scenario).
+`Empty` is most commonly used where you need to return a publisher, but don't want to propogate any values (a possible error handling scenario).
 If you want a publisher that provides a single value, then look at <<reference#reference-just,Just>> or <<reference#reference-deferred,Deferred>> publishers as alternatives.
 
-When subscribed to, an instance of the Empty publisher will not return any values (or errors) and will immediately return a finished completion message to the subscriber.
+When subscribed to, an instance of the `Empty` publisher will not return any values (or errors) and will immediately return a finished completion message to the subscriber.
 
-An example of using Empty
+An example of using `Empty`
 [source, swift]
 ----
 let myEmptyPublisher = Empty<String, Never>() <1>
 ----
-<1> Because the types are not be able to be inferred, expect to always define the types you want to return within the declaration.
+<1> Because the types are not be able to be inferred, expect to define the types you want to return.
 
 
 [#reference-fail]
@@ -160,12 +161,12 @@ __Usage__::
 
 __Details__::
 
-Fail is commonly used when implementing an API that returns a publisher.
+`Fail` is commonly used when implementing an API that returns a publisher.
 In the case where you want to return an immediate failure, Fail provides a publisher that immediately triggers a failure on subscription.
 One way this might be used is to provide a failure response when invalid parameters are passed.
 The Fail publisher lets you generate a publisher of the correct type that provides a failure completion when demand is requested.
 
-Initializing a Fail publisher can be done two ways: with the type notation specifying the output and failure types or with the types implied by handing parameters to the initializer.
+Initializing a `Fail` publisher can be done two ways: with the type notation specifying the output and failure types or with the types implied by handing parameters to the initializer.
 
 For example:
 
@@ -186,7 +187,7 @@ let cancellable = Fail(outputType: String.self, failure: TestFailureCondition.ex
 
 __Summary__::
 
-Publishes a provided sequence of elements.
+`Sequence` publishes a provided sequence of elements, most often used through convenience initializers.
 
 __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/sequence[`Publishers.Sequence`]
 
@@ -196,15 +197,15 @@ __Usage__::
 
 __Details__::
 
-Sequence provides a way to return values as subscribers demand them initialized from a collection.
+`Sequence` provides a way to return values as subscribers demand them initialized from a collection.
 Formally, it provides elements from any type conforming to the https://developer.apple.com/documentation/swift/sequence[sequence protocol].
 
-If a subscriber requests unlimited demand, all elements will be sent, and then a finished completion will terminate the output.
+If a subscriber requests unlimited demand, all elements will be sent, and then a `.finished` completion will terminate the output.
 If the subscribe requests a single element at a time, then individual elements will be returned based on demand.
 
-If the type within the sequence is denoted as Optional, and a nil value is included within the sequence, that will be sent as an instance of the optional type.
+If the type within the sequence is denoted as `optional`, and a nil value is included within the sequence, that will be sent as an instance of the optional type.
 
-Combine also provides an extension onto the Sequence protocol so that anything that corresponds to it can act as a sequence publisher.
+Combine provides an extension onto the `Sequence` protocol so that anything that corresponds to it can act as a sequence publisher.
 It does so by making a `.publisher` property available, which implicitly creates a <<reference-sequence,Publishers.Sequence>> publisher.
 
 [source, swift]
@@ -222,7 +223,7 @@ _ = initialSequence.publisher
 
 __Summary__::
 
-Publisher waits for a subscriber before running the provided closure to create values for the subscriber.
+The `Deferred` publisher waits for a subscriber before running the provided closure to create values for the subscriber.
 
 __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/deferred[`Deferred`]
 
@@ -233,11 +234,11 @@ __Usage__::
 
 __Details__::
 
-Deferred is useful when creating an API to return a publisher, where creating the publisher is an expensive effort, either computationally or in the time it takes to set up.
-Deferred holds off on setting up any publisher data structures until a subscription is requested.
-This provides a means of deferring the setup of the publisher until it's actually needed.
+`Deferred` is useful when creating an API to return a publisher, where creating the publisher is an expensive effort, either computationally or in the time it takes to set up.
+`Deferred` holds off on setting up any publisher data structures until a subscription is requested.
+This provides a means of deferring the setup of the publisher until it is actually needed.
 
-The Deferred publisher is particularly useful with <<reference#reference-future,Future>>, which does not wait on demand to start the resolution of underlying (wrapped) asynchronous APIs.
+The `Deferred` publisher is particularly useful with <<reference#reference-future,Future>>, which does not wait on demand to start the resolution of underlying (wrapped) asynchronous APIs.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
@@ -251,7 +252,7 @@ The SwiftUI framework is based upon displaying views from explicit state; as the
 SwiftUI uses a variety of property wrappers within its Views to reference and display content from outside of those views.
 `@ObservedObject`, `@EnvironmentObject`, and `@Published` are the most common that relate to Combine.
 SwiftUI uses these property wrappers to create a publisher that will inform SwiftUI when those models have changed, creating a objectWillChange publisher.
-Having an object conform to ObservableObject will also get a default objectWillChange publisher.
+Having an object conform to ObservableObject will also get a default `objectWillChange` publisher.
 
 SwiftUI uses <<reference-observableobject>>, which has a default concrete class implementation called `ObservableObjectPublisher` that exposes a publisher for reference objects (classes) marked with `@ObservedObject`.
 
@@ -364,8 +365,8 @@ __Usage__::
 
 __Details__::
 
-Published is part of Combine, but allows you to wrap a property, enabling you to get a publisher that triggers data updates whenever the property is changed.
-The publisher's output type is inferred from the type of the property, and the error type of the provided publisher is <Never>.
+`@Published` is part of Combine, but allows you to wrap a property, enabling you to get a publisher that triggers data updates whenever the property is changed.
+The publisher's output type is inferred from the type of the property, and the error type of the provided publisher is `<Never>`.
 
 A smaller examples of how it can be used:
 
@@ -389,12 +390,12 @@ If there is a subscriber at initialization time, the subscriber will also receiv
 The publisher for the property is available at the same scope, and with the same permissions, as the property itself.
 <2> The publisher is accessible as `$username`, of type `Published<String>.publisher`.
 <3> A Published property can have more than one subscriber pipeline triggering from it.
-<4> If you're publishing your own type, you may find it convenient to publish an array of that type as the property, even if you only reference a single value.
+<4> If you are publishing your own type, you may find it convenient to publish an array of that type as the property, even if you only reference a single value.
 This allows you represent an "Empty" result that is still a concrete result within Combine pipelines, as <<reference#reference-assign,assign>> and <<reference#reference-sink,sink>> subscribers will only trigger updates on non-nil values.
 
 If the publisher generated from `@Published` receives a cancellation from any subscriber, it is expected to, and will cease, reporting property changes.
 Because of this expectation, it is common to arrange pipelines from these publishers that have an error type of `<Never>` and do all error handling within the pipelines.
-For example, if a <<reference#reference-sink,sink>> subscriber is set up to capture errors from a pipeline originating from a @Published property, when the error is received, the sink will send a `cancel` message, causing the publisher to cease generating any updates on change.
+For example, if a <<reference#reference-sink,sink>> subscriber is set up to capture errors from a pipeline originating from a` @Published` property, when the error is received, the sink will send a `cancel` message, causing the publisher to cease generating any updates on change.
 This is illustrated in the test `testPublishedSinkWithError` at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`]
 
 Additional examples of how to arrange error handling for a continous publisher like `@Published` can be found at <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>.
@@ -402,7 +403,8 @@ Additional examples of how to arrange error handling for a continous publisher l
 [WARNING]
 ====
 Using `@Published` should only be done within reference types - that is, within classes.
-An early beta (2) allowed @Published wrapped within a struct.
+An early beta (beta2) allowed `@Published` wrapped within a struct.
+This is no longer allowed or supported.
 As of beta5, the compiler will not throw an error if this is attempted:
 
 [source]
@@ -444,21 +446,20 @@ __Details__::
 https://developer.apple.com/documentation/appkit[AppKit] and MacOS applications have heavily relied on https://developer.apple.com/documentation/foundation/notification[Notifications] to provide general application state information.
 A number of components also use Notifications through https://developer.apple.com/documentation/foundation/notificationcenter[NotificationCenter] to provide updates on user interactions, such as
 
+NotificationCenter provides a publisher upon which you may create pipelines to declaratively react to application or system notifications.
+The publisher optionally takes an object reference which further filters notifications to those provided by the specific reference.
+
 Notifications are identified primarily by name, defined by a string in your own code, or a constant from a relevant framework.
 You can find a good general list of existing Notifications by name at https://developer.apple.com/documentation/foundation/nsnotification/name.
-A number of framework specific notifications are often included within the framework.
+A number of specific notifications are often included within cocoa frameworks.
 For example, within AppKit, there are a number of common notifications under https://developer.apple.com/documentation/appkit/nscontrol[NSControl].
 
 A number of AppKit controls provide notifications when the control has been updated.
 For example, AppKit's https://developer.apple.com/documentation/appkit/views_and_controls/text_field[TextField] triggers a number of notifications including:
 
-* textDidBeginEditingNotification
-* textDidChangeNotification
-* textDidEndEditingNotification
-
-NotificationCenter provides a publisher upon which you may create pipelines to declaratively react to application or system notifications.
-When creating a publisher, you define a single Notification name, often from a constant within a relevant framework.
-The publisher optionally takes an object reference which further filters notifications to those provided by the specific reference.
+* `textDidBeginEditingNotification`
+* `textDidChangeNotification`
+* `textDidEndEditingNotification`
 
 [source, swift]
 ----
@@ -473,7 +474,7 @@ let cancellable = NotificationCenter.default.publisher(for: .yourNotification, o
 ----
 <1> Notifications are defined by a string for their name.
 If defining your own, be careful to define the strings uniquely.
-<2> A NotificationCenter publisher can be created for a single type of notification, `.yourNotification` in this case, defined previously in your code.
+<2> A `NotificationCenter` publisher can be created for a single type of notification, `.yourNotification` in this case, defined previously in your code.
 <3> https://developer.apple.com/documentation/foundation/notifications[Notifications] are received from the publisher.
 These include at least their name, and optionally a `object` reference from the sending object - most commonly provided from Apple frameworks.
 Notifications may also include a `userInfo` dictionary of arbitrary values, which can be used to pass additional information within your application.
@@ -483,7 +484,7 @@ Notifications may also include a `userInfo` dictionary of arbitrary values, whic
 
 __Summary__::
 
-Foundation's Timer added the capability to act as a publisher, providing https://developer.apple.com/documentation/foundation/notifications[Notifications] to pipelines.
+Foundation's `Timer` added the capability to act as a publisher, providing a publisher to repeatedly send values to pipelines based on a `Timer` instance.
 
 __Constraints on connected publisher__::
 
@@ -497,9 +498,9 @@ __Usage__::
 
 __Details__::
 
-Timer.publish returns an instance of https://developer.apple.com/documentation/foundation/timer/timerpublisher[`Timer.TimerPublisher`].
+`Timer.publish` returns an instance of https://developer.apple.com/documentation/foundation/timer/timerpublisher[`Timer.TimerPublisher`].
 This publisher is a connectable publisher, conforming to https://developer.apple.com/documentation/combine/connectablepublisher[`ConnectablePublisher`].
-This means that even when subscribers are connected to it, it will not start producing values until connect() or autoconnect() is invoked on the publisher.
+This means that even when subscribers are connected to it, it will not start producing values until `connect()` or `autoconnect()` is invoked on the publisher.
 
 Creating the timer publisher requires an interval in seconds, and a RunLoop and mode upon which to run.
 The publisher may optionally take an additional parameter `tolerance`, which defines a variance allowed in the generation of timed events.
@@ -507,7 +508,7 @@ The default for toleranace is nil, allowing any variance.
 
 The publisher has an output type of https://developer.apple.com/documentation/foundation/date[Date] and a failure type of `<Never>`.
 
-If you want the publisher to automatically connect and start receiving values as soon as subscribers are connected and make requests for values, then you may include autoconnect() in the pipeline to have it automatically start to generate values as soon as a subscriber requests data.
+If you want the publisher to automatically connect and start receiving values as soon as subscribers are connected and make requests for values, then you may include `autoconnect()` in the pipeline to have it automatically start to generate values as soon as a subscriber requests data.
 
 [source, swift]
 ----
@@ -532,11 +533,11 @@ let cancellablePublisher = timerPublisher.connect()
 ----
 
 [#reference-kvo-publisher]
-=== .publisher on KVO instance
+=== publisher from a KeyValueObserving instance
 
 __Summary__::
 
-Foundation added the ability to get a publisher on any Object that can be watched with Key Value Observing.
+Foundation added the ability to get a publisher on any `NSObject` that can be watched with Key Value Observing.
 
 __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/objectivec/nsobject/keyvalueobservingpublisher['KeyValueObservingPublisher']
 
@@ -546,7 +547,7 @@ __Usage__::
 
 __Details__::
 
-Any Key Value Observing instance can produce a publisher.
+Any key-value-observing instance can produce a publisher.
 To create this publisher, you call the function `publisher` on the object, providing it with a single (required) KeyPath value.
 
 For example:
@@ -578,7 +579,7 @@ You may be better served by explicitly creating your own state to react to from 
 
 __Summary__::
 
-Foundation's https://developer.apple.com/documentation/foundation/urlsession[`URLSession`] has a publisher specifically for requesting data from URLs: dataTaskPublisher
+Foundation's https://developer.apple.com/documentation/foundation/urlsession[`URLSession`] has a publisher specifically for requesting data from URLs: `dataTaskPublisher`
 
 __Constraints on connected publisher__::
 
@@ -631,7 +632,7 @@ Scene Publisher (from https://developer.apple.com/documentation/realitykit[Reali
 [#reference-operators]
 == Operators
 
-The concepts chapter has an overview of all the available <<coreconcepts#coreconcepts-operators,Operators>>.
+The <<coreconcepts,chapter on Core Concepts>> includes an overview of all available <<coreconcepts#coreconcepts-operators,Operators>>.
 
 [#reference-operators-mapping]
 === Mapping elements
@@ -641,7 +642,7 @@ The concepts chapter has an overview of all the available <<coreconcepts#corecon
 
 __Summary__::
 
-scan acts like an accumulator, collecting and modifying values according to a closure you provide, and publishing intermediate results with each change from upstream.
+`scan` acts like an accumulator, collecting and modifying values according to a closure you provide, and publishing intermediate results with each change from upstream.
 
 image::diagrams/scan.svg[scan operator, align="center"]
 
@@ -651,7 +652,7 @@ __Constraints on connected publisher__::
 
 __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/scan
 
-While the published docs are unfortunately anemic, the generated swift headers has some detail:
+While the published docs are unfortunately anemic, the generated swift headers has useful detail:
 
 [source, swift]
 ----
@@ -672,20 +673,20 @@ While the published docs are unfortunately anemic, the generated swift headers h
 
 __Usage__::
 
-* unit tests illustrating using scan : https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ScanPublisherTests.swift[`UsingCombineTests/ScanPublisherTests.swift`]
+* unit tests illustrating using `scan` : https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ScanPublisherTests.swift[`UsingCombineTests/ScanPublisherTests.swift`]
 
 __Details__::
 
-Scan lets you accumulate values or otherwise modify a type as changes flow through the pipeline.
+`Scan` lets you accumulate values or otherwise modify a type as changes flow through the pipeline.
 You can use this to collect values into an array, implement a counter, or any number of other interesting use cases.
 
 If you want to be able to throw an error from within the closure doing the accumulation to indicate an error condition, use the <<reference-tryscan,tryScan>> operator.
 If you want to accumulate and process values, but refrain from publishing any results until the upstream publisher completes, consider using the <<reference-reduce>> or <<reference-tryreduce,tryReduce>> operators.
 
-When you create a scan operator, you provide an initial value (of the type determined by the upstream publisher) and a closure that takes two parameters - the result returned from the previous invocation of the closure and a new value from the upstream publisher.
+When you create a `scan` operator, you provide an initial value (of the type determined by the upstream publisher) and a closure that takes two parameters - the result returned from the previous invocation of the closure and a new value from the upstream publisher.
 You do not need to maintain the type of the upstream publisher, but can convert the type in your closure, returning whatever is appropriate to your needs.
 
-For example, the following scan operator implementation counts the number of characters in strings provided by an upstream publisher, publishing an updated count every time a new string is received:
+For example, the following `scan` operator implementation counts the number of characters in strings provided by an upstream publisher, publishing an updated count every time a new string is received:
 
 [source, swift]
 ----
@@ -699,7 +700,7 @@ For example, the following scan operator implementation counts the number of cha
 
 __Summary__::
 
-tryScan is a variant of the scan operator which allows for the provided closure to throw an error and cancel the pipeline.
+`tryScan` is a variant of the `scan` operator which allows for the provided closure to throw an error and cancel the pipeline.
 The closure provided updates and modifies a value with based on any inputs from an upstream publisher and publishing intermediate results.
 
 image::diagrams/tryscan.svg[tryscan operator, align="center"]
@@ -725,11 +726,11 @@ While the published docs are unfortunately anemic, the generated swift headers h
 
 __Usage__::
 
-* unit tests illustrating using tryScan : https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ScanPublisherTests.swift[`UsingCombineTests/ScanPublisherTests.swift`]
+* unit tests illustrating using `tryScan` : https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ScanPublisherTests.swift[`UsingCombineTests/ScanPublisherTests.swift`]
 
 __Details__::
 
-tryScan lets you accumulate values or otherwise modify a type as changes flow through the pipeline while also supporting an error state.
+`tryScan` lets you accumulate values or otherwise modify a type as changes flow through the pipeline while also supporting an error state.
 If either the combined and updates values, or the incoming value, matches logic you define within the closure, you can throw an error, terminating the pipeline.
 
 [#reference-map]
@@ -737,7 +738,7 @@ If either the combined and updates values, or the incoming value, matches logic 
 
 __Summary__::
 
-map is most commonly used to convert one data type into another along a pipeline.
+`map` is most commonly used to convert one data type into another along a pipeline.
 
 image::diagrams/map.svg[map operator, align="center"]
 
@@ -746,8 +747,6 @@ __Constraints on connected publisher__::
 * __none__
 
 __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/map
-
-n/a
 
 __Usage__::
 
@@ -762,13 +761,19 @@ __Usage__::
 
 __Details__::
 
-The map operator doesn't allow for any additional failures to be thrown, and doesn't transform the failure type.
-If you want to throw an error within your closure, then use the <<reference#reference-trymap,tryMap>> operator.
+The `map` operator does not allow for any additional failures to be thrown and does not transform the failure type.
+If you want to throw an error within your closure, use the <<reference#reference-trymap,tryMap>> operator.
 
-map takes a single closure where you provide the logic for the map operation.
+`map` takes a single closure where you provide the logic for the map operation.
+
+[TIP]
+====
+`map` is the all purpose workhorse operator in Combine.
+It provides the ability to manipulate the data, or the type of data, and is the most commonly used operator in pipelines.
+====
 
 For example, the <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> provides a tuple of `(data: Data, response: URLResponse)`` as its output.
-You can use map to pass along the data, for example to use with <<reference#reference-decode,decode>>.
+You can use `map` to pass along the data, for example to use with <<reference#reference-decode,decode>>.
 
 [source, swift]
 ----
@@ -778,7 +783,7 @@ You can use map to pass along the data, for example to use with <<reference#refe
 <1> the `$0` indicates to grab the first parameter passed in, which is a tuple of `data` and `response`.
 
 In some cases, the closure may not be able to infer what data type you are returning, so you may need to provide a definition to help the compiler.
-For example, if you have an object getting passed down that has a boolean property "isValid" on it, and you just want the boolean for your pipeline, you might set that up like:
+For example, if you have an object getting passed down that has a boolean property "isValid" on it, and you want the boolean for your pipeline, you might set that up like:
 
 [source, swift]
 ----
@@ -792,15 +797,15 @@ Just(MyStruct())
 }
 ----
 
-<1> inValue is named as the parameter coming in, and the return type is being explicitly specified to `Bool`
-<2> A single line is an implicit return, in this case it's pulling the `isValid` property off the struct and passing it down the pipeline.
+<1> `inValue` is named as the parameter coming in, and the return type is being explicitly specified to `Bool`
+<2> A single line is an implicit return, in this case it is pulling the `isValid` property off the struct and passing it down.
 
 [#reference-trymap]
 ==== tryMap
 
 __Summary__::
 
-tryMap is effectively the similiar to <<reference#reference-map,map>>, except that it also allows you to provide a closure that throws additional errors if your conversion logic is unsuccessful.
+`tryMap` is similiar to <<reference#reference-map,map>>, except that it also allows you to provide a closure that throws additional errors if your conversion logic is unsuccessful.
 
 __Constraints on connected publisher__::
 
@@ -815,8 +820,8 @@ __Usage__::
 
 __Details__::
 
-tryMap is useful when you have more complex business logic around your map and you want to indicate that the data passed in is an error, possibly handling that error later in the pipeline.
-If you are looking at tryMap to decode JSON, you may want to consider using the <<reference#reference-decode,decode>> operator instead, which is set up for that common task.
+`tryMap` is useful when you have more complex business logic around your map and you want to indicate that the data passed in is an error, possibly handling that error later in the pipeline.
+If you are looking at `tryMap` to decode JSON, you may want to consider using the <<reference#reference-decode,decode>> operator instead, which is set up for that common task.
 
 [source, swift]
 ----
@@ -843,7 +848,7 @@ Just(5)
 
 __Summary__::
 
-Used with error recovery or async operations that might fail (ex: Future), flatMap will replace any incoming values with another publisher.
+Used with error recovery or async operations that might fail (for example `Future`), `flatMap` will replace any incoming values with another publisher.
 
 __Constraints on connected publisher__::
 
@@ -854,25 +859,15 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 __Usage__::
 
 * <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>
-* unit tests illustrating flatMap: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SwitchAndFlatMapPublisherTests.swift[`UsingCombineTests/SwitchAndFlatMapPublisherTests.swift`]
+* unit tests illustrating `flatMap`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SwitchAndFlatMapPublisherTests.swift[`UsingCombineTests/SwitchAndFlatMapPublisherTests.swift`]
 
 __Details__::
 
-Most typically used in error handling scenarios, flatMap takes a closure that allows you to read the incoming data value, and provide a publisher that returns a value to the pipeline.
+Typically used in error handling scenarios, `flatMap` takes a closure that allows you to read the incoming data value, and provide a publisher that returns a value to the pipeline.
 
 In error handling, this is most frequently used to take the incoming value and create a one-shot pipeline that does some potentially failing operation, and then handling the error condition with a <<reference#reference-catch,catch>> operator.
 
-A diagram version of this pipeline construct might be:
-
-[source]
-----
-     one-shot-publisher(value) -> catch ( fallback )      // <- one-shot pipeline
-                          ^                        \
-                          |                         \
-publisher -> flatMap -> ( +                           +  ) -> subscriber
-----
-
-In Swift, this looks like:
+A simple example `flatMap`, arranged to show recovering from a decoding error and returning a placeholder value:
 
 [source, swift]
 ----
@@ -885,12 +880,25 @@ In Swift, this looks like:
 }
 ----
 
+A diagram version of this pipeline construct:
+
+image::diagrams/flatmap.svg[flatMap operator, align="center"]
+
+[NOTE]
+====
+`flatMap` expects to create a new pipeline within its closure for every input value that it receives.
+The expected result of this internal pipeline is a Publisher with its own output and failure type.
+The output type of the publisher resulting from the internal pipeline defines the output type of the `flatMap` operator.
+The error type of the internal publisher is often expected to be `<Never>`.
+====
+
 [#reference-setfailuretype]
 ==== setFailureType
 
 __Summary__::
 
-The publisher cannot actually fail with the specified type and instead just finishes normally. Use this publisher type when you need to match the error types for two otherwise mismatched publishers within a pipeline.
+`setFailureType` does not send a `.failure` completion, it just changes the Failure type assocaited with the pipeline.
+Use this publisher type when you need to match the error types for two otherwise mismatched publishers.
 
 image::diagrams/setfailuretype.svg[setfailuretype operator, align="center"]
 
@@ -906,11 +914,12 @@ __Usage__::
 
 __Details__::
 
-setFailureType is an operator for transforming the error type within a pipeline, specifically from `<Never>` to some error type you may want to produce.
-setFailureType does not induce an error, but changes the types of the pipeline.
+`setFailureType` is an operator for transforming the error type within a pipeline, often from `<Never>` to some error type you may want to produce.
+`setFailureType` does not induce an error, but changes the types of the pipeline.
 
+This can be especially convenient if you need to match an operator or subscriber that expects a failure type other than `<Never>` when you are working with a test or single-value publisher such as <<reference#reference-just,Just>> or <<reference#reference-just,Sequence>>.
 
-This can be especially convenient if you need to match an operator or subscriber that expects a failure type other than <Never> when you are working with a test or single-value publisher such as <<reference#reference-just,Just>> or <<reference#reference-just,Sequence>>.
+If you want to return a `.failure` completion of a specific type into a pipeline, use the <<reference-fail,Fail>> operator.
 
 [#reference-operators-filtering]
 === Filtering elements
@@ -932,7 +941,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using compactMap: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FilteringOperatorTests.swift[`UsingCombineTests/FilteringOperatorTests.swift`]
+* unit tests illustrating using `compactMap`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FilteringOperatorTests.swift[`UsingCombineTests/FilteringOperatorTests.swift`]
 
 __Details__::
 
@@ -949,7 +958,7 @@ The simplest version of this just returns the incoming value directly, which wil
 }
 ----
 
-There is also a variation of this operator, the <<reference-trycompactmap,tryCompactMap>> operator, which allows the provided closure to throw an Error and cancel the stream on invalid conditions.
+There is also a variation of this operator, <<reference-trycompactmap,tryCompactMap>>, which allows the provided closure to throw an Error and cancel the stream on invalid conditions.
 
 If you want to convert an optional type into a concrete type, always replacing the `nil` with an explicit value, you should likely use the <<reference-replacenil,replaceNil>> operator.
 
@@ -968,11 +977,11 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using tryCompactMap: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FilteringOperatorTests.swift[`UsingCombineTests/FilteringOperatorTests.swift`]
+* unit tests illustrating using `tryCompactMap`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FilteringOperatorTests.swift[`UsingCombineTests/FilteringOperatorTests.swift`]
 
 __Details__::
 
-tryCompactMap is a variant of the <<reference-compactmap,compactMap>> operator, allowing the values processed to throw an `Error` condition.
+`tryCompactMap` is a variant of the <<reference-compactmap,compactMap>> operator, allowing the values processed to throw an `Error` condition.
 
 [source, swift]
 ----
@@ -994,11 +1003,13 @@ If you want to convert an optional type into a concrete type, always replacing t
 
 __Summary__::
 
-Filter passes through all instances of the output type that match a provided closure, dropping any that don't match.
+`Filter` passes through all instances of the output type that match a provided closure, dropping any that don't match.
+
+image::diagrams/filter.svg[flatMap operator, align="center"]
 
 __Constraints on connected publisher__::
 
-* requires Failure type to be `<Never>`
+* __none__
 
 __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/filter[`filter`]
 
@@ -1006,11 +1017,11 @@ __Usage__::
 
 * <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>
 * <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>>
-* unit tests illustrating using filter: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FilterPublisherTests.swift[`UsingCombineTests/FilterPublisherTests.swift`]
+* unit tests illustrating using `filter`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FilterPublisherTests.swift[`UsingCombineTests/FilterPublisherTests.swift`]
 
 __Details__::
 
-Filter takes a single closure as a parameter that is provided the value from the previous publisher and returns a Bool value.
+`Filter` takes a single closure as a parameter that is provided the value from the previous publisher and returns a Bool value.
 If the return from the closure is `true`, then the operator republishes the value further down the chain.
 If the return from the closure is `false`, then the operator drops the value.
 
@@ -1021,17 +1032,17 @@ If you need a variation of this that will generate an error condition in the pip
 
 __Summary__::
 
-tryFilter passes through all instances of the output type that match a provided closure, dropping any that don't match, and allows generating an error during the evaluation of that closure.
+`tryFilter` passes through all instances of the output type that match a provided closure, dropping any that don't match, and allows generating an error during the evaluation of that closure.
 
 __Constraints on connected publisher__::
 
-* none
+* __none__
 
 __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/tryfilter[`tryFilter`]
 
 __Usage__::
 
-* unit tests illustrating using tryFilter: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FilterPublisherTests.swift[`UsingCombineTests/FilterPublisherTests.swift`]
+* unit tests illustrating using `tryFilter`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FilterPublisherTests.swift[`UsingCombineTests/FilterPublisherTests.swift`]
 
 
 __Details__::
@@ -1046,7 +1057,9 @@ You can additionally throw an error during the evaluation of tryFilter, which wi
 
 __Summary__::
 
-removeDuplicates remembers what was previously sent in the pipeline, and only passes forward values that don't match the current value.
+`removeDuplicates` remembers what was previously sent in the pipeline, and only passes forward values that don't match the current value.
+
+image::diagrams/removeduplicates.svg[removeDuplicates operator, align="center"]
 
 __Constraints on connected publisher__::
 
@@ -1056,20 +1069,20 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using removeDuplicates: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift`]
+* unit tests illustrating using `removeDuplicates`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift`]
 
 __Details__::
 
-The default usage of removeDuplicates doesn't require any parameters, and the operator will publish only elements that don't match the previously sent element.
+The default usage of `removeDuplicates` doesn't require any parameters, and the operator will publish only elements that don't match the previously sent element.
 
 [source, swift]
 ----
 .removeDuplicates()
 ----
 
-A second usage of removeDuplicates takes a single parameter `by` that accepts a closure that allows you to determine the logic of what will be removed.
+A second usage of `removeDuplicates` takes a single parameter `by` that accepts a closure that allows you to determine the logic of what will be removed.
 The parameter version does not have the constraint on the Output type being equatable, but requires you to provide the relevant logic.
-If the closure returns true, the removeDuplicates predicate will consider the values matched and not forward a the duplicate value.
+If the closure returns true, the `removeDuplicates` predicate will consider the values matched and not forward a the duplicate value.
 
 [source, swift]
 ----
@@ -1079,14 +1092,14 @@ If the closure returns true, the removeDuplicates predicate will consider the va
 })
 ----
 
-A variation of removeDuplicates exists that allows the predicate closure to throw an Error exists: <<reference#reference-tryremoveduplicates,tryRemoveDuplicates>>
+A variation of `removeDuplicates` exists that allows the predicate closure to throw an error exists: <<reference#reference-tryremoveduplicates,tryRemoveDuplicates>>
 
 [#reference-tryremoveduplicates]
 ==== tryRemoveDuplicates
 
 __Summary__::
 
-tryRemoveDuplicates is a variant of <<reference#reference-removeduplicates,removeDuplicates>> that allows the predicate testing equality to throw an Error, resulting in an Error completion type.
+`tryRemoveDuplicates` is a variant of <<reference#reference-removeduplicates,removeDuplicates>> that allows the predicate testing equality to throw an error, resulting in an `Error` completion type.
 
 __Constraints on connected publisher__::
 
@@ -1096,13 +1109,13 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using tryRemoveDuplicates: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift`]
+* unit tests illustrating using `tryRemoveDuplicates`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift[`UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift`]
 
 __Details__::
 
-tryRemoveDuplicates is a variant of <<reference#reference-removeduplicates,removeDuplicates>> taking a single parameter that can throw an error.
+`tryRemoveDuplicates` is a variant of <<reference#reference-removeduplicates,removeDuplicates>> taking a single parameter that can throw an error.
 The parameter is a closure that allows you to determine the logic of what will be removed.
-If the closure returns true, tryRemoveDuplicates will consider the values matched and not forward a the duplicate value.
+If the closure returns true, `tryRemoveDuplicates` will consider the values matched and not forward a the duplicate value.
 If the closure throws an error, a failure completion will be propogated down the chain, and no value is sent.
 
 [source, swift]
@@ -1131,12 +1144,12 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using replaceEmpty: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ChangingErrorTests.swift[`UsingCombineTests/ChangingErrorTests.swift`]
+* unit tests illustrating using `replaceEmpty`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ChangingErrorTests.swift[`UsingCombineTests/ChangingErrorTests.swift`]
 
 __Details__::
 
-replaceEmpty will only produce a result if it has not received any values before it receives a `finished` completion.
-This operator will not trigger on an error passing through it, so if no value has been received with a `failure` completion is triggered, it will simply not provide a value.
+`replaceEmpty` will only produce a result if it has not received any values before it receives a `.finished` completion.
+This operator will not trigger on an error passing through it, so if no value has been received with a `.failure` completion is triggered, it will simply not provide a value.
 The operator takes a single parameter, `with` where you specify the replacement value.
 
 [source, swift]
@@ -1161,7 +1174,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using tryRemoveDuplicates: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ChangingErrorTests.swift[`UsingCombineTests/ChangingErrorTests.swift`]
+* unit tests illustrating using `replaceError`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/ChangingErrorTests.swift[`UsingCombineTests/ChangingErrorTests.swift`]
 
 __Details__::
 
@@ -1191,6 +1204,8 @@ __Summary__::
 
 Replaces nil elements in the stream with the provided element.
 
+image::diagrams/replacenil.svg[replaceNil operator, align="center"]
+
 __Constraints on connected publisher__::
 
 * The output type of the upstream publisher must be an optional type
@@ -1199,11 +1214,11 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using replaceNil: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FilteringOperatorTests.swift[`UsingCombineTests/FilteringOperatorTests.swift`]
+* unit tests illustrating using `replaceNil`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FilteringOperatorTests.swift[`UsingCombineTests/FilteringOperatorTests.swift`]
 
 __Details__::
 
-Used when the output type is an optional type, the replaceNil operator replaces any nil instances provided by the upstream publisher with a value provided by the user.
+Used when the output type is an optional type, the `replaceNil` operator replaces any nil instances provided by the upstream publisher with a value provided by the user.
 The operator takes a single parameter, `with` where you specify the replacement value.
 The type of the replacement should be a non-optional version of the type provided by the upstream publisher.
 
@@ -1213,7 +1228,7 @@ The type of the replacement should be a non-optional version of the type provide
 ----
 
 This operator can also be viewed as a way of converting an optional type to an explicit type, where optional values have a pre-determined placeholder.
-Or put another way, the replaceNil operator is a Combine specific variant of the swift coallescing operator that you might use when unwrapping an optional.
+Put another way, the `replaceNil` operator is a Combine specific variant of the swift coallescing operator that you might use when unwrapping an optional.
 
 If you want to convert an optional type into a concrete type, simply ignoring or collapsing the nil values, you should likely use the <<reference-compactmap,compactMap>> (or <<reference-trycompactmap,tryCompactMap>>) operator.
 
