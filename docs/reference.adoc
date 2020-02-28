@@ -1785,6 +1785,8 @@ __Summary__::
 
 Publishes the first element of a stream and then finishes.
 
+image::diagrams/first.svg[first operator, align="center"]
+
 __Constraints on connected publisher__::
 
 * __none__
@@ -1793,19 +1795,19 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using first: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+* unit tests illustrating using `first`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
 
 __Details__::
 
-The <<reference-first>> operator, when used without any parameters, will pass through only the first value it receives, and then send a `finish` completion message to any subscribers.
-If no values are received before the first operator receives a `finish` completion from upstream publishers, the stream is terminated and no values are published.
+The <<reference-first>> operator, when used without any parameters, will pass through the first value it receives, after which it sends a `.finish` completion message to any subscribers.
+If no values are received before the first operator receives a `.finish` completion from upstream publishers, the stream is terminated and no values are published.
 
 [source, swift]
 ----
 .first()
 ----
 
-If you want a set number of values from the front of the stream you can also use <<reference-prefixuntiloutput,prefixUntilOutput>> or it's variants: <<reference-prefixwhile,prefixWhile>> and <<reference-tryprefixwhile,tryPrefixWhile>>.
+If you want a set number of values from the front of the stream you can also use <<reference-prefixuntiloutput,prefixUntilOutput>> or the variants: <<reference-prefixwhile,prefixWhile>> and <<reference-tryprefixwhile,tryPrefixWhile>>.
 
 If you want a set number of values from the middle the stream by count, you may want to use <<reference-output>>, which allows you to select either a single value, or a range value from the sequence of values received by this operator.
 
@@ -1824,12 +1826,12 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using firstWhere: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+* unit tests illustrating using `firstWhere`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
 
 __Details__::
 
 The <<reference-firstwhere,firstWhere>> operator is similiar to <<reference-first>>, but instead lets you specify if the value should be the first value published by evaluating a closure.
-The closure provided should accept a value of the type provided by the upstream publisher, returning a bool.
+The provided closure should accept a value of the type defined by the upstream publisher, returning a bool.
 
 [source, swift]
 ----
@@ -1857,12 +1859,12 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using tryFirstWhere: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+* unit tests illustrating using `tryFirstWhere`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
 
 __Details__::
 
 The <<reference-tryfirstwhere,tryFirstWhere>> operator is a variant of <<reference-firstwhere,firstWhere>> that accepts a closure that can throw an error.
-The closure provided should accept a value of the type provided by the upstream publisher, returning a bool.
+The closure provided should accept a value of the type defined by the upstream publisher, returning a bool.
 
 [source, swift]
 ----
@@ -1881,6 +1883,8 @@ __Summary__::
 
 A publisher that only publishes the last element of a stream, once the stream finishes.
 
+image::diagrams/last.svg[last operator, align="center"]
+
 __Constraints on connected publisher__::
 
 * __none__
@@ -1889,19 +1893,17 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using last: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+* unit tests illustrating using `last`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
 
 __Details__::
 
-The <<reference-last>> operator waits until the upstream publisher sends a `finished` completion, and then publishes the last value it received.
+The <<reference-last>> operator waits until the upstream publisher sends a `finished` completion, then publishes the last value it received.
 If no values were received prior to receiving the `finished` completion, no values are published to subscribers.
 
 [source, swift]
 ----
 .last()
 ----
-
-** publishes the last element to satisfy a provided predicate
 
 [#reference-lastwhere]
 ==== lastWhere
@@ -1918,14 +1920,14 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using lastWhere: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+* unit tests illustrating using `lastWhere`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
 
 __Details__::
 
 The <<reference-lastwhere,lastWhere>> operator takes a single closure, accepting a value matching the output type of the upstream publisher, and returning a boolean.
-The operator publishes a value when the upstream published completes with a `finished` completion.
+The operator publishes a value when the upstream published completes with a `.finished` completion.
 The value published will be the last one to satisfy the provide closure.
-If no values satisfied the closure, then no values are published and the pipeline is terminated normally with a `finished` completion.
+If no values satisfied the closure, then no values are published and the pipeline is terminated normally with a `.finished` completion.
 
 [source, swift]
 ----
@@ -1934,7 +1936,7 @@ If no values satisfied the closure, then no values are published and the pipelin
 }
 ----
 
-<1> publishes the last value that has a length greater than 3.
+<1> Publishes the last value that has a length greater than 3.
 
 [#reference-trylastwhere]
 ==== tryLastWhere
@@ -1951,11 +1953,11 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using tryLastWhere: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+* unit tests illustrating using `tryLastWhere`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
 
 __Details__::
 
-The <<reference-trylastwhere,tryLastWhere>> operator is a variant of the <<reference-lastwhere,lastWhere>> operator that accepts a closure that also throws an error.
+The <<reference-trylastwhere,tryLastWhere>> operator is a variant of the <<reference-lastwhere,lastWhere>> operator that accepts a closure that may also throw an error.
 
 [source, swift]
 ----
@@ -1967,7 +1969,7 @@ The <<reference-trylastwhere,tryLastWhere>> operator is a variant of the <<refer
 }
 ----
 
-<1> publishes the last value that has a length greater than 3.
+<1> Publishes the last value that has a length greater than 3.
 <2> Logic that triggers an error, which will terminate the pipeline.
 
 [#reference-dropuntiloutput]
@@ -1985,12 +1987,12 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using dropUntilOutput: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+* unit tests illustrating using `dropUntilOutput`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
 
 __Details__::
 
 The <<reference-dropuntiloutput,dropUntilOutput>> operator uses another publisher as a trigger, stopping output through a pipeline until a value is received.
-Values received from the upstream publisher are ignored and dropped until the trigger is activated.
+Values received from the upstream publisher are ignored (and dropped) until the trigger is activated.
 
 Any value propogated through the trigger publisher will cause the switch to activate, and allow future values through the pipeline.
 
@@ -2002,7 +2004,7 @@ An error (`failure` completion) on either the upstream publisher or the trigger 
 .drop(untilOutputFrom: triggerPublisher)
 ----
 
-If you want to use this mechanism, but with a closure determining values from the upstream publisher, use the <<reference-dropwhile,dropWhile>> operator.
+If you want to use this kind of mechanism, but with a closure determining values from the upstream publisher, use the <<reference-dropwhile,dropWhile>> operator.
 
 [#reference-dropwhile]
 ==== dropWhile
@@ -2019,15 +2021,15 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using dropWhile: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+* unit tests illustrating using `dropWhile`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
 
 __Details__::
 
-The <<reference-dropwhile,dropWhile>> operator takes a single closure, which accepts an input value of the output type of the upstream publisher, and returns a bool.
+The <<reference-dropwhile,dropWhile>> operator takes a single closure, accepting an input value of the output type defined by the upstream publisher, returning a bool.
 This closure is used to determine a trigger condition, after which values are allowed to propogate.
 
-This isn't the same as the <<reference-filter>> operator, acting on each value.
-It is instead a trigger that activates once, and propogates all values after it is activated until the upstream publisher finishes.
+This is not the same as the <<reference-filter>> operator, acting on each value.
+Instead it uses a trigger that activates once, and propogates all values after it is activated until the upstream publisher finishes.
 
 [source, swift]
 ----
@@ -2053,7 +2055,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using dropWhile: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+* unit tests illustrating using `tryDropWhile`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
 
 __Details__::
 
@@ -2081,7 +2083,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using prepend: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+* unit tests illustrating using `prepend`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
 
 __Details__::
 
@@ -2104,11 +2106,12 @@ secondPublisher
 .prepend(firstPublisher)
 ----
 
-The <<reference-prepend>> operator is often used with single or sequence values that don't error.
-If the publishers do accept a failure type, then all values will be published from the prefix publisher even if the suffix publisher receives a `failure` completion before it is complete.
+The <<reference-prepend>> operator is often used with single or sequence values that have a failure type of `<Never>`.
+If the publishers do accept a failure type, then all values will be published from the prefix publisher even if the suffix publisher receives a `.failure` completion before it is complete.
 Once the prefix publisher completes, the error will propogated.
 
-The <<reference-prepend>> operator also has convenience operators to send a single value, or a sequence.
+The <<reference-prepend>> operator also has convenience operators to send a sequence.
+For example:
 
 [source, swift]
 ----
@@ -2116,8 +2119,11 @@ secondPublisher
 .prepend(["one", "two"]) <1>
 ----
 
-<1> the sequence values will be published immediately on a subscriber requesting demand, and further demand will be propogated upward to secondPublisher.
-Values produced from secondPublisher will then be published until it completes.
+<1> The sequence values will be published immediately on a subscriber requesting demand.
+Further demand will be propogated upward to `secondPublisher`.
+Values produced from `secondPublisher` will then be published until it completes.
+
+Another convenience operator exists to send a single value:
 
 [source, swift]
 ----
@@ -2125,8 +2131,9 @@ secondPublisher
 .prepend("one") <1>
 ----
 
-<1> the single value will be published immediately on a subscriber requesting demand, and further demand will be propogated upward to secondPublisher.
-Values produced from secondPublisher will then be published until it completes.
+<1> The value will be published immediately on a subscriber requesting demand.
+Further demand will be propogated upward to `secondPublisher`.
+Values produced from `secondPublisher` will then be published until it completes.
 
 [#reference-drop]
 ==== drop
@@ -2143,7 +2150,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using drop: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+* unit tests illustrating using `drop`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
 
 __Details__::
 
@@ -2154,14 +2161,14 @@ The simplest form of the <<reference-drop>> operator drops a single value and th
 .dropFirst()
 ----
 
-A varient of this operator allows a count of values to be specified
+A varient of this operator allows a count of values to be specified:
 
 [source, swift]
 ----
 .dropFirst(3) <1>
 ----
 
-<1> drops the first three values received from the upstream publisher before propogating any further values published to downstream subscribers.
+<1> Drops the first three values received from the upstream publisher before propogating any further values published to downstream subscribers.
 
 [#reference-prefixuntiloutput]
 ==== prefixUntilOutput
@@ -2178,7 +2185,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using prefixUntilOutput: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+* unit tests illustrating using `prefixUntilOutput`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
 
 __Details__::
 
@@ -2205,13 +2212,14 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using prefixWhile: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+* unit tests illustrating using `prefixWhile`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
 
 __Details__::
 
-The <<reference-prefixwhile,prefixWhile>> operator takes a single closure, with an input matching the output type of the upstream publisher, and returns a boolean.
-This closure is evaluated on the data from the upstream publisher, and while it returns `true` the values are propogated to the subscriber.
-Once the value returns `false`, the operator terminates the stream with a `finished` completion.
+The <<reference-prefixwhile,prefixWhile>> operator takes a single closure, with an input matching the output type defined by the upstream publisher, returning a boolean.
+This closure is evaluated on the data from the upstream publisher.
+While it returns `true` the values are propogated to the subscriber.
+Once the value returns `false`, the operator terminates the stream with a `.finished` completion.
 
 [source, swift]
 ----
@@ -2235,11 +2243,11 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using tryPrefixWhile: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+* unit tests illustrating using `tryPrefixWhile`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
 
 __Details__::
 
-The <<reference-tryprefixwhile,tryPrefixWhile>> operator is a variant of <<reference-prefixwhile,prefixWhile>> that accepts a closure may also through an error.
+The <<reference-tryprefixwhile,tryPrefixWhile>> operator is a variant of the <<reference-prefixwhile,prefixWhile>> operator that accepts a closure and may also throw an error.
 
 [source, swift]
 ----
@@ -2250,8 +2258,6 @@ The <<reference-tryprefixwhile,tryPrefixWhile>> operator is a variant of <<refer
 
 [#reference-output]
 ==== output
-
-* output
 
 __Summary__::
 
@@ -2265,22 +2271,23 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 
 __Usage__::
 
-* unit tests illustrating using output: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
+* unit tests illustrating using `output`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SequentialOperatorTests.swift[`UsingCombineTests/SequentialOperatorTests.swift`]
 
 __Details__::
 
 The <<reference-output>> operator takes a single parameter, either an integer or a swift range.
 This value is used to select a specific value, or sequence of values, from an upstream publisher to send to subscribers.
 
-This is effectively "choosing values" from the middle of the stream.
-If the upstream publisher completes before the values is received, the `finished` completion will be propogated to the subscriber.
+<<reference-output>> is choosing values from the middle of the stream.
+If the upstream publisher completes before the values is received, the `.finished` completion will be propogated to the subscriber.
 
 [source, swift]
 ----
 .output(at: 3) <1>
 ----
 
-<1> The selection is 0-indexed (count starts at 0), so this will select the fourth item published from the upstream publisher to propogate.
+<1> The selection is 0 indexed (meaning the count starts at 0).
+This will select the fourth item published from the upstream publisher to propogate.
 
 The alternate form takes a swift range descriptor:
 
@@ -2289,7 +2296,8 @@ The alternate form takes a swift range descriptor:
 .output(at: 2...3) <1>
 ----
 
-<1> The selection is 0-indexed (count starts at 0), so this will select the third and fourth item published from the upstream publisher to propogate.
+<1> The selection is 0 indexed (the count starts at 0).
+This will select the third and fourth item published from the upstream publisher to propogate.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
