@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xl="http://www.w3.org/1999/xlink" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="142 112 514 208" width="514" height="208">
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xl="http://www.w3.org/1999/xlink" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="131 112 525 208" width="525" height="208">
   <defs>
     <font-face font-family="Courier" font-size="16" units-per-em="1000" underline-position="-178.22266" underline-thickness="57.61719" slope="0" x-height="456.54297" cap-height="586.91406" ascent="753.90625" descent="-246.09375" font-weight="400">
       <font-face-src>
@@ -14,7 +14,7 @@
     </font-face>
   </defs>
   <metadata> Produced by OmniGraffle 7.13 
-    <dc:date>2020-02-28 17:42:09 +0000</dc:date>
+    <dc:date>2020-02-28 18:14:53 +0000</dc:date>
   </metadata>
   <g id="filter" fill-opacity="1" stroke-opacity="1" stroke="none" fill="none" stroke-dasharray="none">
     <title>filter</title>
@@ -35,29 +35,29 @@
       </g>
       <g id="Group_9">
         <g id="Graphic_12">
-          <path d="M 154.08571 150.4 L 143.8 162.1 L 154.08571 173.8 L 205.51429 173.8 L 215.8 162.1 L 205.51429 150.4 Z" fill="#ffd579" fill-opacity=".5"/>
-          <text transform="translate(148.8 152.6)" fill="black">
-            <tspan font-family="Gill Sans" font-size="16" font-weight="400" fill="black" x="10.699219" y="15">Never</tspan>
+          <path d="M 144.82857 150.4 L 133 162.1 L 144.82857 173.8 L 203.97143 173.8 L 215.8 162.1 L 203.97143 150.4 Z" fill="#ffd579" fill-opacity=".5"/>
+          <text transform="translate(138 152.6)" fill="black">
+            <tspan font-family="Gill Sans" font-size="16" font-weight="400" fill="black" x="16.09922" y="15">Never</tspan>
           </text>
         </g>
         <g id="Line_11">
-          <path d="M 154.08571 150.4 L 143.8 162.1 L 154.08571 173.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          <path d="M 144.82857 150.4 L 133 162.1 L 144.82857 173.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
         </g>
         <g id="Line_10">
-          <path d="M 205.51429 150.4 L 215.8 162.1 L 205.51429 173.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          <path d="M 203.97143 150.4 L 215.8 162.1 L 203.97143 173.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
         </g>
       </g>
       <g id="Group_5">
         <g id="Line_8">
-          <path d="M 154.05 116.2 L 143.8 127.9 L 154.05 139.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          <path d="M 144.7875 116.2 L 133 127.9 L 144.7875 139.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
         </g>
         <g id="Line_7">
-          <path d="M 205.3 116.2 L 215.55 127.9 L 205.3 139.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          <path d="M 203.725 116.2 L 215.5125 127.9 L 203.725 139.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
         </g>
         <g id="Graphic_6">
-          <path d="M 154.05 116.2 L 143.8 127.9 L 154.05 139.6 L 205.3 139.6 L 215.55 127.9 L 205.3 116.2 Z" fill="#0096ff" fill-opacity=".5"/>
-          <text transform="translate(148.8 118.4)" fill="black">
-            <tspan font-family="Gill Sans" font-size="16" font-weight="400" fill="black" x="22.210938" y="15">Int</tspan>
+          <path d="M 144.7875 116.2 L 133 127.9 L 144.7875 139.6 L 203.725 139.6 L 215.5125 127.9 L 203.725 116.2 Z" fill="#0096ff" fill-opacity=".5"/>
+          <text transform="translate(138 118.4)" fill="black">
+            <tspan font-family="Gill Sans" font-size="16" font-weight="400" fill="black" x="27.592186" y="15">Int</tspan>
           </text>
         </g>
       </g>
@@ -71,29 +71,29 @@
       </g>
       <g id="Group_65">
         <g id="Graphic_68">
-          <path d="M 154.08571 294.4 L 143.8 306.1 L 154.08571 317.8 L 205.51429 317.8 L 215.8 306.1 L 205.51429 294.4 Z" fill="#ffd579" fill-opacity=".5"/>
-          <text transform="translate(148.8 296.6)" fill="black">
-            <tspan font-family="Gill Sans" font-size="16" font-weight="400" fill="black" x="10.699219" y="15">Never</tspan>
+          <path d="M 144.82857 294.4 L 133 306.1 L 144.82857 317.8 L 203.97143 317.8 L 215.8 306.1 L 203.97143 294.4 Z" fill="#ffd579" fill-opacity=".5"/>
+          <text transform="translate(138 296.6)" fill="black">
+            <tspan font-family="Gill Sans" font-size="16" font-weight="400" fill="black" x="16.09922" y="15">Never</tspan>
           </text>
         </g>
         <g id="Line_67">
-          <path d="M 154.08571 294.4 L 143.8 306.1 L 154.08571 317.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          <path d="M 144.82857 294.4 L 133 306.1 L 144.82857 317.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
         </g>
         <g id="Line_66">
-          <path d="M 205.51429 294.4 L 215.8 306.1 L 205.51429 317.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          <path d="M 203.97143 294.4 L 215.8 306.1 L 203.97143 317.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
         </g>
       </g>
       <g id="Group_61">
         <g id="Line_64">
-          <path d="M 154.05 260.2 L 143.8 271.9 L 154.05 283.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          <path d="M 144.7875 260.2 L 133 271.9 L 144.7875 283.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
         </g>
         <g id="Line_63">
-          <path d="M 205.3 260.2 L 215.55 271.9 L 205.3 283.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          <path d="M 203.725 260.2 L 215.5125 271.9 L 203.725 283.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
         </g>
         <g id="Graphic_62">
-          <path d="M 154.05 260.2 L 143.8 271.9 L 154.05 283.6 L 205.3 283.6 L 215.55 271.9 L 205.3 260.2 Z" fill="#0096ff" fill-opacity=".5"/>
-          <text transform="translate(148.8 262.4)" fill="black">
-            <tspan font-family="Gill Sans" font-size="16" font-weight="400" fill="black" x="22.210938" y="15">Int</tspan>
+          <path d="M 144.7875 260.2 L 133 271.9 L 144.7875 283.6 L 203.725 283.6 L 215.5125 271.9 L 203.725 260.2 Z" fill="#0096ff" fill-opacity=".5"/>
+          <text transform="translate(138 262.4)" fill="black">
+            <tspan font-family="Gill Sans" font-size="16" font-weight="400" fill="black" x="27.592186" y="15">Int</tspan>
           </text>
         </g>
       </g>
