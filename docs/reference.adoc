@@ -1,22 +1,7 @@
 [#reference]
 = Reference
 
-reference preamble goes here...
-
-[NOTE]
-====
-This is intended to extend Apple's documentation, not replace it.
-
-* The documentation associated with iOS 13 GM.
-
-things to potentially include for each segment
-
-* narrative description of what the function does
-** notes on why you might want to use it, or where you may see it
-** xref back to patterns document where functions are being used
-* marble/railroad diagram explaining what the transformation/operator does
-* sample code showing it being used and/or tested
-====
+The reference section of this book is intended to link to, reference, and expand on <<introduction#introduction-appledocs, Apple's Combine documentation>>.
 
 [#reference-publishers]
 == Publishers

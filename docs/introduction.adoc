@@ -91,7 +91,10 @@ Combine pipelines are a declarative way to define what processing should happen 
 
 // force a page break - ignored in HTML rendering
 <<<
-== Apple's 2019 Documentation
+'''
+
+[#introduction-appledocs]
+== Apple's Combine Documentation
 
 icon:apple[size=2x,set=fab]
 
