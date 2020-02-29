@@ -65,6 +65,7 @@
 		1ADEDC0C23A951920006256D /* ReducingOperatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ADEDC0B23A951920006256D /* ReducingOperatorTests.swift */; };
 		1AEA20D823A70002008E9F62 /* FilteringOperatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEA20D723A70002008E9F62 /* FilteringOperatorTests.swift */; };
 		1AEA9C2722CD5FE7006709F1 /* SinkSubscriberTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEA9C2622CD5FE7006709F1 /* SinkSubscriberTests.swift */; };
+		1AEFD9F5240B13BA00E6FB19 /* RecordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEFD9F4240B13BA00E6FB19 /* RecordTests.swift */; };
 		1AFF21DB22CFFF0C0039C303 /* SubscribeReceiveAssignTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFF21DA22CFFF0C0039C303 /* SubscribeReceiveAssignTests.swift */; };
 		1AFF21DD22D003D20039C303 /* XCTestCase+KVOExpectatio0n.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFF21DC22D003D20039C303 /* XCTestCase+KVOExpectatio0n.swift */; };
 		1AFF51C022B3087300058BAB /* SwiftUI_CombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFF51BF22B3087300058BAB /* SwiftUI_CombineTests.swift */; };
@@ -167,6 +168,7 @@
 		1AEA9C2422CD5FE7006709F1 /* UsingCombineTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UsingCombineTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AEA9C2622CD5FE7006709F1 /* SinkSubscriberTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SinkSubscriberTests.swift; sourceTree = "<group>"; };
 		1AEA9C2822CD5FE7006709F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1AEFD9F4240B13BA00E6FB19 /* RecordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordTests.swift; sourceTree = "<group>"; };
 		1AFF21DA22CFFF0C0039C303 /* SubscribeReceiveAssignTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscribeReceiveAssignTests.swift; sourceTree = "<group>"; };
 		1AFF21DC22D003D20039C303 /* XCTestCase+KVOExpectatio0n.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+KVOExpectatio0n.swift"; sourceTree = "<group>"; };
 		1AFF51BF22B3087300058BAB /* SwiftUI_CombineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUI_CombineTests.swift; sourceTree = "<group>"; };
@@ -346,6 +348,7 @@
 				1A1C87C222D0EF6100128A5E /* Mocker.swift */,
 				1A1C87C122D0EF6100128A5E /* MockingURLProtocol.swift */,
 				1A534E1C22E3DF20005E6868 /* InterimTestingStructs.swift */,
+				1AEFD9F4240B13BA00E6FB19 /* RecordTests.swift */,
 			);
 			path = UsingCombineTests;
 			sourceTree = "<group>";
@@ -615,6 +618,7 @@
 				1A416E2022DE8A5B00C95DCB /* EntwineTestExampleTests.swift in Sources */,
 				1A02E8AC22D7DE53008CCCAE /* HandleEventsPublisherTests.swift in Sources */,
 				1A4DD4A823A6C3EB0033BF58 /* MeasureIntervalTests.swift in Sources */,
+				1AEFD9F5240B13BA00E6FB19 /* RecordTests.swift in Sources */,
 				1A06E711239C28DD0029329D /* ScanPublisherTests.swift in Sources */,
 				1A02707A23A6D576002545C4 /* ChangingErrorTests.swift in Sources */,
 				1A5B2704230098140006B8EE /* FailedPublisherTests.swift in Sources */,
