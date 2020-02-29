@@ -1,3 +1,5 @@
+![Using Combine](https://raw.githubusercontent.com/heckj/swiftui-notes/master/Assets/Images/UsingCombineWithSwiftGitHubSocial.png)
+
 # SwiftUI-Notes [![Build Status](https://travis-ci.org/heckj/swiftui-notes.svg?branch=master)](https://travis-ci.org/heckj/swiftui-notes)
 
 A collection of notes, project pieces, playgrounds and ideas on learning and using SwiftUI and Combine.
