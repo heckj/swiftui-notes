@@ -85,7 +85,6 @@ class RecordTests: XCTestCase {
         XCTAssertNotNil(cancellable)
     }
 
-
     func testRecordInitializationFromRecord() {
 
         // creates a recording
@@ -109,7 +108,6 @@ class RecordTests: XCTestCase {
         XCTAssertEqual(firstRecord.recording.output, secondRecord.recording.output)
         XCTAssertEqual(firstRecord.recording.completion, secondRecord.recording.completion)
     }
-
 
     func testRecordInitializerAlt() {
 
