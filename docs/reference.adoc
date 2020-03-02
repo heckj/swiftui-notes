@@ -218,6 +218,67 @@ _ = initialSequence.publisher
 }
 ----
 
+[#reference-record]
+=== Record
+
+__Summary__::
+
+A publisher that allows for recording a series of inputs and a completion, for later playback to each subscriber.
+
+__icon:apple[set=fab] docs__::
+
+* https://developer.apple.com/documentation/combine/record[`Record`]
+* https://developer.apple.com/documentation/combine/record/recording[`Recording`]
+
+__Usage__::
+
+* `Record` is illustrated in the unit tests https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/RecordPublisherTests.swift[`UsingCombineTests/RecordPublisherTests.swift`]
+
+__Details__::
+
+`Record` allows you to create a publisher with pre-recorded values for repeated playback.
+`Record` acts very similiarly to <<reference-sequence>> if you want to publish a sequence of values and then send a `.finished` completion.
+It goes beyond that allowing you to specify a `.failure` completion to be sent from the recording.
+`Record` does not allow you to control the timing of the values being returned, only the order and the eventual completion following them.
+
+`Record` can also be serialized (encoded and decoded) as long as the output and failure values can be serialized as well.
+
+An example of a simple recording that sends several string values and then a `.finished completion`:
+
+[source, swift]
+----
+// creates a recording
+let recordedPublisher = Record<String, Never> { example in
+    // example : type is Record<String, Never>.Recording
+    example.receive("one")
+    example.receive("two")
+    example.receive("three")
+    example.receive(completion: .finished)
+}
+----
+
+The resulting instance can be used as a publisher immediately:
+
+[source, swift]
+----
+let cancellable = recordedPublisher.sink(receiveCompletion: { err in
+    print(".sink() received the completion: ", String(describing: err))
+    expectation.fulfill()
+}, receiveValue: { value in
+    print(".sink() received value: ", value)
+})
+----
+
+`Record` also has a property `recording` that can be inspected, with its own properties of output and completion.
+`Record` and `recording` do not conform to https://developer.apple.com/documentation/swift/equatable[`Equatable`], so can't be easily compared within tests.
+It is fairly easy to compare the properties of `output` or `completion`, which are `Equatable` if the underlying contents (output type and failure type) are equatable.
+
+[TIP]
+====
+No convenience methods exist for creating a recording as a subscriber.
+You can use the `receive` methods to create one, wrapping a <<reference-sink>> subscriber.
+====
+
 [#reference-deferred]
 === Deferred
 
@@ -243,6 +304,85 @@ The `Deferred` publisher is particularly useful with <<reference#reference-futur
 // force a page break - in HTML rendering is just a <HR>
 <<<
 '''
+
+[#reference-makeconnectable]
+=== MakeConnectable
+
+__Summary__::
+
+Creates a or converts a publisher to one that explicitly conforms to the https://developer.apple.com/documentation/combine/connectablepublisher[`ConnectablePublisher`] protocol.
+
+__Constraints on connected publisher__::
+
+* The failure type of the publisher must be `<Never>`
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/makeconnectable[`MakeConnectable`]
+
+__Usage__::
+
+* `makeConnectable` is illustrated in the unit tests https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MulticastSharePublisherTests.swift[`UsingCombineTests/MulticastSharePublisherTests.swift`]
+
+__Details__::
+
+In making a publisher conform to the https://developer.apple.com/documentation/combine/connectablepublisher[`ConnectablePublisher`] protocol.
+
+ the publisher will have a new method `connect` that returns a Cancellable (similiar to <<reference-sink,sink>> or <<reference-assign,assign>>).
+
+A connectable publisher has two means that creating the connection between subscribers and the publisher are under more explicit control.
+There are two methods that are exposed to handle this connectivity: `connect` and `autoconnect`.
+
+With `connect`, the method will be under imperative control.
+Normally when a subscriber is linked to a publisher, the connection is made automatically, subscriptions get sent, and demand gets negotiated per the <<coreconcepts#coreconcepts-lifecycle, Lifecycle of Publishers and Subscribers>>.
+With a connectable publisher, in addition to setting up the subscription you would need to explicitly invoke `connect()` on the publisher to allow it to accept subscriptions and do any relevant processing.
+
+[source, swift]
+----
+var cancellables = Set<AnyCancellable>()
+let publisher = Just("woot")
+    .makeConnectable()
+
+publisher.sink { value in
+    print("Value received in sink: ", value)
+}
+.store(in: &cancellables)
+----
+
+The above code won't activate the subscription, and in turn show any results, without explicitly invoking `connect()` on the publisher:
+
+[source, swift]
+----
+publisher
+    .connect()
+    .store(in: &cancellables)
+----
+
+If you have a connectable publisher, and want it to act like the other publishers and automatically connect upon a subscription, you can use `autoconnect()` to have it operate in that fashion.
+
+One of the primary uses of having a connectable publisher is to coordinate pipeline creation with <<reference-multicast,multicast>> which shares a single subscription request to multiple subscribers without repeating the upstream processing.
+
+[source, swift]
+----
+var cancellables = Set<AnyCancellable>()
+let publisher = Just("woot")
+    .makeConnectable() <1>
+    .autoconnect() <2>
+
+publisher.sink { value in
+    print("Value received in sink: ", value)
+}
+.store(in: &cancellables)
+----
+<1> `makeConnectable` wraps an existing publisher and makes it explicitly connectable.
+<2> `autoconnect` automates the process of establishing the connection for you; The first subscriber will establish the connection, subscriptions will be forwards and demand negotiated.
+
+[NOTE]
+====
+Making a publisher connectable and then immediately enabling `autoconnect` is an odd example, as you typically want one explicit pattern of behavior or the other.
+The two mechahisms allow you to choose which you want for the needs of your code.
+As such, it is extremely unlikely that you would ever want to use `makeConnectable()` followed immediately by `autoconnect()`.
+====
+
+Both <<reference-timer>> and <<reference-multicast>> are examples of connectable publishers.
 
 [#reference-swiftui]
 === SwiftUI
@@ -607,6 +747,29 @@ The data returned from the publisher is a tuple of `(data: Data, response: https
 let request = URLRequest(url: regularURL)
 return URLSession.shared.dataTaskPublisher(for: request)
 ----
+
+[#reference-result]
+=== Result
+
+__Summary__::
+
+Foundation also adds `Result` as a publisher.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/swift/result
+
+__Usage__::
+
+* `Result.publisher` is illustrated in the unit tests https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MulticastSharePublisherTests.swift[`UsingCombineTests/MulticastSharePublisherTests.swift`]
+
+__Details__::
+
+Combine augments `Result` from the swift standard library with a `.publisher` property, returning a publisher with an output type of `Success` and a failure type of `Failure`, defined by the `Result` instance.
+
+Any method that returns an instance of `Result` can use this property to get a publisher that will provide the resulting value and followed by a `.finished` completion, or a `.failure` completion with the relevant `Error`.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
@@ -3054,10 +3217,91 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: URL(string: t
 [#reference-operators-multiplesubscribers]
 === Working with multiple subscribers
 
+[#reference-share]
+==== share
+
+__Summary__::
+
+A publisher implemented as a class, which otherwise behaves like its upstream publisher.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/share
+
+__Usage__::
+
+* `share` and `MulticastPublisher` are illustrated in the unit tests https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MulticastSharePublisherTests.swift[`UsingCombineTests/MulticastSharePublisherTests.swift`]
+
+__Details__::
+
+A publisher is often a struct within swift, following value semantics.
+`share` is used when you want to create a publisher that is a class following reference semantics.
+This is most frequently employed when creating a publisher that does expensive work so that you can isolate the expensive work and share it out to multiple subscribers.
+
+Very often, you will see `share` used in coordination with <<reference-multicast>> to create a shared instance of a publisher and have multiple subscribers connected to that single publisher.
+
+[source, swift]
+----
+let pipelineFork = PassthroughSubject<Data, Error>()
+let expensivePublisher = somepublisher
+    .share()
+    .multicast(subject: pipelineFork)
+----
+
 [#reference-multicast]
 ==== multicast
 
-* multicast
+__Summary__::
+
+Use a multicast publisher when you have multiple downstream subscribers, but you want upstream publishers to only process one receive(_:) call per event.
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine/publishers/multicast
+
+__Usage__::
+
+* `share` and `MulticastPublisher` are illustrated in the unit tests https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MulticastSharePublisherTests.swift[`UsingCombineTests/MulticastSharePublisherTests.swift`]
+
+__Details__::
+
+A multicast publisher provides a means of consolidating the requests of data from a publisher into a single request.
+A multicast publisher does not change data or types within a pipeline.
+It does provide a bastion for subscriptions so that when demand is created from one subscriber, multiple subscribers can benefit from it.
+It effectively allows one value to go to multiple subscribers.
+
+Multicast is often created after using <<reference-share>> on a publisher to create a reference object as a publisher.
+This allows you to consolidate expensive queries, such as external network requests, and provide the data to multiple consumers.
+
+When creating using multicast, you either provide a <<reference-subject>> (with the parameter `subject) or create a <<reference-subject>> inline in a closure.
+
+[source, swift]
+----
+let pipelineFork = PassthroughSubject<Bool, Error>()
+let multicastPublisher = somepublisher.multicast(subject: pipelineFork)
+----
+
+[source, swift]
+----
+let multicastPublisher = somepublisher
+    .multicast {
+        PassthroughSubject<Bool, Error>()
+    }
+----
+
+A multicast publisher does not cache or maintain the history of a value.
+If a multicast publisher is already making a request and another subscriber is added after the data has been returned to previously connected subscribers, new subscribers may only get a a completion.
+For this reason, multicast returns a <<[#reference-makeconnectable,connectable publisher>>.
+
+[TIP]
+====
+When making a multicast publisher, make sure you explicitly connect the publishers or you will see no data flow through your pipeline.
+Do this either using `connect()` on your publisher after all subscribers have been connected, or by using `autoconnect()` to enable the connection on the first subscription..
+====
 
 [#reference-operators-debugging]
 === Debugging

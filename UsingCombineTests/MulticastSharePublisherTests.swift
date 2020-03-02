@@ -206,14 +206,7 @@ class MulticastSharePublisherTests: XCTestCase {
         var cancellables = Set<AnyCancellable>()
 
         let publisher = Just("woot")
-            .print("a")
-            .multicast(subject: PassthroughSubject<String, Never>())
-            .print("b")
             .makeConnectable()
-
-        publisher
-            .connect()
-            .store(in: &cancellables)
 
         // driving it by attaching it to .sink
         publisher.sink(receiveCompletion: { completion in
@@ -232,6 +225,10 @@ class MulticastSharePublisherTests: XCTestCase {
             print(".sink2() received value: ", value)
         })
         .store(in: &cancellables)
+
+        publisher
+            .connect()
+            .store(in: &cancellables)
 
         wait(for: [expectation1, expectation2], timeout: 5.0)
     }

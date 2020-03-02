@@ -339,6 +339,10 @@ Combine provides a number of additional convenience publishers:
 | <<reference#reference-sequence,Sequence>>
 | <<reference#reference-fail,Fail>>
 
+| <<reference#reference-record,Record>>
+| <<reference#reference-share>>
+| <<reference#reference-multicast>>
+
 | <<reference#reference-observableobject,ObservableObject>>
 | <<reference#reference-published,@Published>>
 |
@@ -354,6 +358,7 @@ A number of Apple API outside of Combine provide publishers as well.
 ** <<reference#reference-kvo-publisher,.publisher on KVO instance>>
 ** <<reference#reference-notificationcenter,NotificationCenter>>
 ** <<reference#reference-timer,Timer>>
+** <<reference#reference-result,Result>>
 
 [#coreconcepts-operators]
 == Operators
