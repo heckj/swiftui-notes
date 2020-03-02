@@ -324,16 +324,14 @@ __Usage__::
 
 __Details__::
 
-In making a publisher conform to the https://developer.apple.com/documentation/combine/connectablepublisher[`ConnectablePublisher`] protocol.
+A connectable publisher has an explicit mechaninism for enabling when a subscription and the flow of demand from subscribers will be allowed to the publisher.
+By conforming to the https://developer.apple.com/documentation/combine/connectablepublisher[`ConnectablePublisher`] protocol, a publisher will have two additional methods exposed for this control: `connect` and `autoconnect`.
+Both of these methods return a `Cancellable` (similiar to <<reference-sink,sink>> or <<reference-assign,assign>>).
 
- the publisher will have a new method `connect` that returns a Cancellable (similiar to <<reference-sink,sink>> or <<reference-assign,assign>>).
-
-A connectable publisher has two means that creating the connection between subscribers and the publisher are under more explicit control.
-There are two methods that are exposed to handle this connectivity: `connect` and `autoconnect`.
-
-With `connect`, the method will be under imperative control.
+When using `connect`, the receipt of subscription will be under imperative control.
 Normally when a subscriber is linked to a publisher, the connection is made automatically, subscriptions get sent, and demand gets negotiated per the <<coreconcepts#coreconcepts-lifecycle, Lifecycle of Publishers and Subscribers>>.
-With a connectable publisher, in addition to setting up the subscription you would need to explicitly invoke `connect()` on the publisher to allow it to accept subscriptions and do any relevant processing.
+With a connectable publisher, in addition to setting up the subscription `connect()` needs to be explicitly invoked.
+Until `connect()` is invoked, the subscription won't be received by the publisher.
 
 [source, swift]
 ----
@@ -347,7 +345,8 @@ publisher.sink { value in
 .store(in: &cancellables)
 ----
 
-The above code won't activate the subscription, and in turn show any results, without explicitly invoking `connect()` on the publisher:
+The above code will not activate the subscription, and in turn show any results.
+In order to enable the subscription, an explicit `connect()` is required:
 
 [source, swift]
 ----
@@ -356,9 +355,12 @@ publisher
     .store(in: &cancellables)
 ----
 
-If you have a connectable publisher, and want it to act like the other publishers and automatically connect upon a subscription, you can use `autoconnect()` to have it operate in that fashion.
+One of the primary uses of having a connectable publisher is to coordinate the timing of connecting multiple subscribers with <<reference-multicast,multicast>>.
+Because multicast only shares existing events and does not replay anything, a subscription joining late could miss some data.
+By explicitly enabling the `connect()`, all subscribers can be attached before any upstream processing begins.
 
-One of the primary uses of having a connectable publisher is to coordinate pipeline creation with <<reference-multicast,multicast>> which shares a single subscription request to multiple subscribers without repeating the upstream processing.
+In comparison, `autoconnect()` makes a `Connectable` publisher act like a non-connectable one.
+When you enabled `autoconnect()` on a `Connectable` publisher, it will automate the connection such that the first subscription will activate upstream publishers.
 
 [source, swift]
 ----
@@ -3277,7 +3279,7 @@ It effectively allows one value to go to multiple subscribers.
 Multicast is often created after using <<reference-share>> on a publisher to create a reference object as a publisher.
 This allows you to consolidate expensive queries, such as external network requests, and provide the data to multiple consumers.
 
-When creating using multicast, you either provide a <<reference-subject>> (with the parameter `subject) or create a <<reference-subject>> inline in a closure.
+When creating using multicast, you either provide a <<reference-subjects>> (with the parameter `subject) or create a <<reference-subjects>> inline in a closure.
 
 [source, swift]
 ----
@@ -3295,7 +3297,7 @@ let multicastPublisher = somepublisher
 
 A multicast publisher does not cache or maintain the history of a value.
 If a multicast publisher is already making a request and another subscriber is added after the data has been returned to previously connected subscribers, new subscribers may only get a a completion.
-For this reason, multicast returns a <<[#reference-makeconnectable,connectable publisher>>.
+For this reason, multicast returns a <<#reference-makeconnectable,connectable publisher>>.
 
 [TIP]
 ====
@@ -3577,7 +3579,7 @@ __icon:apple[set=fab] docs__:: https://developer.apple.com/documentation/combine
 __Usage__::
 
 * <<patterns#patterns-future,Wrapping an asynchronous call with a Future to create a one-shot publisher>>
-* <<patterns#pattern-cascading-update-interface,Cascading multiple UI updates, including a network request>>
+* <<patterns#patterns-cascading-update-interface,Cascading multiple UI updates, including a network request>>
 
 __Details__::
 
