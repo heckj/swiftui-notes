@@ -3,7 +3,9 @@
 
 __Goal__::
 
-* When URLSession makes a connection, it only reports an error if the remote server doesn't respond. You may want to consider a number of responses, based on status code, to be errors. To accomplish this, you can use tryMap to inspect the http response and throw an error in the pipeline.
+* When URLSession makes a connection, it only reports an error if the remote server does not respond.
+You may want to consider a number of responses, based on status code, to be errors.
+To accomplish this, you can use tryMap to inspect the http response and throw an error in the pipeline.
 
 __References__::
 
@@ -23,8 +25,8 @@ __See also__::
 
 __Code and explanation__::
 
-To have more control over what is considered a failure in the URL response, use a `tryMap` operator on the tuple response from dataTaskPublisher.
-Since dataTaskPublisher returns both the response data and the URLResponse into the pipeline, you can immediately inspect the response and throw an error of your own if desired.
+To have more control over what is considered a failure in the URL response, use a `tryMap` operator on the tuple response from `dataTaskPublisher`.
+Since `dataTaskPublisher` returns both the response data and the `URLResponse` into the pipeline, you can immediately inspect the response and throw an error of your own if desired.
 
 An example of that might look like:
 
@@ -67,10 +69,12 @@ let cancellableSink = remoteDataPublisher
 Where the <<patterns#patterns-datataskpublisher-decode, previous pattern>> used a <<reference#reference-map,map>> operator, this uses tryMap, which allows us to identify and throw errors in the pipeline based on what was returned.
 
 <1> <<reference#reference-trymap,tryMap>> still gets the tuple of `(data: Data, response: URLResponse)`, and is defined here as returning just the type of Data down the pipeline.
-<2> Within the closure for tryMap, we can cast the response to HTTPURLResponse and dig deeper into it, including looking at the specific status code.
-<3> In this case, we want to consider **anything** other than a 200 response code as a failure. HTTPURLResponse.status_code is an Int type, so you could also have logic such as `httpResponse.statusCode > 300`.
-<4> If the predicates aren't met, then we can throw an instance of an error of our choosing, `invalidServerResponse` in this case.
-<5> If no error has occured, then we simply pass down Data for further processing.
+<2> Within the closure for `tryMap`, we can cast the response to `HTTPURLResponse` and dig deeper into it, including looking at the specific status code.
+<3> In this case, we want to consider **anything** other than a 200 response code as a failure. `HTTPURLResponse`.status_code is an Int type, so you could also have logic such as `httpResponse.statusCode > 300`.
+<4> If the predicates are not met it throws an instance of an error of our choosing; `invalidServerResponse` in this case.
+<5> If no error has occured, then we simply pass down `Data` for further processing.
+
+=== Normalizing errors from a dataTaskPublisher
 
 When an error is triggered on the pipeline, a `.failure` completion is sent with the error encapsulated within it, regardless of where it happened in the pipeline.
 

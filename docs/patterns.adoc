@@ -4,14 +4,6 @@
 Included are a series of patterns and examples of Publishers, Subscribers, and pipelines.
 These examples are meant to illustrate how to use the Combine framework to accomplish various tasks.
 
-[NOTE]
-====
-__Since this is a work in progress:__
-if you have a suggestion for a pattern or recipe, I'm happy to consider it.
-
-Please https://github.com/heckj/swiftui-notes/issues/new/choose[Open an issue] in GitHub to request something.
-====
-
 include::pattern-sink.adoc[]
 include::pattern-assign.adoc[]
 include::pattern-datataskpublisher-decode.adoc[]
@@ -22,21 +14,22 @@ include::pattern-sequencing-operations.adoc[]
 [#patterns-general-error-handling]
 == Error Handling
 
-The examples above expected that the subscriber would handle the error conditions, if they occured.
-However, you are not always able to control the subscriber - as might be the case if you're using SwiftUI view properties as the subscriber, and you're providing the publisher.
+Previous examples above expect that the subscriber would handle the error conditions, if they occured.
+However, you are not always able to control what the subscriber requires - as might be the case if you are using SwiftUI.
 In these cases, you need to build your pipeline so that the output types match the subscriber types.
+This implies that you are handling any errors within the pipeline.
 
 For example, if you are working with SwiftUI and the you want to use <<reference#reference-assign,assign>> to set the `isEnabled` property on a button, the subscriber will have a few requirements:
 
-. the subcriber should match the type output of `<Bool>`, `<Never>`
+. the subcriber should match the type output of `<Bool, Never>`
 . the subscriber should be called on the main thread
 
 With a publisher that can throw an error (such as <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>), you need to construct a pipeline to convert the output type, but also handle the error within the pipeline to match a failure type of `<Never>`.
 
-How you handle the errors within a pipeline is very dependent on how the pipeline is working.
-If the pipeline is set up to return a single result and terminate, continue to <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>.
+How you handle the errors within a pipeline is dependent on how the pipeline is defined.
+If the pipeline is set up to return a single result and terminate, a good example is <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>.
 If the pipeline is set up to continually update, the error handling needs to be a little more complex.
-Jump ahead to <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>.
+In this case, look at the example <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>.
 
 :leveloffset: +1
 include::pattern-assertnofailure.adoc[]
@@ -47,7 +40,7 @@ include::pattern-constrained-network.adoc[]
 :leveloffset: -1
 
 [#patterns-uikit-integration]
-== UIKit (or AppKit) Integration
+== UIKit or AppKit Integration
 
 :leveloffset: +1
 include::pattern-update-interface-userinput.adoc[]
@@ -76,7 +69,7 @@ With the https://developer.apple.com/documentation/combine/publisher[publisher p
 For example, if your code was focused on providing its data from external web services through Combine, you might make the interface to this conform to `AnyPublisher<Data, Error>`.
 You could then use that interface to test either side of that pipeline independently.
 
-* You could mock data responses that emulate the underlying API calls and possible responses, including various error conditions.
+* You can mock data responses that emulate the underlying API calls and possible responses, including various error conditions.
 This might include returning data from a publisher created with <<reference#reference-just,Just>> or <<reference#reference-fail,Fail>>, or something more complex using <<reference#reference-future,Future>>.
 None of these options require you to make actual network interface calls.
 

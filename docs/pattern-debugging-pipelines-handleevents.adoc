@@ -33,15 +33,15 @@ The closures you can provide include:
 * `receiveOutput`
 * `receiveCompletion`
 
-If the closures each included a print statement, then this operator would be acting very much like the <<reference#reference-print,print>> operator, as detailed in <<patterns#patterns-debugging-print,Debugging pipelines with the print operator>>.
+If the closures each included a print statement, this operator would be acting very much like the <<reference#reference-print,print>> operator, as detailed in <<patterns#patterns-debugging-print,Debugging pipelines with the print operator>>.
 
 The power of handleEvents for debugging is in selecting what you want to view, reducing the amount of output, or manipulating the data to get a better understanding of it.
 
 In the example viewcontroller at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubViewController.swift[UIKit-Combine/GithubViewController.swift], the subscription, cancellation, and completion handlers are used to provide a side effect of starting, or stopping, an activity indicator.
 
-If you only wanted to see the data being passed on the pipeline, and didn't care about the control messages, then providing a single closure for receiveOutput and ignoring the other closures can let you focus in on just that detail.
+If you only wanted to see the data being passed on the pipeline, and didn't care about the control messages, then providing a single closure for receiveOutput and ignoring the other closures can let you focus on just that detail.
 
-The unit test example showing handleEvents has each active with comments:
+The unit test example showing handleEvents has all options active with comments:
 
 .https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/HandleEventsPublisherTests.swift[UsingCombineTests/HandleEventsPublisherTests.swift]
 [source, swift]
@@ -70,7 +70,7 @@ No data is passed into the cancellation closure.
 
 [NOTE]
 ====
-While you can also use <<reference#reference-breakpoint>> and <<reference#reference-breakpointonerror>> operators to break into a debugger (as shown in <<patterns#patterns-debugging-breakpoint>>), the handleEvents() operator with closures allows you to set breakpoints within Xcode.
+While you can also use <<reference#reference-breakpoint>> and <<reference#reference-breakpointonerror>> operators to break into a debugger (as shown in <<patterns#patterns-debugging-breakpoint>>), the `handleEvents()` operator with closures allows you to set breakpoints within Xcode.
 This allows you to immediately jump into the debugger to inspect the data flowing through the pipeline, or to get references to the subscriber, or the error in the case of a failed completion.
 ====
 

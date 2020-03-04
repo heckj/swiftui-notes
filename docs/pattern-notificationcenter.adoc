@@ -45,7 +45,7 @@ NotificationCenter.default.post(note)
 
 [NOTE]
 ====
-While commonly in use within AppKit and MacOS applications, not all developers are comfortable with heavily using NotificationCenter.
+While commonly in use within AppKit and macOS applications, not all developers are comfortable with heavily using NotificationCenter.
 Originating within the more dynamic Objective-C runtime, Notifications leverage Any and optional types quite extensively.
 Using them within Swift code, or a pipeline, implies that the pipeline will have to provide the type assertions and deal with any possible errors related to data that may or may not be expected.
 ====
@@ -62,11 +62,11 @@ let sub = NotificationCenter.default.publisher(for: NSControl.textDidChangeNotif
     .map { ($0.object as! NSTextField).stringValue }  <3>
     .assign(to: \MyViewModel.filterString, on: myViewModel) <4>
 ----
-<1> TextFields within AppKit generate textDidChangeNotifications when the values are updated.
+<1> TextFields within AppKit generate a `textDidChangeNotification` when the values are updated.
 <2> An AppKit application can frequently have a large number of text fields that may be changed.
 Including a reference to the sending control can be used to filter to text changed notifications to which you are specifically interested in responding.
 <3> the <<reference#reference-map,map>> operator can be used to get into the object references included with the notification, in this case the `.stringValue` property of the text field that sent the notification, providing its updated value
-<4> The resulting string can be assigned using a writable KeyValue path.
+<4> The resulting string can be assigned using a writable `KeyValue` path.
 
 An example of subscribing to your own notifications:
 [source, swift]

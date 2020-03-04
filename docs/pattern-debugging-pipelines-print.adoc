@@ -25,7 +25,7 @@ __See also__::
 __Code and explanation__::
 
 I have found the greatest detail of information comes from selectively using the <<reference#reference-print,print>> operator.
-The downside is that it prints quite a lot of information, so the output can become quickly overwhelming.
+The downside is that it prints quite a lot of information, so the output can quickly become overwhelming.
 For understanding a simple pipeline, using the `.print()` as an operator without any parameters is very straightforward.
 As soon as you want to add more than one print operator, you will likely want to use the string parameter, which is puts in as a prefix to the output.
 
@@ -107,12 +107,12 @@ username pipeline: : receive value: (heckj)
 github user data: : receive value: ([UIKit_Combine.GithubAPIUser(login: "heckj", public_repos: 69, avatar_url: "https://avatars0.githubusercontent.com/u/43388?v=4")])
 ----
 
-I have removed some of the other extraneous print statements, which I also placed in <<reference#reference-sink,sink>> closures to see final results.
+Some of the extraneous print statements placed in <<reference#reference-sink,sink>> closures to see final results have been removed.
 
-As you can see, you see the initial subscription setup at the very beginning, and then notifications, including the debug representation of the value passed through the print operator.
+You see the initial subscription setup at the very beginning, and then notifications, including the debug representation of the value passed through the `print` operator.
 Although it is not shown in the example content above, you will also see cancellations when an error occurs, or completions when they emit from a publisher reporting no further data is available.
 
-It can also be beneficial to use a print operator on either side of an operator to understand how it is operating.
+It can also be beneficial to use a `print` operator on either side of an operator to understand how it is operating.
 
 An example of doing this, leveraging the prefix to show the <<reference#reference-retry,retry>> operator and how it works:
 
@@ -135,8 +135,8 @@ func testRetryWithOneShotFailPublisher() {
 }
 ----
 
-<1> The `(1)` prefix is to show the interactions above the retry operator
-<2> The `(2)` prefix shows the interactions after the retry operator
+<1> The `(1)` prefix is to show the interactions above the `retry` operator
+<2> The `(2)` prefix shows the interactions after the `retry` operator
 
 .output from unit test
 [source]
@@ -167,12 +167,13 @@ Test Suite 'Selected tests' passed at 2019-07-26 15:59:48.057.
 	 Executed 1 test, with 0 failures (0 unexpected) in 0.010 (0.015) seconds
 ----
 
-<1> In the test sample, the publisher always reports a failure, resulting in seeing the prefix `(1)` receiving the error, and then the resubscription from the retry operator.
+<1> In the test sample, the publisher always reports a failure, resulting in seeing the prefix `(1)` receiving the error, and then the resubscription from the `retry` operator.
 <2> And after 4 of those attempts (3 "retries"), then you see the error falling through the pipeline.
 After the error hits the sink, you see the `cancel` signal propogated back up, which stops at the retry operator.
 
-While very effective, the print operator can be a blunt tool, generating a lot of output that you have to parse and review.
-If you want to be more selective with what you identify and print, or if you need to process the data passing through for it to be used more meaningfully, then you look at the <<reference#reference-handleevents,handleEvents>> operator. More detail on how to use this opeartor for debugging is in  <<patterns#patterns-debugging-handleevents,Debugging pipelines with the handleEvents operator>>.
+While very effective, the `print` operator can be a blunt tool, generating a lot of output that you have to parse and review.
+If you want to be more selective with what you identify and print, or if you need to process the data passing through for it to be used more meaningfully, then you look at the <<reference#reference-handleevents,handleEvents>> operator.
+More detail on how to use this opeartor for debugging is in  <<patterns#patterns-debugging-handleevents,Debugging pipelines with the handleEvents operator>>.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
