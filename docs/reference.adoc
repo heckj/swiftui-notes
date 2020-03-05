@@ -426,7 +426,7 @@ You will see there upon occasion when a view is expected to be component, and it
 
 [NOTE]
 ====
-The exception to `@EnvironmentObject` cascading across the view hierarchy in SwiftUI is notably when using sheets. ]Sheets don't inherit the environment from the view through which they are presented.
+The exception to `@EnvironmentObject` cascading across the view hierarchy in SwiftUI is notably when using sheets. Sheets don't inherit the environment from the view through which they are presented.
 ====
 
 * `@Environment` is used to expose environmental information already available from within the frameworks, for example:
