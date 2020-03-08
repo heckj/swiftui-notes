@@ -19,7 +19,7 @@ When you are talking about programming (and especially with Swift and Combine), 
 When you say a function or method returns a value, that value is generally described as being "one of this type".
 
 Combine is all about defining the process of what you do with many possible values over time.
-Combine also goes farther than defining the resut, it also defines how it can fail.
+Combine also goes farther than defining the result, it also defines how it can fail.
 It not only talks about the types that can be returned, but the failures that might happen as well.
 
 The first core concept to introduce in this respect is the publisher.
