@@ -32,7 +32,7 @@ func adaptiveLoader(regularURL: URL, lowDataURL: URL) -> AnyPublisher<Data, Erro
             return URLSession.shared.dataTaskPublisher(for: lowDataURL) <5>
         .tryMap { data, response -> Data in
             guard let httpResponse = response as? HTTPUrlResponse, <6>
-                   httpResponse.status_code == 200 else {
+                   httpResponse.statusCode == 200 else {
                        throw MyNetworkingError.invalidServerResponse
             }
             return data
