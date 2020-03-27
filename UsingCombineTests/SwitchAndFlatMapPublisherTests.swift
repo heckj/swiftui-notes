@@ -245,6 +245,86 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
         XCTAssertNotNil(cancellable)
     }
 
+    func testAndreiKuzmaSwitchToLatest() {
+        // from swift forums post highlighting a failure during IOS 13.4 development
+        let canceled = expectation(description: "Should be canceled")
+        let finished = expectation(description: "Should be Finished")
+
+        var valuesCount = 0
+        let subject = PassthroughSubject<Void, Never>()
+        let delay: TimeInterval = 1
+        let scheduler = DispatchQueue(label: "testSwitchToLatest")
+
+        var cancellable: AnyCancellable? = subject.map { _ in
+            Just(()).delay(
+                for: .seconds(delay),
+                scheduler: scheduler
+            ).handleEvents(
+                receiveSubscription: { _ in
+                    print("Started")
+                },
+                receiveCancel: {
+                    print("Canceled")
+                    canceled.fulfill()
+                }
+            )
+        }.switchToLatest().sink(
+            receiveCompletion: { _ in
+                finished.fulfill()
+            },
+            receiveValue: { _ in
+                valuesCount += 1
+            }
+        )
+
+        subject.send(())
+        subject.send(())
+
+        // If deadline > .now() + delay than you will receive completion otherwise not
+        let deadline: DispatchTime = .now() + delay/2
+        scheduler.asyncAfter(deadline: deadline) {
+            subject.send(completion: .finished)
+        }
+
+        wait(for: [canceled, finished], timeout: 5)
+        cancellable?.cancel()
+        cancellable = nil
+
+        XCTAssert(valuesCount == 1)
+    }
+
+    func testShaiMishaliSwitchToLatest() {
+        // from https://forums.swift.org/t/confused-about-behaviour-of-switchtolatest-in-combine/29914/28
+        var subscription: AnyCancellable!
+        let expect = expectation(description: "tester")
+        var outerCompleted = false
+        subscription = Just("trigger")
+            .map { _ -> AnyPublisher<Void, Never> in
+                Timer
+                    .publish(every: 0.1, on: RunLoop.current, in: .common)
+                    .autoconnect()
+                    .map { _ in () }
+                    .prefix(8)
+                    .handleEvents(receiveOutput: { _ in print("inner value") },
+                                receiveCompletion: { print("inner completed: \($0)") })
+                    .eraseToAnyPublisher()
+            }
+            .switchToLatest()
+            .print("post-stl")
+            .sink(
+                receiveCompletion: {
+                    print("completed \($0)")
+                    outerCompleted = true
+                    expect.fulfill()
+                },
+                receiveValue: { _ in print("value") }
+            )
+        wait(for: [expect], timeout: 2)
+        XCTAssertTrue(outerCompleted)
+        XCTAssertNotNil(subscription)
+    }
+    
+    
     func testSwitchToLatestReturningTwoResults() {
         func APIDifferentProxyExample() -> AnyPublisher<String,Never> {
             // an example function that might act akin to an API call that returns a publisher with a response.
