@@ -3,6 +3,15 @@ name: CI
 on: [push]
 
 jobs:
+  test:
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: experiment1
+        uses: asciidoctor/docker-asciidoctor
+        with:
+          entrypoint: /bin/echo
+          args: The ${{ github.event_name }} event triggered this step.
+            
   build:
 
     runs-on: macos-latest
