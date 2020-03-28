@@ -1,18 +1,34 @@
 name: CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
+
+    - name: pwd
+      run: pwd
+
     - name: ls
       run: ls -altr
+
     - name: docker version
       run: docker -v
 
     - name: docker help
       run: docker --help
+
+    - name: generate html with asciidoctor from docs/
+      run: docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
+      # results to appear in the directory 'output'
+
+    - name: ls
+      run: ls -altr
+
+# # copy in the images for the HTML
+# cp -r docs/images output/images
 
   build:
 
