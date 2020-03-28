@@ -426,7 +426,7 @@ You will see there upon occasion when a view is expected to be component, and it
 
 [NOTE]
 ====
-The exception to `@EnvironmentObject` cascading across the view hierarchy in SwiftUI is notably when using sheets. ]Sheets don't inherit the environment from the view through which they are presented.
+The exception to `@EnvironmentObject` cascading across the view hierarchy in SwiftUI is notably when using sheets. Sheets don't inherit the environment from the view through which they are presented.
 ====
 
 * `@Environment` is used to expose environmental information already available from within the frameworks, for example:
@@ -480,7 +480,7 @@ __Details__::
 When a class includes a Published property and conforms to the https://developer.apple.com/documentation/combine/observableobject[ObservableObject protocol], this class instances will get a `objectWillChange` publisher endpoint providing this publisher.
 The `objectWillChange` publisher will not return any of the changed data, only an indicator that the referenced object has changed.
 
-The output type of `ObservableObject.Output` is type aliased to Void, so while it is not nill, it will not provide any meaningful data.
+The output type of `ObservableObject.Output` is type aliased to Void, so while it is not nil, it will not provide any meaningful data.
 Because the output type does not include what changes on the referenced object, the best method for responding to changes is probably best done using <<reference-sink,sink>>.
 
 In practice, this method is most frequently used by the SwiftUI framework.

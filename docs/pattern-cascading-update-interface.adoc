@@ -56,7 +56,7 @@ Even though we only expect a single value here, we use a list because we can con
 ====
 The empty list is useful to return because when a username is provided that doesn't resolve, we want to explicitly remove any avatar image that was previously displayed.
 To do this, we need the pipelines to fully resolve to some value, so that further pipelines are triggered and the relevant UI interfaces updated.
-If we used an optional `String?` instead of an array of `String[]`, the optional does not trigger some of the pipeline when it is nill, and we always want a result value - even an empty value - to come from the pipeline.
+If we used an optional `String?` instead of an array of `String[]`, the optional does not trigger some of the pipeline when it is nil, and we always want a result value - even an empty value - to come from the pipeline.
 ====
 
 The subscribers (created with <<reference#reference-assign,assign>> and <<reference#reference-sink,sink>>) are stored as `AnyCancellable` variables on the view controller instance.
