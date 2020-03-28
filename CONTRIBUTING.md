@@ -1,6 +1,6 @@
 # Contributing
 
-This repository hosts the content for https://heckj.github.io/swiftui-notes/ with code
+This repository hosts the content for <https://heckj.github.io/swiftui-notes/> with code
 samples, playgrounds, projects, and notes on using all of the above. It is intended as a
 learning resource, and intentionally open to all.
 
