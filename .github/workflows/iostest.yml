@@ -15,15 +15,11 @@ jobs:
     - name: generate html with asciidoctor from docs/
       run: docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
       # results to appear in the directory 'output'
-
-    - name: ls
-      run: ls -altr
+    - name: copy images into HTML output directory
+      run: cp -r docs/images output/images
 
     - name: fs-scan output
       run: find output
-
-# # copy in the images for the HTML
-# cp -r docs/images output/images
 
   build:
 
