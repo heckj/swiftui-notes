@@ -71,11 +71,7 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
             }, receiveValue: { stringValue in
                 XCTAssertNotNil(stringValue)
                 print(" ** .sink() received \(stringValue)")
-                // this print adds into the console output:
-                // .sink() received Alternate data
-                // .sink() received Alternate data
-                // .sink() received Alternate data
-                // .sink() received Alternate data
+
             })
 
         let oneFish = "onefish"
