@@ -70,7 +70,7 @@ Where the <<patterns#patterns-datataskpublisher-decode, previous pattern>> used 
 
 <1> <<reference#reference-trymap,tryMap>> still gets the tuple of `(data: Data, response: URLResponse)`, and is defined here as returning just the type of Data down the pipeline.
 <2> Within the closure for `tryMap`, we can cast the response to `HTTPURLResponse` and dig deeper into it, including looking at the specific status code.
-<3> In this case, we want to consider **anything** other than a 200 response code as a failure. `HTTPURLResponse`.status_code is an Int type, so you could also have logic such as `httpResponse.statusCode > 300`.
+<3> In this case, we want to consider **anything** other than a 200 response code as a failure. `HTTPURLResponse`.`statusCode` is an Int type, so you could also have logic such as `httpResponse.statusCode > 300`.
 <4> If the predicates are not met it throws an instance of an error of our choosing; `invalidServerResponse` in this case.
 <5> If no error has occured, then we simply pass down `Data` for further processing.
 
