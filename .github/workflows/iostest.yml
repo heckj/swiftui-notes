@@ -10,15 +10,7 @@ jobs:
 
     - name: pwd
       run: pwd
-
-    - name: ls
-      run: ls -altr
-
-    - name: docker version
-      run: docker -v
-
-    - name: docker help
-      run: docker --help
+      # result: /home/runner/work/swiftui-notes/swiftui-notes
 
     - name: generate html with asciidoctor from docs/
       run: docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
@@ -26,6 +18,9 @@ jobs:
 
     - name: ls
       run: ls -altr
+
+    - name: fs-scan output
+      run: find output
 
 # # copy in the images for the HTML
 # cp -r docs/images output/images
