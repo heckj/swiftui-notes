@@ -25,7 +25,9 @@ echo "Rendering HTML"
 docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
 
 # copy in the images for the HTML
-cp -r docs/images output/images
+mkdir -p output/images
+cp -r docs/images/* output/images
+
 if [ -n "${OPENIT}" ]; then
     open output/using-combine-book.html
 fi

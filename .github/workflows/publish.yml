@@ -1,0 +1,41 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+          persist-credentials: false
+    # If you're using actions/checkout@v2 you must set persist-credentials to false
+    # in most cases for the deployment to work correctly.
+
+    #- name: pwd
+    #  run: pwd
+    # result: /home/runner/work/swiftui-notes/swiftui-notes
+
+    - name: generate html with asciidoctor from docs/
+      run: docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
+      # results to appear in the directory 'output'
+
+    - name: create images directory in output
+      run: mkdir -p output/images
+
+    - name: copy images into HTML output directory
+      run: cp -r docs/images/* output/images
+
+    - name: fs-scan output
+      run: find output
+
+    # docs: https://github.com/marketplace/actions/deploy-to-github-pages
+    - name: Deploy 🚀
+      uses: JamesIves/github-pages-deploy-action@releases/v3
+      with:
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        BRANCH: gh-pages # The branch the action should deploy to.
+        #FOLDER: build # The folder the action should deploy.

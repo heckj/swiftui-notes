@@ -1,23 +1,33 @@
 name: CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
-  # test:
-  #   runs-on: [ubuntu-latest]
-  #   steps:
-  #     - uses: asciidoctor/docker-asciidoctor
-  #       with:
-  #         entrypoint: /bin/echo
-  #         args: The ${{ github.event_name }} event triggered this step.
-  #     - name: experiment1
-  #     - run: ls -altr
+  test-adoc-generation:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    #- name: pwd
+    #  run: pwd
+    # result: /home/runner/work/swiftui-notes/swiftui-notes
+
+    - name: verify html generation with asciidoctor
+      run: docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
+      # results to appear in the directory 'output'
+
   build:
 
     runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v2
+
+    # - name: docker version
+    #   run: docker -v
+
+    # - name: docker help
+    #   run: docker --help
 
     - name: Show the currently detailed version of Xcode for CLI
       run: xcode-select -p

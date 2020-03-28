@@ -9,6 +9,48 @@
 import XCTest
 import Combine
 
+extension TimeInterval {
+    // from https://stackoverflow.com/questions/28872450/conversion-from-nstimeinterval-to-hour-minutes-seconds-milliseconds-in-swift
+    // because NSDateComponentFormatter doesn't support sub-second displays :-(
+    
+    func toReadableString() -> String {
+        // Nanoseconds
+        let ns = Int((self.truncatingRemainder(dividingBy: 1)) * 1000000000) % 1000
+        // Microseconds
+        let us = Int((self.truncatingRemainder(dividingBy: 1)) * 1000000) % 1000
+        // Milliseconds
+        let ms = Int((self.truncatingRemainder(dividingBy: 1)) * 1000)
+        // Seconds
+        let s = Int(self) % 60
+        // Minutes
+        let mn = (Int(self) / 60) % 60
+        // Hours
+        let hr = (Int(self) / 3600)
+
+        var readableStr = ""
+        if hr != 0 {
+            readableStr += String(format: "%0.2dhr ", hr)
+        }
+        if mn != 0 {
+            readableStr += String(format: "%0.2dmn ", mn)
+        }
+        if s != 0 {
+            readableStr += String(format: "%0.2ds ", s)
+        }
+        if ms != 0 {
+            readableStr += String(format: "%0.3dms ", ms)
+        }
+        if us != 0 {
+            readableStr += String(format: "%0.3dus ", us)
+        }
+        if ns != 0 {
+            readableStr += String(format: "%0.3dns", ns)
+        }
+
+        return readableStr
+    }
+}
+
 class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
 
     func testRemoveDuplicates() {
@@ -263,14 +305,25 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
     }
 
     func testThrottleLatestFalse() {
+        // NOTE(heckj): test is flaky in terms of it's timing, and repeated invocations are returning variable results
         let msTime = DateFormatter()
         msTime.dateFormat = "[HH:mm:ss.SSSS] "
 
+        // Would'a been cool - but DateComponentsFormatter is limited to "seconds" - doesn't do sub-second display
+        // let intervalFormatter = DateComponentsFormatter()
+        // intervalFormatter.allowedUnits = [.second,.nanosecond]
+        // intervalFormatter.allowsFractionalUnits = true
+        // intervalFormatter.unitsStyle = .positional
+        // intervalFormatter.includesTimeRemainingPhrase = true
+        
         class HoldingClass {
             @Published var intValue: Int = -1
         }
 
+        let start_mark = Date()
         print("testing queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+        print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
+        
         let q = DispatchQueue(label: self.debugDescription)
         let expectation = XCTestExpectation(description: self.debugDescription)
         let foo = HoldingClass()
@@ -283,35 +336,44 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
             .throttle(for: 0.5, scheduler: q, latest: false)
             .print(self.debugDescription)
             .sink { someValue in
+                print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
                 print(msTime.string(from: Date()) + "sink invoked on queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
                 print(msTime.string(from: Date()) + "value updated to: ", someValue)
                 receivedList.append(someValue)
         }
 
         q.asyncAfter(deadline: .now() + 0.1, execute: {
+            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
             print(msTime.string(from: Date()) + "Updating foo.intValue to 1 on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
             foo.intValue = 1
             // this value is collapsed by the throttle and not passed through to sink
         })
         q.asyncAfter(deadline: .now() + 0.2, execute: {
+            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
             print(msTime.string(from: Date()) + "Updating foo.intValue to 2 on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
             foo.intValue = 2
             // this value is collapsed by the throttle and not passed through to sink
         })
         q.asyncAfter(deadline: .now() + 0.6, execute: {
+            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
             print(msTime.string(from: Date()) + "Updating foo.intValue to 3 on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
             foo.intValue = 3
         })
         q.asyncAfter(deadline: .now() + 0.7, execute: {
+            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
             print(msTime.string(from: Date()) + "Updating foo.intValue to 4 on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
             foo.intValue = 4
             // this value is collapsed by the throttle and not passed through to sink
         })
-        q.asyncAfter(deadline: .now() + 1.1, execute: {
+
+        q.asyncAfter(deadline: .now() + 0.9, execute: {
+            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
             print(msTime.string(from: Date()) + "Updating foo.intValue to 5 on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
             foo.intValue = 5
         })
+
         q.asyncAfter(deadline: .now() + 1.2, execute: {
+            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
             print(msTime.string(from: Date()) + "Updating foo.intValue to 6 on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
             foo.intValue = 6
             // this value is collapsed by the throttle and not passed through to sink
@@ -334,7 +396,8 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         // different behavior again.
         //
         //XCTAssertEqual(receivedList, [-1, 5, 6]) // iOS 13.2.2
-        XCTAssertEqual(receivedList, [-1, 3, 5]) // iOS 13.3
+        //XCTAssertEqual(receivedList, [-1, 3, 5]) // iOS 13.3 - flaky response
+        XCTAssertEqual(receivedList, [-1, 3, 6]) // iOS 13.4
         XCTAssertEqual(foo.intValue, 6)
         XCTAssertNotNil(cancellable)
     }
@@ -346,6 +409,10 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         class HoldingClass {
             @Published var intValue: Int = -1
         }
+
+        let start_mark = Date()
+        print("testing queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
+        print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
 
         let q = DispatchQueue(label: self.debugDescription)
         let expectation = XCTestExpectation(description: self.debugDescription)
@@ -359,35 +426,42 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
             .throttle(for: 0.5, scheduler: q, latest: true)
             .print(self.debugDescription)
             .sink { someValue in
+                print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
                 print(msTime.string(from: Date()) + "value updated to: ", someValue)
                 receivedList.append(someValue)
         }
 
         q.asyncAfter(deadline: .now() + 0.1, execute: {
+            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
             print(msTime.string(from: Date()) + "Updating to foo.intValue to 1 on background queue")
             foo.intValue = 1
             // this value gets collapsed and not propogated
         })
         q.asyncAfter(deadline: .now() + 0.2, execute: {
+            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
             print(msTime.string(from: Date()) + "Updating to foo.intValue to 2 on background queue")
             foo.intValue = 2
             // this value gets collapsed and not propogated
         })
         q.asyncAfter(deadline: .now() + 0.6, execute: {
+            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
             print(msTime.string(from: Date()) + "Updating to foo.intValue to 3 on background queue")
             foo.intValue = 3
         })
         q.asyncAfter(deadline: .now() + 0.7, execute: {
+            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
             print(msTime.string(from: Date()) + "Updating to foo.intValue to 4 on background queue")
             foo.intValue = 4
             // this value gets collapsed and not propogated
         })
-        q.asyncAfter(deadline: .now() + 1.1, execute: {
+        q.asyncAfter(deadline: .now() + 0.9, execute: {
+            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
             print(msTime.string(from: Date()) + "Updating to foo.intValue to 5 on background queue")
             foo.intValue = 5
             // this value gets collapsed and not propogated
         })
         q.asyncAfter(deadline: .now() + 1.2, execute: {
+            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
             print(msTime.string(from: Date()) + "Updating to foo.intValue to 6 on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
             foo.intValue = 6
         })
