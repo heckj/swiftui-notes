@@ -23,11 +23,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: docker version
-      run: docker -v
+    # - name: docker version
+    #   run: docker -v
 
-    - name: docker help
-      run: docker --help
+    # - name: docker help
+    #   run: docker --help
 
     - name: Show the currently detailed version of Xcode for CLI
       run: xcode-select -p
