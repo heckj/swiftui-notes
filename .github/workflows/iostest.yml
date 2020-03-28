@@ -3,21 +3,29 @@ name: CI
 on: [push]
 
 jobs:
-  # test:
-  #   runs-on: [ubuntu-latest]
-  #   steps:
-  #     - uses: asciidoctor/docker-asciidoctor
-  #       with:
-  #         entrypoint: /bin/echo
-  #         args: The ${{ github.event_name }} event triggered this step.
-  #     - name: experiment1
-  #     - run: ls -altr
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: ls
+      run: ls -altr
+    - name: docker version
+      run: docker -v
+
+    - name: docker help
+      run: docker --help
+
   build:
 
     runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: docker version
+      run: docker -v
+
+    - name: docker help
+      run: docker --help
 
     - name: Show the currently detailed version of Xcode for CLI
       run: xcode-select -p
