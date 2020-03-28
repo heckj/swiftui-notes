@@ -23,14 +23,17 @@ jobs:
       run: docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
       # results to appear in the directory 'output'
 
+    - name: permission check
+      run: ls -altr
+
+    - name: fs-scan output
+      run: find output
+
     - name: create images directory in output
       run: mkdir -p output/images
 
     - name: copy images into HTML output directory
       run: cp -r docs/images/* output/images
-
-    - name: fs-scan output
-      run: find output
 
     # docs: https://github.com/marketplace/actions/deploy-to-github-pages
     - name: Deploy 🚀
@@ -38,4 +41,4 @@ jobs:
       with:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         BRANCH: gh-pages # The branch the action should deploy to.
-        #FOLDER: build # The folder the action should deploy.
+        FOLDER: output # The folder the action should deploy.
