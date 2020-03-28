@@ -6,12 +6,14 @@ jobs:
   test:
     runs-on: [ubuntu-latest]
     steps:
-      - name: experiment1
-        uses: asciidoctor/docker-asciidoctor
+      - uses: asciidoctor/docker-asciidoctor
         with:
           entrypoint: /bin/echo
           args: The ${{ github.event_name }} event triggered this step.
-            
+      - name: experiment1
+      - run: ls -altr
+
+
   build:
 
     runs-on: macos-latest
