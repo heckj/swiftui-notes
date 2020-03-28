@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xl="http://www.w3.org/1999/xlink" viewBox="79 109 402 141" width="402" height="141">
+  <defs>
+    <font-face font-family="Gill Sans" font-size="20" panose-1="2 11 5 2 2 1 4 2 2 3" units-per-em="1000" underline-position="-75.19531" underline-thickness="49.80469" slope="0" x-height="449.70703" cap-height="687.0117" ascent="917.9688" descent="-230.46875" font-weight="400">
+      <font-face-src>
+        <font-face-name name="GillSans"/>
+      </font-face-src>
+    </font-face>
+  </defs>
+  <metadata> Produced by OmniGraffle 7.13 
+    <dc:date>2020-02-27 19:31:19 +0000</dc:date>
+  </metadata>
+  <g id="basic_types" stroke="none" stroke-opacity="1" fill="none" stroke-dasharray="none" fill-opacity="1">
+    <title>basic_types</title>
+    <g id="basic_types: Layer 1">
+      <title>Layer 1</title>
+      <g id="Graphic_6">
+        <rect x="80" y="110" width="400" height="139" fill="white"/>
+        <rect x="80" y="110" width="400" height="139" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Group_16">
+        <g id="Graphic_13">
+          <path d="M 319 129 L 299 169 L 319 209 L 419 209 L 439 169 L 419 129 Z" fill="#ffd579" fill-opacity=".5"/>
+          <text transform="translate(304 157.5)" fill="black">
+            <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="17.617188" y="18">Failure Type</tspan>
+          </text>
+        </g>
+        <g id="Line_12">
+          <path d="M 319 129 L 299 169 L 319 209" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_11">
+          <path d="M 419 129 L 439 169 L 419 209" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+      </g>
+      <g id="Group_15">
+        <g id="Line_7">
+          <path d="M 139 129 L 119 169 L 139 209" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_8">
+          <path d="M 239 129 L 259 169 L 239 209" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Graphic_14">
+          <path d="M 139 129 L 119 169 L 139 209 L 239 209 L 259 169 L 239 129 Z" fill="#0096ff" fill-opacity=".5"/>
+          <text transform="translate(124 157.5)" fill="black">
+            <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="14.61914" y="18">Output Type</tspan>
+          </text>
+        </g>
+      </g>
+      <g id="Graphic_17">
+        <text transform="translate(84 214)" fill="black">
+          <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="79.09668" y="18">written as &lt;Output, Failure&gt;</tspan>
+        </text>
+      </g>
+    </g>
+  </g>
+</svg>

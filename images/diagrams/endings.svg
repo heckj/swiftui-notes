@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="250.0px"
+   height="210.0px"
+   viewBox="0 0 250.0 210.0 "
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+  >
+  <defs
+     id="defs4"> 
+<filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Drop Shadow"
+       id="filter3443"
+        x="-25%"
+        y="-25%"
+        width="150%"        
+        height="150%"        
+        >
+      <feFlood
+         flood-opacity="0.498039"
+         flood-color="rgb(0,0,0)"
+         result="flood"
+         id="feFlood3445" />
+      <feComposite
+         in="flood"
+         in2="SourceGraphic"
+         operator="in"
+         result="composite1"
+         id="feComposite3447" />
+      <feGaussianBlur
+         in="composite1"
+         stdDeviation="3"
+         result="blur"
+         id="feGaussianBlur3449" />
+      <feOffset
+         dx="2"
+         dy="3"
+         result="offset"
+         id="feOffset3451" />
+      <feComposite
+         in="SourceGraphic"
+         in2="offset"
+         operator="over"
+         result="composite2"
+         id="feComposite3453" />
+    </filter>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lend"
+       style="overflow:visible;"
+       inkscape:isstock="true">
+      <path
+         d="M -3.0,0.0 L -3.0,-5.0 L -12.5,0.0 L -3.0,5.0 L -3.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#003080;stroke-width:1pt;stroke-opacity:1;fill:#003080;fill-opacity:1"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>    
+
+  </defs>
+    <g id="source_foo" transform="rotate(0 0.0 30) translate(0.0,30)">
+  <path 
+     style="fill:none;fill-rule:evenodd;stroke:#003080;stroke-width:2px;marker-end:url(#Arrow1Lend)"
+     d="m 0,0 247.0,0"
+     inkscape:connector-curvature="0" />
+</g><g id="source_bar" transform="rotate(0 0.0 80.0) translate(0.0,80.0)">
+  <path 
+     style="fill:none;fill-rule:evenodd;stroke:#003080;stroke-width:2px;marker-end:url(#Arrow1Lend)"
+     d="m 0,0 247.0,0"
+     inkscape:connector-curvature="0" />
+
+<g>
+   <path d="m 175.0,-12 0,24"
+       style="fill:none;fill-rule:evenodd;stroke:#003080;stroke-width:4px;" />
+</g>
+</g><g id="source_dog" transform="rotate(0 0.0 160.0) translate(0.0,160.0)">
+  <path 
+     style="fill:none;fill-rule:evenodd;stroke:#003080;stroke-width:2px;marker-end:url(#Arrow1Lend)"
+     d="m 0,0 247.0,0"
+     inkscape:connector-curvature="0" />
+
+<g id="error">
+    <path
+       inkscape:connector-curvature="0"
+       d="m 189.0,-18 -28,36"
+       style="stroke:#F00000;stroke-width:3px;" />
+    <path
+       style="stroke:#F00000;stroke-width:3px;"
+       d="m 161.0,-18 28,36"
+       />
+</g>
+</g>
+ </svg>

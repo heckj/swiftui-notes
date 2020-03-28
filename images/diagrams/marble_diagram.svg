@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xl="http://www.w3.org/1999/xlink" viewBox="150 158 506 172" width="506" height="172">
+  <defs>
+    <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="FilledArrow_Marker" stroke-linejoin="miter" stroke-miterlimit="10" viewBox="-1 -4 10 8" markerWidth="10" markerHeight="8" color="black">
+      <g>
+        <path d="M 8 0 L 0 -3 L 0 3 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+      </g>
+    </marker>
+    <font-face font-family="Gill Sans" font-size="20" panose-1="2 11 5 2 2 1 4 2 2 3" units-per-em="1000" underline-position="-75.19531" underline-thickness="49.80469" slope="0" x-height="449.70703" cap-height="687.0117" ascent="917.9688" descent="-230.46875" font-weight="400">
+      <font-face-src>
+        <font-face-name name="GillSans"/>
+      </font-face-src>
+    </font-face>
+  </defs>
+  <metadata> Produced by OmniGraffle 7.13 
+    <dc:date>2020-02-27 20:00:01 +0000</dc:date>
+  </metadata>
+  <g id="marble_diagram" stroke-dasharray="none" fill="none" fill-opacity="1" stroke="none" stroke-opacity="1">
+    <title>marble_diagram</title>
+    <g id="marble_diagram: Layer 1">
+      <title>Layer 1</title>
+      <g id="Line_26">
+        <line x1="151" y1="170.2" x2="645.1" y2="170.2" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_27">
+        <line x1="151" y1="317.8" x2="645.1" y2="317.8" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_28">
+        <rect x="172.6" y="191.8" width="457.2" height="104.4" fill="white"/>
+        <rect x="172.6" y="191.8" width="457.2" height="104.4" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(177.6 232.5)" fill="black">
+          <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="187.25723" y="18">operator</tspan>
+        </text>
+      </g>
+      <g id="Graphic_29">
+        <circle cx="190.6" cy="170.2" r="10.8000172573405" fill="white"/>
+        <circle cx="190.6" cy="170.2" r="10.8000172573405" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_30">
+        <circle cx="284.2" cy="170.2" r="10.8000172573405" fill="white"/>
+        <circle cx="284.2" cy="170.2" r="10.8000172573405" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_31">
+        <circle cx="514.6" cy="170.2" r="10.8000172573405" fill="white"/>
+        <circle cx="514.6" cy="170.2" r="10.8000172573405" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_34">
+        <path d="M 201.4 307 L 212.2 317.8 L 201.4 328.6 L 190.6 317.8 Z" fill="white"/>
+        <path d="M 201.4 307 L 212.2 317.8 L 201.4 328.6 L 190.6 317.8 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_33">
+        <path d="M 295 307 L 305.8 317.8 L 295 328.6 L 284.2 317.8 Z" fill="white"/>
+        <path d="M 295 307 L 305.8 317.8 L 295 328.6 L 284.2 317.8 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_32">
+        <path d="M 525.4 307 L 536.2 317.8 L 525.4 328.6 L 514.6 317.8 Z" fill="white"/>
+        <path d="M 525.4 307 L 536.2 317.8 L 525.4 328.6 L 514.6 317.8 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+    </g>
+  </g>
+</svg>
