@@ -21,7 +21,7 @@ jobs:
 
     - name: generate html with asciidoctor from docs/
       run: docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
-      # results to appear in the directory 'output'
+      # results to appear in the directory 'output', which on GH action is owned by root, not `me`
 
     - name: permission check
       run: ls -altr
@@ -29,11 +29,22 @@ jobs:
     - name: fs-scan output
       run: find output
 
-    - name: create images directory in output
-      run: mkdir -p output/images
+    - name: create build directory and images directory
+      run: |
+        mkdir -p build
+        mkdir -p build/images
 
     - name: copy images into HTML output directory
-      run: cp -r docs/images/* output/images
+      run: cp -r docs/images/* build/images
+
+    - name: copy HTML into build directory
+      run: cp output/using-combine-book.html build/index.html
+
+    - name: permission check
+      run: ls -altr
+
+    - name: fs-scan build
+      run: find build
 
     # docs: https://github.com/marketplace/actions/deploy-to-github-pages
     - name: Deploy 🚀
@@ -41,4 +52,4 @@ jobs:
       with:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         BRANCH: gh-pages # The branch the action should deploy to.
-        FOLDER: output # The folder the action should deploy.
+        FOLDER: build # The folder the action should deploy.
