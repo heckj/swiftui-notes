@@ -133,7 +133,7 @@ __Details__::
 `Empty` is useful in error handling scenarios where the value is an optional, or where you want to resolve an error by simply not sending anything.
 Empty can be invoked to be a publisher of any output and failure type combination.
 
-`Empty` is most commonly used where you need to return a publisher, but don't want to propogate any values (a possible error handling scenario).
+`Empty` is most commonly used where you need to return a publisher, but don't want to propagate any values (a possible error handling scenario).
 If you want a publisher that provides a single value, then look at <<reference#reference-just,Just>> or <<reference#reference-deferred,Deferred>> publishers as alternatives.
 
 When subscribed to, an instance of the `Empty` publisher will not return any values (or errors) and will immediately return a finished completion message to the subscriber.
@@ -1215,7 +1215,7 @@ __Details__::
 Like <<reference#reference-filter,filter>>, tryFilter takes a single closure as a parameter that is provided the value from the previous publisher and returns a Bool value.
 If the return from the closure is `true`, then the operator republishes the value further down the chain.
 If the return from the closure is `false`, then the operator drops the value.
-You can additionally throw an error during the evaluation of tryFilter, which will then be propogated as the failure type down the pipeline.
+You can additionally throw an error during the evaluation of tryFilter, which will then be propagated as the failure type down the pipeline.
 
 [#reference-removeduplicates]
 ==== removeDuplicates
@@ -1281,7 +1281,7 @@ __Details__::
 `tryRemoveDuplicates` is a variant of <<reference#reference-removeduplicates,removeDuplicates>> taking a single parameter that can throw an error.
 The parameter is a closure that allows you to determine the logic of what will be removed.
 If the closure returns true, `tryRemoveDuplicates` will consider the values matched and not forward a the duplicate value.
-If the closure throws an error, a failure completion will be propogated down the chain, and no value is sent.
+If the closure throws an error, a failure completion will be propagated down the chain, and no value is sent.
 
 [source, swift]
 ----
@@ -1322,7 +1322,7 @@ The operator takes a single parameter, `with` where you specify the replacement 
 .replaceEmpty(with: "-replacement-")
 ----
 
-This operator is useful specifically when you want a stream to always provide a value, even if an upstream publisher may not propogate one.
+This operator is useful specifically when you want a stream to always provide a value, even if an upstream publisher may not propagate one.
 
 [#reference-replaceerror]
 ==== replaceError
@@ -2159,10 +2159,10 @@ __Details__::
 The <<reference-dropuntiloutput,dropUntilOutput>> operator uses another publisher as a trigger, stopping output through a pipeline until a value is received.
 Values received from the upstream publisher are ignored (and dropped) until the trigger is activated.
 
-Any value propogated through the trigger publisher will cause the switch to activate, and allow future values through the pipeline.
+Any value propagated through the trigger publisher will cause the switch to activate, and allow future values through the pipeline.
 
-Errors are still propogated from the upstream publisher, terminating the pipeline with a `failure` completion.
-An error (`failure` completion) on either the upstream publisher or the trigger publisher will be propogated to any subscribers and terminate the pipeline.
+Errors are still propagated from the upstream publisher, terminating the pipeline with a `failure` completion.
+An error (`failure` completion) on either the upstream publisher or the trigger publisher will be propagated to any subscribers and terminate the pipeline.
 
 [source, swift]
 ----
@@ -2191,10 +2191,10 @@ __Usage__::
 __Details__::
 
 The <<reference-dropwhile,dropWhile>> operator takes a single closure, accepting an input value of the output type defined by the upstream publisher, returning a bool.
-This closure is used to determine a trigger condition, after which values are allowed to propogate.
+This closure is used to determine a trigger condition, after which values are allowed to propagate.
 
 This is not the same as the <<reference-filter>> operator, acting on each value.
-Instead it uses a trigger that activates once, and propogates all values after it is activated until the upstream publisher finishes.
+Instead it uses a trigger that activates once, and propagates all values after it is activated until the upstream publisher finishes.
 
 [source, swift]
 ----
@@ -2273,7 +2273,7 @@ secondPublisher
 
 The <<reference-prepend>> operator is often used with single or sequence values that have a failure type of `<Never>`.
 If the publishers do accept a failure type, then all values will be published from the prefix publisher even if the suffix publisher receives a `.failure` completion before it is complete.
-Once the prefix publisher completes, the error will propogated.
+Once the prefix publisher completes, the error will propagated.
 
 The <<reference-prepend>> operator also has convenience operators to send a sequence.
 For example:
@@ -2285,7 +2285,7 @@ secondPublisher
 ----
 
 <1> The sequence values will be published immediately on a subscriber requesting demand.
-Further demand will be propogated upward to `secondPublisher`.
+Further demand will be propagated upward to `secondPublisher`.
 Values produced from `secondPublisher` will then be published until it completes.
 
 Another convenience operator exists to send a single value:
@@ -2297,7 +2297,7 @@ secondPublisher
 ----
 
 <1> The value will be published immediately on a subscriber requesting demand.
-Further demand will be propogated upward to `secondPublisher`.
+Further demand will be propagated upward to `secondPublisher`.
 Values produced from `secondPublisher` will then be published until it completes.
 
 [#reference-drop]
@@ -2319,7 +2319,7 @@ __Usage__::
 
 __Details__::
 
-The simplest form of the <<reference-drop>> operator drops a single value and then allows all further values to propogate through the pipeline.
+The simplest form of the <<reference-drop>> operator drops a single value and then allows all further values to propagate through the pipeline.
 
 [source, swift]
 ----
@@ -2333,7 +2333,7 @@ A varient of this operator allows a count of values to be specified:
 .dropFirst(3) <1>
 ----
 
-<1> Drops the first three values received from the upstream publisher before propogating any further values published to downstream subscribers.
+<1> Drops the first three values received from the upstream publisher before propagating any further values published to downstream subscribers.
 
 [#reference-prefixuntiloutput]
 ==== prefixUntilOutput
@@ -2354,7 +2354,7 @@ __Usage__::
 
 __Details__::
 
-The <<reference-prefixuntiloutput,prefixUntilOutput>> will propogate values from an upstream publisher until a second publisher is used as a trigger.
+The <<reference-prefixuntiloutput,prefixUntilOutput>> will propagate values from an upstream publisher until a second publisher is used as a trigger.
 Once the trigger is activated by receiving a value, the operator will terminate the stream.
 
 [source, swift]
@@ -2383,7 +2383,7 @@ __Details__::
 
 The <<reference-prefixwhile,prefixWhile>> operator takes a single closure, with an input matching the output type defined by the upstream publisher, returning a boolean.
 This closure is evaluated on the data from the upstream publisher.
-While it returns `true` the values are propogated to the subscriber.
+While it returns `true` the values are propagated to the subscriber.
 Once the value returns `false`, the operator terminates the stream with a `.finished` completion.
 
 [source, swift]
@@ -2444,7 +2444,7 @@ The <<reference-output>> operator takes a single parameter, either an integer or
 This value is used to select a specific value, or sequence of values, from an upstream publisher to send to subscribers.
 
 <<reference-output>> is choosing values from the middle of the stream.
-If the upstream publisher completes before the values is received, the `.finished` completion will be propogated to the subscriber.
+If the upstream publisher completes before the values is received, the `.finished` completion will be propagated to the subscriber.
 
 [source, swift]
 ----
@@ -2452,7 +2452,7 @@ If the upstream publisher completes before the values is received, the `.finishe
 ----
 
 <1> The selection is 0 indexed (meaning the count starts at 0).
-This will select the fourth item published from the upstream publisher to propogate.
+This will select the fourth item published from the upstream publisher to propagate.
 
 The alternate form takes a swift range descriptor:
 
@@ -2462,7 +2462,7 @@ The alternate form takes a swift range descriptor:
 ----
 
 <1> The selection is 0 indexed (the count starts at 0).
-This will select the third and fourth item published from the upstream publisher to propogate.
+This will select the third and fourth item published from the upstream publisher to propagate.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
@@ -2507,7 +2507,7 @@ In turn, when any of the upstream publishers sends an updated value, the operato
 
 The failure type of all three upstream publishers needs to be the identical.
 For example, you can not have one publisher that has a failure type of `Error` and another (or more) that have a failure type of `Never`.
-If the `combineLatest` operator does receive a failure from any of the upstream publishers, then the operator (and the rest of the pipeline) is cancelled after propogating that failure.
+If the `combineLatest` operator does receive a failure from any of the upstream publishers, then the operator (and the rest of the pipeline) is cancelled after propagating that failure.
 
 If any of the upstream publishers finish normally (that is, they send a `.finished` completion), the `combineLatest` operator will continue operating and processing any messages from any of the other publishers that has additional data to send.
 
@@ -2548,7 +2548,7 @@ __Details__::
 
 In all cases, the upstreams publishers are required to have the same output type, as well as the same failure type.
 
-As with <<reference#reference-combinelatest,combineLatest>>, if an error is propogated down any of the upstream publishers, the cancellation from the subscriber will terminate this operator and will propogate cancel to all upstream publishers as well.
+As with <<reference#reference-combinelatest,combineLatest>>, if an error is propagated down any of the upstream publishers, the cancellation from the subscriber will terminate this operator and will propagate cancel to all upstream publishers as well.
 
 If an upstream publisher completes with a normal finish, the `merge` operator continues interleaving and forwarding from any values other upstream publishers.
 
@@ -2556,7 +2556,7 @@ In the unlikely event that two values are provided at the same time from upstrea
 
 If you want to mix different upstream publisher types into a single stream, then you likely want to use either <<reference#reference-combinelatest,combineLatest>> or <<reference#reference-zip,zip>>, depending on how you want the timing of values to be handled.
 
-If your upstream publishers have different types, but you want interleaved values to be propogated as they are available, use <<reference#reference-combinelatest,combineLatest>>.
+If your upstream publishers have different types, but you want interleaved values to be propagated as they are available, use <<reference#reference-combinelatest,combineLatest>>.
 If you want to wait on values from all upstream provides before providing an updated value, then use the <<reference#reference-zip,zip>> operator.
 
 [#reference-zip]
@@ -2591,7 +2591,7 @@ One example of using this is to wait until all streams have provided a single va
 For example, if you have two independent network requests and require them to both be complete before continuing to process the results, you can use `zip` to wait until both publishers are complete before forwarding the combined tuples.
 
 Other operators that merge multiple upstream pipelines include <<reference#reference-combinelatest,combineLatest>> and <<reference#reference-merge,merge>>.
-If your upstream publishers have different types, but you want interleaved values to be propogated as they are available, use <<reference#reference-combinelatest,combineLatest>>.
+If your upstream publishers have different types, but you want interleaved values to be propagated as they are available, use <<reference#reference-combinelatest,combineLatest>>.
 If your upstream publishers have the same type and you want a stream of single values, as opposed to tuples, then you probably want to use the <<reference#reference-merge,merge>> operator.
 
 // force a page break - in HTML rendering is just a <HR>
@@ -3366,7 +3366,7 @@ __Usage__::
 
 __Details__::
 
-`breakpointOnError` is a convenience method used to raise a `SIGTRAP` signal when an error is propogated through it within a pipeline.
+`breakpointOnError` is a convenience method used to raise a `SIGTRAP` signal when an error is propagated through it within a pipeline.
 
 [source, swift]
 ----

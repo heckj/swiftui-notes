@@ -169,7 +169,7 @@ Test Suite 'Selected tests' passed at 2019-07-26 15:59:48.057.
 
 <1> In the test sample, the publisher always reports a failure, resulting in seeing the prefix `(1)` receiving the error, and then the resubscription from the `retry` operator.
 <2> And after 4 of those attempts (3 "retries"), then you see the error falling through the pipeline.
-After the error hits the sink, you see the `cancel` signal propogated back up, which stops at the retry operator.
+After the error hits the sink, you see the `cancel` signal propagated back up, which stops at the retry operator.
 
 While very effective, the `print` operator can be a blunt tool, generating a lot of output that you have to parse and review.
 If you want to be more selective with what you identify and print, or if you need to process the data passing through for it to be used more meaningfully, then you look at the <<reference#reference-handleevents,handleEvents>> operator.

@@ -17,7 +17,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testFirst() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -56,7 +56,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testFirstFinishedBeforeValue() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -88,7 +88,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testFirstWhere() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -128,7 +128,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testFirstWhereFinishedBeforeValue() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -162,7 +162,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testTryFirstWhere() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -205,7 +205,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testTryFirstWhereFinishedBeforeValue() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -239,10 +239,10 @@ class SequentialOperatorTests: XCTestCase {
 
         XCTAssertNotNil(cancellable)
     }
-    
+
     func testTryFirstWhereWithError() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -289,7 +289,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testLast() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -335,7 +335,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testLastWithFinishedBeforeValue() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -367,7 +367,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testLastWhere() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -419,7 +419,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testLastWhereFinished() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -454,7 +454,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testTryLastWhere() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -509,7 +509,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testTryLastWhereFinished() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -547,7 +547,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testTryLastWhereWithError() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -594,10 +594,10 @@ class SequentialOperatorTests: XCTestCase {
 
     func testDropUntilOutput() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         let triggerSubj = PassthroughSubject<Int, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -650,10 +650,10 @@ class SequentialOperatorTests: XCTestCase {
 
     func testDropUntilOutputTriggerFinishedBeforeValue() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         let triggerSubj = PassthroughSubject<Int, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -695,10 +695,10 @@ class SequentialOperatorTests: XCTestCase {
 
     func testDropUntilOutputTriggerError() {
         let passSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         let triggerSubj = PassthroughSubject<Int, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -746,10 +746,10 @@ class SequentialOperatorTests: XCTestCase {
 
     func testDropUntilOutputFinished() {
         let passSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         let triggerSubj = PassthroughSubject<Int, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -787,7 +787,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testDropWhile() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -847,7 +847,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testDropWhileEarlyTrigger() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -901,7 +901,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testDropWhileFinished() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -937,7 +937,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testTryDropWhile() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -1000,7 +1000,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testTryDropWhileEarlyTriggerAndError() {
         let passSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -1055,7 +1055,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testTryDropWhileFinished() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -1094,7 +1094,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testDropFirst() {
         let passSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -1144,7 +1144,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testDropFirstFinished() {
         let passSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -1182,7 +1182,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testDropFirstCount() {
         let passSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -1242,7 +1242,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testConcatenate() {
         let firstSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         let secondSubj = PassthroughSubject<String, Error>()
 
@@ -1324,7 +1324,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testConcatenateSecondFinishedFirst() {
         let firstSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         let secondSubj = PassthroughSubject<String, Error>()
 
@@ -1390,7 +1390,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testConcatenateSecondErroredFirst() {
         let firstSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         let secondSubj = PassthroughSubject<String, Error>()
 
@@ -1446,7 +1446,7 @@ class SequentialOperatorTests: XCTestCase {
         XCTAssertFalse(terminatedStream)
         XCTAssertFalse(errorReceived)
 
-        // when the first publisher finishes, the error is propogated
+        // when the first publisher finishes, the error is propagated
         firstSubj.send(completion: Subscribers.Completion.finished)
         XCTAssertEqual(responses, ["first-1", "second-1", "third-1"])
         XCTAssertTrue(terminatedStream)
@@ -1457,7 +1457,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testConcatenateFirstErrored() {
         let firstSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         let secondSubj = PassthroughSubject<String, Error>()
 
@@ -1508,7 +1508,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testPrependWithPublisher() {
         let firstSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         let secondSubj = PassthroughSubject<String, Error>()
 
@@ -1591,7 +1591,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testPrependWithSequence() {
         let firstSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -1634,7 +1634,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testPrependWithSingleValue() {
         let firstSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -1677,14 +1677,14 @@ class SequentialOperatorTests: XCTestCase {
 
     func testPrefix() {
         let firstSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
         var errorReceived = false
 
         let cancellable = firstSubj
-        .prefix(2) // only two values published will propogate
+        .prefix(2) // only two values published will propagate
         .sink(receiveCompletion: { completion in
             print(".sink() received the completion", String(describing: completion))
             terminatedStream = true
@@ -1731,7 +1731,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testPrefixWhile() {
         let firstSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -1783,7 +1783,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testTryPrefixWhile() {
         let firstSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -1838,7 +1838,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testTryPrefixWhileError() {
         let firstSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -1888,7 +1888,7 @@ class SequentialOperatorTests: XCTestCase {
     func testPrefixUntilOutput() {
         let firstSubj = PassthroughSubject<String, Error>()
         let secondSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -1934,7 +1934,7 @@ class SequentialOperatorTests: XCTestCase {
     func testPrefixUntilOutputFirstError() {
         let firstSubj = PassthroughSubject<String, Error>()
         let secondSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -1979,7 +1979,7 @@ class SequentialOperatorTests: XCTestCase {
     func testPrefixUntilOutputSecondError() {
         let firstSubj = PassthroughSubject<String, Error>()
         let secondSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -2034,7 +2034,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testOutput() {
         let firstSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false
@@ -2092,7 +2092,7 @@ class SequentialOperatorTests: XCTestCase {
 
     func testOutputWithRange() {
         let firstSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [String]()
         var terminatedStream = false

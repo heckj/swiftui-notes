@@ -17,7 +17,7 @@ class CriteriaOperatorTests: XCTestCase {
 
     func testContains() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [Bool]()
         var terminatedStream = false
@@ -55,7 +55,7 @@ class CriteriaOperatorTests: XCTestCase {
 
     func testContainsFinished() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [Bool]()
         var terminatedStream = false
@@ -87,10 +87,10 @@ class CriteriaOperatorTests: XCTestCase {
 
         XCTAssertNotNil(cancellable)
     }
-    
+
     func testContainsWhere() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [Bool]()
         var terminatedStream = false
@@ -127,7 +127,7 @@ class CriteriaOperatorTests: XCTestCase {
 
     func testContainsWhereFinished() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [Bool]()
         var terminatedStream = false
@@ -169,7 +169,7 @@ class CriteriaOperatorTests: XCTestCase {
         }
 
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [Bool]()
         var terminatedStream = false
@@ -209,7 +209,7 @@ class CriteriaOperatorTests: XCTestCase {
 
     func testTryContainsWhereWithError() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [Bool]()
         var terminatedStream = false
@@ -252,7 +252,7 @@ class CriteriaOperatorTests: XCTestCase {
 
     func testAllSatisfyWithFailure() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [Bool]()
         var terminatedStream = false
@@ -292,7 +292,7 @@ class CriteriaOperatorTests: XCTestCase {
 
     func testAllSatisfyWithFinish() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [Bool]()
         var terminatedStream = false
@@ -332,7 +332,7 @@ class CriteriaOperatorTests: XCTestCase {
 
     func testTryAllSatisfyWithFinish() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [Bool]()
         var terminatedStream = false
@@ -375,7 +375,7 @@ class CriteriaOperatorTests: XCTestCase {
 
     func testTryAllSatisfyWithFailure() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [Bool]()
         var terminatedStream = false
@@ -418,7 +418,7 @@ class CriteriaOperatorTests: XCTestCase {
 
     func testTryAllSatisfyWithError() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var responses = [Bool]()
         var terminatedStream = false
