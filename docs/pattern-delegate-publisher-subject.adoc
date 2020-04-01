@@ -180,7 +180,7 @@ The API provided to initiate this request returns immediately, but provides no d
 The `CLLocationManager` class includes the information, and exposes it as a class method when you want to retrieve it, but there is no information provided to know when, or if, the user has responded to the request.
 Since the operation doesn't provide any return, we provide an integer as the pipeline data, primarily to represent that the request has been made.
 <2> Since there isn't a clear way to judge when the user will grant permission, but the permission is persistent, we simply use a <<reference#reference-delay,delay>> operator before attempting to retrieve the data.
-This use simply delays the propogation of the value for two seconds.
+This use simply delays the propagation of the value for two seconds.
 <3> After that delay, we invoke the class method and attempt to update informtion in the interface with the results of the current provided status.
 
 <4> Since CoreLocation requires methods to be explicitly enabled or disabled to provide the data, this connects a `UISwitch` toggle `IBAction` to the methods exposed on our publisher proxy.

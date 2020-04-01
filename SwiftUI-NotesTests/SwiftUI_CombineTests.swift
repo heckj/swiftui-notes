@@ -161,13 +161,13 @@ class SwiftUI_CombineTests: XCTestCase {
         //    .assertNoFailure()
 
 
-        // IDEA: Can we use "mapError" and slip in assert to validate the failure propogating through the chain?
+        // IDEA: Can we use "mapError" and slip in assert to validate the failure propagating through the chain?
 
         //   unfortunately, no - sticking an assert as the only thing in that closure will return it, which causes
         // the compiler to complain about changing the error type to the Error type that XCTAssert... methods
         // use to validate the test case.
 
-        //   and using an assert in the sequence either never gets executed or doesn't end up propogating the error
+        //   and using an assert in the sequence either never gets executed or doesn't end up propagating the error
         // up to the test runner.
 
         /*
@@ -203,5 +203,5 @@ class SwiftUI_CombineTests: XCTestCase {
 
     // IDEA: It might make more sense to use Subject to check/test values being processed in Combine
     // rather than dropping them into .sink() which triggers the invocation of everything, and in which failures
-    // propogate upward to see a failure.
+    // propagate upward to see a failure.
 }

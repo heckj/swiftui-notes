@@ -13,7 +13,7 @@ class MathOperatorTests: XCTestCase {
 
     func testMax() {
         let passSubj = PassthroughSubject<Int, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var latestReceivedResult: Int?
 
@@ -53,7 +53,7 @@ class MathOperatorTests: XCTestCase {
 
     func testMaxWithClosure() {
         let passSubj = PassthroughSubject<ExampleStruct, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var latestReceivedResult: ExampleStruct?
 
@@ -90,7 +90,7 @@ class MathOperatorTests: XCTestCase {
 
     func testTryMaxWithClosure() {
         let passSubj = PassthroughSubject<ExampleStruct, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var latestReceivedResult: ExampleStruct?
 
@@ -130,7 +130,7 @@ class MathOperatorTests: XCTestCase {
 
     func testTryMaxWithClosureError() {
         let passSubj = PassthroughSubject<ExampleStruct, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var latestReceivedResult: ExampleStruct?
         var failureReceived = false
@@ -172,7 +172,7 @@ class MathOperatorTests: XCTestCase {
 
     func testMin() {
         let passSubj = PassthroughSubject<Int, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var latestReceivedResult: Int?
 
@@ -203,7 +203,7 @@ class MathOperatorTests: XCTestCase {
 
     func testMinWithClosure() {
         let passSubj = PassthroughSubject<ExampleStruct, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var latestReceivedResult: ExampleStruct?
 
@@ -240,7 +240,7 @@ class MathOperatorTests: XCTestCase {
 
     func testTryMinWithClosure() {
         let passSubj = PassthroughSubject<ExampleStruct, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var latestReceivedResult: ExampleStruct?
 
@@ -280,7 +280,7 @@ class MathOperatorTests: XCTestCase {
 
     func testTryMinWithClosureError() {
         let passSubj = PassthroughSubject<ExampleStruct, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var latestReceivedResult: ExampleStruct?
         var failureReceived = false
@@ -320,7 +320,7 @@ class MathOperatorTests: XCTestCase {
 
     func testCount() {
         let passSubj = PassthroughSubject<Int, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var latestReceivedResult: Int?
 
@@ -351,7 +351,7 @@ class MathOperatorTests: XCTestCase {
 
     func testCountError() {
         let passSubj = PassthroughSubject<Int, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var latestReceivedResult: Int?
 

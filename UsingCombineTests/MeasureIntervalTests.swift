@@ -14,7 +14,7 @@ class MeasureIntervalTests: XCTestCase {
     func testMeasureInterval() {
 
         let foo = PassthroughSubject<Int, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         let q = DispatchQueue(label: self.debugDescription)
         let expectation = XCTestExpectation(description: self.debugDescription)

@@ -12,7 +12,7 @@ import Combine
 extension TimeInterval {
     // from https://stackoverflow.com/questions/28872450/conversion-from-nstimeinterval-to-hour-minutes-seconds-milliseconds-in-swift
     // because NSDateComponentFormatter doesn't support sub-second displays :-(
-    
+
     func toReadableString() -> String {
         // Nanoseconds
         let ns = Int((self.truncatingRemainder(dividingBy: 1)) * 1000000000) % 1000
@@ -315,7 +315,7 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         // intervalFormatter.allowsFractionalUnits = true
         // intervalFormatter.unitsStyle = .positional
         // intervalFormatter.includesTimeRemainingPhrase = true
-        
+
         class HoldingClass {
             @Published var intValue: Int = -1
         }
@@ -323,11 +323,11 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         let start_mark = Date()
         print("testing queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
         print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
-        
+
         let q = DispatchQueue(label: self.debugDescription)
         let expectation = XCTestExpectation(description: self.debugDescription)
         let foo = HoldingClass()
-        // watching the @Published object always starts with an initial value propogated of it's
+        // watching the @Published object always starts with an initial value propagated of it's
         // value at the time of subscription
 
         var receivedList: [Int] = []
@@ -401,7 +401,7 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         XCTAssertEqual(foo.intValue, 6)
         XCTAssertNotNil(cancellable)
     }
-    
+
     func testThrottleLatestTrue() {
         let msTime = DateFormatter()
         msTime.dateFormat = "[HH:mm:ss.SSSS] "
@@ -417,7 +417,7 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         let q = DispatchQueue(label: self.debugDescription)
         let expectation = XCTestExpectation(description: self.debugDescription)
         let foo = HoldingClass()
-        // watching the @Published object always starts with an initial value propogated of it's
+        // watching the @Published object always starts with an initial value propagated of it's
         // value at the time of subscription
 
         var receivedList: [Int] = []
@@ -435,13 +435,13 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
             print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
             print(msTime.string(from: Date()) + "Updating to foo.intValue to 1 on background queue")
             foo.intValue = 1
-            // this value gets collapsed and not propogated
+            // this value gets collapsed and not propagated
         })
         q.asyncAfter(deadline: .now() + 0.2, execute: {
             print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
             print(msTime.string(from: Date()) + "Updating to foo.intValue to 2 on background queue")
             foo.intValue = 2
-            // this value gets collapsed and not propogated
+            // this value gets collapsed and not propagated
         })
         q.asyncAfter(deadline: .now() + 0.6, execute: {
             print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
@@ -452,13 +452,13 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
             print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
             print(msTime.string(from: Date()) + "Updating to foo.intValue to 4 on background queue")
             foo.intValue = 4
-            // this value gets collapsed and not propogated
+            // this value gets collapsed and not propagated
         })
         q.asyncAfter(deadline: .now() + 0.9, execute: {
             print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
             print(msTime.string(from: Date()) + "Updating to foo.intValue to 5 on background queue")
             foo.intValue = 5
-            // this value gets collapsed and not propogated
+            // this value gets collapsed and not propagated
         })
         q.asyncAfter(deadline: .now() + 1.2, execute: {
             print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
@@ -489,7 +489,7 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         // to slightly slower systems (such as VMs as in the CI system)
 
         let foo = PassthroughSubject<Int, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         print("testing queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
         let q = DispatchQueue(label: self.debugDescription)
@@ -561,7 +561,7 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         // to slightly slower systems (such as VMs as in the CI system)
 
         let foo = PassthroughSubject<Int, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         let q = DispatchQueue(label: self.debugDescription)
         let expectation = XCTestExpectation(description: self.debugDescription)
@@ -582,12 +582,12 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         q.asyncAfter(deadline: .now() + 0.2, execute: {
             print("Updating to foo.intValue on background queue")
             foo.send(2)
-            // this value gets collapsed and not propogated
+            // this value gets collapsed and not propagated
         })
         q.asyncAfter(deadline: .now() + 0.6, execute: {
             print("Updating to foo.intValue on background queue")
             foo.send(3)
-            // this value gets collapsed and not propogated
+            // this value gets collapsed and not propagated
         })
         q.asyncAfter(deadline: .now() + 0.7, execute: {
             print("Updating to foo.intValue on background queue")
@@ -596,7 +596,7 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         q.asyncAfter(deadline: .now() + 1.1, execute: {
             print("Updating to foo.intValue on background queue")
             foo.send(5)
-            // this value gets collapsed and not propogated
+            // this value gets collapsed and not propagated
         })
         q.asyncAfter(deadline: .now() + 1.2, execute: {
             print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
@@ -621,7 +621,7 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
     func testSpreadoutSubjectThrottleLatestFalse() {
 
         let foo = PassthroughSubject<Int, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         print("testing queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
         let q = DispatchQueue(label: self.debugDescription)
@@ -679,7 +679,7 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
     func testSpreadoutSubjectThrottleLatestTrue() {
 
         let foo = PassthroughSubject<Int, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         let q = DispatchQueue(label: self.debugDescription)
         let expectation = XCTestExpectation(description: self.debugDescription)
@@ -704,7 +704,7 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         q.asyncAfter(deadline: .now() + 0.8, execute: {
             print("Updating to foo.intValue on background queue")
             foo.send(3)
-            // this value gets collapsed and not propogated
+            // this value gets collapsed and not propagated
         })
         q.asyncAfter(deadline: .now() + 0.9, execute: {
             print("Updating to foo.intValue on background queue")
@@ -713,7 +713,7 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         q.asyncAfter(deadline: .now() + 1.5, execute: {
             print("Updating to foo.intValue on background queue")
             foo.send(5)
-            // this value gets collapsed and not propogated
+            // this value gets collapsed and not propagated
         })
         q.asyncAfter(deadline: .now() + 1.6, execute: {
             print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
@@ -735,7 +735,7 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
     func testSubjectDebounce() {
 
         let foo = PassthroughSubject<Int, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         let q = DispatchQueue(label: self.debugDescription)
         let expectation = XCTestExpectation(description: self.debugDescription)
@@ -753,17 +753,17 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         q.asyncAfter(deadline: .now() + 0.1, execute: {
             print("Updating to foo.intValue on background queue")
             foo.send(1)
-            // this value gets collapsed and not propogated
+            // this value gets collapsed and not propagated
         })
         q.asyncAfter(deadline: .now() + 0.2, execute: {
             print("Updating to foo.intValue on background queue")
             foo.send(2)
-            // this value gets collapsed and not propogated
+            // this value gets collapsed and not propagated
         })
         q.asyncAfter(deadline: .now() + 0.6, execute: {
             print("Updating to foo.intValue on background queue")
             foo.send(3)
-            // this value gets collapsed and not propogated
+            // this value gets collapsed and not propagated
         })
         q.asyncAfter(deadline: .now() + 0.7, execute: {
             print("Updating to foo.intValue on background queue")
@@ -772,7 +772,7 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         q.asyncAfter(deadline: .now() + 1.1, execute: {
             print("Updating to foo.intValue on background queue")
             foo.send(5)
-            // this value gets collapsed and not propogated
+            // this value gets collapsed and not propagated
         })
         q.asyncAfter(deadline: .now() + 1.2, execute: {
             print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
@@ -791,7 +791,7 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
     func testSubjectDebounceWithBreak() {
 
         let foo = PassthroughSubject<Int, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         let q = DispatchQueue(label: self.debugDescription)
         let expectation = XCTestExpectation(description: self.debugDescription)
@@ -808,7 +808,7 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         q.asyncAfter(deadline: .now() + 0.1, execute: {
             print("Updating to foo.intValue on background queue")
             foo.send(1)
-            // this value gets collapsed and not propogated
+            // this value gets collapsed and not propagated
         })
         q.asyncAfter(deadline: .now() + 0.2, execute: {
             print("Updating to foo.intValue on background queue")
@@ -817,7 +817,7 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         q.asyncAfter(deadline: .now() + 1.1, execute: {
             print("Updating to foo.intValue on background queue")
             foo.send(3)
-            // this value gets collapsed and not propogated
+            // this value gets collapsed and not propagated
         })
         q.asyncAfter(deadline: .now() + 1.2, execute: {
             print("Updating to foo.intValue on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)

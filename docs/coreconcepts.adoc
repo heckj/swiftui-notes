@@ -304,7 +304,7 @@ image::diagrams/combine_lifecycle_diagram.svg[combine lifecycle diagram]
 A publisher should never send **more** than the demand requested.
 <5> Any time after the subscription has been acknowledged, the subscriber may send a https://developer.apple.com/documentation/combine/subscribers/completion[cancellation] with `.cancel()`
 <6> A publisher may optionally send https://developer.apple.com/documentation/combine/subscribers/completion[completion]: `receive(completion:)`.
-A completion can be either a normal termination, or may be a `.failure` completion, optionally propogating an error type.
+A completion can be either a normal termination, or may be a `.failure` completion, optionally propagating an error type.
 A pipeline that has been cancelled will not send any completions.
 
 Included in the above diagram is a stacked up set of the example marble diagrams.

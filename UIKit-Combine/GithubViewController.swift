@@ -93,7 +93,7 @@ class GithubViewController: UIViewController {
         let avatarViewSub = $githubUserData
             // When I first wrote this publisher pipeline, the type I was
             // aiming for was <GithubAPIUser?, Never>, where the value was an
-            // optional. The commented out .filter below was to prevent a `nil` // GithubAPIUser object from propogating further and attempting to
+            // optional. The commented out .filter below was to prevent a `nil` // GithubAPIUser object from propagating further and attempting to
             // invoke the dataTaskPublisher which retrieves the avatar image.
             //
             // When I updated the type to be non-optional (<GithubAPIUser?,

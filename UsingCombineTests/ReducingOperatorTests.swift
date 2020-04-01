@@ -17,7 +17,7 @@ class ReducingOperatorTests: XCTestCase {
 
     func testReduce() {
         let passSubj = PassthroughSubject<String, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         let cancellable = passSubj
         .reduce("", { prevVal, newValueFromPublisher -> String in
@@ -54,7 +54,7 @@ class ReducingOperatorTests: XCTestCase {
 
         var collectedResult : String?
         let passSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         let cancellable = passSubj
             .reduce("", { prevVal, newValueFromPublisher -> String in
@@ -87,7 +87,7 @@ class ReducingOperatorTests: XCTestCase {
     func testTryReduce() {
 
         let passSubj = PassthroughSubject<String?, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var endResult: String?
 
@@ -126,7 +126,7 @@ class ReducingOperatorTests: XCTestCase {
 
     func testTryReduceWithThrownError() {
         let passSubj = PassthroughSubject<String?, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var endResult: String?
         var errorReceived = false;
@@ -165,7 +165,7 @@ class ReducingOperatorTests: XCTestCase {
 
     func testCollect() {
         let passSubj = PassthroughSubject<Int, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         let cancellable = passSubj
         .collect()
@@ -191,7 +191,7 @@ class ReducingOperatorTests: XCTestCase {
 
     func testCollectWithError() {
         let passSubj = PassthroughSubject<Int, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         let cancellable = passSubj
         .collect()
@@ -218,7 +218,7 @@ class ReducingOperatorTests: XCTestCase {
 
     func testCollectWithCountUnder() {
         let passSubj = PassthroughSubject<Int, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var latestReceivedResult: [Int] = []
 
@@ -250,7 +250,7 @@ class ReducingOperatorTests: XCTestCase {
 
     func testCollectWithCountOver() {
         let passSubj = PassthroughSubject<Int, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var latestReceivedResult: [Int] = []
 
@@ -289,7 +289,7 @@ class ReducingOperatorTests: XCTestCase {
     func testCollectByTime() {
         let expectation = XCTestExpectation(description: self.debugDescription)
         let passSubj = PassthroughSubject<Int, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var latestReceivedResult: [Int] = []
         let q = DispatchQueue(label: self.debugDescription)
@@ -352,7 +352,7 @@ class ReducingOperatorTests: XCTestCase {
     func testCollectByTimeOrCount() {
         let expectation = XCTestExpectation(description: self.debugDescription)
         let passSubj = PassthroughSubject<Int, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var latestReceivedResult: [Int] = []
         let q = DispatchQueue(label: self.debugDescription)
@@ -421,7 +421,7 @@ class ReducingOperatorTests: XCTestCase {
 
     func testIgnoreOutputSuccess() {
         let passSubj = PassthroughSubject<Int, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var finishReceived = false;
         var failureReceived = false;
@@ -465,7 +465,7 @@ class ReducingOperatorTests: XCTestCase {
 
     func testIgnoreOutputFailure() {
         let passSubj = PassthroughSubject<Int, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var finishReceived = false;
         var failureReceived = false;

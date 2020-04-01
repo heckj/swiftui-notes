@@ -75,7 +75,7 @@ Likewise when the resulting pipelines assign or update UI elements, the <<refere
 
 [WARNING]
 ====
-To have the UI continuously updated from changes propogating through <<reference#reference-published,@Published>> properties, we want to make sure that any configured pipelines have a <Never> failure type.
+To have the UI continuously updated from changes propagating through <<reference#reference-published,@Published>> properties, we want to make sure that any configured pipelines have a <Never> failure type.
 This is required for the <<reference#reference-assign,assign>> operator.
 It is also a potential source of bugs when using a <<reference#reference-sink,sink>> operator.
 If the pipeline from a <<reference#reference-published,@Published>> variable terminates to a <<reference#reference-sink,sink>> that accepts an Error failure type, the sink will send a termination signal if an error occurs.
@@ -166,7 +166,7 @@ Any pieces not defined in the struct are simply ignored when processed by the <<
 <2> The code to interact with the GitHub API was broken out into its own object, which I would normally have in a separate file.
 The functions on the API struct return publishers, and are then mixed and merged with other pipelines in the ViewController.
 <3> This struct also exposes a publisher using <<reference#reference-passthroughsubject,passthroughSubject>> to reflect Boolean values when it is actively making network requests.
-<4> I first created the pipelines to return an optional GithubAPIUser instance, but found that there wasn't a convenient way to propogate "nil" or empty objects on failure conditions.
+<4> I first created the pipelines to return an optional GithubAPIUser instance, but found that there wasn't a convenient way to propagate "nil" or empty objects on failure conditions.
 The code was then recreated to return a list, even though only a single instance was ever expected, to conveniently represent an "empty" object.
 This was important for the use case of wanting to erase existing values in following pipelines reacting to the GithubAPIUser object "disappearing" - removing the repository count and avatar images in this case.
 <5> The logic here is simply to prevent extraneous network requests, returning an empty result if the username being requested has less than 3 characters.

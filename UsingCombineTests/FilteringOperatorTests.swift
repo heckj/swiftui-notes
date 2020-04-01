@@ -18,7 +18,7 @@ class FilteringOperatorTests: XCTestCase {
     func testReplaceNil() {
 
         let passSubj = PassthroughSubject<String?, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var receivedList: [String] = []
 
@@ -44,7 +44,7 @@ class FilteringOperatorTests: XCTestCase {
     func testReplaceEmptyWithValues() {
 
         let passSubj = PassthroughSubject<String?, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var receivedList: [String?] = []
 
@@ -68,7 +68,7 @@ class FilteringOperatorTests: XCTestCase {
     func testReplaceEmptyNoValues() {
 
         let passSubj = PassthroughSubject<String?, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var receivedList: [String?] = []
 
@@ -89,7 +89,7 @@ class FilteringOperatorTests: XCTestCase {
     func testReplaceEmptyWithFailure() {
 
         let passSubj = PassthroughSubject<String, Error>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var receivedList: [String] = []
 
@@ -121,7 +121,7 @@ class FilteringOperatorTests: XCTestCase {
     func testCompactMap() {
 
         let passSubj = PassthroughSubject<String?, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var receivedList: [String] = []
 
@@ -147,7 +147,7 @@ class FilteringOperatorTests: XCTestCase {
     func testTryCompactMap() {
 
         let passSubj = PassthroughSubject<String?, Never>()
-        // no initial value is propogated from a PassthroughSubject
+        // no initial value is propagated from a PassthroughSubject
 
         var receivedList: [String] = []
 
