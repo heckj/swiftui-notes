@@ -1589,7 +1589,7 @@ A publisher should never send <strong>more</strong> than the demand requested.</
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
 <td>A publisher may optionally send <a href="https://developer.apple.com/documentation/combine/subscribers/completion">completion</a>: <code>receive(completion:)</code>.
-A completion can be either a normal termination, or may be a <code>.failure</code> completion, optionally propogating an error type.
+A completion can be either a normal termination, or may be a <code>.failure</code> completion, optionally propagating an error type.
 A pipeline that has been cancelled will not send any completions.</td>
 </tr>
 </table>
@@ -4143,7 +4143,7 @@ Likewise when the resulting pipelines assign or update UI elements, the <a href=
 </td>
 <td class="content">
 <div class="paragraph">
-<p>To have the UI continuously updated from changes propogating through <a href="#reference-published">@Published</a> properties, we want to make sure that any configured pipelines have a &lt;Never&gt; failure type.
+<p>To have the UI continuously updated from changes propagating through <a href="#reference-published">@Published</a> properties, we want to make sure that any configured pipelines have a &lt;Never&gt; failure type.
 This is required for the <a href="#reference-assign">assign</a> operator.
 It is also a potential source of bugs when using a <a href="#reference-sink">sink</a> operator.
 If the pipeline from a <a href="#reference-published">@Published</a> variable terminates to a <a href="#reference-sink">sink</a> that accepts an Error failure type, the sink will send a termination signal if an error occurs.
@@ -4250,7 +4250,7 @@ The functions on the API struct return publishers, and are then mixed and merged
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>I first created the pipelines to return an optional GithubAPIUser instance, but found that there wasn&#8217;t a convenient way to propogate "nil" or empty objects on failure conditions.
+<td>I first created the pipelines to return an optional GithubAPIUser instance, but found that there wasn&#8217;t a convenient way to propagate "nil" or empty objects on failure conditions.
 The code was then recreated to return a list, even though only a single instance was ever expected, to conveniently represent an "empty" object.
 This was important for the use case of wanting to erase existing values in following pipelines reacting to the GithubAPIUser object "disappearing" - removing the repository count and avatar images in this case.</td>
 </tr>
@@ -4991,7 +4991,7 @@ Since the operation doesn&#8217;t provide any return, we provide an integer as t
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>Since there isn&#8217;t a clear way to judge when the user will grant permission, but the permission is persistent, we simply use a <a href="#reference-delay">delay</a> operator before attempting to retrieve the data.
-This use simply delays the propogation of the value for two seconds.</td>
+This use simply delays the propagation of the value for two seconds.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -6375,7 +6375,7 @@ Test Suite 'Selected tests' passed at 2019-07-26 15:59:48.057.
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>And after 4 of those attempts (3 "retries"), then you see the error falling through the pipeline.
-After the error hits the sink, you see the <code>cancel</code> signal propogated back up, which stops at the retry operator.</td>
+After the error hits the sink, you see the <code>cancel</code> signal propagated back up, which stops at the retry operator.</td>
 </tr>
 </table>
 </div>
@@ -6893,7 +6893,7 @@ Empty can be invoked to be a publisher of any output and failure type combinatio
 </dl>
 </div>
 <div class="paragraph">
-<p><code>Empty</code> is most commonly used where you need to return a publisher, but don&#8217;t want to propogate any values (a possible error handling scenario).
+<p><code>Empty</code> is most commonly used where you need to return a publisher, but don&#8217;t want to propagate any values (a possible error handling scenario).
 If you want a publisher that provides a single value, then look at <a href="#reference-just">Just</a> or <a href="#reference-deferred">Deferred</a> publishers as alternatives.</p>
 </div>
 <div class="paragraph">
@@ -8674,7 +8674,7 @@ If the return from the closure is <code>false</code>, then the operator drops th
 <p>Like <a href="#reference-filter">filter</a>, tryFilter takes a single closure as a parameter that is provided the value from the previous publisher and returns a Bool value.
 If the return from the closure is <code>true</code>, then the operator republishes the value further down the chain.
 If the return from the closure is <code>false</code>, then the operator drops the value.
-You can additionally throw an error during the evaluation of tryFilter, which will then be propogated as the failure type down the pipeline.</p>
+You can additionally throw an error during the evaluation of tryFilter, which will then be propagated as the failure type down the pipeline.</p>
 </dd>
 </dl>
 </div>
@@ -8785,7 +8785,7 @@ If the closure returns true, the <code>removeDuplicates</code> predicate will co
 <p><code>tryRemoveDuplicates</code> is a variant of <a href="#reference-removeduplicates">removeDuplicates</a> taking a single parameter that can throw an error.
 The parameter is a closure that allows you to determine the logic of what will be removed.
 If the closure returns true, <code>tryRemoveDuplicates</code> will consider the values matched and not forward a the duplicate value.
-If the closure throws an error, a failure completion will be propogated down the chain, and no value is sent.</p>
+If the closure throws an error, a failure completion will be propagated down the chain, and no value is sent.</p>
 </dd>
 </dl>
 </div>
@@ -8854,7 +8854,7 @@ The operator takes a single parameter, <code>with</code> where you specify the r
 </div>
 </div>
 <div class="paragraph">
-<p>This operator is useful specifically when you want a stream to always provide a value, even if an upstream publisher may not propogate one.</p>
+<p>This operator is useful specifically when you want a stream to always provide a value, even if an upstream publisher may not propagate one.</p>
 </div>
 </div>
 <div class="sect4">
@@ -10263,11 +10263,11 @@ Values received from the upstream publisher are ignored (and dropped) until the 
 </dl>
 </div>
 <div class="paragraph">
-<p>Any value propogated through the trigger publisher will cause the switch to activate, and allow future values through the pipeline.</p>
+<p>Any value propagated through the trigger publisher will cause the switch to activate, and allow future values through the pipeline.</p>
 </div>
 <div class="paragraph">
-<p>Errors are still propogated from the upstream publisher, terminating the pipeline with a <code>failure</code> completion.
-An error (<code>failure</code> completion) on either the upstream publisher or the trigger publisher will be propogated to any subscribers and terminate the pipeline.</p>
+<p>Errors are still propagated from the upstream publisher, terminating the pipeline with a <code>failure</code> completion.
+An error (<code>failure</code> completion) on either the upstream publisher or the trigger publisher will be propagated to any subscribers and terminate the pipeline.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -10313,13 +10313,13 @@ An error (<code>failure</code> completion) on either the upstream publisher or t
 <dt class="hdlist1"><em>Details</em></dt>
 <dd>
 <p>The <a href="#reference-dropwhile">dropWhile</a> operator takes a single closure, accepting an input value of the output type defined by the upstream publisher, returning a bool.
-This closure is used to determine a trigger condition, after which values are allowed to propogate.</p>
+This closure is used to determine a trigger condition, after which values are allowed to propagate.</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
 <p>This is not the same as the <a href="#reference-filter">filter</a> operator, acting on each value.
-Instead it uses a trigger that activates once, and propogates all values after it is activated until the upstream publisher finishes.</p>
+Instead it uses a trigger that activates once, and propagates all values after it is activated until the upstream publisher finishes.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -10438,7 +10438,7 @@ Once the first publisher is complete, the second publisher is used to provide va
 <div class="paragraph">
 <p>The <a href="#reference-prepend">prepend</a> operator is often used with single or sequence values that have a failure type of <code>&lt;Never&gt;</code>.
 If the publishers do accept a failure type, then all values will be published from the prefix publisher even if the suffix publisher receives a <code>.failure</code> completion before it is complete.
-Once the prefix publisher completes, the error will propogated.</p>
+Once the prefix publisher completes, the error will propagated.</p>
 </div>
 <div class="paragraph">
 <p>The <a href="#reference-prepend">prepend</a> operator also has convenience operators to send a sequence.
@@ -10455,7 +10455,7 @@ For example:</p>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
 <td>The sequence values will be published immediately on a subscriber requesting demand.
-Further demand will be propogated upward to <code>secondPublisher</code>.
+Further demand will be propagated upward to <code>secondPublisher</code>.
 Values produced from <code>secondPublisher</code> will then be published until it completes.</td>
 </tr>
 </table>
@@ -10474,7 +10474,7 @@ Values produced from <code>secondPublisher</code> will then be published until i
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
 <td>The value will be published immediately on a subscriber requesting demand.
-Further demand will be propogated upward to <code>secondPublisher</code>.
+Further demand will be propagated upward to <code>secondPublisher</code>.
 Values produced from <code>secondPublisher</code> will then be published until it completes.</td>
 </tr>
 </table>
@@ -10514,7 +10514,7 @@ Values produced from <code>secondPublisher</code> will then be published until i
 </dd>
 <dt class="hdlist1"><em>Details</em></dt>
 <dd>
-<p>The simplest form of the <a href="#reference-drop">drop</a> operator drops a single value and then allows all further values to propogate through the pipeline.</p>
+<p>The simplest form of the <a href="#reference-drop">drop</a> operator drops a single value and then allows all further values to propagate through the pipeline.</p>
 </dd>
 </dl>
 </div>
@@ -10535,7 +10535,7 @@ Values produced from <code>secondPublisher</code> will then be published until i
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Drops the first three values received from the upstream publisher before propogating any further values published to downstream subscribers.</td>
+<td>Drops the first three values received from the upstream publisher before propagating any further values published to downstream subscribers.</td>
 </tr>
 </table>
 </div>
@@ -10574,7 +10574,7 @@ Values produced from <code>secondPublisher</code> will then be published until i
 </dd>
 <dt class="hdlist1"><em>Details</em></dt>
 <dd>
-<p>The <a href="#reference-prefixuntiloutput">prefixUntilOutput</a> will propogate values from an upstream publisher until a second publisher is used as a trigger.
+<p>The <a href="#reference-prefixuntiloutput">prefixUntilOutput</a> will propagate values from an upstream publisher until a second publisher is used as a trigger.
 Once the trigger is activated by receiving a value, the operator will terminate the stream.</p>
 </dd>
 </dl>
@@ -10621,7 +10621,7 @@ Once the trigger is activated by receiving a value, the operator will terminate 
 <dd>
 <p>The <a href="#reference-prefixwhile">prefixWhile</a> operator takes a single closure, with an input matching the output type defined by the upstream publisher, returning a boolean.
 This closure is evaluated on the data from the upstream publisher.
-While it returns <code>true</code> the values are propogated to the subscriber.
+While it returns <code>true</code> the values are propagated to the subscriber.
 Once the value returns <code>false</code>, the operator terminates the stream with a <code>.finished</code> completion.</p>
 </dd>
 </dl>
@@ -10721,7 +10721,7 @@ This value is used to select a specific value, or sequence of values, from an up
 </div>
 <div class="paragraph">
 <p><a href="#reference-output">output</a> is choosing values from the middle of the stream.
-If the upstream publisher completes before the values is received, the <code>.finished</code> completion will be propogated to the subscriber.</p>
+If the upstream publisher completes before the values is received, the <code>.finished</code> completion will be propagated to the subscriber.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -10733,7 +10733,7 @@ If the upstream publisher completes before the values is received, the <code>.fi
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
 <td>The selection is 0 indexed (meaning the count starts at 0).
-This will select the fourth item published from the upstream publisher to propogate.</td>
+This will select the fourth item published from the upstream publisher to propagate.</td>
 </tr>
 </table>
 </div>
@@ -10750,7 +10750,7 @@ This will select the fourth item published from the upstream publisher to propog
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
 <td>The selection is 0 indexed (the count starts at 0).
-This will select the third and fourth item published from the upstream publisher to propogate.</td>
+This will select the third and fourth item published from the upstream publisher to propagate.</td>
 </tr>
 </table>
 </div>
@@ -10826,7 +10826,7 @@ In turn, when any of the upstream publishers sends an updated value, the operato
 <div class="paragraph">
 <p>The failure type of all three upstream publishers needs to be the identical.
 For example, you can not have one publisher that has a failure type of <code>Error</code> and another (or more) that have a failure type of <code>Never</code>.
-If the <code>combineLatest</code> operator does receive a failure from any of the upstream publishers, then the operator (and the rest of the pipeline) is cancelled after propogating that failure.</p>
+If the <code>combineLatest</code> operator does receive a failure from any of the upstream publishers, then the operator (and the rest of the pipeline) is cancelled after propagating that failure.</p>
 </div>
 <div class="paragraph">
 <p>If any of the upstream publishers finish normally (that is, they send a <code>.finished</code> completion), the <code>combineLatest</code> operator will continue operating and processing any messages from any of the other publishers that has additional data to send.</p>
@@ -10907,7 +10907,7 @@ If you want to wait on values from all upstream provides before providing an upd
 <p>In all cases, the upstreams publishers are required to have the same output type, as well as the same failure type.</p>
 </div>
 <div class="paragraph">
-<p>As with <a href="#reference-combinelatest">combineLatest</a>, if an error is propogated down any of the upstream publishers, the cancellation from the subscriber will terminate this operator and will propogate cancel to all upstream publishers as well.</p>
+<p>As with <a href="#reference-combinelatest">combineLatest</a>, if an error is propagated down any of the upstream publishers, the cancellation from the subscriber will terminate this operator and will propagate cancel to all upstream publishers as well.</p>
 </div>
 <div class="paragraph">
 <p>If an upstream publisher completes with a normal finish, the <code>merge</code> operator continues interleaving and forwarding from any values other upstream publishers.</p>
@@ -10919,7 +10919,7 @@ If you want to wait on values from all upstream provides before providing an upd
 <p>If you want to mix different upstream publisher types into a single stream, then you likely want to use either <a href="#reference-combinelatest">combineLatest</a> or <a href="#reference-zip">zip</a>, depending on how you want the timing of values to be handled.</p>
 </div>
 <div class="paragraph">
-<p>If your upstream publishers have different types, but you want interleaved values to be propogated as they are available, use <a href="#reference-combinelatest">combineLatest</a>.
+<p>If your upstream publishers have different types, but you want interleaved values to be propagated as they are available, use <a href="#reference-combinelatest">combineLatest</a>.
 If you want to wait on values from all upstream provides before providing an updated value, then use the <a href="#reference-zip">zip</a> operator.</p>
 </div>
 </div>
@@ -10983,7 +10983,7 @@ For example, if you have two independent network requests and require them to bo
 </div>
 <div class="paragraph">
 <p>Other operators that merge multiple upstream pipelines include <a href="#reference-combinelatest">combineLatest</a> and <a href="#reference-merge">merge</a>.
-If your upstream publishers have different types, but you want interleaved values to be propogated as they are available, use <a href="#reference-combinelatest">combineLatest</a>.
+If your upstream publishers have different types, but you want interleaved values to be propagated as they are available, use <a href="#reference-combinelatest">combineLatest</a>.
 If your upstream publishers have the same type and you want a stream of single values, as opposed to tuples, then you probably want to use the <a href="#reference-merge">merge</a> operator.</p>
 </div>
 <div style="page-break-after: always;"></div>
@@ -12218,7 +12218,7 @@ Do this either using <code>connect()</code> on your publisher after all subscrib
 </dd>
 <dt class="hdlist1"><em>Details</em></dt>
 <dd>
-<p><code>breakpointOnError</code> is a convenience method used to raise a <code>SIGTRAP</code> signal when an error is propogated through it within a pipeline.</p>
+<p><code>breakpointOnError</code> is a convenience method used to raise a <code>SIGTRAP</code> signal when an error is propagated through it within a pipeline.</p>
 </dd>
 </dl>
 </div>
@@ -13089,7 +13089,7 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 <div id="footer">
 <div id="footer-text">
 Version 1.1<br>
-Last updated 2020-03-28 17:05:32 UTC
+Last updated 2020-04-01 23:55:53 UTC
 </div>
 </div>
 <style>
