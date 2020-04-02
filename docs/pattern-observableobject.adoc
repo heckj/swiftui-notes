@@ -23,7 +23,7 @@ The SwiftUI example code:
 
 __Code and explanation__::
 
-SwiftUI views are declarative structures that are rendererd based on some known state, being invalidated and updated when that state changes.
+SwiftUI views are declarative structures that are rendered based on some known state, being invalidated and updated when that state changes.
 We can use Combine to provide reactive updates to manipulate this state and expose it back to SwiftUI.
 The example provided here is a simple form entry input, with the goal of providing reactive and dynamic feedback based on the inputs to two fields.
 
