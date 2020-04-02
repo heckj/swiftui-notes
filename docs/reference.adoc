@@ -2866,7 +2866,7 @@ __Usage__::
 
 __Details__::
 
-`switchToLatest` is operates similarly to <<reference#reference-flatmap,flatMap>>, taking in a publisher instance and returning its value (or values).
+`switchToLatest` operates similarly to <<reference#reference-flatmap,flatMap>>, taking in a publisher instance and returning its value (or values).
 Where <<reference#reference-flatmap,flatMap>> operates over the values it is provided, `switchToLatest` operates on whatever publisher it is provided.
 The primary difference is in where it gets the publisher.
 In flatMap, the publisher is returned within the closure provided to flatMap, and the operator works upon that to subscribe and provide the relevant value down the pipeline.
