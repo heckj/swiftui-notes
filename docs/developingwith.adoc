@@ -34,7 +34,7 @@ Ultimately, using Combine types are grounded at both ends; by the originating pu
 [#developingwith-types]
 == Swift types with Combine publishers and subscribers
 
-When you compose pipelines within Swift, the chaining of functions results in the type being aggregared as nested generic types.
+When you compose pipelines within Swift, the chaining of functions results in the type being aggregated as nested generic types.
 If you are creating a pipeline, and then wanting to provide that as an API to another part of your code, the type definition for the exposed property or function can be exceptionally (and un-usefully) complex for the developer.
 
 To illustrate the exposed type complexity, if you created a publisher from a PassthroughSubject such as:

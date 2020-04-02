@@ -82,7 +82,7 @@ final class LocationHeadingProxy: NSObject, CLLocationManagerDelegate {
 Because it has additional methods that need to be called for using the framework, I exposed it as a public read-only property.
 This is useful for requesting user permission to use the location API, which the framework exposes as a method on `CLLocationManager`.
 <2> A private instance of `PassthroughSubject` with the data type we want to publish provides our inside-the-class access to forward data.
-<3> An the public property `publisher` exposes the publisher from that subject for external subscriptions.
+<3> A public property `publisher` exposes the publisher from that subject for external subscriptions.
 <4> The heart of this works by assigning this class as the delegate to the `CLLocationManager` instance, which is set up at the tail end of initialization.
 <5> The CoreLocation API doesn't immediately start sending information.
 There are methods that need to be called to start (and stop) the data flow, and these are wrapped and exposed on this proxy object.
