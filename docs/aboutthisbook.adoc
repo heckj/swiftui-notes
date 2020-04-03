@@ -33,6 +33,7 @@ Reviews, corrections, and updates from:
 Benjamin Barnard,
 Mycroft Canner,
 Max Desiatov,
+Tim Ekl,
 Arthur Hammer,
 Nanu Jogi,
 Serhii Kyrylenko,
