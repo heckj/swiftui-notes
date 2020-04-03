@@ -2128,7 +2128,7 @@ An example of this is returning a pipeline returning a list in the example <a hr
 <div class="sect2">
 <h3 id="developingwith-types">Swift types with Combine publishers and subscribers</h3>
 <div class="paragraph">
-<p>When you compose pipelines within Swift, the chaining of functions results in the type being aggregared as nested generic types.
+<p>When you compose pipelines within Swift, the chaining of functions results in the type being aggregated as nested generic types.
 If you are creating a pipeline, and then wanting to provide that as an API to another part of your code, the type definition for the exposed property or function can be exceptionally (and un-usefully) complex for the developer.</p>
 </div>
 <div class="paragraph">
@@ -4874,7 +4874,7 @@ This is useful for requesting user permission to use the location API, which the
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>An the public property <code>publisher</code> exposes the publisher from that subject for external subscriptions.</td>
+<td>A public property <code>publisher</code> exposes the publisher from that subject for external subscriptions.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
@@ -5211,7 +5211,7 @@ Including a reference to the sending control can be used to filter to text chang
 </dd>
 <dt class="hdlist1"><em>Code and explanation</em></dt>
 <dd>
-<p>SwiftUI views are declarative structures that are rendererd based on some known state, being invalidated and updated when that state changes.
+<p>SwiftUI views are declarative structures that are rendered based on some known state, being invalidated and updated when that state changes.
 We can use Combine to provide reactive updates to manipulate this state and expose it back to SwiftUI.
 The example provided here is a simple form entry input, with the goal of providing reactive and dynamic feedback based on the inputs to two fields.</p>
 </dd>
@@ -11406,7 +11406,7 @@ If you use a <code>retry</code> operator, you should add a specific number of re
 </dd>
 <dt class="hdlist1"><em>Details</em></dt>
 <dd>
-<p><code>switchToLatest</code> is operates similarly to <a href="#reference-flatmap">flatMap</a>, taking in a publisher instance and returning its value (or values).
+<p><code>switchToLatest</code> operates similarly to <a href="#reference-flatmap">flatMap</a>, taking in a publisher instance and returning its value (or values).
 Where <a href="#reference-flatmap">flatMap</a> operates over the values it is provided, <code>switchToLatest</code> operates on whatever publisher it is provided.
 The primary difference is in where it gets the publisher.
 In flatMap, the publisher is returned within the closure provided to flatMap, and the operator works upon that to subscribe and provide the relevant value down the pipeline.
@@ -13091,7 +13091,7 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 <div id="footer">
 <div id="footer-text">
 Version 1.1<br>
-Last updated 2020-04-03 22:10:54 UTC
+Last updated 2020-04-03 22:12:01 UTC
 </div>
 </div>
 <style>
