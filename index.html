@@ -848,8 +848,8 @@ Larger updates and announcements will also be provided through <a href="https://
 <h4 id="download-the-project">Download the project</h4>
 <div class="paragraph">
 <p>The contents of this book, as well as example code and unit tests referenced from the book, are linked in an Xcode project (<code>SwiftUI-Notes.xcodeproj</code>).
-the Xcode project includes fully operational sample code that shows examples of Combine integrating with UIKit and SwiftUI.
-The project also includes extensive unit tests excercising the framework to illustrate the behavior of framework components.</p>
+The Xcode project includes fully operational sample code that shows examples of Combine integrating with UIKit and SwiftUI.
+The project also includes extensive unit tests exercising the framework to illustrate the behavior of framework components.</p>
 </div>
 <div class="paragraph">
 <p>The project associated with this book requires Xcode 11 and MacOS 10.14 or later.</p>
@@ -1146,7 +1146,7 @@ Each of these concepts is mirrored in the framework with a generic protocol, for
 <div class="sect2">
 <h3 id="coreconcepts-publisher-subscriber">Publisher and Subscriber</h3>
 <div class="paragraph">
-<p>Two key concepts: <a href="https://developer.apple.com/documentation/combine/publisher"><strong>publisher</strong></a> and <a href="https://developer.apple.com/documentation/combine/subscriber"><strong>subscriber</strong></a> are described in Swift as protocols.</p>
+<p>Two key concepts, <a href="https://developer.apple.com/documentation/combine/publisher"><strong>publisher</strong></a> and <a href="https://developer.apple.com/documentation/combine/subscriber"><strong>subscriber</strong></a>, are described in Swift as protocols.</p>
 </div>
 <div class="paragraph">
 <p>When you are talking about programming (and especially with Swift and Combine), quite a lot is described by the types.
@@ -1212,7 +1212,7 @@ They support subscribing to a publisher, and sending results to any subscribers.
 <p>Operators can be used to transform either values or types - both the Output and Failure type.
 Operators may also split or duplicate streams, or merge streams together.
 Operators must always be aligned by the combination of Output/Failure types.
-The compiler will enforce the matching types, so getting it wrong will result in a compiler error (and if you are lucky - a useful <em>fixit</em> snippet suggesting a solution).</p>
+The compiler will enforce the matching types, so getting it wrong will result in a compiler error (and, if you are lucky, a useful <em>fixit</em> snippet suggesting a solution).</p>
 </div>
 <div class="paragraph">
 <p>A simple Combine pipeline written in swift might look like:</p>
@@ -1239,7 +1239,7 @@ The compiler will enforce the matching types, so getting it wrong will result in
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>the pipeline then has a <code>map</code> operator, which is transforming the value and its type.
+<td>The pipeline then has a <code>map</code> operator, which is transforming the value and its type.
 In this example it is ignoring the published input and returning a string.
 This is also transforming the output type to <code>&lt;String&gt;</code>, and leaving the failure type still set as <code>&lt;Never&gt;</code>.</td>
 </tr>
@@ -1464,7 +1464,7 @@ The failure type that is being passed to this operator is <code>&lt;Never&gt;</c
 </div>
 <div class="paragraph">
 <p>The map operator doesn&#8217;t change or interact with the failure type, only passing it along.
-To represent that, the failure types - both input (above) and output (below) have been lightened.</p>
+To represent that, the failure types - both input (above) and output (below) - have been lightened.</p>
 </div>
 <div class="paragraph">
 <p>A single input value provided (<code>5</code>) is represented on the top line.
@@ -1519,13 +1519,13 @@ Each operator in turn accepting the request for data and in turn requesting info
 </td>
 <td class="content">
 <div class="paragraph">
-<p>In the first release of the Combine framework - in IOS 13 prior to IOS 13.2, macOS 10.15 Catalina, when the subscriber requested data with a Demand, that call itself was asynchronous.
+<p>In the first release of the Combine framework - in iOS 13 prior to iOS 13.3 and macOS prior to 10.15.2 - when the subscriber requested data with a Demand, that call itself was asynchronous.
 Because this process acted as the driver which triggered attached operators and ultimately the source publisher, it meant that there were scenarios where data might appear to be lost.
-Due to this, in IOS 13.2 and later combine releases, the process of requesting demand has been updated to a synchronous/blocking call.
-In practice, this means that you can be a bit more certain of having any pipelines created and full engaged prior to a publisher receiving the request to send any data.</p>
+Due to this, in iOS 13.3 and later Combine releases, the process of requesting demand has been updated to a synchronous/blocking call.
+In practice, this means that you can be a bit more certain of having any pipelines created and fully engaged prior to a publisher receiving the request to send any data.</p>
 </div>
 <div class="paragraph">
-<p>There is an <a href="https://forums.swift.org/t/combine-receive-on-runloop-main-loses-sent-value-how-can-i-make-it-work/28631/39">extended thread on the swift forums</a> about this topic, if you are interested in reading the history.</p>
+<p>There is an <a href="https://forums.swift.org/t/combine-receive-on-runloop-main-loses-sent-value-how-can-i-make-it-work/28631/39">extended thread on the Swift forums</a> about this topic, if you are interested in reading the history.</p>
 </div>
 </td>
 </tr>
@@ -1567,19 +1567,19 @@ Rather than restarting a cancelled pipeline, the developer is expected to create
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>When the subscriber is attached to a publisher, it starts with a call to <code>.subscribe(Subscriber)</code>.</td>
+<td>When the subscriber is attached to a publisher, it starts with a call to <code>.subscribe(_: Subscriber)</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The publisher in turn acknowledges the subscription calling <code>receive(subscription)</code>.</td>
+<td>The publisher in turn acknowledges the subscription calling <code>receive(subscription: Subscription)</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>After the subscription has been acknowledged, the subscriber requests <em>N</em> values with <code>request(_ : Demand)</code>.</td>
+<td>After the subscription has been acknowledged, the subscriber requests <em>N</em> values with <code>request(_: Demand)</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>The publisher may then (as it has values) send <em>N</em> (or fewer) values using <code>receive(_ : Input)</code>.
+<td>The publisher may then (as it has values) send <em>N</em> (or fewer) values using <code>receive(_: Input)</code>.
 A publisher should never send <strong>more</strong> than the demand requested.</td>
 </tr>
 <tr>
@@ -1640,8 +1640,8 @@ The other option is <code>.autoconnect()</code>, which will start the flow of da
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="#reference-record">Record</a></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="#reference-share">share</a></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="#reference-multicast">multicast</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="#reference-share">Share</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="#reference-multicast">Multicast</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="#reference-observableobject">ObservableObject</a></p></td>
@@ -1980,27 +1980,28 @@ Operators can also be used to define error handling and retry logic, buffering a
 <div class="sect2">
 <h3 id="coreconcepts-subjects">Subjects</h3>
 <div class="paragraph">
-<p>Subjects are a special case of publisher that also adhere to the <a href="https://developer.apple.com/documentation/combine/subject"><code>subject</code></a> protocol.
-This protocol requires subjects to have a <code>.send()</code> method to allow the developer to send specific values to a subscriber (or pipeline).</p>
+<p>Subjects are a special case of publisher that also adhere to the <a href="https://developer.apple.com/documentation/combine/subject"><code>Subject</code></a> protocol.
+This protocol requires subjects to have a <code>.send(_:)</code> method to allow the developer to send specific values to a subscriber (or pipeline).</p>
 </div>
 <div class="paragraph">
-<p>Subjects can be used to "inject" values into a stream, by calling the subject&#8217;s <code>.send()</code> method.
+<p>Subjects can be used to "inject" values into a stream, by calling the subject&#8217;s <code>.send(_:)</code> method.
 This is useful for integrating existing imperative code with Combine.</p>
 </div>
 <div class="paragraph">
 <p>A subject can also broadcast values to multiple subscribers.
-If multiple subscribers are connected to a subject, it will fan out values to the multiple subscribers when <code>send()</code> is invoked.
+If multiple subscribers are connected to a subject, it will fan out values to the multiple subscribers when <code>send(_:)</code> is invoked.
 A subject is also frequently used to connect or cascade multiple pipelines together, especially to fan out to multiple pipelines.</p>
 </div>
 <div class="paragraph">
-<p>A subject does not blindly pass through the demand from its subscribers, instead it provides an aggregation point for demand.
+<p>A subject does not blindly pass through the demand from its subscribers.
+Instead, it provides an aggregation point for demand.
 A subject will not signal for demand to its connected publishers until it has received at least one subscriber itself.
 When it receives any demand, it then signals for <code>unlimited</code> demand to connected publishers.
 With the subject supporting multiple subscribers, any subscribers that have not requested data with a demand are not provided the data until they do.</p>
 </div>
 <div class="paragraph">
-<p>There are two types of built-in subjects with Combine: <a href="#reference-currentvaluesubject">currentValueSubject</a> and <a href="#reference-passthroughsubject">passthroughSubject</a>.
-They act similiarly, the difference being currentValueSubject remembers and requires an initial state, where passthroughSubject does not.
+<p>There are two types of built-in subjects with Combine: <a href="#reference-currentvaluesubject">CurrentValueSubject</a> and <a href="#reference-passthroughsubject">PassthroughSubject</a>.
+They act similiarly, the difference being CurrentValueSubject remembers and requires an initial state, where PassthroughSubject does not.
 Both will provide updated values to any subscribers when <code>.send()</code> is invoked.</p>
 </div>
 <div class="paragraph">
@@ -2011,23 +2012,23 @@ This protocol is supported by a number of declarative components within SwiftUI.
 <div class="sect2">
 <h3 id="coreconcepts-subscribers">Subscribers</h3>
 <div class="paragraph">
-<p>While <a href="https://developer.apple.com/documentation/combine/subscriber"><code>subscriber</code></a> is the protocol used to receive data throughout a pipeline, <em>the subscriber</em> typically refers to the end of a pipeline.</p>
+<p>While <a href="https://developer.apple.com/documentation/combine/subscriber"><code>Subscriber</code></a> is the protocol used to receive data throughout a pipeline, <em>the subscriber</em> typically refers to the end of a pipeline.</p>
 </div>
 <div class="paragraph">
-<p>There are two subscribers built-in to Combine: <a href="#reference-assign">assign</a> and <a href="#reference-sink">sink</a>.
+<p>There are two subscribers built-in to Combine: <a href="#reference-assign">Assign</a> and <a href="#reference-sink">Sink</a>.
 There is a subscriber built in to SwiftUI: <a href="#reference-onreceive">onReceive</a>.</p>
 </div>
 <div class="paragraph">
 <p>Subscribers can support cancellation, which terminates a subscription and shuts down all the stream processing prior to any Completion sent by the publisher.
-Both <code>Assign</code> and <code>Sink</code> conform to the <a href="https://developer.apple.com/documentation/combine/cancellable">cancellable protocol</a>.</p>
+Both <code>Assign</code> and <code>Sink</code> conform to the <a href="https://developer.apple.com/documentation/combine/cancellable">Cancellable protocol</a>.</p>
 </div>
 <div class="paragraph">
 <p>When you are storing a reference to your own subscriber in order to clean up later, you generally want a reference to cancel the subscription.
-<a href="#reference-anycancellable">anyCancellable</a> provides a type-erased reference that converts any subscriber to the type AnyCancellable, allowing the use of <code>.cancel()</code> on that reference, but not access to the subscription itself (which could, for instance, request more data).
+<a href="#reference-anycancellable">AnyCancellable</a> provides a type-erased reference that converts any subscriber to the type AnyCancellable, allowing the use of <code>.cancel()</code> on that reference, but not access to the subscription itself (which could, for instance, request more data).
 It is important to store a reference to the subscriber, as when the reference is deallocated it will implicitly cancel its operation.</p>
 </div>
 <div class="paragraph">
-<p><a href="https://developer.apple.com/documentation/combine/subscribers/assign"><code>assign</code></a> applies values passed down from the publisher to an object defined by a keypath.
+<p><a href="https://developer.apple.com/documentation/combine/subscribers/assign"><code>Assign</code></a> applies values passed down from the publisher to an object defined by a keypath.
 The keypath is set when the pipeline is created.
 An example of this in Swift might look like:</p>
 </div>
@@ -2037,7 +2038,7 @@ An example of this in Swift might look like:</p>
 </div>
 </div>
 <div class="paragraph">
-<p><a href="https://developer.apple.com/documentation/combine/subscribers/sink"><code>sink</code></a> accepts a closure that receives any resulting values from the publisher.
+<p><a href="https://developer.apple.com/documentation/combine/subscribers/sink"><code>Sink</code></a> accepts a closure that receives any resulting values from the publisher.
 This allows the developer to terminate a pipeline with their own code.
 This subscriber is also extremely helpful when writing unit tests to validate either publishers or pipelines.
 An example of this in Swift might look like:</p>
@@ -2073,7 +2074,7 @@ The <code>onReceive</code> function takes a closure akin to <code>sink</code> th
 </div>
 </div>
 <div class="paragraph">
-<p>For any type of UI object (UIKit, AppKit, or SwiftUI), <a href="#reference-assign">assign</a> can be used with pipelines to update properties.</p>
+<p>For any type of UI object (UIKit, AppKit, or SwiftUI), <a href="#reference-assign">Assign</a> can be used with pipelines to update properties.</p>
 </div>
 <div style="page-break-after: always;"></div>
 <hr>
@@ -2104,7 +2105,7 @@ These publishers are expected to create a single response (or perhaps no respons
 <div class="paragraph">
 <p>The second is what I&#8217;m calling a "continuous" publisher.
 These publishers and associated pipelines are expected to be always active and providing the means to respond to ongoing events.
-In this case, the lifetime of the pipeline is significant longer, and it is often not desirable to have such pipelines fail or terminate.</p>
+In this case, the lifetime of the pipeline is significantly longer, and it is often not desirable to have such pipelines fail or terminate.</p>
 </div>
 <div class="paragraph">
 <p>When you are thinking about your development and how to use Combine, it is often beneficial to think about pipelines as being one of these types, and mixing them together to achieve your goals.
@@ -2115,7 +2116,7 @@ For example, the pattern <a href="#patterns-continual-error-handling">Using flat
 This choice will inform how you handle errors or if you want to deal with operators that manipulate the timing of the events (such as <a href="#reference-debounce">debounce</a> or <a href="#reference-throttle">throttle</a>).</p>
 </div>
 <div class="paragraph">
-<p>In addition to how much data the pipeline or publisher will provide you will often want to think about what type pair the pipeline is expected to provide.
+<p>In addition to how much data the pipeline or publisher will provide, you will often want to think about what type pair the pipeline is expected to provide.
 A number of pipelines are more about transforming data through various types, and handling possible error conditions in that processing.
 An example of this is returning a pipeline returning a list in the example <a href="#patterns-update-interface-userinput">Declarative UI updates from user input</a> to provide a means to represent an "empty" result, even though the list is never expected to have more than 1 item within it.</p>
 </div>
@@ -2175,11 +2176,11 @@ These explicitly hide the type complexity that builds up from chained functions 
 </ul>
 </div>
 <div class="paragraph">
-<p>Most publishers also include a convenience method <code>eraseToAnyPublisher</code> that returns an instance of AnyPublisher.
-<code>eraseToAnyPublisher</code> is used very much like an operator, often as the last element in a chained pipeline, to simplify the type returned.</p>
+<p>Every publisher also inherits a convenience method <code>eraseToAnyPublisher()</code> that returns an instance of AnyPublisher.
+<code>eraseToAnyPublisher()</code> is used very much like an operator, often as the last element in a chained pipeline, to simplify the type returned.</p>
 </div>
 <div class="paragraph">
-<p>If you updated the above code to add .eraseToAnyPublisher() at the end of the pipeline:</p>
+<p>If you updated the above code to add <code>.eraseToAnyPublisher()</code> at the end of the pipeline:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -13089,7 +13090,7 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 <div id="footer">
 <div id="footer-text">
 Version 1.1<br>
-Last updated 2020-04-01 23:55:53 UTC
+Last updated 2020-04-03 22:09:45 UTC
 </div>
 </div>
 <style>
