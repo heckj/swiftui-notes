@@ -272,12 +272,12 @@ Each operator in turn accepting the request for data and in turn requesting info
 
 [NOTE]
 ====
-In the first release of the Combine framework - in IOS 13 prior to IOS 13.2, macOS 10.15 Catalina, when the subscriber requested data with a Demand, that call itself was asynchronous.
+In the first release of the Combine framework - in iOS 13 prior to iOS 13.3 and macOS prior to 10.15.2 - when the subscriber requested data with a Demand, that call itself was asynchronous.
 Because this process acted as the driver which triggered attached operators and ultimately the source publisher, it meant that there were scenarios where data might appear to be lost.
-Due to this, in IOS 13.2 and later combine releases, the process of requesting demand has been updated to a synchronous/blocking call.
-In practice, this means that you can be a bit more certain of having any pipelines created and full engaged prior to a publisher receiving the request to send any data.
+Due to this, in iOS 13.3 and later Combine releases, the process of requesting demand has been updated to a synchronous/blocking call.
+In practice, this means that you can be a bit more certain of having any pipelines created and fully engaged prior to a publisher receiving the request to send any data.
 
-There is an https://forums.swift.org/t/combine-receive-on-runloop-main-loses-sent-value-how-can-i-make-it-work/28631/39[extended thread on the swift forums] about this topic, if you are interested in reading the history.
+There is an https://forums.swift.org/t/combine-receive-on-runloop-main-loses-sent-value-how-can-i-make-it-work/28631/39[extended thread on the Swift forums] about this topic, if you are interested in reading the history.
 ====
 
 With the subscriber driving this process, it allows Combine to support cancellation.
