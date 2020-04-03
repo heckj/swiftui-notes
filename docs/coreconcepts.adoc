@@ -13,7 +13,7 @@ These core concepts are:
 [#coreconcepts-publisher-subscriber]
 == Publisher and Subscriber
 
-Two key concepts: https://developer.apple.com/documentation/combine/publisher[*publisher*] and https://developer.apple.com/documentation/combine/subscriber[*subscriber*] are described in Swift as protocols.
+Two key concepts, https://developer.apple.com/documentation/combine/publisher[*publisher*] and https://developer.apple.com/documentation/combine/subscriber[*subscriber*], are described in Swift as protocols.
 
 When you are talking about programming (and especially with Swift and Combine), quite a lot is described by the types.
 When you say a function or method returns a value, that value is generally described as being "one of this type".
@@ -59,7 +59,7 @@ image::diagrams/pipeline.svg[pipeline]
 Operators can be used to transform either values or types - both the Output and Failure type.
 Operators may also split or duplicate streams, or merge streams together.
 Operators must always be aligned by the combination of Output/Failure types.
-The compiler will enforce the matching types, so getting it wrong will result in a compiler error (and if you are lucky - a useful _fixit_ snippet suggesting a solution).
+The compiler will enforce the matching types, so getting it wrong will result in a compiler error (and, if you are lucky, a useful _fixit_ snippet suggesting a solution).
 
 A simple Combine pipeline written in swift might look like:
 [source, swift]
@@ -77,7 +77,7 @@ let _ = Just(5) <1>
 ----
 
 <1> The pipeline starts with the publisher `Just`, which responds with the value that its defined with (in this case, the Integer `5`). The output type is `<Integer>`, and the failure type is `<Never>`.
-<2> the pipeline then has a `map` operator, which is transforming the value and its type.
+<2> The pipeline then has a `map` operator, which is transforming the value and its type.
 In this example it is ignoring the published input and returning a string.
 This is also transforming the output type to `<String>`, and leaving the failure type still set as `<Never>`.
 <3> The pipeline then ends with a `sink` subscriber.
@@ -236,7 +236,7 @@ The input type for this map operator is `<Int>`, which is described with generic
 The failure type that is being passed to this operator is `<Never>`, described in the same syntax just below the Input type.
 
 The map operator doesn't change or interact with the failure type, only passing it along.
-To represent that, the failure types - both input (above) and output (below) have been lightened.
+To represent that, the failure types - both input (above) and output (below) - have been lightened.
 
 A single input value provided (`5`) is represented on the top line.
 The location on the line isn't meaningful in this case, only representing that it is a single value.
@@ -297,10 +297,10 @@ The end to end lifecycle is enabled by subscribers and publishers communicating 
 
 .An The lifecycle of a combine pipeline
 image::diagrams/combine_lifecycle_diagram.svg[combine lifecycle diagram]
-<1> When the subscriber is attached to a publisher, it starts with a call to `.subscribe(Subscriber)`.
-<2> The publisher in turn acknowledges the subscription calling `receive(subscription)`.
-<3> After the subscription has been acknowledged, the subscriber requests _N_ values with `request(_ : Demand)`.
-<4> The publisher may then (as it has values) send _N_ (or fewer) values using `receive(_ : Input)`.
+<1> When the subscriber is attached to a publisher, it starts with a call to `.subscribe(_: Subscriber)`.
+<2> The publisher in turn acknowledges the subscription calling `receive(subscription: Subscription)`.
+<3> After the subscription has been acknowledged, the subscriber requests _N_ values with `request(_: Demand)`.
+<4> The publisher may then (as it has values) send _N_ (or fewer) values using `receive(_: Input)`.
 A publisher should never send **more** than the demand requested.
 <5> Any time after the subscription has been acknowledged, the subscriber may send a https://developer.apple.com/documentation/combine/subscribers/completion[cancellation] with `.cancel()`
 <6> A publisher may optionally send https://developer.apple.com/documentation/combine/subscribers/completion[completion]: `receive(completion:)`.
@@ -340,8 +340,8 @@ Combine provides a number of additional convenience publishers:
 | <<reference#reference-fail,Fail>>
 
 | <<reference#reference-record,Record>>
-| <<reference#reference-share>>
-| <<reference#reference-multicast>>
+| <<reference#reference-share,Share>>
+| <<reference#reference-multicast,Multicast>>
 
 | <<reference#reference-observableobject,ObservableObject>>
 | <<reference#reference-published,@Published>>
@@ -527,23 +527,24 @@ Operators can also be used to define error handling and retry logic, buffering a
 [#coreconcepts-subjects]
 == Subjects
 
-Subjects are a special case of publisher that also adhere to the https://developer.apple.com/documentation/combine/subject[`subject`] protocol.
-This protocol requires subjects to have a `.send()` method to allow the developer to send specific values to a subscriber (or pipeline).
+Subjects are a special case of publisher that also adhere to the https://developer.apple.com/documentation/combine/subject[`Subject`] protocol.
+This protocol requires subjects to have a `.send(_:)` method to allow the developer to send specific values to a subscriber (or pipeline).
 
-Subjects can be used to "inject" values into a stream, by calling the subject's `.send()` method.
+Subjects can be used to "inject" values into a stream, by calling the subject's `.send(_:)` method.
 This is useful for integrating existing imperative code with Combine.
 
 A subject can also broadcast values to multiple subscribers.
-If multiple subscribers are connected to a subject, it will fan out values to the multiple subscribers when `send()` is invoked.
+If multiple subscribers are connected to a subject, it will fan out values to the multiple subscribers when `send(_:)` is invoked.
 A subject is also frequently used to connect or cascade multiple pipelines together, especially to fan out to multiple pipelines.
 
-A subject does not blindly pass through the demand from its subscribers, instead it provides an aggregation point for demand.
+A subject does not blindly pass through the demand from its subscribers.
+Instead, it provides an aggregation point for demand.
 A subject will not signal for demand to its connected publishers until it has received at least one subscriber itself.
 When it receives any demand, it then signals for `unlimited` demand to connected publishers.
 With the subject supporting multiple subscribers, any subscribers that have not requested data with a demand are not provided the data until they do.
 
-There are two types of built-in subjects with Combine: <<reference#reference-currentvaluesubject,currentValueSubject>> and <<reference#reference-passthroughsubject,passthroughSubject>>.
-They act similiarly, the difference being currentValueSubject remembers and requires an initial state, where passthroughSubject does not.
+There are two types of built-in subjects with Combine: <<reference#reference-currentvaluesubject,CurrentValueSubject>> and <<reference#reference-passthroughsubject,PassthroughSubject>>.
+They act similiarly, the difference being CurrentValueSubject remembers and requires an initial state, where PassthroughSubject does not.
 Both will provide updated values to any subscribers when `.send()` is invoked.
 
 Both `CurrentValueSubject` and `PassthroughSubject` are also useful for creating publishers for objects conforming to https://developer.apple.com/documentation/combine/observableobject[`ObservableObject`].
@@ -552,19 +553,19 @@ This protocol is supported by a number of declarative components within SwiftUI.
 [#coreconcepts-subscribers]
 == Subscribers
 
-While https://developer.apple.com/documentation/combine/subscriber[`subscriber`] is the protocol used to receive data throughout a pipeline, _the subscriber_ typically refers to the end of a pipeline.
+While https://developer.apple.com/documentation/combine/subscriber[`Subscriber`] is the protocol used to receive data throughout a pipeline, _the subscriber_ typically refers to the end of a pipeline.
 
-There are two subscribers built-in to Combine: <<reference#reference-assign,assign>> and <<reference#reference-sink,sink>>.
+There are two subscribers built-in to Combine: <<reference#reference-assign,Assign>> and <<reference#reference-sink,Sink>>.
 There is a subscriber built in to SwiftUI: <<reference#reference-onreceive,onReceive>>.
 
 Subscribers can support cancellation, which terminates a subscription and shuts down all the stream processing prior to any Completion sent by the publisher.
-Both `Assign` and `Sink` conform to the https://developer.apple.com/documentation/combine/cancellable[cancellable protocol].
+Both `Assign` and `Sink` conform to the https://developer.apple.com/documentation/combine/cancellable[Cancellable protocol].
 
 When you are storing a reference to your own subscriber in order to clean up later, you generally want a reference to cancel the subscription.
-<<reference#reference-anycancellable,anyCancellable>> provides a type-erased reference that converts any subscriber to the type AnyCancellable, allowing the use of `.cancel()` on that reference, but not access to the subscription itself (which could, for instance, request more data).
+<<reference#reference-anycancellable,AnyCancellable>> provides a type-erased reference that converts any subscriber to the type AnyCancellable, allowing the use of `.cancel()` on that reference, but not access to the subscription itself (which could, for instance, request more data).
 It is important to store a reference to the subscriber, as when the reference is deallocated it will implicitly cancel its operation.
 
-https://developer.apple.com/documentation/combine/subscribers/assign[`assign`] applies values passed down from the publisher to an object defined by a keypath.
+https://developer.apple.com/documentation/combine/subscribers/assign[`Assign`] applies values passed down from the publisher to an object defined by a keypath.
 The keypath is set when the pipeline is created.
 An example of this in Swift might look like:
 
@@ -573,7 +574,7 @@ An example of this in Swift might look like:
 .assign(to: \.isEnabled, on: signupButton)
 ----
 
-https://developer.apple.com/documentation/combine/subscribers/sink[`sink`] accepts a closure that receives any resulting values from the publisher.
+https://developer.apple.com/documentation/combine/subscribers/sink[`Sink`] accepts a closure that receives any resulting values from the publisher.
 This allows the developer to terminate a pipeline with their own code.
 This subscriber is also extremely helpful when writing unit tests to validate either publishers or pipelines.
 An example of this in Swift might look like:
@@ -606,7 +607,7 @@ struct MyView : View {
 }
 ----
 
-For any type of UI object (UIKit, AppKit, or SwiftUI), <<reference#reference-assign,assign>> can be used with pipelines to update properties.
+For any type of UI object (UIKit, AppKit, or SwiftUI), <<reference#reference-assign,Assign>> can be used with pipelines to update properties.
 
 // force a page break - ignored in HTML rendering
 <<<

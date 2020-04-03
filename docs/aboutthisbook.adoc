@@ -82,8 +82,8 @@ The content for this book, including sample code and tests, are sourced from the
 === Download the project
 
 The contents of this book, as well as example code and unit tests referenced from the book, are linked in an Xcode project (`SwiftUI-Notes.xcodeproj`).
-the Xcode project includes fully operational sample code that shows examples of Combine integrating with UIKit and SwiftUI.
-The project also includes extensive unit tests excercising the framework to illustrate the behavior of framework components.
+The Xcode project includes fully operational sample code that shows examples of Combine integrating with UIKit and SwiftUI.
+The project also includes extensive unit tests exercising the framework to illustrate the behavior of framework components.
 
 The project associated with this book requires Xcode 11 and MacOS 10.14 or later.
 

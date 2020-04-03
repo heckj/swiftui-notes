@@ -17,7 +17,7 @@ These publishers are expected to create a single response (or perhaps no respons
 
 The second is what I'm calling a "continuous" publisher.
 These publishers and associated pipelines are expected to be always active and providing the means to respond to ongoing events.
-In this case, the lifetime of the pipeline is significant longer, and it is often not desirable to have such pipelines fail or terminate.
+In this case, the lifetime of the pipeline is significantly longer, and it is often not desirable to have such pipelines fail or terminate.
 
 When you are thinking about your development and how to use Combine, it is often beneficial to think about pipelines as being one of these types, and mixing them together to achieve your goals.
 For example, the pattern <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>> explicitly uses one-shot pipelines to support error handling on a continual pipeline.
@@ -25,7 +25,7 @@ For example, the pattern <<patterns#patterns-continual-error-handling,Using flat
 When you are creating an instance of a publisher or a pipeline, it is worthwhile to be thinking about how you want it to work - to either be a one-shot, or continous.
 This choice will inform how you handle errors or if you want to deal with operators that manipulate the timing of the events (such as <<reference#reference-debounce,debounce>> or <<reference#reference-throttle,throttle>>).
 
-In addition to how much data the pipeline or publisher will provide you will often want to think about what type pair the pipeline is expected to provide.
+In addition to how much data the pipeline or publisher will provide, you will often want to think about what type pair the pipeline is expected to provide.
 A number of pipelines are more about transforming data through various types, and handling possible error conditions in that processing.
 An example of this is returning a pipeline returning a list in the example <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>> to provide a means to represent an "empty" result, even though the list is never expected to have more than 1 item within it.
 
@@ -71,10 +71,10 @@ The two classes used to expose simplified types for subscribers and publishers a
 * https://developer.apple.com/documentation/combine/anysubscriber[AnySubscriber]
 * https://developer.apple.com/documentation/combine/anypublisher[AnyPublisher]
 
-Most publishers also include a convenience method `eraseToAnyPublisher` that returns an instance of AnyPublisher.
-`eraseToAnyPublisher` is used very much like an operator, often as the last element in a chained pipeline, to simplify the type returned.
+Every publisher also inherits a convenience method `eraseToAnyPublisher()` that returns an instance of AnyPublisher.
+`eraseToAnyPublisher()` is used very much like an operator, often as the last element in a chained pipeline, to simplify the type returned.
 
-If you updated the above code to add .eraseToAnyPublisher() at the end of the pipeline:
+If you updated the above code to add `.eraseToAnyPublisher()` at the end of the pipeline:
 
 [source, swift]
 ----
