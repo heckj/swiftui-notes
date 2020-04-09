@@ -47,6 +47,7 @@ if [ -n "${REBUILDEPUB}" ]; then
 # render an epub3 file, will should appear in `output` directory
     echo "Rendering ePub"
     docker run --rm -v $(pwd):/documents/ --name asciidoc-to-epub3 heckj/docker-asciidoctor asciidoctor-epub3 -v -t -D /documents/output docs/using-combine-book.adoc
+    docker run --rm -v $(pwd):/documents/ --name asciidoc-to-epub3 heckj/docker-asciidoctor asciidoctor-epub3 -v -t -D /documents/output -a ebook-format=kf8 docs/using-combine-book.adoc
     if [ -n "${OPENIT}" ]; then
         open output/using-combine-book.epub
     fi
