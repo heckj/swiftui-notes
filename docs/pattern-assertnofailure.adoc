@@ -3,7 +3,7 @@
 
 __Goal__::
 
-* Verify no error has occured within a pipeline
+* Verify no error has occurred within a pipeline
 
 __References__::
 

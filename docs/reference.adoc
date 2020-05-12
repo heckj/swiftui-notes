@@ -237,7 +237,7 @@ __Usage__::
 __Details__::
 
 `Record` allows you to create a publisher with pre-recorded values for repeated playback.
-`Record` acts very similiarly to <<reference-sequence>> if you want to publish a sequence of values and then send a `.finished` completion.
+`Record` acts very similarly to <<reference-sequence>> if you want to publish a sequence of values and then send a `.finished` completion.
 It goes beyond that allowing you to specify a `.failure` completion to be sent from the recording.
 `Record` does not allow you to control the timing of the values being returned, only the order and the eventual completion following them.
 
@@ -324,9 +324,9 @@ __Usage__::
 
 __Details__::
 
-A connectable publisher has an explicit mechaninism for enabling when a subscription and the flow of demand from subscribers will be allowed to the publisher.
+A connectable publisher has an explicit mechanism for enabling when a subscription and the flow of demand from subscribers will be allowed to the publisher.
 By conforming to the https://developer.apple.com/documentation/combine/connectablepublisher[`ConnectablePublisher`] protocol, a publisher will have two additional methods exposed for this control: `connect` and `autoconnect`.
-Both of these methods return a `Cancellable` (similiar to <<reference-sink,sink>> or <<reference-assign,assign>>).
+Both of these methods return a `Cancellable` (similar to <<reference-sink,sink>> or <<reference-assign,assign>>).
 
 When using `connect`, the receipt of subscription will be under imperative control.
 Normally when a subscriber is linked to a publisher, the connection is made automatically, subscriptions get sent, and demand gets negotiated per the <<coreconcepts#coreconcepts-lifecycle, Lifecycle of Publishers and Subscribers>>.
@@ -380,7 +380,7 @@ publisher.sink { value in
 [NOTE]
 ====
 Making a publisher connectable and then immediately enabling `autoconnect` is an odd example, as you typically want one explicit pattern of behavior or the other.
-The two mechahisms allow you to choose which you want for the needs of your code.
+The two mechanisms allow you to choose which you want for the needs of your code.
 As such, it is extremely unlikely that you would ever want to use `makeConnectable()` followed immediately by `autoconnect()`.
 ====
 
@@ -540,7 +540,7 @@ Because of this expectation, it is common to arrange pipelines from these publis
 For example, if a <<reference#reference-sink,sink>> subscriber is set up to capture errors from a pipeline originating from a` @Published` property, when the error is received, the sink will send a `cancel` message, causing the publisher to cease generating any updates on change.
 This is illustrated in the test `testPublishedSinkWithError` at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[`UsingCombineTests/PublisherTests.swift`]
 
-Additional examples of how to arrange error handling for a continous publisher like `@Published` can be found at <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>.
+Additional examples of how to arrange error handling for a continuous publisher like `@Published` can be found at <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>.
 
 [WARNING]
 ====
@@ -646,7 +646,7 @@ This means that even when subscribers are connected to it, it will not start pro
 
 Creating the timer publisher requires an interval in seconds, and a RunLoop and mode upon which to run.
 The publisher may optionally take an additional parameter `tolerance`, which defines a variance allowed in the generation of timed events.
-The default for toleranace is nil, allowing any variance.
+The default for tolerance is nil, allowing any variance.
 
 The publisher has an output type of https://developer.apple.com/documentation/foundation/date[Date] and a failure type of `<Never>`.
 
@@ -866,7 +866,7 @@ For example, the following `scan` operator implementation counts the number of c
 __Summary__::
 
 `tryScan` is a variant of the `scan` operator which allows for the provided closure to throw an error and cancel the pipeline.
-The closure provided updates and modifies a value with based on any inputs from an upstream publisher and publishing intermediate results.
+The closure provided updates and modifies a value based on any inputs from an upstream publisher and publishing intermediate results.
 
 image::diagrams/tryscan.svg[tryscan operator, align="center"]
 
@@ -970,7 +970,7 @@ Just(MyStruct())
 
 __Summary__::
 
-`tryMap` is similiar to <<reference#reference-map,map>>, except that it also allows you to provide a closure that throws additional errors if your conversion logic is unsuccessful.
+`tryMap` is similar to <<reference#reference-map,map>>, except that it also allows you to provide a closure that throws additional errors if your conversion logic is unsuccessful.
 
 __Constraints on connected publisher__::
 
@@ -1062,7 +1062,7 @@ The error type of the internal publisher is often expected to be `<Never>`.
 
 __Summary__::
 
-`setFailureType` does not send a `.failure` completion, it just changes the Failure type assocaited with the pipeline.
+`setFailureType` does not send a `.failure` completion, it just changes the Failure type associated with the pipeline.
 Use this publisher type when you need to match the error types for two otherwise mismatched publishers.
 
 image::diagrams/setfailuretype.svg[setfailuretype operator, align="center"]
@@ -1110,7 +1110,7 @@ __Usage__::
 
 __Details__::
 
-compactMap is very similiar to the <<reference-map>> operator, with the exception that it expects the closure to return an optional value, and drops any nil values from published responses.
+compactMap is very similar to the <<reference-map>> operator, with the exception that it expects the closure to return an optional value, and drops any nil values from published responses.
 This is the combine equivalent of the https://developer.apple.com/documentation/swift/sequence/2950916-compactmap[`compactMap`] function which iterates through a https://developer.apple.com/documentation/swift/sequence[`Sequence`] and returns a sequence of any non-nil values.
 
 It can also be used to process results from an upstream publisher that produces an optional Output type, and collapse those into an unwrapped type.
@@ -1360,7 +1360,7 @@ is more compact than
 }
 ----
 
-<<reference-catch>> would be the preferrable error handler if you wanted to return another publisher rather than a singular value.
+<<reference-catch>> would be the preferable error handler if you wanted to return another publisher rather than a singular value.
 
 [#reference-replacenil]
 ==== replaceNil
@@ -1393,7 +1393,7 @@ The type of the replacement should be a non-optional version of the type provide
 ----
 
 This operator can also be viewed as a way of converting an optional type to an explicit type, where optional values have a pre-determined placeholder.
-Put another way, the `replaceNil` operator is a Combine specific variant of the swift coallescing operator that you might use when unwrapping an optional.
+Put another way, the `replaceNil` operator is a Combine specific variant of the swift coalescing operator that you might use when unwrapping an optional.
 
 If you want to convert an optional type into a concrete type, simply ignoring or collapsing the nil values, you should likely use the <<reference-compactmap,compactMap>> (or <<reference-trycompactmap,tryCompactMap>>) operator.
 
@@ -1487,7 +1487,7 @@ When the time stride interval is exceeded, the collected set will be sent to the
 `byTimeOrCount` also takes a scheduler and a time interval stride, and in addition allows you to specify an upper bound on the count of items received before the operator sends the collected values to its subscriber.
 The ability to provide a count allows you to have some confidence about the maximum amount of memory that the operator will consume while buffering values.
 
-If either of the count or time interval provided are ellapsed, the `collect` operator will forward the currently collected set to its subscribers.
+If either of the count or time interval provided are elapsed, the `collect` operator will forward the currently collected set to its subscribers.
 If a `.finished` completion is received, the currently collected set will be immediately sent to it's subscribers.
 If a `.failure` completion is received, any currently buffered values are dropped and the `failure` completion is forwarded to collect's subscribers.
 
@@ -1543,7 +1543,7 @@ If you only want to know if a stream has finished (or failed), then `ignoreOutpu
 <1> No data will ever be presented to a downstream subscriber of `ignoreOutput`, so the `receiveValue` closure will never be invoked.
 <2> When the stream completes, it will invoke `receiveCompletion`.
 You can switch on the case from that completion to respond to the success.
-<3> Or you can due further processing based on receiving a failure.
+<3> Or you can do further processing based on receiving a failure.
 
 [#reference-reduce]
 ==== reduce
@@ -1612,7 +1612,7 @@ Like `reduce`, the `tryReduce` will only publish a single downstream result upon
 '''
 
 [#reference-operators-mathematical]
-=== Mathematic opertions on elements
+=== Mathematic operations on elements
 
 [#reference-max]
 ==== max
@@ -1804,8 +1804,8 @@ __Usage__::
 
 __Details__::
 
-Similiar to the <<reference-containswhere,containsWhere>> operator, this operator is provided with a closure.
-The type of the incoming value to this closuremust match the Output type of the upstream publisher, and the closure must return a Boolean.
+similar to the <<reference-containswhere,containsWhere>> operator, this operator is provided with a closure.
+The type of the incoming value to this closure must match the Output type of the upstream publisher, and the closure must return a Boolean.
 
 The operator will compare any incoming values, only responding when the upstream publisher sends a `.finished` completion.
 At that point, the `allSatisfies` operator will return a single boolean value indicating if all the values received matched (or not) based on processing through the provided closure.
@@ -1832,7 +1832,7 @@ __Usage__::
 
 __Details__::
 
-Similiar to the <<reference-trycontainswhere,tryContainsWhere>> operator, you provide this operator with a closure which may also throw an error.
+similar to the <<reference-trycontainswhere,tryContainsWhere>> operator, you provide this operator with a closure which may also throw an error.
 The type of the incoming value to this closure must match the Output type of the upstream publisher, and the closure must return a Boolean.
 
 The operator will compare any incoming values, only responding when the upstream publisher sends a `.finished` completion.
@@ -1995,7 +1995,7 @@ __Usage__::
 
 __Details__::
 
-The <<reference-firstwhere,firstWhere>> operator is similiar to <<reference-first>>, but instead lets you specify if the value should be the first value published by evaluating a closure.
+The <<reference-firstwhere,firstWhere>> operator is similar to <<reference-first>>, but instead lets you specify if the value should be the first value published by evaluating a closure.
 The provided closure should accept a value of the type defined by the upstream publisher, returning a bool.
 
 [source, swift]
@@ -2326,7 +2326,7 @@ The simplest form of the <<reference-drop>> operator drops a single value and th
 .dropFirst()
 ----
 
-A varient of this operator allows a count of values to be specified:
+A variant of this operator allows a count of values to be specified:
 
 [source, swift]
 ----
@@ -2582,7 +2582,7 @@ __Usage__::
 
 __Details__::
 
-`Zip` works very similiarly to <<reference#reference-combinelatest,combineLatest>>, connecting two upstream publishers and providing the output of those publishers as a single pipeline with a tuple output type composed of the types of the upstream publishers.
+`Zip` works very similarly to <<reference#reference-combinelatest,combineLatest>>, connecting two upstream publishers and providing the output of those publishers as a single pipeline with a tuple output type composed of the types of the upstream publishers.
 `Zip3` supports connecting three upstream publishers, and `zip4` supports connecting four upstream publishers.
 
 The notable difference from <<reference#reference-combinelatest,combineLatest>> is that `zip` waits for values to arrive from the upstream publishers, and will only publish a single new tuple when new values have been provided from all upstream publishers.
@@ -2717,7 +2717,7 @@ __Usage__::
 
 __Details__::
 
-If you need to verify that no error has occured (treating the error output as an invariant), this is the operator to use.
+If you need to verify that no error has occurred (treating the error output as an invariant), this is the operator to use.
 Like its namesakes, it will cause the program to terminate if the assert is violated.
 
 Adding it into the pipeline requires no additional parameters, but you can include a string:
@@ -3170,7 +3170,7 @@ In these cases, either you can change the type from optional to a concrete type 
 
 __Summary__::
 
-A commonly desirede operation is to decode some provided data, so Combine provides the `decode` operator suited to that task.
+A commonly desired operation is to decode some provided data, so Combine provides the `decode` operator suited to that task.
 
 __Constraints on connected publisher__::
 
@@ -3535,7 +3535,7 @@ https://developer.apple.com/documentation/combine/scheduler[Scheduler] is a prot
 
 `Subscribe` effects a subset of the functions, and does not guarantee that a publisher will run on that queue.
 In particular, it effects a publishers `receive` function, the subscribers `request` function, and the `cancel` function.
-Some publishers (such as <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>) have complex internals that will run on alternative queues based on their configuration, and will be relatively uneffected by `subscribe`.
+Some publishers (such as <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>) have complex internals that will run on alternative queues based on their configuration, and will be relatively unaffected by `subscribe`.
 
 [source, swift]
 ----
@@ -3584,7 +3584,7 @@ __Usage__::
 __Details__::
 
 When chaining operators together, the resulting type signature accumulates all the various types.
-This can get complicated quite quickly, and can provide an unnessecarily complex signature for an API.
+This can get complicated quite quickly, and can provide an unnecessarily complex signature for an API.
 
 `eraseToAnyPublisher` takes the signature and "erases" the type back to the common type of `AnyPublisher`.
 This provides a cleaner type for external declarations.
@@ -3834,7 +3834,7 @@ let cancellable = examplePublisher.sink(receiveCompletion: { err in
 ----
 
 The type that is passed into `receiveCompletion` is the enum https://developer.apple.com/documentation/combine/subscribers/completion[`Subscribers.Completion`].
-The completion `.failure` incudes an `Error` wrapped within it, providing access to the underlying cause of the failure.
+The completion `.failure` includes an `Error` wrapped within it, providing access to the underlying cause of the failure.
 To get to the error within the `.failure` completion, `switch` on the returned completion to determine if it is `.finished` or `.failure`, and then pull out the error.
 
 When you chain a `.sink` subscriber onto a publisher (or pipeline), the result is cancellable.
@@ -3852,7 +3852,7 @@ cancellablePublisher.cancel() // when invoked, this invalidates the pipeline
 // no further data will be received by the sink
 ----
 
-Similiar to publishers having a type-erased struct <<reference-erasetoanypublisher,AnyPublisher>> to expose publishers through an API, subscribers have an equivalent: <<reference-anycancellable,AnyCancellable>>. This is often used with `sink` to convert the resulting type into `AnyCancellable`.
+similar to publishers having a type-erased struct <<reference-erasetoanypublisher,AnyPublisher>> to expose publishers through an API, subscribers have an equivalent: <<reference-anycancellable,AnyCancellable>>. This is often used with `sink` to convert the resulting type into `AnyCancellable`.
 
 [#reference-onreceive]
 === onReceive

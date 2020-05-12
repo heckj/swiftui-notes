@@ -93,7 +93,7 @@ An example of this is <<reference#reference-map,map>> and <<reference#reference-
 The `map` operator allows for any combination of Output and Failure type and passes them through.
 `tryMap` accepts any Input, Failure types, and allows any Output type, but will always output an `<Error>` failure type.
 
-Operators like `map` allow you to define the output type being returned by infering the output type based on what you return in a closure provided to the operator.
+Operators like `map` allow you to define the output type being returned by inferring the output type based on what you return in a closure provided to the operator.
 In the example above, the `map` operator is returning a `String` output type since that it what the closure returns.
 
 To illustrate the example of changing types more concretely, we expand upon the logic to use the values being passed. This example still starts with a publisher providing the types `<Int, Never>` and end with a subscription taking the types `<String, Never>`.
@@ -365,7 +365,7 @@ A number of Apple API outside of Combine provide publishers as well.
 
 Operators are a convenient name for a number of pre-built functions that are included under Publisher in Apple's reference documentation.
 Operators are meant to be composed into pipelines.
-Many will accept one or more closures from the developer to define the business logic while maintaining the adherance to the publisher/subscriber lifecycle.
+Many will accept one or more closures from the developer to define the business logic while maintaining the adherence to the publisher/subscriber lifecycle.
 
 Some operators support bringing together outputs from different pipelines, changing the timing of data, or filtering the data provided.
 Operators may also have constraints on the types they will operate on.
@@ -544,7 +544,7 @@ When it receives any demand, it then signals for `unlimited` demand to connected
 With the subject supporting multiple subscribers, any subscribers that have not requested data with a demand are not provided the data until they do.
 
 There are two types of built-in subjects with Combine: <<reference#reference-currentvaluesubject,CurrentValueSubject>> and <<reference#reference-passthroughsubject,PassthroughSubject>>.
-They act similiarly, the difference being CurrentValueSubject remembers and requires an initial state, where PassthroughSubject does not.
+They act similarly, the difference being CurrentValueSubject remembers and requires an initial state, where PassthroughSubject does not.
 Both will provide updated values to any subscribers when `.send()` is invoked.
 
 Both `CurrentValueSubject` and `PassthroughSubject` are also useful for creating publishers for objects conforming to https://developer.apple.com/documentation/combine/observableobject[`ObservableObject`].

@@ -12,7 +12,7 @@ Combine uses many of the same functional reactive concepts that can be found in 
 
 [NOTE]
 ====
-If you are already familar with RxSwift there is https://github.com/CombineCommunity/rxswift-to-combine-cheatsheet[a good collected cheat-sheet] for how to map concepts and APIs from RxSwift to Combine.
+If you are already familiar with RxSwift there is https://github.com/CombineCommunity/rxswift-to-combine-cheatsheet[a good collected cheat-sheet] for how to map concepts and APIs from RxSwift to Combine.
 ====
 
 == Functional reactive programming

@@ -195,7 +195,7 @@ class MulticastSharePublisherTests: XCTestCase {
         wait(for: [expectation1, expectation2], timeout: 5.0)
     }
 
-    // makeConnectable does something similiar, but requires the publisher's error to be <Never>
+    // makeConnectable does something similar, but requires the publisher's error to be <Never>
     // meaning that you have already handlded any failure conditions such that the pipeline will
     // always resolve properly and without issue upon something new connecting...
 
