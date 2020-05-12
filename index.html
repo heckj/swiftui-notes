@@ -611,7 +611,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#reference-tryreduce">tryReduce</a></li>
 </ul>
 </li>
-<li><a href="#reference-operators-mathematical">Mathematic opertions on elements</a>
+<li><a href="#reference-operators-mathematical">Mathematic operations on elements</a>
 <ul class="sectlevel4">
 <li><a href="#reference-max">max</a></li>
 <li><a href="#reference-trymax">tryMax</a></li>
@@ -785,6 +785,7 @@ Arthur Hammer,
 Nanu Jogi,
 Serhii Kyrylenko,
 Michel Mohrmann,
+John Mueller,
 Lee O&#8217;Mara,
 Kai Özer,
 Zachary Recolan,
@@ -911,7 +912,7 @@ Combine uses many of the same functional reactive concepts that can be found in 
 </td>
 <td class="content">
 <div class="paragraph">
-<p>If you are already familar with RxSwift there is <a href="https://github.com/CombineCommunity/rxswift-to-combine-cheatsheet">a good collected cheat-sheet</a> for how to map concepts and APIs from RxSwift to Combine.</p>
+<p>If you are already familiar with RxSwift there is <a href="https://github.com/CombineCommunity/rxswift-to-combine-cheatsheet">a good collected cheat-sheet</a> for how to map concepts and APIs from RxSwift to Combine.</p>
 </div>
 </td>
 </tr>
@@ -1264,7 +1265,7 @@ The <code>map</code> operator allows for any combination of Output and Failure t
 <code>tryMap</code> accepts any Input, Failure types, and allows any Output type, but will always output an <code>&lt;Error&gt;</code> failure type.</p>
 </div>
 <div class="paragraph">
-<p>Operators like <code>map</code> allow you to define the output type being returned by infering the output type based on what you return in a closure provided to the operator.
+<p>Operators like <code>map</code> allow you to define the output type being returned by inferring the output type based on what you return in a closure provided to the operator.
 In the example above, the <code>map</code> operator is returning a <code>String</code> output type since that it what the closure returns.</p>
 </div>
 <div class="paragraph">
@@ -1689,7 +1690,7 @@ The other option is <code>.autoconnect()</code>, which will start the flow of da
 <div class="paragraph">
 <p>Operators are a convenient name for a number of pre-built functions that are included under Publisher in Apple&#8217;s reference documentation.
 Operators are meant to be composed into pipelines.
-Many will accept one or more closures from the developer to define the business logic while maintaining the adherance to the publisher/subscriber lifecycle.</p>
+Many will accept one or more closures from the developer to define the business logic while maintaining the adherence to the publisher/subscriber lifecycle.</p>
 </div>
 <div class="paragraph">
 <p>Some operators support bringing together outputs from different pipelines, changing the timing of data, or filtering the data provided.
@@ -2002,7 +2003,7 @@ With the subject supporting multiple subscribers, any subscribers that have not 
 </div>
 <div class="paragraph">
 <p>There are two types of built-in subjects with Combine: <a href="#reference-currentvaluesubject">CurrentValueSubject</a> and <a href="#reference-passthroughsubject">PassthroughSubject</a>.
-They act similiarly, the difference being CurrentValueSubject remembers and requires an initial state, where PassthroughSubject does not.
+They act similarly, the difference being CurrentValueSubject remembers and requires an initial state, where PassthroughSubject does not.
 Both will provide updated values to any subscribers when <code>.send()</code> is invoked.</p>
 </div>
 <div class="paragraph">
@@ -2113,7 +2114,7 @@ In this case, the lifetime of the pipeline is significantly longer, and it is of
 For example, the pattern <a href="#patterns-continual-error-handling">Using flatMap with catch to handle errors</a> explicitly uses one-shot pipelines to support error handling on a continual pipeline.</p>
 </div>
 <div class="paragraph">
-<p>When you are creating an instance of a publisher or a pipeline, it is worthwhile to be thinking about how you want it to work - to either be a one-shot, or continous.
+<p>When you are creating an instance of a publisher or a pipeline, it is worthwhile to be thinking about how you want it to work - to either be a one-shot, or continuous.
 This choice will inform how you handle errors or if you want to deal with operators that manipulate the timing of the events (such as <a href="#reference-debounce">debounce</a> or <a href="#reference-throttle">throttle</a>).</p>
 </div>
 <div class="paragraph">
@@ -2265,7 +2266,7 @@ Any operators following them will also be invoked on their scheduler, giving the
 <ul>
 <li>
 <p>First is simply leveraging synchronous (blocking) calls within a closure to one of the common operators.
-The two most prevelant operators leveraged for this are <a href="#reference-map">map</a> and <a href="#reference-trymap">tryMap</a>, for when your code needs to throw an Error.</p>
+The two most prevalent operators leveraged for this are <a href="#reference-map">map</a> and <a href="#reference-trymap">tryMap</a>, for when your code needs to throw an Error.</p>
 </li>
 <li>
 <p>Second is integrating your own code that is asynchronous, or APIs that provide a completion callback.
@@ -2755,7 +2756,7 @@ Since <code>dataTaskPublisher</code> returns both the response data and the <cod
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>If no error has occured, then we simply pass down <code>Data</code> for further processing.</td>
+<td>If no error has occurred, then we simply pass down <code>Data</code> for further processing.</td>
 </tr>
 </table>
 </div>
@@ -2765,7 +2766,7 @@ Since <code>dataTaskPublisher</code> returns both the response data and the <cod
 <p>When an error is triggered on the pipeline, a <code>.failure</code> completion is sent with the error encapsulated within it, regardless of where it happened in the pipeline.</p>
 </div>
 <div class="paragraph">
-<p>This pattern can be expanded to return a publisher that accomodates any number of specific error conditions using this general pattern.
+<p>This pattern can be expanded to return a publisher that accommodates any number of specific error conditions using this general pattern.
 In many of the examples, we replace the error conditions with a default value.
 If we want to have a function that returns a publisher that <strong>doesn&#8217;t</strong> choose what happens on failure, then the same <a href="#reference-trymap">tryMap</a> operator can be used in conjunction with <a href="#reference-maperror">mapError</a> to translate review the response object as well as convert URLError error types.</p>
 </div>
@@ -3003,8 +3004,8 @@ You could just as easily return <code>false</code>, and the publisher would stil
 </td>
 <td class="content">
 <div class="paragraph">
-<p>This is similiar to a concept called "promise chaining".
-While you can arrange combine such that it acts similiarly, it is likely not a good replacement for using a promise library.
+<p>This is similar to a concept called "promise chaining".
+While you can arrange combine such that it acts similarly, it is likely not a good replacement for using a promise library.
 The primary difference is that promise libraries always deal with a single result per promise, and a Combine brings along the complexity of needing to handle the possibility of many values.</p>
 </div>
 </td>
@@ -3069,7 +3070,7 @@ In those cases, the data results needed can be passed directly the pipeline.</p>
 <div class="paragraph">
 <p>An example of this sequencing follows below.
 In this example, buttons (arranged visually to show the ordering of actions) are highlighted when they complete.
-The whole sequence is triggered by a seperate button action, which also resets the state of all the buttons and cancels any existing running sequence if it&#8217;s not yet finished.
+The whole sequence is triggered by a separate button action, which also resets the state of all the buttons and cancels any existing running sequence if it&#8217;s not yet finished.
 In this example, the asynchronous API call is a call that simply takes a random amount of time to complete to provide an example of how the timing works.</p>
 </div>
 <div class="paragraph">
@@ -3168,7 +3169,7 @@ In this example, the asynchronous API call is a call that simply takes a random 
             <span class="c1">// so that we can update UI elements to show the "completion"</span>
             <span class="c1">// of this step</span>
         <span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="n">inValue</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="k">in</span> <i class="conum" data-value="6"></i><b>(6)</b>
-            <span class="c1">// intentially side effecting here to show progress of pipeline</span>
+            <span class="c1">// intentionally side effecting here to show progress of pipeline</span>
             <span class="k">self</span><span class="o">.</span><span class="nf">markStepDone</span><span class="p">(</span><span class="nv">button</span><span class="p">:</span> <span class="n">button</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">true</span>
         <span class="p">}</span>
@@ -3249,7 +3250,7 @@ This is encapsulated in a <code>createFuturePublisher</code> call, using <a href
 </tr>
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>The <a href="#reference-map">map</a> operator is used to create this specific side effect of updating the a UIbutton to show the step has been completed.</td>
+<td>The <a href="#reference-map">map</a> operator is used to create this specific side effect of updating the a UIButton to show the step has been completed.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="7"></i><b>7</b></td>
@@ -3263,7 +3264,7 @@ This is encapsulated in a <code>createFuturePublisher</code> call, using <a href
 <div class="sect2">
 <h3 id="patterns-general-error-handling">Error Handling</h3>
 <div class="paragraph">
-<p>Previous examples above expect that the subscriber would handle the error conditions, if they occured.
+<p>Previous examples above expect that the subscriber would handle the error conditions, if they occurred.
 However, you are not always able to control what the subscriber requires - as might be the case if you are using SwiftUI.
 In these cases, you need to build your pipeline so that the output types match the subscriber types.
 This implies that you are handling any errors within the pipeline.</p>
@@ -3274,7 +3275,7 @@ This implies that you are handling any errors within the pipeline.</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>the subcriber should match the type output of <code>&lt;Bool, Never&gt;</code></p>
+<p>the subscriber should match the type output of <code>&lt;Bool, Never&gt;</code></p>
 </li>
 <li>
 <p>the subscriber should be called on the main thread</p>
@@ -3299,7 +3300,7 @@ In this case, look at the example <a href="#patterns-continual-error-handling">U
 <div class="ulist">
 <ul>
 <li>
-<p>Verify no error has occured within a pipeline</p>
+<p>Verify no error has occurred within a pipeline</p>
 </li>
 </ul>
 </div>
@@ -3532,7 +3533,7 @@ This spaces out the retry attempts, so that the retries do not happen in quick s
 </div>
 <div class="paragraph">
 <p>This example also includes the use of the <a href="#reference-trymap">tryMap</a> operator to more fully inspect any URLResponse returned from the <code>dataTaskPublisher</code>.
-Any response from the server is encapsaulted by <code>URLSession</code>, and passed forward as a valid response.
+Any response from the server is encapsulated by <code>URLSession</code>, and passed forward as a valid response.
 <code>URLSession</code> does not treat a <em>404 Not Found</em> http response as an error response, nor any of the <em>50x</em> error codes.
 Using <code>tryMap</code> lets us inspect the response code that was sent, and verify that it was a 200 response code.
 In this example, if the response code is anything but a 200 response, it throws an exception - which in turn causes the tryMap operator to pass down a <code>.failure</code> completion rather than data.
@@ -3688,7 +3689,7 @@ The completion from the created one-shot publishers terminates in the flatMap an
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>The result output ( a tuple of <code>(Data, URLResponse)</code> ) flows intoto <code>tryMap</code> to be parsed for additional errors.</td>
+<td>The result output ( a tuple of <code>(Data, URLResponse)</code> ) flows into <code>tryMap</code> to be parsed for additional errors.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
@@ -3960,7 +3961,7 @@ Because its a <code>@Published</code> property, it provides a publisher that we 
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
 <td>We in turn set up a subscriber on the publisher <code>$username</code> that does further actions.
-In this case it uses updated values of <code>username</code> to retrives an instance of a GithubAPIUser from Github&#8217;s REST API.
+In this case it uses updated values of <code>username</code> to retrieves an instance of a GithubAPIUser from Github&#8217;s REST API.
 It will make a new HTTP request to the every time the username value is updated.</td>
 </tr>
 <tr>
@@ -3975,7 +3976,7 @@ The <code>removeDuplicates</code> prevents redundant requests from being made, s
 </tr>
 <tr>
 <td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>map is used similiarly to flatMap in error handling here, returning an instance of a publisher.
+<td>map is used similarly to flatMap in error handling here, returning an instance of a publisher.
 The API object returns a publisher, which this map is invoking.
 This doesn&#8217;t return the value from the call, but the publisher itself.</td>
 </tr>
@@ -4126,7 +4127,7 @@ Because they are defined on the class instance, the Swift compiler creates deini
 <div class="paragraph">
 <p>A number of developers comfortable with RxSwift are using a "CancelBag" object to collect cancellable references, and cancel the pipelines on tear down.
 An example of this can be seen at <a href="https://github.com/tailec/CombineExamples/blob/master/CombineExamples/Shared/CancellableBag.swift" class="bare">https://github.com/tailec/CombineExamples/blob/master/CombineExamples/Shared/CancellableBag.swift</a>.
-This is accomodated within Combine with the <code>store</code> function on <code>AnyCancellable</code> that easily allows you to put a reference to the subscriber into a collection, such as <code>Set&lt;AnyCancellable&gt;</code>.</p>
+This is accommodated within Combine with the <code>store</code> function on <code>AnyCancellable</code> that easily allows you to put a reference to the subscriber into a collection, such as <code>Set&lt;AnyCancellable&gt;</code>.</p>
 </div>
 </td>
 </tr>
@@ -4134,7 +4135,7 @@ This is accomodated within Combine with the <code>store</code> function on <code
 </div>
 <div class="paragraph">
 <p>The pipelines have been explicitly configured to work on a background queue using the <a href="#reference-subscribe">subscribe</a> operator.
-Without that additional detail configured, the pipelines would be invoked and run on the main runloop since they were invoked from the UI, which may cause a noticable slow-down in responsiveness in the user interface.
+Without that additional detail configured, the pipelines would be invoked and run on the main runloop since they were invoked from the UI, which may cause a noticeable slow-down in responsiveness in the user interface.
 Likewise when the resulting pipelines assign or update UI elements, the <a href="#reference-receive">receive</a> operator is used to transfer that work back onto the main runloop.</p>
 </div>
 <div class="admonitionblock warning">
@@ -4158,7 +4159,7 @@ This will then stop the pipeline from any further processing, even when the vari
 <div class="listingblock">
 <div class="title"><a href="https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubAPI.swift">UIKit-Combine/GithubAPI.swift</a></div>
 <div class="content">
-<pre class="rouge highlight"><code data-lang="swift"><span class="kd">import</span> <span class="kt">Founation</span>
+<pre class="rouge highlight"><code data-lang="swift"><span class="kd">import</span> <span class="kt">Foundation</span>
 <span class="kd">import</span> <span class="kt">Combine</span>
 
 <span class="kd">enum</span> <span class="kt">APIFailureCondition</span><span class="p">:</span> <span class="kt">Error</span> <span class="p">{</span>
@@ -4180,7 +4181,7 @@ This will then stop the pipeline from any further processing, even when the vari
     <span class="c1">// I don't know that there's a specific benefit to making this a value</span>
     <span class="c1">// type/struct with a function on it.</span>
 
-    <span class="c1">/// externally accessible publsher that indicates that network activity is happening in the API proxy</span>
+    <span class="c1">/// externally accessible publisher that indicates that network activity is happening in the API proxy</span>
     <span class="kd">static</span> <span class="k">let</span> <span class="nv">networkActivityPublisher</span> <span class="o">=</span> <span class="kt">PassthroughSubject</span><span class="o">&lt;</span><span class="kt">Bool</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span><span class="p">()</span> <i class="conum" data-value="3"></i><b>(3)</b>
 
     <span class="c1">/// creates a one-shot publisher that provides a GithubAPI User</span>
@@ -4423,7 +4424,7 @@ This is an example of how we can provide metadata about a pipeline&#8217;s opera
             <span class="c1">// that further down.</span>
             <span class="o">.</span><span class="nf">receive</span><span class="p">(</span><span class="nv">on</span><span class="p">:</span> <span class="kt">RunLoop</span><span class="o">.</span><span class="n">main</span><span class="p">)</span>
             <span class="c1">// ^^ and then switch to receive and process the data on the main</span>
-            <span class="c1">// queue since we're messin with the UI</span>
+            <span class="c1">// queue since we're messing with the UI</span>
             <span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="n">image</span> <span class="o">-&gt;</span> <span class="kt">UIImage</span><span class="p">?</span> <span class="k">in</span>
                 <span class="n">image</span>
             <span class="p">}</span>
@@ -4488,7 +4489,7 @@ In this example, we attach a publisher that triggers a print statement that the 
 <td class="content">
 <div class="paragraph">
 <p>While we could simply attach pipelines to UI elements as we&#8217;re updating them, it more closely couples interactions to the actual UI elements themselves.
-While easy and direct, it is often a good idea to make explicit state and updates to seperate out actions and data for debugging and understandability.
+While easy and direct, it is often a good idea to make explicit state and updates to separate out actions and data for debugging and understandability.
 In the example above, we use two <a href="#reference-published">@Published</a> properties to hold the state associated with the current view.
 One of which is updated by an <code>IBAction</code>, and the second updated declaratively using a Combine publisher pipeline.
 All other UI elements are updated publishers hanging from those properties getting updated.</p>
@@ -4550,7 +4551,7 @@ All other UI elements are updated publishers hanging from those properties getti
 </dd>
 <dt class="hdlist1"><em>Code and explanation</em></dt>
 <dd>
-<p>This example intentionally mimics a lot of web form style validation scenarios, but within UIKit and using Comine.</p>
+<p>This example intentionally mimics a lot of web form style validation scenarios, but within UIKit and using Combine.</p>
 </dd>
 </dl>
 </div>
@@ -4710,7 +4711,7 @@ IBAction messages are used to update the <a href="#reference-published">@Publish
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The first validation pipeline uses a <a href="#reference-map">map</a> operator to take the string value intput and convert it to nil if it doesn&#8217;t match the validation rules.
+<td>The first validation pipeline uses a <a href="#reference-map">map</a> operator to take the string value input and convert it to nil if it doesn&#8217;t match the validation rules.
 This is also converting the output type from the published property of <code>&lt;String&gt;</code> to the optional <code>&lt;String?&gt;</code>.
 The same logic is also used to trigger updates to the messages label to provide information about what is required.</td>
 </tr>
@@ -4806,7 +4807,7 @@ One such example of that is included within the CoreLocation library, which offe
 </div>
 <div class="paragraph">
 <p>If you want to consume data provided by one of these kinds of APIs within a pipeline, you can wrap the object and use <a href="#reference-passthroughsubject">passthroughSubject</a> to expose a publisher.
-The sample code belows shows an example of wrapping CoreLocation&#8217;s CLManager object and consuming the data from it through a UIKit view controller.</p>
+The sample code below shows an example of wrapping CoreLocation&#8217;s CLManager object and consuming the data from it through a UIKit view controller.</p>
 </div>
 <div class="listingblock">
 <div class="title"><a href="https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/LocationHeadingProxy.swift">UIKit-Combine/LocationHeadingProxy.swift</a></div>
@@ -4997,7 +4998,7 @@ This use simply delays the propagation of the value for two seconds.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>After that delay, we invoke the class method and attempt to update informtion in the interface with the results of the current provided status.</td>
+<td>After that delay, we invoke the class method and attempt to update information in the interface with the results of the current provided status.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
@@ -5165,7 +5166,7 @@ Including a reference to the sending control can be used to filter to text chang
 <div class="ulist">
 <ul>
 <li>
-<p>SwiftUI includes @ObservedObject and the ObservableObject protocol, which provides a means of exterrnalizing state for a SwiftUI view while alerting SwiftUI to the model changing.</p>
+<p>SwiftUI includes @ObservedObject and the ObservableObject protocol, which provides a means of externalizing state for a SwiftUI view while alerting SwiftUI to the model changing.</p>
 </li>
 </ul>
 </div>
@@ -5218,7 +5219,7 @@ The example provided here is a simple form entry input, with the goal of providi
 </dl>
 </div>
 <div class="paragraph">
-<p>The following rules are encoded into Combine piplines:
+<p>The following rules are encoded into Combine pipelines:
 1. the two fields need to be identical - as in entering a password or email address and then validating it by a second entry.
 2. the value entered is required to be a minimum of 5 characters in length.
 3. A button to submit is enabled or disabled based on the results of these rules.</p>
@@ -5292,7 +5293,7 @@ A fourth property - an array of Strings called <code>validationMessages</code> -
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>These properties are then also mirrored with a <a href="#reference-currentvaluesubject">currentValueSubject</a>, which is updated using <code>didSet</code> from each of the <code>@Published</code> properties. This drives the combine piplines defined below to trigger the reactive updates when the values are changed from the SwiftUI view.</td>
+<td>These properties are then also mirrored with a <a href="#reference-currentvaluesubject">currentValueSubject</a>, which is updated using <code>didSet</code> from each of the <code>@Published</code> properties. This drives the combine pipelines defined below to trigger the reactive updates when the values are changed from the SwiftUI view.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -5801,7 +5802,7 @@ Like the completion handler, We also increment test specific variables that we w
 <tr>
 <td><i class="conum" data-value="8"></i><b>8</b></td>
 <td>In the test, the <code>send()</code> triggers the actions, and immediately after we can test the side effects through the test variables we are updating.
-In your own code, you may not be able to (or want to) modify your subscriber, but you may be able to provide private/testable properties or windows into the objects to validate them in a similiar fashion.</td>
+In your own code, you may not be able to (or want to) modify your subscriber, but you may be able to provide private/testable properties or windows into the objects to validate them in a similar fashion.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="9"></i><b>9</b></td>
@@ -5874,7 +5875,7 @@ In your own code, you may not be able to (or want to) modify your subscriber, bu
 <dt class="hdlist1"><em>Code and explanation</em></dt>
 <dd>
 <p>There are a number of operators in Combine that are specific to the timing of data, including <a href="#reference-debounce">debounce</a>, <a href="#reference-throttle">throttle</a>, and <a href="#reference-delay">delay</a>.
-You may want to test that your pipeline timing is having the desired impact, indepedently of doing UI testing.</p>
+You may want to test that your pipeline timing is having the desired impact, independently of doing UI testing.</p>
 </dd>
 </dl>
 </div>
@@ -5938,7 +5939,7 @@ EntwineTest is part of Entwine, a Swift library that expands on Combine with som
 The library can be found on Github at <a href="https://github.com/tcldr/Entwine.git" class="bare">https://github.com/tcldr/Entwine.git</a>, available under the MIT license.</p>
 </div>
 <div class="paragraph">
-<p>One of the key elements included in EnwtineTest is a virtual time scheduler, as well as additional classes that schedule (<code>TestablePublisher</code>) and collect and record (<code>TestableSubscriber</code>) the timing of results while using this scheduler.</p>
+<p>One of the key elements included in EntwineTest is a virtual time scheduler, as well as additional classes that schedule (<code>TestablePublisher</code>) and collect and record (<code>TestableSubscriber</code>) the timing of results while using this scheduler.</p>
 </div>
 <div class="paragraph">
 <p>An example of this from the EntwineTest project README is included:</p>
@@ -6035,7 +6036,7 @@ For more details on these parts of EntwineTest, see <a href="#patterns-testable-
 </dd>
 <dt class="hdlist1"><em>Code and explanation</em></dt>
 <dd>
-<p>The EntwineTest library, available from Gitub at <a href="https://github.com/tcldr/Entwine.git" class="bare">https://github.com/tcldr/Entwine.git</a>, provides some additional options for making your pipelines testable.
+<p>The EntwineTest library, available from GitHub at <a href="https://github.com/tcldr/Entwine.git" class="bare">https://github.com/tcldr/Entwine.git</a>, provides some additional options for making your pipelines testable.
 In addition to a virtual time scheduler, EntwineTest has a <code>TestablePublisher</code> and a <code>TestableSubscriber</code>.
 These work in coordination with the virtual time scheduler to allow you to specify the timing of the publisher generating data, and to valid the data received by the subscriber.</p>
 </dd>
@@ -6384,7 +6385,7 @@ After the error hits the sink, you see the <code>cancel</code> signal propagated
 <div class="paragraph">
 <p>While very effective, the <code>print</code> operator can be a blunt tool, generating a lot of output that you have to parse and review.
 If you want to be more selective with what you identify and print, or if you need to process the data passing through for it to be used more meaningfully, then you look at the <a href="#reference-handleevents">handleEvents</a> operator.
-More detail on how to use this opeartor for debugging is in  <a href="#patterns-debugging-handleevents">Debugging pipelines with the handleEvents operator</a>.</p>
+More detail on how to use this operator for debugging is in  <a href="#patterns-debugging-handleevents">Debugging pipelines with the handleEvents operator</a>.</p>
 </div>
 <div style="page-break-after: always;"></div>
 <hr>
@@ -6398,7 +6399,7 @@ More detail on how to use this opeartor for debugging is in  <a href="#patterns-
 <div class="ulist">
 <ul>
 <li>
-<p>To get more targettted understanding of what is happening within a pipeline, employing breakpoints, print or logging statements, or additional logic.</p>
+<p>To get more targeted understanding of what is happening within a pipeline, employing breakpoints, print or logging statements, or additional logic.</p>
 </li>
 </ul>
 </div>
@@ -7057,7 +7058,7 @@ It does so by making a <code>.publisher</code> property available, which implici
 <dt class="hdlist1"><em>Details</em></dt>
 <dd>
 <p><code>Record</code> allows you to create a publisher with pre-recorded values for repeated playback.
-<code>Record</code> acts very similiarly to <a href="#reference-sequence">Publishers.Sequence</a> if you want to publish a sequence of values and then send a <code>.finished</code> completion.
+<code>Record</code> acts very similarly to <a href="#reference-sequence">Publishers.Sequence</a> if you want to publish a sequence of values and then send a <code>.finished</code> completion.
 It goes beyond that allowing you to specify a <code>.failure</code> completion to be sent from the recording.
 <code>Record</code> does not allow you to control the timing of the values being returned, only the order and the eventual completion following them.</p>
 </dd>
@@ -7188,9 +7189,9 @@ This provides a means of deferring the setup of the publisher until it is actual
 </dd>
 <dt class="hdlist1"><em>Details</em></dt>
 <dd>
-<p>A connectable publisher has an explicit mechaninism for enabling when a subscription and the flow of demand from subscribers will be allowed to the publisher.
+<p>A connectable publisher has an explicit mechanism for enabling when a subscription and the flow of demand from subscribers will be allowed to the publisher.
 By conforming to the <a href="https://developer.apple.com/documentation/combine/connectablepublisher"><code>ConnectablePublisher</code></a> protocol, a publisher will have two additional methods exposed for this control: <code>connect</code> and <code>autoconnect</code>.
-Both of these methods return a <code>Cancellable</code> (similiar to <a href="#reference-sink">sink</a> or <a href="#reference-assign">assign</a>).</p>
+Both of these methods return a <code>Cancellable</code> (similar to <a href="#reference-sink">sink</a> or <a href="#reference-assign">assign</a>).</p>
 </dd>
 </dl>
 </div>
@@ -7266,7 +7267,7 @@ When you enabled <code>autoconnect()</code> on a <code>Connectable</code> publis
 <td class="content">
 <div class="paragraph">
 <p>Making a publisher connectable and then immediately enabling <code>autoconnect</code> is an odd example, as you typically want one explicit pattern of behavior or the other.
-The two mechahisms allow you to choose which you want for the needs of your code.
+The two mechanisms allow you to choose which you want for the needs of your code.
 As such, it is extremely unlikely that you would ever want to use <code>makeConnectable()</code> followed immediately by <code>autoconnect()</code>.</p>
 </div>
 </td>
@@ -7523,7 +7524,7 @@ For example, if a <a href="#reference-sink">sink</a> subscriber is set up to cap
 This is illustrated in the test <code>testPublishedSinkWithError</code> at <a href="https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift"><code>UsingCombineTests/PublisherTests.swift</code></a></p>
 </div>
 <div class="paragraph">
-<p>Additional examples of how to arrange error handling for a continous publisher like <code>@Published</code> can be found at <a href="#patterns-continual-error-handling">Using flatMap with catch to handle errors</a>.</p>
+<p>Additional examples of how to arrange error handling for a continuous publisher like <code>@Published</code> can be found at <a href="#patterns-continual-error-handling">Using flatMap with catch to handle errors</a>.</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -7701,7 +7702,7 @@ This means that even when subscribers are connected to it, it will not start pro
 <div class="paragraph">
 <p>Creating the timer publisher requires an interval in seconds, and a RunLoop and mode upon which to run.
 The publisher may optionally take an additional parameter <code>tolerance</code>, which defines a variance allowed in the generation of timed events.
-The default for toleranace is nil, allowing any variance.</p>
+The default for tolerance is nil, allowing any variance.</p>
 </div>
 <div class="paragraph">
 <p>The publisher has an output type of <a href="https://developer.apple.com/documentation/foundation/date">Date</a> and a failure type of <code>&lt;Never&gt;</code>.</p>
@@ -8047,7 +8048,7 @@ You do not need to maintain the type of the upstream publisher, but can convert 
 <dt class="hdlist1"><em>Summary</em></dt>
 <dd>
 <p><code>tryScan</code> is a variant of the <code>scan</code> operator which allows for the provided closure to throw an error and cancel the pipeline.
-The closure provided updates and modifies a value with based on any inputs from an upstream publisher and publishing intermediate results.</p>
+The closure provided updates and modifies a value based on any inputs from an upstream publisher and publishing intermediate results.</p>
 </dd>
 </dl>
 </div>
@@ -8241,7 +8242,7 @@ For example, if you have an object getting passed down that has a boolean proper
 <dl>
 <dt class="hdlist1"><em>Summary</em></dt>
 <dd>
-<p><code>tryMap</code> is similiar to <a href="#reference-map">map</a>, except that it also allows you to provide a closure that throws additional errors if your conversion logic is unsuccessful.</p>
+<p><code>tryMap</code> is similar to <a href="#reference-map">map</a>, except that it also allows you to provide a closure that throws additional errors if your conversion logic is unsuccessful.</p>
 </dd>
 <dt class="hdlist1"><em>Constraints on connected publisher</em></dt>
 <dd>
@@ -8400,7 +8401,7 @@ The error type of the internal publisher is often expected to be <code>&lt;Never
 <dl>
 <dt class="hdlist1"><em>Summary</em></dt>
 <dd>
-<p><code>setFailureType</code> does not send a <code>.failure</code> completion, it just changes the Failure type assocaited with the pipeline.
+<p><code>setFailureType</code> does not send a <code>.failure</code> completion, it just changes the Failure type associated with the pipeline.
 Use this publisher type when you need to match the error types for two otherwise mismatched publishers.</p>
 </dd>
 </dl>
@@ -8496,7 +8497,7 @@ Use this publisher type when you need to match the error types for two otherwise
 </dd>
 <dt class="hdlist1"><em>Details</em></dt>
 <dd>
-<p>compactMap is very similiar to the <a href="#reference-map">map</a> operator, with the exception that it expects the closure to return an optional value, and drops any nil values from published responses.
+<p>compactMap is very similar to the <a href="#reference-map">map</a> operator, with the exception that it expects the closure to return an optional value, and drops any nil values from published responses.
 This is the combine equivalent of the <a href="https://developer.apple.com/documentation/swift/sequence/2950916-compactmap"><code>compactMap</code></a> function which iterates through a <a href="https://developer.apple.com/documentation/swift/sequence"><code>Sequence</code></a> and returns a sequence of any non-nil values.</p>
 </dd>
 </dl>
@@ -8914,7 +8915,7 @@ If you don&#8217;t care about the specifics of the error itself, it can be a mor
 </div>
 </div>
 <div class="paragraph">
-<p><a href="#reference-catch">catch</a> would be the preferrable error handler if you wanted to return another publisher rather than a singular value.</p>
+<p><a href="#reference-catch">catch</a> would be the preferable error handler if you wanted to return another publisher rather than a singular value.</p>
 </div>
 </div>
 <div class="sect4">
@@ -8973,7 +8974,7 @@ The type of the replacement should be a non-optional version of the type provide
 </div>
 <div class="paragraph">
 <p>This operator can also be viewed as a way of converting an optional type to an explicit type, where optional values have a pre-determined placeholder.
-Put another way, the <code>replaceNil</code> operator is a Combine specific variant of the swift coallescing operator that you might use when unwrapping an optional.</p>
+Put another way, the <code>replaceNil</code> operator is a Combine specific variant of the swift coalescing operator that you might use when unwrapping an optional.</p>
 </div>
 <div class="paragraph">
 <p>If you want to convert an optional type into a concrete type, simply ignoring or collapsing the nil values, you should likely use the <a href="#reference-compactmap">compactMap</a> (or <a href="#reference-trycompactmap">tryCompactMap</a>) operator.</p>
@@ -9120,7 +9121,7 @@ When the time stride interval is exceeded, the collected set will be sent to the
 The ability to provide a count allows you to have some confidence about the maximum amount of memory that the operator will consume while buffering values.</p>
 </div>
 <div class="paragraph">
-<p>If either of the count or time interval provided are ellapsed, the <code>collect</code> operator will forward the currently collected set to its subscribers.
+<p>If either of the count or time interval provided are elapsed, the <code>collect</code> operator will forward the currently collected set to its subscribers.
 If a <code>.finished</code> completion is received, the currently collected set will be immediately sent to it&#8217;s subscribers.
 If a <code>.failure</code> completion is received, any currently buffered values are dropped and the <code>failure</code> completion is forwarded to collect&#8217;s subscribers.</p>
 </div>
@@ -9203,7 +9204,7 @@ You can switch on the case from that completion to respond to the success.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Or you can due further processing based on receiving a failure.</td>
+<td>Or you can do further processing based on receiving a failure.</td>
 </tr>
 </table>
 </div>
@@ -9321,7 +9322,7 @@ Like <code>reduce</code>, the <code>tryReduce</code> will only publish a single 
 </div>
 </div>
 <div class="sect3">
-<h4 id="reference-operators-mathematical">Mathematic opertions on elements</h4>
+<h4 id="reference-operators-mathematical">Mathematic operations on elements</h4>
 <div class="sect4">
 <h5 id="reference-max">max</h5>
 <div class="dlist">
@@ -9647,8 +9648,8 @@ If the upstream publisher sends a <code>.failure</code> completion, then no valu
 </dd>
 <dt class="hdlist1"><em>Details</em></dt>
 <dd>
-<p>Similiar to the <a href="#reference-containswhere">containsWhere</a> operator, this operator is provided with a closure.
-The type of the incoming value to this closuremust match the Output type of the upstream publisher, and the closure must return a Boolean.</p>
+<p>similar to the <a href="#reference-containswhere">containsWhere</a> operator, this operator is provided with a closure.
+The type of the incoming value to this closure must match the Output type of the upstream publisher, and the closure must return a Boolean.</p>
 </dd>
 </dl>
 </div>
@@ -9695,7 +9696,7 @@ In those cases, the operator will only return (or forward) the <code>.failure</c
 </dd>
 <dt class="hdlist1"><em>Details</em></dt>
 <dd>
-<p>Similiar to the <a href="#reference-trycontainswhere">tryContainsWhere</a> operator, you provide this operator with a closure which may also throw an error.
+<p>similar to the <a href="#reference-trycontainswhere">tryContainsWhere</a> operator, you provide this operator with a closure which may also throw an error.
 The type of the incoming value to this closure must match the Output type of the upstream publisher, and the closure must return a Boolean.</p>
 </dd>
 </dl>
@@ -9979,7 +9980,7 @@ If no values are received before the first operator receives a <code>.finish</co
 </dd>
 <dt class="hdlist1"><em>Details</em></dt>
 <dd>
-<p>The <a href="#reference-firstwhere">firstWhere</a> operator is similiar to <a href="#reference-first">first</a>, but instead lets you specify if the value should be the first value published by evaluating a closure.
+<p>The <a href="#reference-firstwhere">firstWhere</a> operator is similar to <a href="#reference-first">first</a>, but instead lets you specify if the value should be the first value published by evaluating a closure.
 The provided closure should accept a value of the type defined by the upstream publisher, returning a bool.</p>
 </dd>
 </dl>
@@ -10526,7 +10527,7 @@ Values produced from <code>secondPublisher</code> will then be published until i
 </div>
 </div>
 <div class="paragraph">
-<p>A varient of this operator allows a count of values to be specified:</p>
+<p>A variant of this operator allows a count of values to be specified:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -10971,7 +10972,7 @@ If you want to wait on values from all upstream provides before providing an upd
 </dd>
 <dt class="hdlist1"><em>Details</em></dt>
 <dd>
-<p><code>Zip</code> works very similiarly to <a href="#reference-combinelatest">combineLatest</a>, connecting two upstream publishers and providing the output of those publishers as a single pipeline with a tuple output type composed of the types of the upstream publishers.
+<p><code>Zip</code> works very similarly to <a href="#reference-combinelatest">combineLatest</a>, connecting two upstream publishers and providing the output of those publishers as a single pipeline with a tuple output type composed of the types of the upstream publishers.
 <code>Zip3</code> supports connecting three upstream publishers, and <code>zip4</code> supports connecting four upstream publishers.</p>
 </dd>
 </dl>
@@ -11170,7 +11171,7 @@ This allows it to be used where you want to immediately react to an error by cre
 </dd>
 <dt class="hdlist1"><em>Details</em></dt>
 <dd>
-<p>If you need to verify that no error has occured (treating the error output as an invariant), this is the operator to use.
+<p>If you need to verify that no error has occurred (treating the error output as an invariant), this is the operator to use.
 Like its namesakes, it will cause the program to terminate if the assert is violated.</p>
 </dd>
 </dl>
@@ -11903,7 +11904,7 @@ In these cases, either you can change the type from optional to a concrete type 
 <dl>
 <dt class="hdlist1"><em>Summary</em></dt>
 <dd>
-<p>A commonly desirede operation is to decode some provided data, so Combine provides the <code>decode</code> operator suited to that task.</p>
+<p>A commonly desired operation is to decode some provided data, so Combine provides the <code>decode</code> operator suited to that task.</p>
 </dd>
 <dt class="hdlist1"><em>Constraints on connected publisher</em></dt>
 <dd>
@@ -12490,7 +12491,7 @@ If you want to control which queue operators run on, then it is more common to u
 <div class="paragraph">
 <p><code>Subscribe</code> effects a subset of the functions, and does not guarantee that a publisher will run on that queue.
 In particular, it effects a publishers <code>receive</code> function, the subscribers <code>request</code> function, and the <code>cancel</code> function.
-Some publishers (such as <a href="#reference-datataskpublisher">URLSession.dataTaskPublisher</a>) have complex internals that will run on alternative queues based on their configuration, and will be relatively uneffected by <code>subscribe</code>.</p>
+Some publishers (such as <a href="#reference-datataskpublisher">URLSession.dataTaskPublisher</a>) have complex internals that will run on alternative queues based on their configuration, and will be relatively unaffected by <code>subscribe</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -12578,7 +12579,7 @@ That is: <strong>do not</strong> create the queue with <code>attributes: .concur
 <dt class="hdlist1"><em>Details</em></dt>
 <dd>
 <p>When chaining operators together, the resulting type signature accumulates all the various types.
-This can get complicated quite quickly, and can provide an unnessecarily complex signature for an API.</p>
+This can get complicated quite quickly, and can provide an unnecessarily complex signature for an API.</p>
 </dd>
 </dl>
 </div>
@@ -12952,7 +12953,7 @@ A <code>.failure</code> completion may also encapsulate an error.</p>
 </div>
 <div class="paragraph">
 <p>The type that is passed into <code>receiveCompletion</code> is the enum <a href="https://developer.apple.com/documentation/combine/subscribers/completion"><code>Subscribers.Completion</code></a>.
-The completion <code>.failure</code> incudes an <code>Error</code> wrapped within it, providing access to the underlying cause of the failure.
+The completion <code>.failure</code> includes an <code>Error</code> wrapped within it, providing access to the underlying cause of the failure.
 To get to the error within the <code>.failure</code> completion, <code>switch</code> on the returned completion to determine if it is <code>.finished</code> or <code>.failure</code>, and then pull out the error.</p>
 </div>
 <div class="paragraph">
@@ -12972,7 +12973,7 @@ After a cancel is sent, no further values will be received.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Similiar to publishers having a type-erased struct <a href="#reference-erasetoanypublisher">AnyPublisher</a> to expose publishers through an API, subscribers have an equivalent: <a href="#reference-anycancellable">AnyCancellable</a>. This is often used with <code>sink</code> to convert the resulting type into <code>AnyCancellable</code>.</p>
+<p>similar to publishers having a type-erased struct <a href="#reference-erasetoanypublisher">AnyPublisher</a> to expose publishers through an API, subscribers have an equivalent: <a href="#reference-anycancellable">AnyCancellable</a>. This is often used with <code>sink</code> to convert the resulting type into <code>AnyCancellable</code>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -13091,7 +13092,7 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 <div id="footer">
 <div id="footer-text">
 Version 1.1<br>
-Last updated 2020-04-03 22:12:01 UTC
+Last updated 2020-05-12 17:54:28 UTC
 </div>
 </div>
 <style>
