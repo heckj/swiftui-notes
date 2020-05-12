@@ -38,6 +38,7 @@ Arthur Hammer,
 Nanu Jogi,
 Serhii Kyrylenko,
 Michel Mohrmann,
+John Mueller,
 Lee O'Mara,
 Kai Özer,
 Zachary Recolan,
@@ -45,8 +46,7 @@ Dave Reed,
 Andrius Shiaulis,
 Antoine Weber,
 Paul Wood III,
-Federico Zanetello,
-John Mueller
+Federico Zanetello
 ****
 
 Thank you all for taking the time and effort to submit a pull request to make this work better!
