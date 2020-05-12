@@ -72,13 +72,13 @@ Where the <<patterns#patterns-datataskpublisher-decode, previous pattern>> used 
 <2> Within the closure for `tryMap`, we can cast the response to `HTTPURLResponse` and dig deeper into it, including looking at the specific status code.
 <3> In this case, we want to consider **anything** other than a 200 response code as a failure. `HTTPURLResponse`.`statusCode` is an Int type, so you could also have logic such as `httpResponse.statusCode > 300`.
 <4> If the predicates are not met it throws an instance of an error of our choosing; `invalidServerResponse` in this case.
-<5> If no error has occured, then we simply pass down `Data` for further processing.
+<5> If no error has occurred, then we simply pass down `Data` for further processing.
 
 === Normalizing errors from a dataTaskPublisher
 
 When an error is triggered on the pipeline, a `.failure` completion is sent with the error encapsulated within it, regardless of where it happened in the pipeline.
 
-This pattern can be expanded to return a publisher that accomodates any number of specific error conditions using this general pattern.
+This pattern can be expanded to return a publisher that accommodates any number of specific error conditions using this general pattern.
 In many of the examples, we replace the error conditions with a default value.
 If we want to have a function that returns a publisher that *doesn't* choose what happens on failure, then the same <<reference#reference-trymap,tryMap>> operator can be used in conjunction with <<reference#reference-maperror,mapError>> to translate review the response object as well as convert URLError error types.
 

@@ -45,7 +45,8 @@ Dave Reed,
 Andrius Shiaulis,
 Antoine Weber,
 Paul Wood III,
-Federico Zanetello
+Federico Zanetello,
+John Mueller
 ****
 
 Thank you all for taking the time and effort to submit a pull request to make this work better!

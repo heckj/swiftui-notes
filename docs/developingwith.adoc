@@ -22,7 +22,7 @@ In this case, the lifetime of the pipeline is significantly longer, and it is of
 When you are thinking about your development and how to use Combine, it is often beneficial to think about pipelines as being one of these types, and mixing them together to achieve your goals.
 For example, the pattern <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>> explicitly uses one-shot pipelines to support error handling on a continual pipeline.
 
-When you are creating an instance of a publisher or a pipeline, it is worthwhile to be thinking about how you want it to work - to either be a one-shot, or continous.
+When you are creating an instance of a publisher or a pipeline, it is worthwhile to be thinking about how you want it to work - to either be a one-shot, or continuous.
 This choice will inform how you handle errors or if you want to deal with operators that manipulate the timing of the events (such as <<reference#reference-debounce,debounce>> or <<reference#reference-throttle,throttle>>).
 
 In addition to how much data the pipeline or publisher will provide, you will often want to think about what type pair the pipeline is expected to provide.
@@ -137,7 +137,7 @@ If you want to be explicit about which thread context an operator or subsequent 
 There are two common paths to developing code leveraging Combine.
 
 * First is simply leveraging synchronous (blocking) calls within a closure to one of the common operators.
-The two most prevelant operators leveraged for this are <<reference#reference-map,map>> and <<reference#reference-trymap,tryMap>>, for when your code needs to throw an Error.
+The two most prevalent operators leveraged for this are <<reference#reference-map,map>> and <<reference#reference-trymap,tryMap>>, for when your code needs to throw an Error.
 
 * Second is integrating your own code that is asynchronous, or APIs that provide a completion callback.
 If the code you are integrating is asynchronous, then you can't (quite) as easily use it within a closure.

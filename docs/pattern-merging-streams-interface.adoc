@@ -25,7 +25,7 @@ __See also__::
 
 __Code and explanation__::
 
-This example intentionally mimics a lot of web form style validation scenarios, but within UIKit and using Comine.
+This example intentionally mimics a lot of web form style validation scenarios, but within UIKit and using Combine.
 
 A view controller is set up with multiple elements to declaratively update.
 The view controller hosts 3 primary text input fields:
@@ -144,7 +144,7 @@ class FormViewController: UIViewController {
 
 <1> The start of this code follows the same patterns laid out in <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>.
 IBAction messages are used to update the <<reference#reference-published,@Published>> properties, triggering updates to any subscribers attached.
-<2> The first validation pipeline uses a <<reference#reference-map,map>> operator to take the string value intput and convert it to nil if it doesn't match the validation rules.
+<2> The first validation pipeline uses a <<reference#reference-map,map>> operator to take the string value input and convert it to nil if it doesn't match the validation rules.
 This is also converting the output type from the published property of `<String>` to the optional `<String?>`.
 The same logic is also used to trigger updates to the messages label to provide information about what is required.
 <3> Since we are updating user interface elements, we explicitly make those updates wrapped in `DispatchQueue.main.async` to invoke on the main thread.

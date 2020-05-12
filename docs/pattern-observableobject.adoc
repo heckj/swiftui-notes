@@ -3,7 +3,7 @@
 
 __Goal__::
 
-* SwiftUI includes @ObservedObject and the ObservableObject protocol, which provides a means of exterrnalizing state for a SwiftUI view while alerting SwiftUI to the model changing.
+* SwiftUI includes @ObservedObject and the ObservableObject protocol, which provides a means of externalizing state for a SwiftUI view while alerting SwiftUI to the model changing.
 
 __References__::
 
@@ -27,7 +27,7 @@ SwiftUI views are declarative structures that are rendered based on some known s
 We can use Combine to provide reactive updates to manipulate this state and expose it back to SwiftUI.
 The example provided here is a simple form entry input, with the goal of providing reactive and dynamic feedback based on the inputs to two fields.
 
-The following rules are encoded into Combine piplines:
+The following rules are encoded into Combine pipelines:
 1. the two fields need to be identical - as in entering a password or email address and then validating it by a second entry.
 2. the value entered is required to be a minimum of 5 characters in length.
 3. A button to submit is enabled or disabled based on the results of these rules.
@@ -94,7 +94,7 @@ class ReactiveFormModel : ObservableObject {
 ----
 
 <1> The firstEntry and secondEntry properties are both set with default values of an empty string.
-<2> These properties are then also mirrored with a <<reference#reference-currentvaluesubject,currentValueSubject>>, which is updated using `didSet` from each of the `@Published` properties. This drives the combine piplines defined below to trigger the reactive updates when the values are changed from the SwiftUI view.
+<2> These properties are then also mirrored with a <<reference#reference-currentvaluesubject,currentValueSubject>>, which is updated using `didSet` from each of the `@Published` properties. This drives the combine pipelines defined below to trigger the reactive updates when the values are changed from the SwiftUI view.
 <3> <<reference#reference-combinelatest,combineLatest>> is used to merge updates from either of `firstEntry` or `secondEntry` so that updates will be triggered from either source.
 <4> <<reference#reference-map>> takes the input values and uses them to determine and publish a list of validating messages. This overall flow is the source for two follow on pipelines.
 <5> The first of the follow on pipelines uses the list of validation messages to determine a true or false Boolean publisher that is used to enable, or disable, the submit button.

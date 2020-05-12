@@ -28,7 +28,7 @@ __See also__::
 __Code and explanation__::
 
 There are a number of operators in Combine that are specific to the timing of data, including <<reference#reference-debounce,debounce>>, <<reference#reference-throttle,throttle>>, and <<reference#reference-delay,delay>>.
-You may want to test that your pipeline timing is having the desired impact, indepedently of doing UI testing.
+You may want to test that your pipeline timing is having the desired impact, independently of doing UI testing.
 
 One way of handling this leverages the both https://developer.apple.com/documentation/xctest/xctestexpectation[XCTestExpectation] and a <<reference#reference-passthroughsubject,passthroughSubject>>, combining the two.
 Building on both <<patterns#patterns-testing-publisher,Testing a publisher with XCTestExpectation>> and <<patterns#patterns-testing-subscriber,Testing a subscriber with a PassthroughSubject>>, add https://developer.apple.com/documentation/dispatch/dispatchqueue[DispatchQueue] in the test to schedule invocations of PassthroughSubject's `.send()` method.
@@ -70,7 +70,7 @@ Another option is a 3rd party library named EntwineTest, which was inspired by t
 EntwineTest is part of Entwine, a Swift library that expands on Combine with some helpers.
 The library can be found on Github at https://github.com/tcldr/Entwine.git, available under the MIT license.
 
-One of the key elements included in EnwtineTest is a virtual time scheduler, as well as additional classes that schedule (`TestablePublisher`) and collect and record (`TestableSubscriber`) the timing of results while using this scheduler.
+One of the key elements included in EntwineTest is a virtual time scheduler, as well as additional classes that schedule (`TestablePublisher`) and collect and record (`TestableSubscriber`) the timing of results while using this scheduler.
 
 An example of this from the EntwineTest project README is included:
 

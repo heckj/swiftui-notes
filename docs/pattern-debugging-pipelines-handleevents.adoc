@@ -3,7 +3,7 @@
 
 __Goal__::
 
-* To get more targettted understanding of what is happening within a pipeline, employing breakpoints, print or logging statements, or additional logic.
+* To get more targeted understanding of what is happening within a pipeline, employing breakpoints, print or logging statements, or additional logic.
 
 __References__::
 

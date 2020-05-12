@@ -173,7 +173,7 @@ After the error hits the sink, you see the `cancel` signal propagated back up, w
 
 While very effective, the `print` operator can be a blunt tool, generating a lot of output that you have to parse and review.
 If you want to be more selective with what you identify and print, or if you need to process the data passing through for it to be used more meaningfully, then you look at the <<reference#reference-handleevents,handleEvents>> operator.
-More detail on how to use this opeartor for debugging is in  <<patterns#patterns-debugging-handleevents,Debugging pipelines with the handleEvents operator>>.
+More detail on how to use this operator for debugging is in  <<patterns#patterns-debugging-handleevents,Debugging pipelines with the handleEvents operator>>.
 
 // force a page break - in HTML rendering is just a <HR>
 <<<

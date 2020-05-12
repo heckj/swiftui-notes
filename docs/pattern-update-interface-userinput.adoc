@@ -94,13 +94,13 @@ class ViewController: UIViewController {
 Because its a `@Published` property, it provides a publisher that we can use with Combine pipelines to update other variables or elements of the interface.
 <3> We set the variable `username` from within an IBAction, which in turn triggers a data flow if the publisher `$username` has any subscribers.
 <4> We in turn set up a subscriber on the publisher `$username` that does further actions.
-In this case it uses updated values of `username` to retrives an instance of a GithubAPIUser from Github's REST API.
+In this case it uses updated values of `username` to retrieves an instance of a GithubAPIUser from Github's REST API.
 It will make a new HTTP request to the every time the username value is updated.
 <5> The <<reference#reference-throttle,throttle>> is there to keep from triggering a network request on every possible edit of the text field.
 The throttle keeps it to a maximum of 1 request every half-second.
 <6> <<reference#reference-removeduplicates,removeDuplicates>> collapses events from the changing username so that API requests are not made on the same value twice in a row.
 The `removeDuplicates` prevents redundant requests from being made, should the user edit and the return the previous value.
-<7> map is used similiarly to flatMap in error handling here, returning an instance of a publisher.
+<7> map is used similarly to flatMap in error handling here, returning an instance of a publisher.
 The API object returns a publisher, which this map is invoking.
 This doesn't return the value from the call, but the publisher itself.
 <8> <<reference#reference-switchtolatest,switchToLatest>> operator takes the instance of the publisher and resolves out the data.

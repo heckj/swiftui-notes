@@ -24,7 +24,7 @@ Apple's Cocoa APIs have tended to use a object/delegate pattern, where you can o
 One such example of that is included within the CoreLocation library, which offers a number of different data sources.
 
 If you want to consume data provided by one of these kinds of APIs within a pipeline, you can wrap the object and use <<reference#reference-passthroughsubject,passthroughSubject>> to expose a publisher.
-The sample code belows shows an example of wrapping CoreLocation's CLManager object and consuming the data from it through a UIKit view controller.
+The sample code below shows an example of wrapping CoreLocation's CLManager object and consuming the data from it through a UIKit view controller.
 
 .https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/LocationHeadingProxy.swift[UIKit-Combine/LocationHeadingProxy.swift]
 [source, swift]
@@ -181,7 +181,7 @@ The `CLLocationManager` class includes the information, and exposes it as a clas
 Since the operation doesn't provide any return, we provide an integer as the pipeline data, primarily to represent that the request has been made.
 <2> Since there isn't a clear way to judge when the user will grant permission, but the permission is persistent, we simply use a <<reference#reference-delay,delay>> operator before attempting to retrieve the data.
 This use simply delays the propagation of the value for two seconds.
-<3> After that delay, we invoke the class method and attempt to update informtion in the interface with the results of the current provided status.
+<3> After that delay, we invoke the class method and attempt to update information in the interface with the results of the current provided status.
 
 <4> Since CoreLocation requires methods to be explicitly enabled or disabled to provide the data, this connects a `UISwitch` toggle `IBAction` to the methods exposed on our publisher proxy.
 

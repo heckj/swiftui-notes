@@ -66,11 +66,11 @@ Because they are defined on the class instance, the Swift compiler creates deini
 ====
 A number of developers comfortable with RxSwift are using a "CancelBag" object to collect cancellable references, and cancel the pipelines on tear down.
 An example of this can be seen at https://github.com/tailec/CombineExamples/blob/master/CombineExamples/Shared/CancellableBag.swift.
-This is accomodated within Combine with the `store` function on `AnyCancellable` that easily allows you to put a reference to the subscriber into a collection, such as `Set<AnyCancellable>`.
+This is accommodated within Combine with the `store` function on `AnyCancellable` that easily allows you to put a reference to the subscriber into a collection, such as `Set<AnyCancellable>`.
 ====
 
 The pipelines have been explicitly configured to work on a background queue using the <<reference#reference-subscribe,subscribe>> operator.
-Without that additional detail configured, the pipelines would be invoked and run on the main runloop since they were invoked from the UI, which may cause a noticable slow-down in responsiveness in the user interface.
+Without that additional detail configured, the pipelines would be invoked and run on the main runloop since they were invoked from the UI, which may cause a noticeable slow-down in responsiveness in the user interface.
 Likewise when the resulting pipelines assign or update UI elements, the <<reference#reference-receive,receive>> operator is used to transfer that work back onto the main runloop.
 
 [WARNING]
@@ -85,7 +85,7 @@ This will then stop the pipeline from any further processing, even when the vari
 .https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubAPI.swift[UIKit-Combine/GithubAPI.swift]
 [source, swift]
 ----
-import Founation
+import Foundation
 import Combine
 
 enum APIFailureCondition: Error {
@@ -107,7 +107,7 @@ struct GithubAPI { <2>
     // I don't know that there's a specific benefit to making this a value
     // type/struct with a function on it.
 
-    /// externally accessible publsher that indicates that network activity is happening in the API proxy
+    /// externally accessible publisher that indicates that network activity is happening in the API proxy
     static let networkActivityPublisher = PassthroughSubject<Bool, Never>() <3>
 
     /// creates a one-shot publisher that provides a GithubAPI User
@@ -315,7 +315,7 @@ class ViewController: UIViewController {
             // that further down.
             .receive(on: RunLoop.main)
             // ^^ and then switch to receive and process the data on the main
-            // queue since we're messin with the UI
+            // queue since we're messing with the UI
             .map { image -> UIImage? in
                 image
             }
@@ -355,7 +355,7 @@ In this example, we attach a publisher that triggers a print statement that the 
 [NOTE]
 ====
 While we could simply attach pipelines to UI elements as we're updating them, it more closely couples interactions to the actual UI elements themselves.
-While easy and direct, it is often a good idea to make explicit state and updates to seperate out actions and data for debugging and understandability.
+While easy and direct, it is often a good idea to make explicit state and updates to separate out actions and data for debugging and understandability.
 In the example above, we use two <<reference#reference-published,@Published>> properties to hold the state associated with the current view.
 One of which is updated by an `IBAction`, and the second updated declaratively using a Combine publisher pipeline.
 All other UI elements are updated publishers hanging from those properties getting updated.

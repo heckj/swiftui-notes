@@ -52,7 +52,7 @@ let remoteDataPublisher = Just(self.testURL!) <1>
 <1> `Just` starts this publisher as an example by passing in a URL.
 <2> `flatMap` takes the URL as input and the closure goes on to create a one-shot publisher pipeline.
 <3> `dataTaskPublisher` uses the input url to make the request.
-<4> The result output ( a tuple of `(Data, URLResponse)` ) flows intoto `tryMap` to be parsed for additional errors.
+<4> The result output ( a tuple of `(Data, URLResponse)` ) flows into `tryMap` to be parsed for additional errors.
 <5> `decode` attempts to refine the returned data into a locally defined type.
 <6> If any of this has failed, `catch` will convert the error into a placeholder sample.
 In this case an object with a preset `valid = false` property.

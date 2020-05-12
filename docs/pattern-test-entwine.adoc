@@ -18,7 +18,7 @@ __See also__::
 
 __Code and explanation__::
 
-The EntwineTest library, available from Gitub at https://github.com/tcldr/Entwine.git, provides some additional options for making your pipelines testable.
+The EntwineTest library, available from GitHub at https://github.com/tcldr/Entwine.git, provides some additional options for making your pipelines testable.
 In addition to a virtual time scheduler, EntwineTest has a `TestablePublisher` and a `TestableSubscriber`.
 These work in coordination with the virtual time scheduler to allow you to specify the timing of the publisher generating data, and to valid the data received by the subscriber.
 
