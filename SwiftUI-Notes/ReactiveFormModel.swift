@@ -17,6 +17,17 @@ class ReactiveFormModel : ObservableObject {
         }
     }
     private let firstEntryPublisher = CurrentValueSubject<String, Never>("")
+    
+    // NOTE(heckj): this didSet {} structure and the CurrentValueSubject
+    // firstEntryPublisher could be removed.
+    //
+    // The @Published property wrapper presents a publisher
+    // for the values as they change.
+    //
+    // It's not entirely obvious, but the relevant publisher is
+    // _firstEntry.projectedValue which is an instance of the type
+    // Published<String>.Publisher - with an Output type of String
+    // and a failure type of Never.
 
     @Published var secondEntry: String = "" {
         didSet {
