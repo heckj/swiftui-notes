@@ -19,7 +19,9 @@ jobs:
   build:
 
     runs-on: macos-latest
-
+    env:
+      # sets the version of Xcode to utilize within the VM for all steps
+      DEVELOPER_DIR: /Applications/Xcode_11.5.app/Contents/Developer
     steps:
     - uses: actions/checkout@v2
 
@@ -29,23 +31,17 @@ jobs:
     # - name: docker help
     #   run: docker --help
 
-    - name: Show the currently detailed version of Xcode for CLI
-      run: xcode-select -p
+    # - name: Show what's in Applications
+    #   run: ls -al /Applications
 
-    - name: Show what's in Applications
-      run: ls -al /Applications
-
-    - name: "switch to Xcode version 11.4"
-      run: sudo xcode-select -s /Applications/Xcode_11.4.app
-
-    - name: xcodebuild --help
-      run: xcodebuild --help
+    # - name: xcodebuild --help
+    #  run: xcodebuild --help
 
     - name: xcodebuild --showsdks
       run: xcodebuild -showsdks
 
-    - name: xcodebuild -showBuildSettings
-      run: xcodebuild -showBuildSettings
+    # - name: xcodebuild -showBuildSettings
+    #   run: xcodebuild -showBuildSettings
 
     # - name: xcodebuild -showTestPlans
     #   run: xcodebuild -showTestPlans
@@ -60,6 +56,6 @@ jobs:
       run: |
         xcodebuild -scheme SwiftUI-Notes \
         -configuration Debug \
-        -sdk iphonesimulator13.4 \
-        -destination 'platform=iOS Simulator,OS=13.4,name=iPhone 8' \
+        -sdk iphonesimulator13.5 \
+        -destination 'platform=iOS Simulator,OS=13.5,name=iPhone 8' \
         test -showBuildTimingSummary
