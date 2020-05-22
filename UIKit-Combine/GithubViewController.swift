@@ -46,7 +46,7 @@ class GithubViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
 
-        let apiActivitySub = GithubAPI.networkActivityPublisher
+        apiNetworkActivitySubscriber = GithubAPI.networkActivityPublisher
             .receive(on: RunLoop.main)
             .sink { doingSomethingNow in
                 if (doingSomethingNow) {
@@ -55,7 +55,6 @@ class GithubViewController: UIViewController {
                     self.activityIndicator.stopAnimating()
                 }
             }
-        apiNetworkActivitySubscriber = AnyCancellable(apiActivitySub)
 
         usernameSubscriber = $username
             .throttle(for: 0.5, scheduler: myBackgroundQueue, latest: true)
