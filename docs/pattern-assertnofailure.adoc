@@ -11,7 +11,7 @@ __References__::
 
 __See also__::
 
-* <<reference#reference-catch,catch>>x
+* <<reference#reference-catch,catch>>
 * <<reference#reference-flatmap,flatMap>>
 
 __Code and explanation__::
