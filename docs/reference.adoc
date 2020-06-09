@@ -84,7 +84,7 @@ Future creates and invokes its closure to do the asynchronous request *at the ti
 This can be counter-intuitive, as many other publishers invoke their closures when they receive demand.
 This also means that you can't directly link a Future publisher to an operator like `retry`.
 
-The `retry` operator works by making another subscription to the publisher, and `Future` doesn't not currently re-invoke the closure you provide upon additional request demands.
+The `retry` operator works by making another subscription to the publisher, and `Future` doesn't currently re-invoke the closure you provide upon additional request demands.
 This means that chaining a `retry` operator after `Future` will not result in Future's closure being invoked repeatedly when a `.failure` completion is returned.
 
 The failure of the `retry` and `Future` to work together directly has been submitted to Apple as feedback: `FB7455914`.
