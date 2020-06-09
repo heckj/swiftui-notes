@@ -3320,7 +3320,7 @@ In this case, look at the example <a href="#patterns-continual-error-handling">U
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#reference-catch">catch</a>x</p>
+<p><a href="#reference-catch">catch</a></p>
 </li>
 <li>
 <p><a href="#reference-flatmap">flatMap</a></p>
@@ -6810,7 +6810,7 @@ This can be counter-intuitive, as many other publishers invoke their closures wh
 This also means that you can&#8217;t directly link a Future publisher to an operator like <code>retry</code>.</p>
 </div>
 <div class="paragraph">
-<p>The <code>retry</code> operator works by making another subscription to the publisher, and <code>Future</code> doesn&#8217;t not currently re-invoke the closure you provide upon additional request demands.
+<p>The <code>retry</code> operator works by making another subscription to the publisher, and <code>Future</code> doesn&#8217;t currently re-invoke the closure you provide upon additional request demands.
 This means that chaining a <code>retry</code> operator after <code>Future</code> will not result in Future&#8217;s closure being invoked repeatedly when a <code>.failure</code> completion is returned.</p>
 </div>
 <div class="paragraph">
@@ -13092,7 +13092,7 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 <div id="footer">
 <div id="footer-text">
 Version 1.1<br>
-Last updated 2020-05-22 18:59:11 UTC
+Last updated 2020-06-09 16:00:12 UTC
 </div>
 </div>
 <style>
