@@ -267,7 +267,7 @@ This means that the subscriber drives the processing within a pipeline by provid
 When a subscriber is connected to a publisher, it requests data based with a specific https://developer.apple.com/documentation/combine/subscribers/demand[Demand].
 
 The demand request is propagated up through the composed pipeline.
-Each operator in turn accepting the request for data and in turn requesting information from the publishers to which it is connected.
+Each operator in turn accepts the request for data and in turn requests information from the publishers to which it is connected.
 
 [NOTE]
 ====
