@@ -1476,8 +1476,7 @@ If multiple values were on the line, the ones on the left would be presented to 
 </div>
 <div class="paragraph">
 <p>When it arrives, the value <code>5</code> is passed to the closure as the variable <code>value</code>.
-The return type of the closure (<code>&lt;String&gt;</code> in this case), defines the output type for the map operator.
-When the code within the closure completes and returns its value.
+The return type of the closure (<code>&lt;String&gt;</code> in this case), defines the output type for the map operator when the code within the closure completes and returns its value.
 In this case, the string <code>some</code> is returned for the input value <code>5</code>.
 The string <code>some</code> is represented on the output line directly below its input value, implying there was no explicit delay.</p>
 </div>
@@ -1503,7 +1502,7 @@ This one is more complex to illustrate how the diagrams can be interpreted and h
 <div class="sect2">
 <h3 id="coreconcepts-backpressure">Back pressure</h3>
 <div class="paragraph">
-<p>Combine is designed such that the subscriber controls the flow of data, and because of that it also controls processing that happens in the pipeline.
+<p>Combine is designed such that the subscriber controls the flow of data, and because of that it also controls processing what happens in the pipeline.
 This is a feature of Combine called <strong>back-pressure</strong>.</p>
 </div>
 <div class="paragraph">
@@ -1512,7 +1511,7 @@ When a subscriber is connected to a publisher, it requests data based with a spe
 </div>
 <div class="paragraph">
 <p>The demand request is propagated up through the composed pipeline.
-Each operator in turn accepting the request for data and in turn requesting information from the publishers to which it is connected.</p>
+Each operator in turn accepts the request for data and in turn requests information from the publishers to which it is connected.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -13093,7 +13092,7 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 <div id="footer">
 <div id="footer-text">
 Version 1.1<br>
-Last updated 2020-08-05 00:06:30 UTC
+Last updated 2020-09-05 17:37:30 UTC
 </div>
 </div>
 <style>
