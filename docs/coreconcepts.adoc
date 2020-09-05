@@ -260,7 +260,7 @@ This one is more complex to illustrate how the diagrams can be interpreted and h
 [#coreconcepts-backpressure]
 == Back pressure
 
-Combine is designed such that the subscriber controls the flow of data, and because of that it also controls processing what happens in the pipeline.
+Combine is designed such that the subscriber controls the flow of data, and because of that it also controls what and when processing happens in the pipeline.
 This is a feature of Combine called *back-pressure*.
 
 This means that the subscriber drives the processing within a pipeline by providing information about how much information it wants or can accept.
