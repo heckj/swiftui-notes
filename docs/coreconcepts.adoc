@@ -243,8 +243,7 @@ The location on the line isn't meaningful in this case, only representing that i
 If multiple values were on the line, the ones on the left would be presented to the map operator before any on the right.
 
 When it arrives, the value `5` is passed to the closure as the variable `value`.
-The return type of the closure (`<String>` in this case), defines the output type for the map operator.
-When the code within the closure completes and returns its value.
+The return type of the closure (`<String>` in this case), defines the output type for the map operator when the code within the closure completes and returns its value.
 In this case, the string `some` is returned for the input value `5`.
 The string `some` is represented on the output line directly below its input value, implying there was no explicit delay.
 
@@ -261,14 +260,14 @@ This one is more complex to illustrate how the diagrams can be interpreted and h
 [#coreconcepts-backpressure]
 == Back pressure
 
-Combine is designed such that the subscriber controls the flow of data, and because of that it also controls processing that happens in the pipeline.
+Combine is designed such that the subscriber controls the flow of data, and because of that it also controls processing what happens in the pipeline.
 This is a feature of Combine called *back-pressure*.
 
 This means that the subscriber drives the processing within a pipeline by providing information about how much information it wants or can accept.
 When a subscriber is connected to a publisher, it requests data based with a specific https://developer.apple.com/documentation/combine/subscribers/demand[Demand].
 
 The demand request is propagated up through the composed pipeline.
-Each operator in turn accepting the request for data and in turn requesting information from the publishers to which it is connected.
+Each operator in turn accepts the request for data and in turn requests information from the publishers to which it is connected.
 
 [NOTE]
 ====
