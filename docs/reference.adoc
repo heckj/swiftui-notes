@@ -3744,6 +3744,13 @@ Another error you might see on using the `assign` operator is:
 Type of expression is ambiguous without more context
 ----
 
+Xcode 11.7 supplies improved swift compiler diagnostics, which enable an easier to understand error message:
+
+[source]
+----
+Key path value type 'UIImage?' cannot be converted to contextual type 'UIImage'
+----
+
 This error can occur when you are attempting to assign a non-optional type to a keypath that expects has an optional type.
 For example, `UIImageView.image` is of type `UIImage?`, so attempting to assign an output type of `UIImage` from a previous operator would result in this error message.
 
