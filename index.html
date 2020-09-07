@@ -445,8 +445,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h1>Using Combine</h1>
 <div class="details">
 <span id="author" class="author">Joseph Heck</span><br>
-<span id="revnumber">version 1.1,</span>
-<span id="revdate">2020-03-07</span>
+<span id="revnumber">version 1.2,</span>
+<span id="revdate">2020-11-07</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -736,10 +736,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="aboutthisbook">About This Book</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Version: 1.1</p>
+<p>Version: 1.2</p>
 </div>
 <div class="paragraph">
-<p>Version Date: 2020-03-07</p>
+<p>Version Date: 2020-11-07</p>
 </div>
 <div class="paragraph">
 <p>This is an intermediate to advanced book, focusing narrowly on how to use the Combine framework.
@@ -12825,6 +12825,14 @@ An example of this is <code>UIActivityIndicator&#8217;s `isAnimating</code> prop
 </div>
 </div>
 <div class="paragraph">
+<p>Xcode 11.7 supplies improved swift compiler diagnostics, which enable an easier to understand error message:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>Key path value type 'UIImage?' cannot be converted to contextual type 'UIImage'</code></pre>
+</div>
+</div>
+<div class="paragraph">
 <p>This error can occur when you are attempting to assign a non-optional type to a keypath that expects has an optional type.
 For example, <code>UIImageView.image</code> is of type <code>UIImage?</code>, so attempting to assign an output type of <code>UIImage</code> from a previous operator would result in this error message.</p>
 </div>
@@ -13092,8 +13100,8 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.1<br>
-Last updated 2020-09-05 17:39:30 UTC
+Version 1.2<br>
+Last updated 2020-09-07 17:40:37 UTC
 </div>
 </div>
 <style>
