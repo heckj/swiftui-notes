@@ -55,6 +55,7 @@ class ReactiveFormModel : ObservableObject {
                 }
                 return diagMsgs
             }
+            .share()
 
         submitAllowed = validationPipeline
             .map { stringArray in
