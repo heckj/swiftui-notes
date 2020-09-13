@@ -14,7 +14,7 @@ struct ContentView : View {
 
     var body: some View {
         TabView {
-            ReactiveForm(model: ReactiveFormModel())
+            ReactiveForm(model: model)
             .tabItem {
                 Image(systemName: "1.circle")
                 Text("Reactive Form")
