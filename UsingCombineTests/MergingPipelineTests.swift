@@ -67,7 +67,7 @@ class MergingPipelineTests: XCTestCase {
         let outputSignals = testableSubscriber.recordedOutput.filter { time, signal -> Bool in
             // input type is (VirtualTime, Signal<(String, Int), Never>)
             switch signal {
-            case .input(_, _):
+            case .input((_, _)):
                 return true
             default:
                 return false

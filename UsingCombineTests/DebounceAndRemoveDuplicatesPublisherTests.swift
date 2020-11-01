@@ -385,7 +385,7 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
 
         wait(for: [expectation], timeout: 5.0)
 
-        XCTAssertEqual(receivedList.count, 3)
+        XCTAssertEqual(receivedList.count, 4)
 
         // NOTE(heckj): this changed in Xcode 11.2 (iOS 13.2):
         // of the values sent at 1.1 and 1.2 seconds in, the second value is returned down the pipeline
@@ -397,7 +397,8 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         //
         //XCTAssertEqual(receivedList, [-1, 5, 6]) // iOS 13.2.2
         //XCTAssertEqual(receivedList, [-1, 3, 5]) // iOS 13.3 - flaky response
-        XCTAssertEqual(receivedList, [-1, 3, 6]) // iOS 13.4
+        //XCTAssertEqual(receivedList, [-1, 3, 6]) // iOS 13.4
+        XCTAssertEqual(receivedList, [-1, 1, 3, 6]) // iOS 14.1
         XCTAssertEqual(foo.intValue, 6)
         XCTAssertNotNil(cancellable)
     }
@@ -472,12 +473,13 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
 
         wait(for: [expectation], timeout: 5.0)
 
-        XCTAssertEqual(receivedList.count, 3)
+        XCTAssertEqual(receivedList.count, 4)
         // The values sent at 0.1 and 0.2 seconds in get collapsed, being within the 0.5 sec window
         // and requesting just the "latest" value - so the total number of events received by the sink
         // is fewer than the number sent.
         // XCTAssertEqual(receivedList, [2, 5, 6]) // iOS 13.2.2
-        XCTAssertEqual(receivedList, [-1, 3, 6]) // iOS 13.3
+//        XCTAssertEqual(receivedList, [-1, 3, 6]) // iOS 13.3
+        XCTAssertEqual(receivedList, [-1, 2, 5, 6]) // iOS 14.1
         XCTAssertEqual(foo.intValue, 6)
         XCTAssertNotNil(cancellable)
     }
@@ -618,7 +620,10 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
         XCTAssertNotNil(cancellable)
     }
 
-    func testSpreadoutSubjectThrottleLatestFalse() {
+    // getting inconsistent results from this in CI testing, due to underlying timing.
+    // need to re-create these tests with something (Entwine?) that isn't impacted by
+    // underlying system-specific loading & timing
+    func SKIP_testSpreadoutSubjectThrottleLatestFalse() {
 
         let foo = PassthroughSubject<Int, Never>()
         // no initial value is propagated from a PassthroughSubject
@@ -672,7 +677,8 @@ class DebounceAndRemoveDuplicatesPublisherTests: XCTestCase {
 
         XCTAssertEqual(receivedList.count, 4)
         //XCTAssertEqual(receivedList, [1, 3, 5]) // iOS 13.2.2
-        XCTAssertEqual(receivedList, [1, 2, 3, 5]) // iOS 13.3
+        //XCTAssertEqual(receivedList, [1, 2, 3, 5]) // iOS 13.3
+        XCTAssertEqual(receivedList, [1, 2, 3, 6]) // iOS 14.1 locally
         XCTAssertNotNil(cancellable)
     }
 
