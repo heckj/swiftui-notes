@@ -23,6 +23,7 @@
 		1A416E2022DE8A5B00C95DCB /* EntwineTestExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A416E1F22DE8A5B00C95DCB /* EntwineTestExampleTests.swift */; };
 		1A480D9823FC65EF00BBF8DF /* LocationModelProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A480D9723FC65EF00BBF8DF /* LocationModelProxy.swift */; };
 		1A480D9A23FC67C200BBF8DF /* HeadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A480D9923FC67C200BBF8DF /* HeadingView.swift */; };
+		1A4C1712254F73ED0088BC69 /* CombineSchedulers in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4C1711254F73ED0088BC69 /* CombineSchedulers */; };
 		1A4DD4A823A6C3EB0033BF58 /* MeasureIntervalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4DD4A723A6C3EB0033BF58 /* MeasureIntervalTests.swift */; };
 		1A4FB16722D1464F0009F228 /* EncodeDecodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4FB16622D1464F0009F228 /* EncodeDecodeTests.swift */; };
 		1A534E1D22E3DF20005E6868 /* InterimTestingStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A534E1C22E3DF20005E6868 /* InterimTestingStructs.swift */; };
@@ -199,6 +200,7 @@
 			files = (
 				1A534E2022E3EA32005E6868 /* EntwineTest in Frameworks */,
 				1A534E2222E3EA32005E6868 /* Entwine in Frameworks */,
+				1A4C1712254F73ED0088BC69 /* CombineSchedulers in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -413,6 +415,7 @@
 			packageProductDependencies = (
 				1A534E1F22E3EA32005E6868 /* EntwineTest */,
 				1A534E2122E3EA32005E6868 /* Entwine */,
+				1A4C1711254F73ED0088BC69 /* CombineSchedulers */,
 			);
 			productName = "SwiftUI-Notes";
 			productReference = 1AC8C77522B1BED80064C1AE /* SwiftUI-Notes.app */;
@@ -497,6 +500,7 @@
 			mainGroup = 1AC8C76C22B1BED80064C1AE;
 			packageReferences = (
 				1A534E1E22E3EA32005E6868 /* XCRemoteSwiftPackageReference "Entwine" */,
+				1A4C1710254F73ED0088BC69 /* XCRemoteSwiftPackageReference "combine-schedulers" */,
 			);
 			productRefGroup = 1AC8C77622B1BED80064C1AE /* Products */;
 			projectDirPath = "";
@@ -1071,6 +1075,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		1A4C1710254F73ED0088BC69 /* XCRemoteSwiftPackageReference "combine-schedulers" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/combine-schedulers";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.2;
+			};
+		};
 		1A534E1E22E3EA32005E6868 /* XCRemoteSwiftPackageReference "Entwine" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tcldr/Entwine.git";
@@ -1082,6 +1094,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		1A4C1711254F73ED0088BC69 /* CombineSchedulers */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A4C1710254F73ED0088BC69 /* XCRemoteSwiftPackageReference "combine-schedulers" */;
+			productName = CombineSchedulers;
+		};
 		1A534E1F22E3EA32005E6868 /* EntwineTest */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 1A534E1E22E3EA32005E6868 /* XCRemoteSwiftPackageReference "Entwine" */;
