@@ -93,7 +93,7 @@ The `Future` publisher can be wrapped with `Deferred` to have it work based on d
 You can see unit tests illustrating Future wrapped with `Deferred` in the tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/FuturePublisherTests.swift[`UsingCombineTests/FuturePublisherTests.swift`].
 ====
 
-If you are wanting repeated requests to a `Future` (for example, wanting to use a a retry operator to retry failed requests), wrap the Future publisher with `Deferred`.
+If you are wanting repeated requests to a `Future` (for example, wanting to use a retry operator to retry failed requests), wrap the Future publisher with `Deferred`.
 
 [source, swift]
 ----
@@ -3296,7 +3296,7 @@ let multicastPublisher = somepublisher
 ----
 
 A multicast publisher does not cache or maintain the history of a value.
-If a multicast publisher is already making a request and another subscriber is added after the data has been returned to previously connected subscribers, new subscribers may only get a a completion.
+If a multicast publisher is already making a request and another subscriber is added after the data has been returned to previously connected subscribers, new subscribers may only get a completion.
 For this reason, multicast returns a <<#reference-makeconnectable,connectable publisher>>.
 
 [TIP]
