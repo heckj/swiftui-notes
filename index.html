@@ -10830,7 +10830,7 @@ For example, if combineLatest was used to merge a publisher with the output type
 In turn, when any of the upstream publishers sends an updated value, the operator makes a new combined tuple of all previous "current" values, adds in the new value in the correct place, and sends that new combined value down the pipeline.</p>
 </div>
 <div class="paragraph">
-<p>The failure type of all three upstream publishers needs to be the identical.
+<p>The failure types of all three upstream publishers need to be identical.
 For example, you can not have one publisher that has a failure type of <code>Error</code> and another (or more) that have a failure type of <code>Never</code>.
 If the <code>combineLatest</code> operator does receive a failure from any of the upstream publishers, then the operator (and the rest of the pipeline) is cancelled after propagating that failure.</p>
 </div>
@@ -13103,7 +13103,7 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 <div id="footer">
 <div id="footer-text">
 Version 1.2<br>
-Last updated 2020-11-01 20:20:31 UTC
+Last updated 2020-11-08 18:42:58 UTC
 </div>
 </div>
 <style>
