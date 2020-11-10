@@ -6,7 +6,7 @@ v 1.2, 2020-11-07
 :producer: Joseph Heck
 :keywords: Apple, Combine, ReactiveX, SwiftUI
 :copyright: Joseph Heck 2019-2020
-:publication-tye: book
+:publication-type: book
 // NOTE use 'anthology' for per-chapter author support
 :idprefix:
 :idseparator: -
