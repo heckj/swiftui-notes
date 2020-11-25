@@ -17,7 +17,7 @@ final class LocationProxy: NSObject, CLLocationManagerDelegate, ObservableObject
     var headingPublisher: AnyPublisher<CLHeading, Never>
     var locationPublisher: AnyPublisher<CLLocation, Never>
 
-    @Published var authorizationStatus: CLAuthorizationStatus
+    @Published var authorizationStatus: CLAuthorizationStatus?
     @Published var active = false
 
     func requestAuthorization() {
@@ -36,6 +36,8 @@ final class LocationProxy: NSObject, CLLocationManagerDelegate, ObservableObject
             return "Denied"
         case .authorizedAlways:
             return "Authorized Always"
+        case .none:
+            return "unknown"
         @unknown default:
             return "unknown"
         }
@@ -43,26 +45,37 @@ final class LocationProxy: NSObject, CLLocationManagerDelegate, ObservableObject
 
     override init() {
         mgr = CLLocationManager()
-        authorizationStatus = CLLocationManager.authorizationStatus()
         headingSubject = PassthroughSubject<CLHeading, Never>()
         locationSubject = PassthroughSubject<CLLocation, Never>()
         headingPublisher = headingSubject.eraseToAnyPublisher()
         locationPublisher = locationSubject.eraseToAnyPublisher()
 
+
         super.init()
         mgr.delegate = self
-        if (authorizationStatus == .authorizedAlways || authorizationStatus == .authorizedWhenInUse) {
-            enable()
+        if #available(iOS 14, *) {
+            // Use iOS 14 APIs, which guarantees that an initial state will be
+            // called onto the delegate asserting the current location management
+            // status, so the overall flow of data be activated from there.
+        } else {
+            // if < ios14, the CLLocationManager isn't guaranteed to give us an initial
+            // callback if everything is kosher, so explicitly check it.
+            authorizationStatus = CLLocationManager.authorizationStatus()
+            if (authorizationStatus == .authorizedAlways || authorizationStatus == .authorizedWhenInUse) {
+                enableEventForwarding()
+            }
         }
     }
 
-    func enable() {
-        mgr.startUpdatingHeading()
+    func enableEventForwarding() {
+        if CLLocationManager.headingAvailable() {
+            mgr.startUpdatingHeading()
+        }
         mgr.startUpdatingLocation()
         self.active = true
     }
 
-    func disable() {
+    func disableEventForwarding() {
         mgr.stopUpdatingHeading()
         mgr.stopUpdatingLocation()
         self.active = false
@@ -73,9 +86,9 @@ final class LocationProxy: NSObject, CLLocationManagerDelegate, ObservableObject
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         self.authorizationStatus = status
         if (status == .authorizedAlways || status == .authorizedWhenInUse) {
-            self.enable()
+            self.enableEventForwarding()
         } else {
-            self.disable()
+            self.disableEventForwarding()
         }
     }
 
