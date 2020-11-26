@@ -150,6 +150,7 @@
 		1ABF361D22B1C4870014C427 /* CODE_OF_CONDUCT.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CODE_OF_CONDUCT.md; sourceTree = "<group>"; };
 		1ABF361E22B1C4870014C427 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1ABF361F22B1C4870014C427 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		1AC17A6825705ABD00FDB739 /* SwiftUI-Notes.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "SwiftUI-Notes.entitlements"; sourceTree = "<group>"; };
 		1AC8123E22D69C4C0044AAAB /* PublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublisherTests.swift; sourceTree = "<group>"; };
 		1AC8C77522B1BED80064C1AE /* SwiftUI-Notes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SwiftUI-Notes.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AC8C77822B1BED80064C1AE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -282,6 +283,7 @@
 		1AC8C77722B1BED80064C1AE /* SwiftUI-Notes */ = {
 			isa = PBXGroup;
 			children = (
+				1AC17A6825705ABD00FDB739 /* SwiftUI-Notes.entitlements */,
 				1AC8C77822B1BED80064C1AE /* AppDelegate.swift */,
 				1A480D9723FC65EF00BBF8DF /* LocationModelProxy.swift */,
 				1A480D9923FC67C200BBF8DF /* HeadingView.swift */,
@@ -897,6 +899,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "SwiftUI-Notes/SwiftUI-Notes.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-Notes/Preview\\ Content";
 				DEVELOPMENT_TEAM = BDV4VC27D3;
@@ -908,6 +911,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.rhonabwy.SwiftUI-Notes";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -917,6 +921,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "SwiftUI-Notes/SwiftUI-Notes.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "SwiftUI-Notes/Preview\\ Content";
 				DEVELOPMENT_TEAM = BDV4VC27D3;
@@ -928,6 +933,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.rhonabwy.SwiftUI-Notes";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

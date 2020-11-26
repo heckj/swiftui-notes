@@ -58,7 +58,7 @@ final class LocationProxy: NSObject, CLLocationManagerDelegate, ObservableObject
             // called onto the delegate asserting the current location management
             // status, so the overall flow of data be activated from there.
         } else {
-            // if < ios14, the CLLocationManager isn't guaranteed to give us an initial
+            // if < iOS 14, the CLLocationManager isn't guaranteed to give us an initial
             // callback if everything is kosher, so explicitly check it.
             authorizationStatus = CLLocationManager.authorizationStatus()
             if (authorizationStatus == .authorizedAlways || authorizationStatus == .authorizedWhenInUse) {
