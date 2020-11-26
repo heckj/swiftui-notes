@@ -50,6 +50,11 @@ class HeadingViewController: UIViewController {
     }
 
     func updatePermissionStatus() {
+        // When originally written (for iOS 13), this method was available
+        // for requesting current status at any time. With iOS 14, that's no
+        // longer the case and it shows as deprecated, with the expected path
+        // to get this information being from a CoreLocationManager Delegate
+        // callback.
         let x = CLLocationManager.authorizationStatus()
         switch x {
         case .authorizedWhenInUse:
