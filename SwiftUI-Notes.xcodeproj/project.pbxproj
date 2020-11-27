@@ -51,6 +51,7 @@
 		1AA801E822DAA93F00702286 /* GithubAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA801E722DAA93F00702286 /* GithubAPI.swift */; };
 		1AAA443F22BD530000794400 /* CombinePatternTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAA443E22BD530000794400 /* CombinePatternTests.swift */; };
 		1AB7DD1F22F0EF2E00294402 /* TimerPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7DD1E22F0EF2E00294402 /* TimerPublisherTests.swift */; };
+		1ABC45D9257180A5000C2FB9 /* DebounceAndThrottleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ABC45D8257180A5000C2FB9 /* DebounceAndThrottleTests.swift */; };
 		1ABDDC1623A978D90043693A /* MathOperatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDDC1523A978D90043693A /* MathOperatorTests.swift */; };
 		1AC8123F22D69C4C0044AAAB /* PublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC8123E22D69C4C0044AAAB /* PublisherTests.swift */; };
 		1AC8C77922B1BED80064C1AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC8C77822B1BED80064C1AE /* AppDelegate.swift */; };
@@ -144,6 +145,7 @@
 		1AA801E722DAA93F00702286 /* GithubAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GithubAPI.swift; sourceTree = "<group>"; };
 		1AAA443E22BD530000794400 /* CombinePatternTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinePatternTests.swift; sourceTree = "<group>"; };
 		1AB7DD1E22F0EF2E00294402 /* TimerPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerPublisherTests.swift; sourceTree = "<group>"; };
+		1ABC45D8257180A5000C2FB9 /* DebounceAndThrottleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebounceAndThrottleTests.swift; sourceTree = "<group>"; };
 		1ABDDC1523A978D90043693A /* MathOperatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathOperatorTests.swift; sourceTree = "<group>"; };
 		1ABF361B22B1C47B0014C427 /* docs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = docs; sourceTree = "<group>"; };
 		1ABF361C22B1C4870014C427 /* CONTRIBUTING.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CONTRIBUTING.md; sourceTree = "<group>"; };
@@ -335,6 +337,7 @@
 				1A02E8A722D7C219008CCCAE /* RetryPublisherTests.swift */,
 				1A65598A22E2421F00FEFBF5 /* MergingPipelineTests.swift */,
 				1A02E8A922D7C9BF008CCCAE /* DebounceAndRemoveDuplicatesPublisherTests.swift */,
+				1ABC45D8257180A5000C2FB9 /* DebounceAndThrottleTests.swift */,
 				1AEA20D723A70002008E9F62 /* FilteringOperatorTests.swift */,
 				1ADEDC0B23A951920006256D /* ReducingOperatorTests.swift */,
 				1A5F04A923AC22E8009E51D9 /* CriteriaOperatorTests.swift */,
@@ -647,6 +650,7 @@
 				1A5B270A2300985A0006B8EE /* ObservableObjectPublisherTests.swift in Sources */,
 				1ABDDC1623A978D90043693A /* MathOperatorTests.swift in Sources */,
 				1A1C87C322D0EF6100128A5E /* Mock.swift in Sources */,
+				1ABC45D9257180A5000C2FB9 /* DebounceAndThrottleTests.swift in Sources */,
 				1A02E8AA22D7C9BF008CCCAE /* DebounceAndRemoveDuplicatesPublisherTests.swift in Sources */,
 				1ADEDC0C23A951920006256D /* ReducingOperatorTests.swift in Sources */,
 				1A65598B22E2421F00FEFBF5 /* MergingPipelineTests.swift in Sources */,
