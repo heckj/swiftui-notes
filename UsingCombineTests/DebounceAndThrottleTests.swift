@@ -12,56 +12,6 @@ import XCTest
 
 class DebounceAndThrottleTests: XCTestCase {
     var cancellables: Set<AnyCancellable> = []
-    func testAdvance() {
-        let scheduler = DispatchQueue.testScheduler
-
-        var value: Int?
-        Just(1)
-            .delay(for: 1, scheduler: scheduler)
-            .sink { value = $0 }
-            .store(in: &self.cancellables)
-
-        XCTAssertEqual(value, nil)
-
-        scheduler.advance(by: .milliseconds(250))
-
-        XCTAssertEqual(value, nil)
-
-        scheduler.advance(by: .milliseconds(250))
-
-        XCTAssertEqual(value, nil)
-
-        scheduler.advance(by: .milliseconds(250))
-
-        XCTAssertEqual(value, nil)
-
-        scheduler.advance(by: .milliseconds(250))
-
-        XCTAssertEqual(value, 1)
-      }
-
-      func testRunScheduler() {
-        let scheduler = DispatchQueue.testScheduler
-
-        var value: Int?
-        Just(1)
-            .delay(for: 1_000_000_000, scheduler: scheduler)
-            .sink { value = $0 }
-            .store(in: &self.cancellables)
-
-        XCTAssertEqual(value, nil)
-
-        scheduler.advance(by: 1_000_000)
-
-        XCTAssertEqual(value, nil)
-
-        scheduler.run()
-
-        XCTAssertEqual(value, 1)
-      }
-
-
-    // TESTS TO REWRITE WITH NEW TEST SCHEDULER SETUP
 
     func testDebounce() {
         let testScheduler = DispatchQueue.testScheduler
@@ -73,10 +23,9 @@ class DebounceAndThrottleTests: XCTestCase {
             @Published var intValue: Int = -1
         }
 
-//        let q = DispatchQueue(label: self.debugDescription)
-//        let expectation = XCTestExpectation(description: self.debugDescription)
         let foo = HoldingClass()
         var receivedCount = 0
+        var receivedValue: Int?
 
         foo.$intValue
             .debounce(for: 0.5, scheduler: testScheduler)
@@ -84,61 +33,61 @@ class DebounceAndThrottleTests: XCTestCase {
             .sink { someValue in
                 print(msTime.string(from: Date()) + "value updated to: ", someValue)
                 receivedCount += 1
+                receivedValue = someValue
             }
             .store(in: &self.cancellables)
 
+        // 0 ms
+        // nothing received until the debounce time
+        // (500ms) has elapsed between values changing
+        XCTAssertEqual(receivedCount, 0)
+        XCTAssertNil(receivedValue)
         testScheduler.advance(by: .milliseconds(100))
         foo.intValue = 1
-        XCTAssertEqual(receivedCount, 0)
-        XCTAssertEqual(foo.intValue, 1)
 
+        // 100 ms
+        // nothing received until the debounce time
+        // (500ms) has elapsed between values changing
         testScheduler.advance(by: .milliseconds(100))
         foo.intValue = 2
         XCTAssertEqual(receivedCount, 0)
-        XCTAssertEqual(foo.intValue, 2)
+        XCTAssertNil(receivedValue)
 
+        // 300 ms
+        // nothing received until the debounce time
+        // (500ms) has elapsed between values changing
         testScheduler.advance(by: .milliseconds(100))
         foo.intValue = 3
         XCTAssertEqual(receivedCount, 0)
         XCTAssertEqual(foo.intValue, 3)
+        XCTAssertNil(receivedValue)
 
-        testScheduler.advance(by: .milliseconds(500))
-        foo.intValue = 10
+        // 600 ms
+        // nothing received until the debounce time
+        // (500ms) has elapsed between values changing
+        testScheduler.advance(by: .milliseconds(300))
+        XCTAssertEqual(receivedCount, 0)
+        XCTAssertNil(receivedValue)
+
+        // 850 ms (+600ms since last change)
+        testScheduler.advance(by: .milliseconds(250))
         XCTAssertEqual(receivedCount, 1)
-        XCTAssertEqual(foo.intValue, 10)
+        XCTAssertNotNil(receivedValue)
+        XCTAssertEqual(receivedValue, 3)
+
+        foo.intValue = 5
+        testScheduler.advance(by: .milliseconds(1))
+        foo.intValue = 6
+        testScheduler.advance(by: .milliseconds(1))
+        foo.intValue = 7
+        testScheduler.advance(by: .milliseconds(1))
 
         testScheduler.advance(by: .milliseconds(500))
         XCTAssertEqual(receivedCount, 2)
-        XCTAssertEqual(foo.intValue, 10)
-
-//        q.asyncAfter(deadline: .now() + 0.1, execute: {
-//            print(msTime.string(from: Date()) + "Updating to foo.intValue on background queue")
-//            foo.intValue = 1
-//        })
-//        q.asyncAfter(deadline: .now() + 0.2, execute: {
-//            print(msTime.string(from: Date()) + "Updating to foo.intValue on background queue")
-//            foo.intValue = 2
-//        })
-//        q.asyncAfter(deadline: .now() + 0.3, execute: {
-//            print(msTime.string(from: Date()) + "Updating to foo.intValue on background queue")
-//            foo.intValue = 3
-//        })
-
-//        q.asyncAfter(deadline: .now() + 1, execute: {
-//            print(msTime.string(from: Date()) + "Updating to foo.intValue on background queue")
-//            foo.intValue = 10
-//        })
-
-//        q.asyncAfter(deadline: .now() + 3, execute: {
-//            expectation.fulfill()
-//        })
-
-//        wait(for: [expectation], timeout: 5.0)
-
-//        XCTAssertEqual(receivedCount, 2)
-//        XCTAssertEqual(foo.intValue, 10)
-//        XCTAssertNotNil(cancellable)
+        XCTAssertEqual(receivedValue, 7)
     }
+
+    // TESTS TO REWRITE WITH NEW TEST SCHEDULER SETUP
 
     func testThrottleLatestFalse() {
         // NOTE(heckj): test is flaky in terms of it's timing, and repeated invocations are returning variable results
