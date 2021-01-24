@@ -119,3 +119,7 @@ To install:
 To run it against the live site:
 
     ./node_modules/.bin/blc http://heckj.github.io/swiftui-notes/ | grep BROKEN
+
+## Command-line build and test
+
+    xcodebuild test -scheme SwiftUI-Notes -allowProvisioningUpdates
