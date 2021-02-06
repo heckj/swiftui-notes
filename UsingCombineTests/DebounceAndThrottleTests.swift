@@ -12,13 +12,22 @@ import XCTest
 
 class DebounceAndThrottleTests: XCTestCase {
     var cancellables: Set<AnyCancellable> = []
+    let testScheduler = DispatchQueue.testScheduler
+    let msTime: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "[HH:mm:ss.SSSS] "
+        
+        // Would'a been cool - but DateComponentsFormatter is limited to "seconds" - doesn't do sub-second display
+        // let intervalFormatter = DateComponentsFormatter()
+        // intervalFormatter.allowedUnits = [.second,.nanosecond]
+        // intervalFormatter.allowsFractionalUnits = true
+        // intervalFormatter.unitsStyle = .positional
+        // intervalFormatter.includesTimeRemainingPhrase = true
+
+        return formatter
+    }()
 
     func testDebounce() {
-        let testScheduler = DispatchQueue.testScheduler
-
-        let msTime = DateFormatter()
-        msTime.dateFormat = "[HH:mm:ss.SSSS] "
-
         class HoldingClass: ObservableObject {
             @Published var intValue: Int = -1
         }
@@ -31,7 +40,7 @@ class DebounceAndThrottleTests: XCTestCase {
             .debounce(for: 0.5, scheduler: testScheduler)
             .print(self.debugDescription)
             .sink { someValue in
-                print(msTime.string(from: Date()) + "value updated to: ", someValue)
+                print(self.msTime.string(from: Date()) + "value updated to: ", someValue)
                 receivedCount += 1
                 receivedValue = someValue
             }
@@ -87,19 +96,7 @@ class DebounceAndThrottleTests: XCTestCase {
         XCTAssertEqual(receivedValue, 7)
     }
 
-    // TESTS TO REWRITE WITH NEW TEST SCHEDULER SETUP
-
     func testThrottleLatestFalse() {
-        // NOTE(heckj): test is flaky in terms of it's timing, and repeated invocations are returning variable results
-        let msTime = DateFormatter()
-        msTime.dateFormat = "[HH:mm:ss.SSSS] "
-
-        // Would'a been cool - but DateComponentsFormatter is limited to "seconds" - doesn't do sub-second display
-        // let intervalFormatter = DateComponentsFormatter()
-        // intervalFormatter.allowedUnits = [.second,.nanosecond]
-        // intervalFormatter.allowsFractionalUnits = true
-        // intervalFormatter.unitsStyle = .positional
-        // intervalFormatter.includesTimeRemainingPhrase = true
 
         class HoldingClass {
             @Published var intValue: Int = -1
@@ -109,8 +106,6 @@ class DebounceAndThrottleTests: XCTestCase {
         print("testing queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
         print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
 
-        let q = DispatchQueue(label: self.debugDescription)
-        let expectation = XCTestExpectation(description: self.debugDescription)
         let foo = HoldingClass()
         // watching the @Published object always starts with an initial value propagated of it's
         // value at the time of subscription
@@ -118,58 +113,41 @@ class DebounceAndThrottleTests: XCTestCase {
         var receivedList: [Int] = []
 
         let cancellable = foo.$intValue
-            .throttle(for: 0.5, scheduler: q, latest: false)
+            .throttle(for: 0.5, scheduler: testScheduler, latest: false)
             .print(self.debugDescription)
             .sink { someValue in
-                print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
-                print(msTime.string(from: Date()) + "sink invoked on queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
-                print(msTime.string(from: Date()) + "value updated to: ", someValue)
                 receivedList.append(someValue)
         }
 
-        q.asyncAfter(deadline: .now() + 0.1, execute: {
-            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
-            print(msTime.string(from: Date()) + "Updating foo.intValue to 1 on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
-            foo.intValue = 1
-            // this value is collapsed by the throttle and not passed through to sink
-        })
-        q.asyncAfter(deadline: .now() + 0.2, execute: {
-            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
-            print(msTime.string(from: Date()) + "Updating foo.intValue to 2 on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
-            foo.intValue = 2
-            // this value is collapsed by the throttle and not passed through to sink
-        })
-        q.asyncAfter(deadline: .now() + 0.6, execute: {
-            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
-            print(msTime.string(from: Date()) + "Updating foo.intValue to 3 on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
-            foo.intValue = 3
-        })
-        q.asyncAfter(deadline: .now() + 0.7, execute: {
-            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
-            print(msTime.string(from: Date()) + "Updating foo.intValue to 4 on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
-            foo.intValue = 4
-            // this value is collapsed by the throttle and not passed through to sink
-        })
+        testScheduler.advance(by: .milliseconds(100))
+        
+        foo.intValue = 1
+            
+        testScheduler.advance(by: .milliseconds(100))
+        
+        foo.intValue = 2
+        // this value is collapsed by the throttle and not passed through to sink
+            
+        testScheduler.advance(by: .milliseconds(400))
 
-        q.asyncAfter(deadline: .now() + 0.9, execute: {
-            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
-            print(msTime.string(from: Date()) + "Updating foo.intValue to 5 on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
-            foo.intValue = 5
-        })
+        foo.intValue = 3
+        
+        testScheduler.advance(by: .milliseconds(100))
+        
+        foo.intValue = 4
+        // this value is collapsed by the throttle and not passed through to sink
 
-        q.asyncAfter(deadline: .now() + 1.2, execute: {
-            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
-            print(msTime.string(from: Date()) + "Updating foo.intValue to 6 on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
-            foo.intValue = 6
-            // this value is collapsed by the throttle and not passed through to sink
-        })
-
-        q.asyncAfter(deadline: .now() + 3, execute: {
-            expectation.fulfill()
-        })
-
-        wait(for: [expectation], timeout: 5.0)
-
+        testScheduler.advance(by: .milliseconds(200))
+        
+        foo.intValue = 5
+        // this value is collapsed by the throttle and not passed through to sink
+        
+        testScheduler.advance(by: .milliseconds(400))
+        
+        foo.intValue = 6
+        
+        testScheduler.advance(by: .milliseconds(400))
+        
         XCTAssertEqual(receivedList.count, 4)
 
         // NOTE(heckj): this changed in Xcode 11.2 (iOS 13.2):
@@ -183,10 +161,12 @@ class DebounceAndThrottleTests: XCTestCase {
         //XCTAssertEqual(receivedList, [-1, 5, 6]) // iOS 13.2.2
         //XCTAssertEqual(receivedList, [-1, 3, 5]) // iOS 13.3 - flaky response
         //XCTAssertEqual(receivedList, [-1, 3, 6]) // iOS 13.4
-        XCTAssertEqual(receivedList, [-1, 1, 3, 6]) // iOS 14.1
+        XCTAssertEqual(receivedList, [-1, 1, 3, 6]) // iOS 14.1 - 14.4
         XCTAssertEqual(foo.intValue, 6)
         XCTAssertNotNil(cancellable)
     }
+
+    // TESTS TO REWRITE WITH NEW TEST SCHEDULER SETUP
 
     func testThrottleLatestTrue() {
         let msTime = DateFormatter()
