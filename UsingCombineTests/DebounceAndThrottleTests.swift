@@ -40,7 +40,7 @@ class DebounceAndThrottleTests: XCTestCase {
             .debounce(for: 0.5, scheduler: testScheduler)
             .print(self.debugDescription)
             .sink { someValue in
-                print(self.msTime.string(from: Date()) + "value updated to: ", someValue)
+                print("time mark: \(self.testScheduler.now)")
                 receivedCount += 1
                 receivedValue = someValue
             }
@@ -102,10 +102,6 @@ class DebounceAndThrottleTests: XCTestCase {
             @Published var intValue: Int = -1
         }
 
-        let start_mark = Date()
-        print("testing queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
-        print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
-
         let foo = HoldingClass()
         // watching the @Published object always starts with an initial value propagated of it's
         // value at the time of subscription
@@ -116,6 +112,7 @@ class DebounceAndThrottleTests: XCTestCase {
             .throttle(for: 0.5, scheduler: testScheduler, latest: false)
             .print(self.debugDescription)
             .sink { someValue in
+                print("time mark: \(self.testScheduler.now)")
                 receivedList.append(someValue)
         }
 
@@ -166,22 +163,11 @@ class DebounceAndThrottleTests: XCTestCase {
         XCTAssertNotNil(cancellable)
     }
 
-    // TESTS TO REWRITE WITH NEW TEST SCHEDULER SETUP
-
     func testThrottleLatestTrue() {
-        let msTime = DateFormatter()
-        msTime.dateFormat = "[HH:mm:ss.SSSS] "
-
         class HoldingClass {
             @Published var intValue: Int = -1
         }
 
-        let start_mark = Date()
-        print("testing queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
-        print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
-
-        let q = DispatchQueue(label: self.debugDescription)
-        let expectation = XCTestExpectation(description: self.debugDescription)
         let foo = HoldingClass()
         // watching the @Published object always starts with an initial value propagated of it's
         // value at the time of subscription
@@ -189,54 +175,42 @@ class DebounceAndThrottleTests: XCTestCase {
         var receivedList: [Int] = []
 
         let cancellable = foo.$intValue
-            .throttle(for: 0.5, scheduler: q, latest: true)
+            .throttle(for: 0.5, scheduler: testScheduler, latest: true)
             .print(self.debugDescription)
             .sink { someValue in
-                print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
-                print(msTime.string(from: Date()) + "value updated to: ", someValue)
+                print("time mark: \(self.testScheduler.now)")
                 receivedList.append(someValue)
-        }
+            }
 
-        q.asyncAfter(deadline: .now() + 0.1, execute: {
-            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
-            print(msTime.string(from: Date()) + "Updating to foo.intValue to 1 on background queue")
-            foo.intValue = 1
-            // this value gets collapsed and not propagated
-        })
-        q.asyncAfter(deadline: .now() + 0.2, execute: {
-            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
-            print(msTime.string(from: Date()) + "Updating to foo.intValue to 2 on background queue")
-            foo.intValue = 2
-            // this value gets collapsed and not propagated
-        })
-        q.asyncAfter(deadline: .now() + 0.6, execute: {
-            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
-            print(msTime.string(from: Date()) + "Updating to foo.intValue to 3 on background queue")
-            foo.intValue = 3
-        })
-        q.asyncAfter(deadline: .now() + 0.7, execute: {
-            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
-            print(msTime.string(from: Date()) + "Updating to foo.intValue to 4 on background queue")
-            foo.intValue = 4
-            // this value gets collapsed and not propagated
-        })
-        q.asyncAfter(deadline: .now() + 0.9, execute: {
-            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
-            print(msTime.string(from: Date()) + "Updating to foo.intValue to 5 on background queue")
-            foo.intValue = 5
-            // this value gets collapsed and not propagated
-        })
-        q.asyncAfter(deadline: .now() + 1.2, execute: {
-            print("T-\(Date().timeIntervalSince(start_mark).toReadableString())")
-            print(msTime.string(from: Date()) + "Updating to foo.intValue to 6 on queue", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
-            foo.intValue = 6
-        })
+        testScheduler.advance(by: .milliseconds(100))
 
-        q.asyncAfter(deadline: .now() + 3, execute: {
-            expectation.fulfill()
-        })
+        foo.intValue = 1
+        // this value gets collapsed and not propagated
 
-        wait(for: [expectation], timeout: 5.0)
+        testScheduler.advance(by: .milliseconds(100))
+
+        foo.intValue = 2
+        // this value gets collapsed and not propagated
+        
+        testScheduler.advance(by: .milliseconds(400))
+        
+        foo.intValue = 3
+
+        testScheduler.advance(by: .milliseconds(100))
+        
+        foo.intValue = 4
+        // this value gets collapsed and not propagated
+
+        testScheduler.advance(by: .milliseconds(200))
+
+        foo.intValue = 5
+        // this value gets collapsed and not propagated
+        
+        testScheduler.advance(by: .milliseconds(300))
+
+        foo.intValue = 6
+
+        testScheduler.advance(by: .seconds(1))
 
         XCTAssertEqual(receivedList.count, 4)
         // The values sent at 0.1 and 0.2 seconds in get collapsed, being within the 0.5 sec window
@@ -244,7 +218,7 @@ class DebounceAndThrottleTests: XCTestCase {
         // is fewer than the number sent.
         // XCTAssertEqual(receivedList, [2, 5, 6]) // iOS 13.2.2
 //        XCTAssertEqual(receivedList, [-1, 3, 6]) // iOS 13.3
-        XCTAssertEqual(receivedList, [-1, 2, 5, 6]) // iOS 14.1
+        XCTAssertEqual(receivedList, [-1, 2, 5, 6]) // iOS 14.1 - 14.4
         XCTAssertEqual(foo.intValue, 6)
         XCTAssertNotNil(cancellable)
     }
