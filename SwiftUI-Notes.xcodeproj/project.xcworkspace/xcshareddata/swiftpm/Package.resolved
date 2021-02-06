@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/pointfreeco/combine-schedulers",
         "state": {
           "branch": null,
-          "revision": "ff42ec9061d864de7982162011321d3df5080c10",
-          "version": "0.1.2"
+          "revision": "8eab6ad841ccc420f29f3e77e17e7b260841b50a",
+          "version": "0.2.0"
         }
       },
       {
@@ -15,7 +15,7 @@
         "repositoryURL": "https://github.com/tcldr/Entwine.git",
         "state": {
           "branch": "master",
-          "revision": "ce8de842f18a6b91795a970637d845b836c0ad92",
+          "revision": "e19784b45ba32f11f9780fefb5bd10b898f52ac0",
           "version": null
         }
       }
