@@ -39,6 +39,6 @@ struct PublisherBindingExampleView: View {
 
 struct PublisherView_Previews: PreviewProvider {
     static var previews: some View {
-        PublisherView()
+        PublisherBindingExampleView()
     }
 }
