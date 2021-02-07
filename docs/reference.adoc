@@ -3239,17 +3239,15 @@ __Usage__::
 __Details__::
 
 A publisher is often a struct within swift, following value semantics.
-`share` is used when you want to create a publisher that is a class following reference semantics.
-This is most frequently employed when creating a publisher that does expensive work so that you can isolate the expensive work and share it out to multiple subscribers.
+`share` is used when you want to create a publisher as a class to take advantage of reference semantics.
+This is most frequently employed when creating a publisher that does expensive work so that you can isolate the expensive work and use it from multiple subscribers.
 
-Very often, you will see `share` used in coordination with <<reference-multicast>> to create a shared instance of a publisher and have multiple subscribers connected to that single publisher.
+Very often, you will see `share` used to provide <<reference-multicast>> - to create a shared instance of a publisher and have multiple subscribers connected to that single publisher.
 
 [source, swift]
 ----
-let pipelineFork = PassthroughSubject<Data, Error>()
 let expensivePublisher = somepublisher
     .share()
-    .multicast(subject: pipelineFork)
 ----
 
 [#reference-multicast]

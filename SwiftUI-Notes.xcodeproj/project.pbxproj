@@ -19,6 +19,7 @@
 		1A1C87C422D0EF6100128A5E /* MockingURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1C87C122D0EF6100128A5E /* MockingURLProtocol.swift */; };
 		1A1C87C522D0EF6100128A5E /* Mocker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1C87C222D0EF6100128A5E /* Mocker.swift */; };
 		1A2AA5E722D7EEE9000C1CA3 /* FuturePublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2AA5E622D7EEE9000C1CA3 /* FuturePublisherTests.swift */; };
+		1A31194925D0540700CE5441 /* PublisherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A31194825D0540700CE5441 /* PublisherView.swift */; };
 		1A3C207122E4D52B009ADF9D /* AsyncCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3C207022E4D52B009ADF9D /* AsyncCoordinatorViewController.swift */; };
 		1A416E2022DE8A5B00C95DCB /* EntwineTestExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A416E1F22DE8A5B00C95DCB /* EntwineTestExampleTests.swift */; };
 		1A480D9823FC65EF00BBF8DF /* LocationModelProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A480D9723FC65EF00BBF8DF /* LocationModelProxy.swift */; };
@@ -112,6 +113,7 @@
 		1A1C87C122D0EF6100128A5E /* MockingURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockingURLProtocol.swift; sourceTree = "<group>"; };
 		1A1C87C222D0EF6100128A5E /* Mocker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mocker.swift; sourceTree = "<group>"; };
 		1A2AA5E622D7EEE9000C1CA3 /* FuturePublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuturePublisherTests.swift; sourceTree = "<group>"; };
+		1A31194825D0540700CE5441 /* PublisherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublisherView.swift; sourceTree = "<group>"; };
 		1A3C207022E4D52B009ADF9D /* AsyncCoordinatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncCoordinatorViewController.swift; sourceTree = "<group>"; };
 		1A416E1F22DE8A5B00C95DCB /* EntwineTestExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntwineTestExampleTests.swift; sourceTree = "<group>"; };
 		1A480D9723FC65EF00BBF8DF /* LocationModelProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationModelProxy.swift; sourceTree = "<group>"; };
@@ -297,6 +299,7 @@
 				1AC8C78322B1BED80064C1AE /* LaunchScreen.storyboard */,
 				1AC8C78622B1BED80064C1AE /* Info.plist */,
 				1AC8C78022B1BED80064C1AE /* Preview Content */,
+				1A31194825D0540700CE5441 /* PublisherView.swift */,
 			);
 			path = "SwiftUI-Notes";
 			sourceTree = "<group>";
@@ -599,6 +602,7 @@
 				1AC8C77D22B1BED80064C1AE /* ContentView.swift in Sources */,
 				1A480D9A23FC67C200BBF8DF /* HeadingView.swift in Sources */,
 				1A480D9823FC65EF00BBF8DF /* LocationModelProxy.swift in Sources */,
+				1A31194925D0540700CE5441 /* PublisherView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
