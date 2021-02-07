@@ -12022,20 +12022,18 @@ The data type returned by the operator is defined by the type you provided to de
 <dt class="hdlist1"><em>Details</em></dt>
 <dd>
 <p>A publisher is often a struct within swift, following value semantics.
-<code>share</code> is used when you want to create a publisher that is a class following reference semantics.
-This is most frequently employed when creating a publisher that does expensive work so that you can isolate the expensive work and share it out to multiple subscribers.</p>
+<code>share</code> is used when you want to create a publisher as a class to take advantage of reference semantics.
+This is most frequently employed when creating a publisher that does expensive work so that you can isolate the expensive work and use it from multiple subscribers.</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>Very often, you will see <code>share</code> used in coordination with <a href="#reference-multicast">multicast</a> to create a shared instance of a publisher and have multiple subscribers connected to that single publisher.</p>
+<p>Very often, you will see <code>share</code> used to provide <a href="#reference-multicast">multicast</a> - to create a shared instance of a publisher and have multiple subscribers connected to that single publisher.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="swift"><span class="k">let</span> <span class="nv">pipelineFork</span> <span class="o">=</span> <span class="kt">PassthroughSubject</span><span class="o">&lt;</span><span class="kt">Data</span><span class="p">,</span> <span class="kt">Error</span><span class="o">&gt;</span><span class="p">()</span>
-<span class="k">let</span> <span class="nv">expensivePublisher</span> <span class="o">=</span> <span class="n">somepublisher</span>
-    <span class="o">.</span><span class="nf">share</span><span class="p">()</span>
-    <span class="o">.</span><span class="nf">multicast</span><span class="p">(</span><span class="nv">subject</span><span class="p">:</span> <span class="n">pipelineFork</span><span class="p">)</span></code></pre>
+<pre class="rouge highlight"><code data-lang="swift"><span class="k">let</span> <span class="nv">expensivePublisher</span> <span class="o">=</span> <span class="n">somepublisher</span>
+    <span class="o">.</span><span class="nf">share</span><span class="p">()</span></code></pre>
 </div>
 </div>
 </div>
@@ -13104,7 +13102,7 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 <div id="footer">
 <div id="footer-text">
 Version 1.2<br>
-Last updated 2021-02-06 21:41:17 UTC
+Last updated 2021-02-07 18:56:14 UTC
 </div>
 </div>
 <style>
