@@ -8,6 +8,7 @@
 
 import XCTest
 import Combine
+import CombineSchedulers
 
 class ResultPublisherTests: XCTestCase {
 
@@ -54,8 +55,7 @@ class ResultPublisherTests: XCTestCase {
     }
 
     func testResultPublisher() {
-        let expectation = XCTestExpectation(description: self.debugDescription)
-
+        let testScheduler = DispatchQueue.immediateScheduler
         // borrowed from Paul's article on Result
         // https://www.hackingwithswift.com/articles/161/how-to-use-result-in-swift
         // to make a function that creates a result instance
@@ -70,18 +70,82 @@ class ResultPublisherTests: XCTestCase {
         }
 
         // any Result instance is also a publisher
-        let foo = generateRandomNumber(maximum: 10).publisher
+        let foo = generateRandomNumber(maximum: 10)
+            .publisher
+            .receive(on: testScheduler)
 
         // record can be used directly as a publisher
         let cancellable = foo.sink(receiveCompletion: { err in
             print(".sink() received the completion: ", String(describing: err))
-            expectation.fulfill()
+            
         }, receiveValue: { value in
             print(".sink() received value: ", value)
         })
-        wait(for: [expectation], timeout: 5.0)
 
         XCTAssertNotNil(cancellable)
     }
 
+    func testConvertingPublisherToAResultPublisher() {
+        let testScheduler = DispatchQueue.testScheduler
+        var receivedValues:[String] = []
+        var errorCount = 0
+        // goal is to convert a Publisher<String, Error> into a Publisher<Result<String, Error>, Never>
+        
+        let victim = PassthroughSubject<String, Error>()
+
+        let xyz:AnyCancellable = victim
+        .receive(on: testScheduler)
+        .map {
+            Result<String, Error>.success($0)
+        }
+        .catch {
+            Just(Result<String, Error>.failure($0))
+        }
+        .print("S ")
+        .sink { aResult in
+            print("we got ", aResult);
+            do {
+                receivedValues.append(try aResult.get())
+            } catch {
+                errorCount += 1
+            }
+        }
+
+        XCTAssertNotNil(xyz)
+        XCTAssertEqual(receivedValues.count, 0)
+        XCTAssertEqual(errorCount, 0)
+        victim.send("one")
+        XCTAssertEqual(receivedValues.count, 0)
+        XCTAssertEqual(errorCount, 0)
+        testScheduler.advance(by: 1)
+        XCTAssertEqual(receivedValues.count, 1)
+        XCTAssertEqual(errorCount, 0)
+
+        victim.send(completion: Subscribers.Completion.failure(TestFailureCondition.invalidServerResponse))
+        testScheduler.advance(by: 1)
+        XCTAssertEqual(receivedValues.count, 1)
+        XCTAssertEqual(errorCount, 1)
+
+        // sending the completion, even though caught, terminates the pipeline
+        // so any further values don't go anywhere. So the above code *does* convert the output
+        // type, but the result is that the pipeline basically becomes a one-shot scenario.
+        // To use on any repeating structure, you'd need to do the trick where you wrap
+        // this structure within a flatMap to generate one-shot publishers as you needed.
+        
+        victim.send("two")
+        testScheduler.advance(by: 1)
+        
+        XCTAssertEqual(receivedValues.count, 1)
+        XCTAssertEqual(errorCount, 1)
+
+//        S : receive subscription: (Catch)
+//        S : request unlimited
+//        S : receive value: (success("one"))
+//        we got  success("one")
+//        S : receive value: (failure(TestFailureCondition(stringValue: "invalidServerResponse", intValue: nil)))
+//        we got  failure(TestFailureCondition(stringValue: "invalidServerResponse", intValue: nil))
+//        S : receive finished
+
+    }
+    
 }
