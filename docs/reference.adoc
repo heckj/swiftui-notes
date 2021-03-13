@@ -2273,7 +2273,7 @@ secondPublisher
 
 The <<reference-prepend>> operator is often used with single or sequence values that have a failure type of `<Never>`.
 If the publishers do accept a failure type, then all values will be published from the prefix publisher even if the suffix publisher receives a `.failure` completion before it is complete.
-Once the prefix publisher completes, the error will propagated.
+Once the prefix publisher completes, the error will be propagated.
 
 The <<reference-prepend>> operator also has convenience operators to send a sequence.
 For example:
