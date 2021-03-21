@@ -2515,6 +2515,32 @@ Other operators that merge multiple upstream pipelines include <<reference#refer
 If your upstream publishers have the same type and you want a stream of single values as opposed to tuples, use the <<reference#reference-merge,merge>> operator.
 If you want to wait on values from all upstream provides before providing an updated value, use the <<reference#reference-zip,zip>> operator.
 
+[#reference-Publishers.MergeMany]
+==== MergeMany
+
+__Summary__::
+
+`MergeMany` publisher takes upstream sequence and mixes the elements published into a single pipeline as they are received. The Upstream Element can be a type of anything.
+
+__Constraints on connected publishers__::
+
+* All upstream publishers must have the same output type. // not sure about this
+* All upstream publishers must have the same failure type. // not sure about this
+
+__icon:apple[set=fab] docs__::
+
+* https://developer.apple.com/documentation/combine/publishers/mergemany[`Publishers.MergeMany`]
+
+__Usage__::
+
+* unit tests illustrating using `MergeMany`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MergeManyPublisherTests.swift[`UsingCombineTests/MergeManyPublisherTests.swift`]
+
+a common task like several network requests which performed in parallel and next pipeline should be invoked only after each of this requests completes can be achived with MergeMany
+
+__Details__::
+
+`MergeMany` publisher provide a future to interleaves a sequence of any type into a single pipeline. If element of sequence is Publisher - the resulted subsciption will recieve value from every of this publishers untill end of sequence or error propagated.
+
 [#reference-merge]
 ==== merge
 
