@@ -74,6 +74,7 @@
 		1AFF21DB22CFFF0C0039C303 /* SubscribeReceiveAssignTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFF21DA22CFFF0C0039C303 /* SubscribeReceiveAssignTests.swift */; };
 		1AFF21DD22D003D20039C303 /* XCTestCase+KVOExpectatio0n.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFF21DC22D003D20039C303 /* XCTestCase+KVOExpectatio0n.swift */; };
 		1AFF51C022B3087300058BAB /* SwiftUI_CombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFF51BF22B3087300058BAB /* SwiftUI_CombineTests.swift */; };
+		478CEED526076A8400511248 /* MergeManyPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478CEED426076A8400511248 /* MergeManyPublisherTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -182,6 +183,7 @@
 		1AFF21DA22CFFF0C0039C303 /* SubscribeReceiveAssignTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscribeReceiveAssignTests.swift; sourceTree = "<group>"; };
 		1AFF21DC22D003D20039C303 /* XCTestCase+KVOExpectatio0n.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+KVOExpectatio0n.swift"; sourceTree = "<group>"; };
 		1AFF51BF22B3087300058BAB /* SwiftUI_CombineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUI_CombineTests.swift; sourceTree = "<group>"; };
+		478CEED426076A8400511248 /* MergeManyPublisherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MergeManyPublisherTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -365,6 +367,7 @@
 				1AEFD9F4240B13BA00E6FB19 /* RecordPublisherTests.swift */,
 				1AE38926240C36F2008A71DA /* ResultPublisherTests.swift */,
 				1AE38928240C40B2008A71DA /* MulticastSharePublisherTests.swift */,
+				478CEED426076A8400511248 /* MergeManyPublisherTests.swift */,
 			);
 			path = UsingCombineTests;
 			sourceTree = "<group>";
@@ -625,6 +628,7 @@
 				1A4FB16722D1464F0009F228 /* EncodeDecodeTests.swift in Sources */,
 				1A1C87C422D0EF6100128A5E /* MockingURLProtocol.swift in Sources */,
 				1A02E8A822D7C219008CCCAE /* RetryPublisherTests.swift in Sources */,
+				478CEED526076A8400511248 /* MergeManyPublisherTests.swift in Sources */,
 				1A534E1D22E3DF20005E6868 /* InterimTestingStructs.swift in Sources */,
 				1AEA20D823A70002008E9F62 /* FilteringOperatorTests.swift in Sources */,
 				1A5B27082300983D0006B8EE /* DeferredPublisherTests.swift in Sources */,
