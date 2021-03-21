@@ -2515,32 +2515,6 @@ Other operators that merge multiple upstream pipelines include <<reference#refer
 If your upstream publishers have the same type and you want a stream of single values as opposed to tuples, use the <<reference#reference-merge,merge>> operator.
 If you want to wait on values from all upstream provides before providing an updated value, use the <<reference#reference-zip,zip>> operator.
 
-[#reference-Publishers.MergeMany]
-==== MergeMany
-
-__Summary__::
-
-`MergeMany` publisher takes upstream sequence and mixes the elements published into a single pipeline as they are received. The Upstream Element can be a type of anything.
-
-__Constraints on connected publishers__::
-
-* All upstream publishers must have the same output type. // not sure about this
-* All upstream publishers must have the same failure type. // not sure about this
-
-__icon:apple[set=fab] docs__::
-
-* https://developer.apple.com/documentation/combine/publishers/mergemany[`Publishers.MergeMany`]
-
-__Usage__::
-
-* unit tests illustrating using `MergeMany`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MergeManyPublisherTests.swift[`UsingCombineTests/MergeManyPublisherTests.swift`]
-
-a common task like several network requests which performed in parallel and next pipeline should be invoked only after each of this requests completes can be achived with MergeMany
-
-__Details__::
-
-`MergeMany` publisher provide a future to interleaves a sequence of any type into a single pipeline. If element of sequence is Publisher - the resulted subsciption will recieve value from every of this publishers untill end of sequence or error propagated.
-
 [#reference-merge]
 ==== merge
 
@@ -2584,6 +2558,33 @@ If you want to mix different upstream publisher types into a single stream, then
 
 If your upstream publishers have different types, but you want interleaved values to be propagated as they are available, use <<reference#reference-combinelatest,combineLatest>>.
 If you want to wait on values from all upstream provides before providing an updated value, then use the <<reference#reference-zip,zip>> operator.
+
+[#reference-Publishers.MergeMany]
+==== MergeMany
+
+__Summary__::
+
+The `MergeMany` publisher takes multiple upstream publishers and mixes the published elements into a single pipeline as they are received. The upstream publisher can be of any type.
+
+__Constraints on connected publishers__::
+
+* All upstream publishers must have the same output type.
+* All upstream publishers must have the same failure type.
+
+__icon:apple[set=fab] docs__::
+
+* https://developer.apple.com/documentation/combine/publishers/mergemany[`Publishers.MergeMany`]
+
+__Usage__::
+
+* Unit tests illustrating using `MergeMany`: https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MergeManyPublisherTests.swift[`UsingCombineTests/MergeManyPublisherTests.swift`]
+
+__Details__::
+
+When you went to mix together data from multiple sources as the data arrives, `MergeMany` provides a common solution for a wide number of publishers.
+It is an evolution of the Merge3, Merge4, etc sequence of publishers that came about as the Swift language enabled variadic parameters.
+
+Like <<reference#reference-merge,merge>>, it publishes values until all publishers send a finished completion, or cancels entirely if any of the publishers sends a cancellation completion.
 
 [#reference-zip]
 ==== zip
