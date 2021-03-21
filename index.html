@@ -651,6 +651,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#reference-operators-combinepublishers">Mixing elements from multiple publishers</a>
 <ul class="sectlevel4">
 <li><a href="#reference-combinelatest">combineLatest</a></li>
+<li><a href="#reference-Publishers">MergeMany</a></li>
 <li><a href="#reference-merge">merge</a></li>
 <li><a href="#reference-zip">zip</a></li>
 </ul>
@@ -10844,6 +10845,61 @@ If your upstream publishers have the same type and you want a stream of single v
 If you want to wait on values from all upstream provides before providing an updated value, use the <a href="#reference-zip">zip</a> operator.</p>
 </div>
 </div>
+<div class="sect4 MergeMany">
+<h5 id="reference-Publishers">MergeMany</h5>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><em>Summary</em></dt>
+<dd>
+<p><code>MergeMany</code> publisher takes upstream sequence and mixes the elements published into a single pipeline as they are received. The Upstream Element can be a type of anything.</p>
+</dd>
+<dt class="hdlist1"><em>Constraints on connected publishers</em></dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>All upstream publishers must have the same output type. // not sure about this</p>
+</li>
+<li>
+<p>All upstream publishers must have the same failure type. // not sure about this</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1"><em><span class="icon"><i class="fa fa-apple"></i></span> docs</em></dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://developer.apple.com/documentation/combine/publishers/mergemany"><code>Publishers.MergeMany</code></a></p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1"><em>Usage</em></dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>unit tests illustrating using <code>MergeMany</code>: <a href="https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/MergeManyPublisherTests.swift"><code>UsingCombineTests/MergeManyPublisherTests.swift</code></a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>a common task like several network requests which performed in parallel and next pipeline should be invoked only after each of this requests completes can be achived with MergeMany</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><em>Details</em></dt>
+<dd>
+<p><code>MergeMany</code> publisher provide a future to interleaves a sequence of any type into a single pipeline. If element of sequence is Publisher - the resulted subsciption will recieve value from every of this publishers untill end of sequence or error propagated.</p>
+</dd>
+</dl>
+</div>
+</div>
 <div class="sect4">
 <h5 id="reference-merge">merge</h5>
 <div class="dlist">
@@ -13102,7 +13158,7 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 <div id="footer">
 <div id="footer-text">
 Version 1.2<br>
-Last updated 2021-03-13 17:38:46 UTC
+Last updated 2021-03-21 16:37:50 UTC
 </div>
 </div>
 <style>
