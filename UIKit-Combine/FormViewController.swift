@@ -32,53 +32,25 @@ class FormViewController: UIViewController {
     @Published var value2: String = ""
     @Published var value2_repeat: String = ""
 
-    var validatedValue1: AnyPublisher<String?, Never> {
-        return $value1.map { value1 in
-            guard value1.count > 2 else {
-                DispatchQueue.main.async {
-                    self.value1_message_label.text = "minimum of 3 characters required"
-                }
-                return nil
-            }
-            DispatchQueue.main.async {
-                self.value1_message_label.text = ""
-            }
-            return value1
-        }.eraseToAnyPublisher()
-    }
-
-    var validatedValue2: AnyPublisher<String?, Never> {
-        return Publishers.CombineLatest($value2, $value2_repeat)
-            .receive(on: RunLoop.main)
-            .map { value2, value2_repeat in
-                guard value2_repeat == value2, value2.count > 4 else {
-                    self.value2_message_label.text = "values must match and have at least 5 characters"
-                    return nil
-                }
-                self.value2_message_label.text = ""
-                return value2
-            }.eraseToAnyPublisher()
-    }
-
-    var readyToSubmit: AnyPublisher<(String, String)?, Never> {
-        return Publishers.CombineLatest(validatedValue2, validatedValue1)
-            .map { value2, value1 in
-                guard let realValue2 = value2, let realValue1 = value1 else {
-                    return nil
-                }
-                return (realValue2, realValue1)
-            }
-            .eraseToAnyPublisher()
-    }
-
     private var cancellableSet: Set<AnyCancellable> = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        self.readyToSubmit
-            .map { $0 != nil }
-            .receive(on: RunLoop.main)
+        
+        let isValidated1 = $value1
+            .map { $0.count > 2 }
+            .handleEvents(receiveOutput: {
+                self.value1_message_label.text = $0 ? nil : "minimum of 3 characters required"
+            })
+        
+        let isValidated2 = Publishers.CombineLatest($value2, $value2_repeat)
+            .map { $0 == $1 && $0.count > 4 }
+            .handleEvents(receiveOutput: {
+                self.value2_message_label.text = $0 ? nil : "values must match and have at least 5 characters"
+            })
+        
+        Publishers.CombineLatest(isValidated1, isValidated2)
+            .map { $0 && $1 }
             .assign(to: \.isEnabled, on: submission_button)
             .store(in: &cancellableSet)
     }
