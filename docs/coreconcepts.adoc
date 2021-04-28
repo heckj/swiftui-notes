@@ -264,7 +264,7 @@ Combine is designed such that the subscriber controls the flow of data, and beca
 This is a feature of Combine called *back-pressure*.
 
 This means that the subscriber drives the processing within a pipeline by providing information about how much information it wants or can accept.
-When a subscriber is connected to a publisher, it requests data based with a specific https://developer.apple.com/documentation/combine/subscribers/demand[Demand].
+When a subscriber is connected to a publisher, it requests data based on a specific https://developer.apple.com/documentation/combine/subscribers/demand[Demand].
 
 The demand request is propagated up through the composed pipeline.
 Each operator in turn accepts the request for data and in turn requests information from the publishers to which it is connected.
