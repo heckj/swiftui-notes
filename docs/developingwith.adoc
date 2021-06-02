@@ -10,7 +10,7 @@ Or you might be creating a subscriber to consume and process data over time.
 
 == Reasoning about pipelines
 
-When developing with Combine, there are two broader patterns of publishers are that frequently recur: expecting a publisher to return a single value and complete and expecting a publisher to return many values over time.
+When developing with Combine, there are two broader patterns of publishers that frequently recur: expecting a publisher to return a single value and complete and expecting a publisher to return many values over time.
 
 The first is what I'm calling a "one-shot" publisher or pipeline.
 These publishers are expected to create a single response (or perhaps no response) and then terminate normally.
