@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/pointfreeco/combine-schedulers",
         "state": {
           "branch": null,
-          "revision": "8eab6ad841ccc420f29f3e77e17e7b260841b50a",
-          "version": "0.2.0"
+          "revision": "c37e5ae8012fb654af776cc556ff8ae64398c841",
+          "version": "0.5.0"
         }
       },
       {
@@ -15,8 +15,17 @@
         "repositoryURL": "https://github.com/tcldr/Entwine.git",
         "state": {
           "branch": "master",
-          "revision": "e19784b45ba32f11f9780fefb5bd10b898f52ac0",
+          "revision": "4ae1aa1a7bf904b7fdaf4e0cb34da00887f60958",
           "version": null
+        }
+      },
+      {
+        "package": "xctest-dynamic-overlay",
+        "repositoryURL": "https://github.com/pointfreeco/xctest-dynamic-overlay",
+        "state": {
+          "branch": null,
+          "revision": "603974e3909ad4b48ba04aad7e0ceee4f077a518",
+          "version": "0.1.0"
         }
       }
     ]
