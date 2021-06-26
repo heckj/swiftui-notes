@@ -1,34 +1,34 @@
 [#aboutthisbook]
-= About This Book
+= 关于本书
 
-Version: {revnumber}
+版本号: {revnumber}
 
-Version Date: {revdate}
+该版日期: {revdate}
 
-This is an intermediate to advanced book, focusing narrowly on how to use the Combine framework.
-The writing and examples expect that you have a solid understanding of Swift including reference and value types, protocols, and familiarity with using common elements from the Foundation framework.
+这是一本中高级难度的书，主要关注在如何使用 Combine 框架。
+你需要对 Swift 及其中的引用和值类型、协议有透彻的理解，并且能够熟练使用 Foundation 框架中的常用元素，才能阅读本书和其中的示例。
 
-If you are starting with Swift, https://developer.apple.com/swift/resources/[Apple provides a number of resources] to learn it.
-There are truly amazing tutorials and introductions available as books from a number of authors, including https://gumroad.com/l/swift-kickstart[A Swift Kickstart] by Daniel Steinberg and https://www.hackingwithswift.com[Hacking with Swift] by Paul Hudson.
+如果你刚开始学习 Swift， https://developer.apple.com/swift/resources/[苹果提供了一些资源] 可以用来学习，
+还有一些作者写了非常棒的教程和入门书籍， 例如 Daniel Steinberg 写的 https://gumroad.com/l/swift-kickstart[A Swift Kickstart] 和 Paul Hudson 写的 https://www.hackingwithswift.com[Hacking with Swift]。
 
-This book provides <<introduction#introduction,a very abbreviated introduction>> to the concept of functional reactive programming, which is what Combine is meant to provide.
+这本书提供了对函数响应式编程概念的 <<introduction#introduction,简短介绍>>， 这正是 Combine 所要提供的编程方式。
 
-== Supporting this effort
+== 支持我们
 
-**_If you find the content useful, please purchase a copy of the DRM-free PDF or ePub version at http://gumroad.com/l/usingcombine._**
+**_如果您觉得内容有用，请购买没有数字版权管理的 PDF 或 ePub 版本 http://gumroad.com/l/usingcombine._**
 
-The book is https://heckj.github.io/swiftui-notes/[available online] at no cost.
+这本书提供免费的 https://heckj.github.io/swiftui-notes/[线上版].
 
-To report a problem (typo, grammar, or technical fault) please https://github.com/heckj/swiftui-notes/issues/new/choose[Open an issue] in GitHub.
-If you are so inclined, feel free to fork the project and send me https://github.com/heckj/swiftui-notes/compare?expand=1[pull requests] with updates or corrections.
+如果发现有拼写、语法或者技术错误想要指出，请在 GitHub https://github.com/heckj/swiftui-notes/issues/new/choose[新建一个 issue]。
+如果你愿意的话，也可以 fork 这个仓库，更新或者纠正之后创建一个 https://github.com/heckj/swiftui-notes/compare?expand=1[pull requests] 给我。
 
-== Acknowledgements
+== 致谢
 
-.Thank you
+.感谢
 ****
-Michael Critz designed and provided the cover art.
+Michael Critz 设计并提供封面.
 
-Reviews, corrections, and updates from:
+以下人员的检查、指正和更新:
 
 Benjamin Barnard,
 Mycroft Canner,
@@ -54,19 +54,19 @@ Paul Wood III,
 Federico Zanetello
 ****
 
-Thank you all for taking the time and effort to submit a pull request to make this work better!
+谢谢你们所有人花费时间和精力提交 pull request，使这本书变得更好！
 
-== Author Bio
+== 作者简介
 
-Joe Heck has broad software engineering development and management experience across startups and large companies.
-He works across all the layers of solutions, from architecture, development, validation, deployment, and operations.
+Joe Heck 在初创公司和大型公司中拥有广泛的软件工程开发和管理经验。
+他为架构、开发、验证、部署和操作这所有阶段提供解决方案。
 
-Joe has developed projects ranging from mobile and desktop application development to cloud-based distributed systems.
-He has established teams, development processes, CI and CD pipelines, and developed validation and operational automation.
-Joe also builds and mentors people to learn, build, validate, deploy and run software services and infrastructure.
+Joe 开发了从移动和桌面应用程序开发的项目到基于云的分布式系统。
+他建立了团队、开发流程、CI 和 CD 流水线，并制定了验证和运营自动化。
+Joe 还指导人们学习、构建、验证、部署和运行软件服务和基础架构。
 
-Joe works extensively with and in open source, contributing and collaborating with a wide variety of open source projects.
-He writes online across a variety of topics at https://rhonabwy.com/.
+Joe 广泛的贡献和参与到各种开源项目的工作中。
+他把各种各样的话题写在网站 https://rhonabwy.com/ 上。
 
 [cols="3*^",frame=none,grid=none,width=50%]
 |===
@@ -75,33 +75,33 @@ He writes online across a variety of topics at https://rhonabwy.com/.
 .^| http://twitter.com/heckj[icon:twitter[size=2x,set=fab]]
 |===
 
-== Where to get this book
+== 从哪获取这本书
 
-The online version of this book is available online as https://heckj.github.io/swiftui-notes/[HTML], provided at no cost.
+本书的线上版本以 https://heckj.github.io/swiftui-notes/[HTML] 的形式免费提供。
 
-DRM-free PDF or ePub versions are available for purchase at http://gumroad.com/l/usingcombine.
+没有数字版权管理的 PDF 或 ePub 版本可以在 http://gumroad.com/l/usingcombine 购买。
 
-Updates of the content will be made to the online version as development continues.
-Larger updates and announcements will also be provided through https://gumroad.com/heckj[the author's profile at Gumroad].
+随着开发的继续，将对线上版本的内容持续更新。
+更大的更新和宣告也会通过 https://gumroad.com/heckj[作者在 Gumroad 的简介] 进行提供.
 
-The content for this book, including sample code and tests, are sourced from the GitHub repository: https://github.com/heckj/swiftui-notes.
+本书的内容包括示例代码和测试，都放在 GitHub 的仓库中: https://github.com/heckj/swiftui-notes.
 
-=== Download the project
+=== 下载项目
 
-The contents of this book, as well as example code and unit tests referenced from the book, are linked in an Xcode project (`SwiftUI-Notes.xcodeproj`).
-The Xcode project includes fully operational sample code that shows examples of Combine integrating with UIKit and SwiftUI.
-The project also includes extensive unit tests exercising the framework to illustrate the behavior of framework components.
+本书的内容以及本书引用的示例代码和单元测试，都被链接到了一个 Xcode 的项目中（`swiftui-notes.xcodeproj`）。
+该 Xcode 项目包括完全可实操的示例代码，展示了与 Uikit 和 SwiftUI 集成的示例。
+该项目还包括练习框架的大量单元测试，以说明框架组件的行为。
 
-The project associated with this book requires Xcode 11 and MacOS 10.14 or later.
+与本书关联的项目需要 Xcode 11 和 Macos 10.14 或更高版本。
 
 image::welcomeToXcode.png[Welcome to Xcode,406,388]
 
-* From the Welcome to Xcode window, choose **Clone an existing project**
-* Enter `https://github.com/heckj/swiftui-notes.git` and click `Clone`
+* 从 Welcome to Xcode 窗口, 选择 **Clone an existing project**
+* 输入 `https://github.com/heckj/swiftui-notes.git` 然后点击 `Clone`
 
 image::cloneRepository.png[clone Repository,463,263]
 
-* Choose the `master` branch to check out
+* 选择 `master` 分支检出
 
 // force a page break - ignored in HTML rendering
 <<<
