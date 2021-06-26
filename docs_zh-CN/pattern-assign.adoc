@@ -1,0 +1,40 @@
+[#patterns-assign-subscriber]
+== Creating a subscriber with assign
+
+__Goal__::
+
+* To use the results of a pipeline to set a value, often a property on a user interface view or control, but any KVO compliant object can be the provider.
+
+__References__::
+
+* <<reference#reference-assign,assign>>
+* <<reference#reference-receive,receive>>
+
+__See also__::
+
+* <<patterns#patterns-sink-subscriber,Creating a subscriber with sink>>
+
+__Code and explanation__::
+
+Assign is a subscriber that's specifically designed to apply data from a publisher or pipeline into a property, updating that property whenever it receives data.
+Like sink, it activates when created and requests an unlimited data.
+Assign requires the failure type to be specified as `<Never>`, so if your pipeline could fail (such as using an operator like tryMap) you will need to <<patterns#patterns-general-error-handling,convert or handle the failure cases>> before using `.assign`.
+
+.simple assign
+[source, swift]
+----
+let cancellablePipeline = publishingSource <1>
+    .receive(on: RunLoop.main) <2>
+    .assign(to: \.isEnabled, on: yourButton) <3>
+
+cancellablePipeline.cancel() <4>
+----
+
+<1> `.assign` is typically chained onto a publisher when you create it, and the return value is cancellable.
+<2> If `.assign` is being used to update a user interface element, you need to make sure that it is being updated on the main thread. This call makes sure the subscriber is received on the main thread.
+<3> Assign references the property being updated using a https://developer.apple.com/documentation/swift/referencewritablekeypath[key path], and a reference to the object being updated.
+<4> At any time you can cancel to terminate and invalidate pipelines with `cancel()`. Frequently, you cancel the pipelines when you deactivate the objects (such as a viewController) that are getting updated from the pipeline.
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

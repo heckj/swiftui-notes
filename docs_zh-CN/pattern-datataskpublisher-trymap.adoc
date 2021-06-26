@@ -1,0 +1,156 @@
+[#patterns-datataskpublisher-trymap]
+== Stricter request processing with dataTaskPublisher
+
+__Goal__::
+
+* When URLSession makes a connection, it only reports an error if the remote server does not respond.
+You may want to consider a number of responses, based on status code, to be errors.
+To accomplish this, you can use tryMap to inspect the http response and throw an error in the pipeline.
+
+__References__::
+
+* <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>
+* <<reference#reference-trymap,tryMap>>
+* <<reference#reference-decode,decode>>
+* <<reference#reference-sink,sink>>
+* <<reference#reference-subscribe,subscribe>>
+* <<reference#reference-maperror,mapError>>
+
+__See also__::
+
+* <<patterns#patterns-datataskpublisher-decode,Making a network request with dataTaskPublisher>>
+* <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
+* <<patterns#patterns-retry,Retrying in the event of a temporary failure>>
+
+
+__Code and explanation__::
+
+To have more control over what is considered a failure in the URL response, use a `tryMap` operator on the tuple response from `dataTaskPublisher`.
+Since `dataTaskPublisher` returns both the response data and the `URLResponse` into the pipeline, you can immediately inspect the response and throw an error of your own if desired.
+
+An example of that might look like:
+
+[source, swift]
+----
+let myURL = URL(string: "https://postman-echo.com/time/valid?timestamp=2016-10-10")
+// checks the validity of a timestamp - this one returns {"valid":true}
+// matching the data structure returned from https://postman-echo.com/time/valid
+fileprivate struct PostmanEchoTimeStampCheckResponse: Decodable, Hashable {
+    let valid: Bool
+}
+enum TestFailureCondition: Error {
+    case invalidServerResponse
+}
+
+let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
+    .tryMap { data, response -> Data in <1>
+                guard let httpResponse = response as? HTTPURLResponse, <2>
+                    httpResponse.statusCode == 200 else { <3>
+                        throw TestFailureCondition.invalidServerResponse <4>
+                }
+                return data <5>
+    }
+    .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder())
+
+let cancellableSink = remoteDataPublisher
+    .sink(receiveCompletion: { completion in
+            print(".sink() received the completion", String(describing: completion))
+            switch completion {
+                case .finished:
+                    break
+                case .failure(let anError):
+                    print("received error: ", anError)
+            }
+    }, receiveValue: { someValue in
+        print(".sink() received \(someValue)")
+    })
+----
+
+Where the <<patterns#patterns-datataskpublisher-decode, previous pattern>> used a <<reference#reference-map,map>> operator, this uses tryMap, which allows us to identify and throw errors in the pipeline based on what was returned.
+
+<1> <<reference#reference-trymap,tryMap>> still gets the tuple of `(data: Data, response: URLResponse)`, and is defined here as returning just the type of Data down the pipeline.
+<2> Within the closure for `tryMap`, we can cast the response to `HTTPURLResponse` and dig deeper into it, including looking at the specific status code.
+<3> In this case, we want to consider **anything** other than a 200 response code as a failure. `HTTPURLResponse`.`statusCode` is an Int type, so you could also have logic such as `httpResponse.statusCode > 300`.
+<4> If the predicates are not met it throws an instance of an error of our choosing; `invalidServerResponse` in this case.
+<5> If no error has occurred, then we simply pass down `Data` for further processing.
+
+=== Normalizing errors from a dataTaskPublisher
+
+When an error is triggered on the pipeline, a `.failure` completion is sent with the error encapsulated within it, regardless of where it happened in the pipeline.
+
+This pattern can be expanded to return a publisher that accommodates any number of specific error conditions using this general pattern.
+In many of the examples, we replace the error conditions with a default value.
+If we want to have a function that returns a publisher that *doesn't* choose what happens on failure, then the same <<reference#reference-trymap,tryMap>> operator can be used in conjunction with <<reference#reference-maperror,mapError>> to translate review the response object as well as convert URLError error types.
+
+[source, swift]
+----
+enum APIError: Error, LocalizedError { <1>
+    case unknown, apiError(reason: String), parserError(reason: String), networkError(from: URLError)
+
+    var errorDescription: String? {
+        switch self {
+        case .unknown:
+            return "Unknown error"
+        case .apiError(let reason), .parserError(let reason):
+            return reason
+        case .networkError(let from): <2>
+            return from.localizedDescription
+        }
+    }
+}
+
+func fetch(url: URL) -> AnyPublisher<Data, APIError> {
+    let request = URLRequest(url: url)
+
+    return URLSession.DataTaskPublisher(request: request, session: .shared) <3>
+        .tryMap { data, response in <4>
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw APIError.unknown
+            }
+            if (httpResponse.statusCode == 401) {
+                throw APIError.apiError(reason: "Unauthorized");
+            }
+            if (httpResponse.statusCode == 403) {
+                throw APIError.apiError(reason: "Resource forbidden");
+            }
+            if (httpResponse.statusCode == 404) {
+                throw APIError.apiError(reason: "Resource not found");
+            }
+            if (405..<500 ~= httpResponse.statusCode) {
+                throw APIError.apiError(reason: "client error");
+            }
+            if (500..<600 ~= httpResponse.statusCode) {
+                throw APIError.apiError(reason: "server error");
+            }
+            return data
+        }
+        .mapError { error in <5>
+            // if it's our kind of error already, we can return it directly
+            if let error = error as? APIError {
+                return error
+            }
+            // if it is a TestExampleError, convert it into our new error type
+            if error is TestExampleError {
+                return APIError.parserError(reason: "Our example error")
+            }
+            // if it is a URLError, we can convert it into our more general error kind
+            if let urlerror = error as? URLError {
+                return APIError.networkError(from: urlerror)
+            }
+            // if all else fails, return the unknown error condition
+            return APIError.unknown
+        }
+        .eraseToAnyPublisher() <6>
+}
+----
+
+<1> `APIError` is a Error enumeration that we are using in this example to collect all the variant errors that can occur.
+<2> `.networkError` is one of the specific cases of `APIError` that we will translate into when <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> returns an error.
+<3> We start the generation of this publisher with a standard dataTaskPublisher.
+<4> We then route into the <<reference#reference-trymap,tryMap>> operator to inspect the response, creating specific error conditions based on the server response.
+<5> And finally we use <<reference#reference-maperror,mapError>> to convert any lingering error types down into a common Failure type of `APIError`.
+
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

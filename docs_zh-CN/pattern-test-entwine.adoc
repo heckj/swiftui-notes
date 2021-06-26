@@ -1,0 +1,97 @@
+[#patterns-testable-publisher-subscriber]
+== Using EntwineTest to create a testable publisher and subscriber
+
+__Goal__::
+
+* For testing a pipeline, or subscriber, when what you want to test is the timing of the pipeline.
+
+__References__::
+
+* https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/EntwineTestExampleTests.swift[UsingCombineTests/EntwineTestExampleTests.swift]
+
+__See also__::
+
+* <<patterns#patterns-testing-publisher,Testing a publisher with XCTestExpectation>>
+* <<patterns#patterns-testing-subscriber,Testing a subscriber with a PassthroughSubject>>
+* <<patterns#patterns-testing-subscriber-scheduled,Testing a subscriber with scheduled sends from PassthroughSubject>>
+* <<reference#reference-passthroughsubject,passthroughSubject>>
+
+__Code and explanation__::
+
+The EntwineTest library, available from GitHub at https://github.com/tcldr/Entwine.git, provides some additional options for making your pipelines testable.
+In addition to a virtual time scheduler, EntwineTest has a `TestablePublisher` and a `TestableSubscriber`.
+These work in coordination with the virtual time scheduler to allow you to specify the timing of the publisher generating data, and to valid the data received by the subscriber.
+
+[WARNING]
+====
+As of Xcode 11.2, there is a bug with SwiftPM that impacts the use of Entwine as a testing library.
+The details can be found at https://bugs.swift.org/plugins/servlet/mobile#issue/SR-11564[SR-11564] in Swift's open source bug reporting.
+
+The workaround, which you may need to apply if using Xcode 11.2, is to set the project setting `DEAD_CODE_STRIPPING=NO`.
+====
+
+An example of this from the EntwineTest project is included:
+
+.https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/EntwineTestExampleTests.swift[UsingCombineTests/EntwineTestExampleTests.swift - testMap]
+[source, swift]
+----
+import XCTest
+import EntwineTest
+// library loaded from
+// https://github.com/tcldr/Entwine/blob/master/Assets/EntwineTest/README.md
+// as a Swift package https://github.com/tcldr/Entwine.git : 0.6.0,
+// Next Major Version
+
+class EntwineTestExampleTests: XCTestCase {
+
+    func testMap() {
+
+        let testScheduler = TestScheduler(initialClock: 0)
+
+        // creates a publisher that will schedule its elements relatively
+        // at the point of subscription
+        let testablePublisher: TestablePublisher<String, Never> = testScheduler.createRelativeTestablePublisher([ <1>
+            (100, .input("a")),
+            (200, .input("b")),
+            (300, .input("c")),
+        ])
+
+        // a publisher that maps strings to uppercase
+        let subjectUnderTest = testablePublisher.map { $0.uppercased() }
+
+        // uses the method described above (schedules a subscription at 200
+        // to be cancelled at 900)
+        let results = testScheduler.start { subjectUnderTest } <2>
+
+        XCTAssertEqual(results.recordedOutput, [ <3>
+            (200, .subscription),
+            // subscribed at 200
+            (300, .input("A")),
+            // received uppercased input @ 100 + subscription time
+            (400, .input("B")),
+            // received uppercased input @ 200 + subscription time
+            (500, .input("C")),
+            // received uppercased input @ 300 + subscription time
+        ])
+    }
+}
+----
+
+<1> The `TestablePublisher` lets you set up a publisher that returns specific values at specific times.
+In this case, it's returning 3 items at consistent intervals.
+<2> When you use the virtual time scheduler, it is important to make sure to invoke it with start.
+This runs the virtual time scheduler, which can run faster than a clock since it only needs to increment the virtual time and not wait for elapsed time.
+<3> `results` is a TestableSubscriber object, and includes a `recordedOutput` property which provides  an ordered list of all the data and combine control path interactions with their timing.
+
+If this test sequence had been done with asyncAfter, then the test would have taken a minimum of 500ms to complete.
+When I ran this test on my laptop, it was recording 0.0121 seconds to complete the test (12.1ms).
+
+[NOTE]
+====
+A side effect of EntwineTest is that tests using the virtual time scheduler can run much faster than a real time clock.
+The same tests being created using real time scheduling mechanisms to delay data sending values can take significantly longer to complete.
+====
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

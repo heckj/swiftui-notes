@@ -1,0 +1,107 @@
+[#aboutthisbook]
+= About This Book
+
+Version: {revnumber}
+
+Version Date: {revdate}
+
+This is an intermediate to advanced book, focusing narrowly on how to use the Combine framework.
+The writing and examples expect that you have a solid understanding of Swift including reference and value types, protocols, and familiarity with using common elements from the Foundation framework.
+
+If you are starting with Swift, https://developer.apple.com/swift/resources/[Apple provides a number of resources] to learn it.
+There are truly amazing tutorials and introductions available as books from a number of authors, including https://gumroad.com/l/swift-kickstart[A Swift Kickstart] by Daniel Steinberg and https://www.hackingwithswift.com[Hacking with Swift] by Paul Hudson.
+
+This book provides <<introduction#introduction,a very abbreviated introduction>> to the concept of functional reactive programming, which is what Combine is meant to provide.
+
+== Supporting this effort
+
+**_If you find the content useful, please purchase a copy of the DRM-free PDF or ePub version at http://gumroad.com/l/usingcombine._**
+
+The book is https://heckj.github.io/swiftui-notes/[available online] at no cost.
+
+To report a problem (typo, grammar, or technical fault) please https://github.com/heckj/swiftui-notes/issues/new/choose[Open an issue] in GitHub.
+If you are so inclined, feel free to fork the project and send me https://github.com/heckj/swiftui-notes/compare?expand=1[pull requests] with updates or corrections.
+
+== Acknowledgements
+
+.Thank you
+****
+Michael Critz designed and provided the cover art.
+
+Reviews, corrections, and updates from:
+
+Benjamin Barnard,
+Mycroft Canner,
+Max Desiatov,
+Tim Ekl,
+Malcolm Hall,
+Arthur Hammer,
+Nanu Jogi,
+Serhii Kyrylenko,
+Brett Markowitz,
+Matt Massicotte,
+Michel Mohrmann,
+John Mueller,
+Lee O'Mara,
+Kai Özer,
+Martin Pfundmair,
+Zachary Recolan,
+Dave Reed,
+Dean Scarff,
+Andrius Shiaulis,
+Antoine Weber,
+Paul Wood III,
+Federico Zanetello
+****
+
+Thank you all for taking the time and effort to submit a pull request to make this work better!
+
+== Author Bio
+
+Joe Heck has broad software engineering development and management experience across startups and large companies.
+He works across all the layers of solutions, from architecture, development, validation, deployment, and operations.
+
+Joe has developed projects ranging from mobile and desktop application development to cloud-based distributed systems.
+He has established teams, development processes, CI and CD pipelines, and developed validation and operational automation.
+Joe also builds and mentors people to learn, build, validate, deploy and run software services and infrastructure.
+
+Joe works extensively with and in open source, contributing and collaborating with a wide variety of open source projects.
+He writes online across a variety of topics at https://rhonabwy.com/.
+
+[cols="3*^",frame=none,grid=none,width=50%]
+|===
+.^| https://github.com/heckj[icon:github[size=2x,set=fab]]
+.^| https://www.linkedin.com/in/josephheck/[icon:linkedin[size=2x,set=fab]]
+.^| http://twitter.com/heckj[icon:twitter[size=2x,set=fab]]
+|===
+
+== Where to get this book
+
+The online version of this book is available online as https://heckj.github.io/swiftui-notes/[HTML], provided at no cost.
+
+DRM-free PDF or ePub versions are available for purchase at http://gumroad.com/l/usingcombine.
+
+Updates of the content will be made to the online version as development continues.
+Larger updates and announcements will also be provided through https://gumroad.com/heckj[the author's profile at Gumroad].
+
+The content for this book, including sample code and tests, are sourced from the GitHub repository: https://github.com/heckj/swiftui-notes.
+
+=== Download the project
+
+The contents of this book, as well as example code and unit tests referenced from the book, are linked in an Xcode project (`SwiftUI-Notes.xcodeproj`).
+The Xcode project includes fully operational sample code that shows examples of Combine integrating with UIKit and SwiftUI.
+The project also includes extensive unit tests exercising the framework to illustrate the behavior of framework components.
+
+The project associated with this book requires Xcode 11 and MacOS 10.14 or later.
+
+image::welcomeToXcode.png[Welcome to Xcode,406,388]
+
+* From the Welcome to Xcode window, choose **Clone an existing project**
+* Enter `https://github.com/heckj/swiftui-notes.git` and click `Clone`
+
+image::cloneRepository.png[clone Repository,463,263]
+
+* Choose the `master` branch to check out
+
+// force a page break - ignored in HTML rendering
+<<<

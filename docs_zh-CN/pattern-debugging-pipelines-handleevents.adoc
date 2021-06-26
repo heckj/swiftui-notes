@@ -1,0 +1,79 @@
+[#patterns-debugging-handleevents]
+== Debugging pipelines with the handleEvents operator
+
+__Goal__::
+
+* To get more targeted understanding of what is happening within a pipeline, employing breakpoints, print or logging statements, or additional logic.
+
+__References__::
+
+* <<reference#reference-handleevents>>
+* A ViewController using handleEvents is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubViewController.swift[UIKit-Combine/GithubViewController.swift]
+* The handleEvents unit tests in the github project at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/HandleEventsPublisherTests.swift[UsingCombineTests/HandleEventsPublisherTests.swift]
+
+__See also__::
+
+* <<patterns#patterns-debugging-print,Debugging pipelines with the print operator>>
+* <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>>
+* <<patterns#patterns-sequencing-operations,Sequencing operations with Combine>>
+* <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>
+* <<patterns#patterns-debugging-breakpoint,Debugging pipelines with the debugger>>
+
+__Code and explanation__::
+
+<<reference#reference-handleevents,handleEvents>> passes data through, making no modifications to the output and failure types, or the data.
+When you put in the operator, you can specify a number of optional closures, allowing you to focus on the aspect of what you want to see.
+The <<reference#reference-handleevents,handleEvents>> operator with specific closures can be a great way to get a window to see what is happening when a pipeline is cancelling, erroring, or otherwise terminating expectedly.
+
+The closures you can provide include:
+
+* `receiveSubscription`
+* `receiveRequest`
+* `receiveCancel`
+* `receiveOutput`
+* `receiveCompletion`
+
+If the closures each included a print statement, this operator would be acting very much like the <<reference#reference-print,print>> operator, as detailed in <<patterns#patterns-debugging-print,Debugging pipelines with the print operator>>.
+
+The power of handleEvents for debugging is in selecting what you want to view, reducing the amount of output, or manipulating the data to get a better understanding of it.
+
+In the example viewcontroller at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubViewController.swift[UIKit-Combine/GithubViewController.swift], the subscription, cancellation, and completion handlers are used to provide a side effect of starting, or stopping, an activity indicator.
+
+If you only wanted to see the data being passed on the pipeline, and didn't care about the control messages, then providing a single closure for receiveOutput and ignoring the other closures can let you focus on just that detail.
+
+The unit test example showing handleEvents has all options active with comments:
+
+.https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/HandleEventsPublisherTests.swift[UsingCombineTests/HandleEventsPublisherTests.swift]
+[source, swift]
+----
+.handleEvents(receiveSubscription: { aValue in
+    print("receiveSubscription event called with \(String(describing: aValue))") <2>
+}, receiveOutput: { aValue in <3>
+    print("receiveOutput was invoked with \(String(describing: aValue))")
+}, receiveCompletion: { aValue in <4>
+    print("receiveCompletion event called with \(String(describing: aValue))")
+}, receiveCancel: { <5>
+    print("receiveCancel event invoked")
+}, receiveRequest: { aValue in <1>
+    print("receiveRequest event called with \(String(describing: aValue))")
+})
+----
+<1> The first closure called is `receiveRequest`, which will have the demand value passed into it.
+<2> The second closure `receiveSubscription` is commonly the returning subscription from the publisher, which passes in a reference to the publisher.
+At this point, the pipeline is operational, and the publisher will provide data based on the amount of data requested in the original request.
+<3> This data is passed into `receiveOutput` as the publisher makes it available, invoking the closure for each value passed.
+This will repeat for as many values as the publisher sends.
+<4> If the pipeline is closed - either normally or terminated due to a failure - the `receiveCompletion` closure will get the completion.
+Just the like the <<reference#reference-sink,sink>> closure, you can switch on the completion provided, and if it is a `.failure` completion, then you can inspect the enclosed error.
+<5> If the pipeline is cancelled, then the `receiveCancel` closure will be called.
+No data is passed into the cancellation closure.
+
+[NOTE]
+====
+While you can also use <<reference#reference-breakpoint>> and <<reference#reference-breakpointonerror>> operators to break into a debugger (as shown in <<patterns#patterns-debugging-breakpoint>>), the `handleEvents()` operator with closures allows you to set breakpoints within Xcode.
+This allows you to immediately jump into the debugger to inspect the data flowing through the pipeline, or to get references to the subscriber, or the error in the case of a failed completion.
+====
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

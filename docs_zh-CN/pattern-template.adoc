@@ -1,0 +1,19 @@
+[#patterns-someName]
+== Pattern N: summary description
+
+__Goal__::
+
+* what the pattern does and why we want to use it
+
+__References__::
+
+* << link to reference pages>>
+
+__See also__::
+
+* << link to other patterns>>
+
+explanation w/ code
+
+// force a page break - in HTML rendering is just a <HR>
+<<<

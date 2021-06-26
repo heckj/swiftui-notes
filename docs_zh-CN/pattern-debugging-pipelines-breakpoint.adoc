@@ -1,0 +1,68 @@
+[#patterns-debugging-breakpoint]
+== Debugging pipelines with the debugger
+
+__Goal__::
+
+* To force the pipeline to trap into a debugger on specific scenarios or conditions.
+
+__References__::
+
+* <<reference#reference-handleevents,handleEvents>>
+* <<reference#reference-map,map>>
+
+__See also__::
+
+* <<patterns#patterns-debugging-print,Debugging pipelines with the print operator>>
+* <<patterns#patterns-debugging-handleevents,Debugging pipelines with the handleEvents operator>>
+
+__Code and explanation__::
+
+You can set a breakpoint within any closure to any operator within a pipeline, triggering the debugger to activate to inspect the data.
+Since the <<reference#reference-map,map>> operator is frequently used for simple output type conversions, it is often an excellent candidate that has a closure you can use.
+If you want to see into the control messages, then a breakpoint within any of the closures provided to <<reference#reference-handleevents,handleEvents>> makes a very convenient target.
+
+You can also use the <<reference#reference-breakpoint,breakpoint>> operator to trigger the debugger, which can be a very quick and convenient way to see what is happening in a pipeline.
+The breakpoint operator acts very much like handleEvents, taking a number of optional parameters, closures that are expected to return a boolean, and if true will invoke the debugger.
+
+The optional closures include:
+
+* `receiveSubscription`
+* `receiveOutput`
+* `receiveCompletion`
+
+[source, swift]
+----
+.breakpoint(receiveSubscription: { subscription in
+    return false // return true to throw SIGTRAP and invoke the debugger
+}, receiveOutput: { value in
+    return false // return true to throw SIGTRAP and invoke the debugger
+}, receiveCompletion: { completion in
+    return false // return true to throw SIGTRAP and invoke the debugger
+})
+----
+
+This allows you to provide logic to evaluate the data being passed through, and only triggering a breakpoint when your specific conditions are met.
+With very active pipelines processing a lot of data, this can be a great tool to be more surgical in getting the debugger active when you need it, and letting the other data move on by.
+
+If you are only interested in the breaking into the debugger on error conditions, then convenience operator <<reference#reference-breakpointonerror,breakPointOnError>> is perfect.
+It takes no parameters or closures, simply invoking the debugger when an error condition of any form is passed through the pipeline.
+
+[source, swift]
+----
+.breakpointOnError()
+----
+
+
+[NOTE]
+====
+The location of the breakpoint that is triggered by the breakpoint operator isn't in your code, so getting to local frames and information can be a bit tricky.
+This does allow you to inspect global application state in highly specific instances (whenever the closure returns `true`, with logic you provide), but you may find it more effective to use regular breakpoints within closures.
+The breakpoint() and breakpointOnError() operators don't immediately drop you into a closure where you can see the data being passed, error thrown, or control signals that may have triggered the breakpoint.
+You can often walk back up the stack trace within the debugging window to see the publisher.
+
+When you trigger a breakpoint within an operator's closure, the debugger immediately gets the context of that closure as well, so you can see/inspect the data being passed.
+====
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

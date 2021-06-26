@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xl="http://www.w3.org/1999/xlink" viewBox="85 115 806 216" width="806" height="216">
+  <defs>
+    <font-face font-family="Gill Sans" font-size="20" panose-1="2 11 5 2 2 1 4 2 2 3" units-per-em="1000" underline-position="-75.19531" underline-thickness="49.80469" slope="0" x-height="449.70703" cap-height="687.0117" ascent="917.9688" descent="-230.46875" font-weight="400">
+      <font-face-src>
+        <font-face-name name="GillSans"/>
+      </font-face-src>
+    </font-face>
+  </defs>
+  <metadata> Produced by OmniGraffle 7.13 
+    <dc:date>2020-02-27 19:35:16 +0000</dc:date>
+  </metadata>
+  <g id="pipeline" stroke="none" stroke-opacity="1" fill="none" stroke-dasharray="none" fill-opacity="1">
+    <title>pipeline</title>
+    <g id="pipeline: Layer 1">
+      <title>Layer 1</title>
+      <g id="Graphic_49">
+        <rect x="86.2" y="116.2" width="155.6" height="155.6" fill="white"/>
+        <rect x="86.2" y="116.2" width="155.6" height="155.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_48">
+        <path d="M 658.6 203.4 L 658.6 181.8 L 709 181.8 L 709 171 L 727 192.6 L 709 214.2 L 709 203.4 Z" fill="white"/>
+        <path d="M 658.6 203.4 L 658.6 181.8 L 709 181.8 L 709 171 L 727 192.6 L 709 214.2 L 709 203.4 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_47">
+        <text transform="translate(92 276.8)" fill="black">
+          <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="35.356445" y="18">Publisher</tspan>
+          <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="0" y="41">&lt;Output, Failure&gt;</tspan>
+        </text>
+      </g>
+      <g id="Graphic_46">
+        <text transform="translate(739.2 276.8)" fill="black">
+          <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="29.69004" y="18">Subscriber</tspan>
+          <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="9.025978" y="41">&lt;Input, Failure&gt;</tspan>
+        </text>
+      </g>
+      <g id="Group_42">
+        <g id="Line_45">
+          <path d="M 114.2 124.2 L 94.2 157 L 114.2 189.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_44">
+          <path d="M 214.2 124.2 L 234.2 157 L 214.2 189.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Graphic_43">
+          <path d="M 114.2 124.2 L 94.2 157 L 114.2 189.8 L 214.2 189.8 L 234.2 157 L 214.2 124.2 Z" fill="#0096ff" fill-opacity=".5"/>
+          <text transform="translate(99.2 145.5)" fill="black">
+            <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="14.61914" y="18">Output Type</tspan>
+          </text>
+        </g>
+      </g>
+      <g id="Group_38">
+        <g id="Graphic_41">
+          <path d="M 114.2 197 L 94.2 229.4 L 114.2 261.8 L 214.2 261.8 L 234.2 229.4 L 214.2 197 Z" fill="#ffd579" fill-opacity=".5"/>
+          <text transform="translate(99.2 217.9)" fill="black">
+            <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="17.617188" y="18">Failure Type</tspan>
+          </text>
+        </g>
+        <g id="Line_40">
+          <path d="M 114.2 197 L 94.2 229.4 L 114.2 261.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_39">
+          <path d="M 214.2 197 L 234.2 229.4 L 214.2 261.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+      </g>
+      <g id="Graphic_37">
+        <rect x="734.2" y="116.2" width="155.6" height="155.6" fill="white"/>
+        <rect x="734.2" y="116.2" width="155.6" height="155.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Group_33">
+        <g id="Line_36">
+          <path d="M 762.2 124.2 L 742.2 157 L 762.2 189.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_35">
+          <path d="M 862.2 124.2 L 882.2 157 L 862.2 189.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Graphic_34">
+          <path d="M 762.2 124.2 L 742.2 157 L 762.2 189.8 L 862.2 189.8 L 882.2 157 L 862.2 124.2 Z" fill="#0096ff" fill-opacity=".5"/>
+          <text transform="translate(747.2 145.5)" fill="black">
+            <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="23.68164" y="18">Input Type</tspan>
+          </text>
+        </g>
+      </g>
+      <g id="Group_29">
+        <g id="Graphic_32">
+          <path d="M 762.2 197 L 742.2 229.4 L 762.2 261.8 L 862.2 261.8 L 882.2 229.4 L 862.2 197 Z" fill="#ffd579" fill-opacity=".5"/>
+          <text transform="translate(747.2 217.9)" fill="black">
+            <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="17.617188" y="18">Failure Type</tspan>
+          </text>
+        </g>
+        <g id="Line_31">
+          <path d="M 762.2 197 L 742.2 229.4 L 762.2 261.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_30">
+          <path d="M 862.2 197 L 882.2 229.4 L 862.2 261.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+      </g>
+      <g id="Graphic_58">
+        <rect x="323.8" y="116.2" width="327.6" height="155.6" fill="white"/>
+        <rect x="323.8" y="116.2" width="327.6" height="155.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Group_54">
+        <g id="Line_57">
+          <path d="M 524.6 124.2 L 504.6 157 L 524.6 189.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_56">
+          <path d="M 624.6 124.2 L 644.6 157 L 624.6 189.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Graphic_55">
+          <path d="M 524.6 124.2 L 504.6 157 L 524.6 189.8 L 624.6 189.8 L 644.6 157 L 624.6 124.2 Z" fill="#0096ff" fill-opacity=".5"/>
+          <text transform="translate(509.6 145.5)" fill="black">
+            <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="14.61914" y="18">Output Type</tspan>
+          </text>
+        </g>
+      </g>
+      <g id="Group_50">
+        <g id="Graphic_53">
+          <path d="M 524.6 197 L 504.6 229.4 L 524.6 261.8 L 624.6 261.8 L 644.6 229.4 L 624.6 197 Z" fill="#ffd579" fill-opacity=".5"/>
+          <text transform="translate(509.6 217.9)" fill="black">
+            <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="17.617188" y="18">Failure Type</tspan>
+          </text>
+        </g>
+        <g id="Line_52">
+          <path d="M 524.6 197 L 504.6 229.4 L 524.6 261.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_51">
+          <path d="M 624.6 197 L 644.6 229.4 L 624.6 261.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+      </g>
+      <g id="Group_63">
+        <g id="Line_66">
+          <path d="M 351 123.4 L 331 156.2 L 351 189" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_65">
+          <path d="M 451 123.4 L 471 156.2 L 451 189" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Graphic_64">
+          <path d="M 351 123.4 L 331 156.2 L 351 189 L 451 189 L 471 156.2 L 451 123.4 Z" fill="#0096ff" fill-opacity=".5"/>
+          <text transform="translate(336 144.7)" fill="black">
+            <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="23.68164" y="18">Input Type</tspan>
+          </text>
+        </g>
+      </g>
+      <g id="Group_59">
+        <g id="Graphic_62">
+          <path d="M 351 196.2 L 331 228.6 L 351 261 L 451 261 L 471 228.6 L 451 196.2 Z" fill="#ffd579" fill-opacity=".5"/>
+          <text transform="translate(336 217.1)" fill="black">
+            <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="17.617188" y="18">Failure Type</tspan>
+          </text>
+        </g>
+        <g id="Line_61">
+          <path d="M 351 196.2 L 331 228.6 L 351 261" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_60">
+          <path d="M 451 196.2 L 471 228.6 L 451 261" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+      </g>
+      <g id="Graphic_67">
+        <path d="M 248.2 199 L 248.2 177.4 L 298.6 177.4 L 298.6 166.6 L 316.6 188.2 L 298.6 209.8 L 298.6 199 Z" fill="white"/>
+        <path d="M 248.2 199 L 248.2 177.4 L 298.6 177.4 L 298.6 166.6 L 316.6 188.2 L 298.6 209.8 L 298.6 199 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_68">
+        <text transform="translate(332.4 279.6)" fill="black">
+          <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="116.55722" y="18">Operator</tspan>
+          <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="5.399994" y="41">&lt;Input, Failure&gt; to &lt;Output, Failure&gt;</tspan>
+        </text>
+      </g>
+    </g>
+  </g>
+</svg>

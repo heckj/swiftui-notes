@@ -1,0 +1,17 @@
+__Summary__::
+
+n/a
+
+__Constraints on connected publisher__::
+
+* __none__
+
+__icon:apple[set=fab] docs__:: n/a
+
+__Usage__::
+
+n/a
+
+__Details__::
+
+n/a

@@ -1,0 +1,73 @@
+[#patterns-future]
+== Wrapping an asynchronous call with a Future to create a one-shot publisher
+
+__Goal__::
+
+* Using `Future` to turn an asynchronous call into publisher to use the result in a Combine pipeline.
+
+__References__::
+
+* <<reference#reference-future,Future>>
+
+__See also__::
+
+* <<patterns#patterns-delegate-publisher-subject,Creating a repeating publisher by wrapping a delegate based API>>
+
+__Code and explanation__::
+
+[source, swift]
+----
+import Contacts
+let futureAsyncPublisher = Future<Bool, Error> { promise in <1>
+    CNContactStore().requestAccess(for: .contacts) { grantedAccess, err in <2>
+        // err is an optional
+        if let err = err { <3>
+            return promise(.failure(err))
+        }
+        return promise(.success(grantedAccess)) <4>
+    }
+}.eraseToAnyPublisher()
+----
+
+<1> `Future` itself has you define the return types and takes a closure.
+It hands in a `Result` object matching the type description, which you interact.
+<2> You can invoke the async API however is relevant, including passing in its required closure.
+<3> Within the completion handler, you determine what would cause a failure or a success.
+A call to `promise(.failure(<FailureType>))` returns the failure.
+<4> Or a call to `promise(.success(<OutputType>))` returns a value.
+
+[NOTE]
+====
+A <<reference#reference-future,Future>> immediately calls the enclosed asynchronous API call when it is created, *not* when it receives a subscription demand.
+This may not be the behavior you want or need.
+If you want the call to be bound to subscribers requesting data, you probably want to wrap the Future with <<reference#reference-deferred,Deferred>>.
+====
+
+If you want to return a resolved promise as a `Future` publisher, you can do so by immediately returning the result you desire its closure.
+
+The following example returns a single value as a success, with a boolean `true` value.
+You could just as easily return `false`, and the publisher would still act as a successful promise.
+
+[source, swift]
+----
+let resolvedSuccessAsPublisher = Future<Bool, Error> { promise in
+    promise(.success(true))
+}.eraseToAnyPublisher()
+----
+
+An example of returning a `Future` publisher that immediately resolves as an error:
+
+[source, swift]
+----
+enum ExampleFailure: Error {
+    case oneCase
+}
+
+let resolvedFailureAsPublisher = Future<Bool, Error> { promise in
+    promise(.failure(ExampleFailure.oneCase))
+}.eraseToAnyPublisher()
+----
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

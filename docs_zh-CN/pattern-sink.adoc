@@ -1,0 +1,65 @@
+[#patterns-sink-subscriber]
+== Creating a subscriber with sink
+
+__Goal__::
+
+* To receive the output, and the errors or completion messages, generated from a publisher or through a pipeline, you can create a subscriber with <<reference#reference-sink,sink>>.
+
+__References__::
+
+* <<reference#reference-sink,sink>>
+
+__See also__::
+
+* <<patterns#patterns-assign-subscriber,Creating a subscriber with assign>>
+* <<patterns#patterns-testing-publisher,Testing a publisher with XCTestExpectation>>
+* <<patterns#patterns-testing-subscriber-scheduled,Testing a subscriber with scheduled sends from PassthroughSubject>>
+
+__Code and explanation__::
+
+Sink creates an all-purpose subscriber to capture or react to the data from a Combine pipeline, while also supporting cancellation and the <<coreconcepts#coreconcepts-lifecycle,publisher subscriber lifecycle>>.
+
+.simple sink
+[source, swift]
+----
+let cancellablePipeline = publishingSource.sink { someValue in <1>
+    // do what you want with the resulting value passed down
+    // be aware that depending on the publisher, this closure
+    // may be invoked multiple times.
+    print(".sink() received \(someValue)")
+})
+----
+<1> The simple version of a sink is very compact, with a single trailing closure receiving data when presented through the pipeline.
+
+.sink with completions and data
+[source, swift]
+----
+let cancellablePipeline = publishingSource.sink(receiveCompletion: { completion in <1>
+    switch completion {
+    case .finished:
+        // no associated data, but you can react to knowing the
+        // request has been completed
+        break
+    case .failure(let anError):
+        // do what you want with the error details, presenting,
+        // logging, or hiding as appropriate
+        print("received the error: ", anError)
+        break
+    }
+}, receiveValue: { someValue in
+    // do what you want with the resulting value passed down
+    // be aware that depending on the publisher, this closure
+    // may be invoked multiple times.
+    print(".sink() received \(someValue)")
+})
+
+cancellablePipeline.cancel() <2>
+----
+
+<1> Sinks are created by chaining the code from a publisher or pipeline, and provide an end point for the pipeline.
+When the sink is created or invoked on a publisher, it implicitly starts <<coreconcepts#coreconcepts-lifecycle,the lifecycle>> with the `subscribe` method, requesting unlimited data.
+<2> Sinks are cancellable subscribers. At any time you can take the reference that terminated with sink and invoke `.cancel()` on it to invalidate and shut down the pipeline.
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

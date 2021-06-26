@@ -1,0 +1,62 @@
+[#patterns-continual-error-handling]
+== Using flatMap and catch to handle errors without cancelling the pipeline
+
+__Goal__::
+
+* The `flatMap` operator can be used with `catch` to continue to handle errors on new published values.
+
+__References__::
+
+* <<reference#reference-flatmap,flatMap>>
+* <<reference#reference-just,Just>>
+* <<reference#reference-catch,catch>>
+
+__See also__::
+
+* <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
+* <<patterns#patterns-retry,Retrying in the event of a temporary failure>>
+
+__Code and explanation__::
+
+The `flatMap` operator is the operator to use in handling errors on a continual flow of events.
+
+You provide a closure to `flatMap` that can read in the value that was provided, and creates a one-shot publisher that does the possibly failing work.
+An example of this is requesting data from a network and then decoding the returned data.
+You can include a <<reference#reference-catch,catch>> operator to capture any errors and provide an appropriate value.
+
+This is a perfect mechanism for when you want to maintain updates up an upstream publisher, as it creates one-shot publisher or short pipelines that send a single value and then complete for every incoming value.
+The completion from the created one-shot publishers terminates in the flatMap and is not passed to downstream subscribers.
+
+An example of this with a `dataTaskPublisher`:
+
+[source, swift]
+----
+let remoteDataPublisher = Just(self.testURL!) <1>
+    .flatMap { url in <2>
+        URLSession.shared.dataTaskPublisher(for: url) <3>
+        .tryMap { data, response -> Data in <4>
+            guard let httpResponse = response as? HTTPURLResponse,
+                httpResponse.statusCode == 200 else {
+                    throw TestFailureCondition.invalidServerResponse
+            }
+            return data
+        }
+        .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder()) <5>
+        .catch {_ in <6>
+            return Just(PostmanEchoTimeStampCheckResponse(valid: false))
+        }
+    }
+    .eraseToAnyPublisher()
+----
+
+<1> `Just` starts this publisher as an example by passing in a URL.
+<2> `flatMap` takes the URL as input and the closure goes on to create a one-shot publisher pipeline.
+<3> `dataTaskPublisher` uses the input url to make the request.
+<4> The result output ( a tuple of `(Data, URLResponse)` ) flows into `tryMap` to be parsed for additional errors.
+<5> `decode` attempts to refine the returned data into a locally defined type.
+<6> If any of this has failed, `catch` will convert the error into a placeholder sample.
+In this case an object with a preset `valid = false` property.
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''
