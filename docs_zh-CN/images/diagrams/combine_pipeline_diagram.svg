@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xl="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" version="1.1" viewBox="228 180 500 506" width="500" height="506">
+  <defs>
+    <font-face font-family="Gill Sans" font-size="20" panose-1="2 11 5 2 2 1 4 2 2 3" units-per-em="1000" underline-position="-75.19531" underline-thickness="49.80469" slope="0" x-height="449.70703" cap-height="687.0117" ascent="917.9688" descent="-230.46875" font-weight="400">
+      <font-face-src>
+        <font-face-name name="GillSans"/>
+      </font-face-src>
+    </font-face>
+  </defs>
+  <metadata> Produced by OmniGraffle 7.13 
+    <dc:date>2020-02-27 20:24:12 +0000</dc:date>
+  </metadata>
+  <g id="combine_pipeline_diagram" stroke-opacity="1" stroke-dasharray="none" stroke="none" fill-opacity="1" fill="none">
+    <title>combine_pipeline_diagram</title>
+    <g id="combine_pipeline_diagram: Layer 1">
+      <title>Layer 1</title>
+      <g id="Graphic_2">
+        <path d="M 295 307.9 L 295 302.5 L 716 302.5 L 716 299.8 L 727 305.2 L 716 310.6 L 716 307.9 Z" fill="white"/>
+        <path d="M 295 307.9 L 295 302.5 L 716 302.5 L 716 299.8 L 727 305.2 L 716 310.6 L 716 307.9 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_3">
+        <rect x="295" y="325" width="360" height="72" fill="white"/>
+        <rect x="295" y="325" width="360" height="72" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(300 349.5)" fill="black">
+          <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="138.65723" y="18">operator</tspan>
+        </text>
+      </g>
+      <g id="Group_9">
+        <g id="Graphic_12">
+          <path d="M 238.42857 294.4 L 230.2 306.1 L 238.42857 317.8 L 279.57143 317.8 L 287.8 306.1 L 279.57143 294.4 Z" fill="#ffd579" fill-opacity=".5"/>
+        </g>
+        <g id="Line_11">
+          <path d="M 238.42857 294.4 L 230.2 306.1 L 238.42857 317.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_10">
+          <path d="M 279.57143 294.4 L 287.8 306.1 L 279.57143 317.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+      </g>
+      <g id="Group_5">
+        <g id="Line_8">
+          <path d="M 238.4 260.2 L 230.2 271.9 L 238.4 283.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_7">
+          <path d="M 279.4 260.2 L 287.6 271.9 L 279.4 283.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Graphic_6">
+          <path d="M 238.4 260.2 L 230.2 271.9 L 238.4 283.6 L 279.4 283.6 L 287.6 271.9 L 279.4 260.2 Z" fill="#0096ff" fill-opacity=".5"/>
+        </g>
+      </g>
+      <g id="Graphic_16">
+        <path d="M 295 275.5 L 295 270.1 L 716 270.1 L 716 267.4 L 727 272.8 L 716 278.2 L 716 275.5 Z" fill="white"/>
+        <path d="M 295 275.5 L 295 270.1 L 716 270.1 L 716 267.4 L 727 272.8 L 716 278.2 L 716 275.5 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_35">
+        <rect x="295" y="181" width="360" height="72" fill="white"/>
+        <rect x="295" y="181" width="360" height="72" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(300 205.5)" fill="black">
+          <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="138.01758" y="18">publisher</tspan>
+        </text>
+      </g>
+      <g id="Graphic_36">
+        <rect x="295" y="613" width="360" height="72" fill="white"/>
+        <rect x="295" y="613" width="360" height="72" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(300 637.5)" fill="black">
+          <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="133.02246" y="18">subscriber</tspan>
+        </text>
+      </g>
+      <g id="Graphic_69">
+        <path d="M 295 451.9 L 295 446.5 L 716 446.5 L 716 443.8 L 727 449.2 L 716 454.6 L 716 451.9 Z" fill="white"/>
+        <path d="M 295 451.9 L 295 446.5 L 716 446.5 L 716 443.8 L 727 449.2 L 716 454.6 L 716 451.9 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Group_65">
+        <g id="Graphic_68">
+          <path d="M 238.42857 438.4 L 230.2 450.1 L 238.42857 461.8 L 279.57143 461.8 L 287.8 450.1 L 279.57143 438.4 Z" fill="#ffd579" fill-opacity=".5"/>
+        </g>
+        <g id="Line_67">
+          <path d="M 238.42857 438.4 L 230.2 450.1 L 238.42857 461.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_66">
+          <path d="M 279.57143 438.4 L 287.8 450.1 L 279.57143 461.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+      </g>
+      <g id="Group_61">
+        <g id="Line_64">
+          <path d="M 238.4 404.2 L 230.2 415.9 L 238.4 427.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_63">
+          <path d="M 279.4 404.2 L 287.6 415.9 L 279.4 427.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Graphic_62">
+          <path d="M 238.4 404.2 L 230.2 415.9 L 238.4 427.6 L 279.4 427.6 L 287.6 415.9 L 279.4 404.2 Z" fill="#0096ff" fill-opacity=".5"/>
+        </g>
+      </g>
+      <g id="Graphic_60">
+        <path d="M 295 419.5 L 295 414.1 L 716 414.1 L 716 411.4 L 727 416.8 L 716 422.2 L 716 419.5 Z" fill="white"/>
+        <path d="M 295 419.5 L 295 414.1 L 716 414.1 L 716 411.4 L 727 416.8 L 716 422.2 L 716 419.5 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_80">
+        <rect x="295" y="469" width="360" height="72" fill="white"/>
+        <rect x="295" y="469" width="360" height="72" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(300 493.5)" fill="black">
+          <tspan font-family="Gill Sans" font-size="20" font-weight="400" fill="black" x="138.65723" y="18">operator</tspan>
+        </text>
+      </g>
+      <g id="Graphic_79">
+        <path d="M 295 595.9 L 295 590.5 L 716 590.5 L 716 587.8 L 727 593.2 L 716 598.6 L 716 595.9 Z" fill="white"/>
+        <path d="M 295 595.9 L 295 590.5 L 716 590.5 L 716 587.8 L 727 593.2 L 716 598.6 L 716 595.9 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Group_75">
+        <g id="Graphic_78">
+          <path d="M 238.42857 582.4 L 230.2 594.1 L 238.42857 605.8 L 279.57143 605.8 L 287.8 594.1 L 279.57143 582.4 Z" fill="#ffd579" fill-opacity=".5"/>
+        </g>
+        <g id="Line_77">
+          <path d="M 238.42857 582.4 L 230.2 594.1 L 238.42857 605.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_76">
+          <path d="M 279.57143 582.4 L 287.8 594.1 L 279.57143 605.8" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+      </g>
+      <g id="Group_71">
+        <g id="Line_74">
+          <path d="M 238.4 548.2 L 230.2 559.9 L 238.4 571.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Line_73">
+          <path d="M 279.4 548.2 L 287.6 559.9 L 279.4 571.6" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        </g>
+        <g id="Graphic_72">
+          <path d="M 238.4 548.2 L 230.2 559.9 L 238.4 571.6 L 279.4 571.6 L 287.6 559.9 L 279.4 548.2 Z" fill="#0096ff" fill-opacity=".5"/>
+        </g>
+      </g>
+      <g id="Graphic_70">
+        <path d="M 295 563.5 L 295 558.1 L 716 558.1 L 716 555.4 L 727 560.8 L 716 566.2 L 716 563.5 Z" fill="white"/>
+        <path d="M 295 563.5 L 295 558.1 L 716 558.1 L 716 555.4 L 727 560.8 L 716 566.2 L 716 563.5 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+    </g>
+  </g>
+</svg>

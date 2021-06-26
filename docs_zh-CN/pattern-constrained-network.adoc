@@ -1,0 +1,59 @@
+[#patterns-constrained-network]
+== Requesting data from an alternate URL when the network is constrained
+
+__Goal__::
+
+* From Apple's WWDC 2019 presentation https://developer.apple.com/videos/play/wwdc2019/712/[Advances in Networking, Part 1], a sample pattern was provided using `tryCatch` and `tryMap` operators to react to the specific error of the network being constrained.
+
+__References__::
+
+* <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>
+* <<reference#reference-trycatch,tryCatch>>
+* <<reference#reference-trymap,tryMap>>
+
+__See also__::
+
+* <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
+* <<patterns#patterns-retry,Retrying in the event of a temporary failure>>
+
+__Code and explanation__::
+
+[source, swift]
+----
+// Generalized Publisher for Adaptive URL Loading
+func adaptiveLoader(regularURL: URL, lowDataURL: URL) -> AnyPublisher<Data, Error> {
+    var request = URLRequest(url: regularURL) <1>
+    request.allowsConstrainedNetworkAccess = false <2>
+    return URLSession.shared.dataTaskPublisher(for: request) <3>
+        .tryCatch { error -> URLSession.DataTaskPublisher in <4>
+            guard error.networkUnavailableReason == .constrained else {
+               throw error
+            }
+            return URLSession.shared.dataTaskPublisher(for: lowDataURL) <5>
+        .tryMap { data, response -> Data in
+            guard let httpResponse = response as? HTTPUrlResponse, <6>
+                   httpResponse.statusCode == 200 else {
+                       throw MyNetworkingError.invalidServerResponse
+            }
+            return data
+}
+.eraseToAnyPublisher() <7>
+----
+
+This example, from Apple's WWDC, provides a function that takes two URLs - a primary and a fallback.
+It returns a publisher that will request data and fall back requesting a secondary URL when the network is constrained.
+
+<1> The request starts with an attempt requesting data.
+<2> Setting `request.allowsConstrainedNetworkAccess` will cause the `dataTaskPublisher` to error if the network is constrained.
+<3> Invoke the `dataTaskPublisher` to make the request.
+<4> `tryCatch` is used to capture the immediate error condition and check for a specific error (the constrained network).
+<5> If it finds an error, it creates a new one-shot publisher with the fall-back URL.
+<6> The resulting publisher can still fail, and `tryMap` can map this a failure by throwing an error on HTTP response codes that map to error conditions
+<7> `eraseToAnyPublisher` enables type erasure on the chain of operators so the resulting signature of the adaptiveLoader function is `AnyPublisher<Data, Error>`
+
+In the sample, if the error returned from the original request wasn't an issue of the network being constrained, it passes on the `.failure` completion down the pipeline.
+If the error is that the network is constrained, then the `tryCatch` operator creates a new request to an alternate URL.
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

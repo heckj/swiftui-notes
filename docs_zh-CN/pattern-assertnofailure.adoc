@@ -1,0 +1,30 @@
+[#patterns-assertnofailure]
+== Verifying a failure hasn't happened using assertNoFailure
+
+__Goal__::
+
+* Verify no error has occurred within a pipeline
+
+__References__::
+
+* <<reference#reference-assertnofailure,assertNoFailure>>
+
+__See also__::
+
+* <<reference#reference-catch,catch>>
+* <<reference#reference-flatmap,flatMap>>
+
+__Code and explanation__::
+
+Useful in testing invariants in pipelines, the assertNoFailure operator also converts the failure type to `<Never>`.
+The operator will cause the application to terminate (or tests to crash to a debugger) if the assertion is triggered.
+
+This is useful for verifying the invariant of having dealt with an error.
+If you are sure you handled the errors and need to map a pipeline which technically can generate a failure type of `<Error>` to a subscriber that requires a failure type of `<Never>`.
+
+It is far more likely that you want to handle the error with and not have the application terminate.
+Look forward to <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>> and <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>> for patterns of how to provide logic to handle errors in a pipeline.
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

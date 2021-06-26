@@ -1,0 +1,22 @@
+[#raw-notes]
+= Raw Notes
+
+Words and phrases to look for and destroy:
+
+"simply"
+"just"
+"and then"
+"are then"
+"you should"
+
+Look for an verify:
+
+"stream" vs pipeline
+
+Things to verify are consistent:
+
+`finished` -> `.finished`
+`failure` -> `.failure`
+
+`.failure` completion
+`.finished` completion

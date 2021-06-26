@@ -1,0 +1,66 @@
+[#patterns-oneshot-error-handling]
+== Using catch to handle errors in a one-shot pipeline
+
+__Goal__::
+
+* If you need to handle a failure within a pipeline, for example before using the `assign` operator or another operator that requires the failure type to be `<Never>`, you can use `catch` to provide the appropriate logic.
+
+__References__::
+
+* <<reference#reference-catch,catch>>
+* <<reference#reference-just,Just>>
+
+__See also__::
+
+* <<patterns#patterns-retry,Retrying in the event of a temporary failure>>
+* <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>
+* <<patterns#patterns-constrained-network,Requesting data from an alternate URL when the network is constrained>>
+
+__Code and explanation__::
+
+<<reference#reference-catch,catch>> handles errors by replacing the upstream publisher with another publisher that you provide as a return in a closure.
+
+[WARNING]
+====
+Be aware that this effectively terminates the pipeline.
+If you're using a one-shot publisher (one that doesn't create more than a single event), then this is fine.
+====
+
+For example, <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> is a one-shot publisher and you might use catch with it to ensure that you get a response, returning a placeholder in the event of an error.
+Extending our previous example to provide a default response:
+
+[source, swift]
+----
+struct IPInfo: Codable {
+    // matching the data structure returned from ip.jsontest.com
+    var ip: String
+}
+let myURL = URL(string: "http://ip.jsontest.com")
+// NOTE(heckj): you'll need to enable insecure downloads in your Info.plist for this example
+// since the URL scheme is 'http'
+
+let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
+    // the dataTaskPublisher output combination is (data: Data, response: URLResponse)
+    .map({ (inputTuple) -> Data in
+        return inputTuple.data
+    })
+    .decode(type: IPInfo.self, decoder: JSONDecoder()) <1>
+    .catch { err in <2>
+        return Publishers.Just(IPInfo(ip: "8.8.8.8"))<3>
+    }
+    .eraseToAnyPublisher()
+----
+
+<1> Often, a catch operator will be placed after several operators that could fail, in order to provide a fallback or placeholder in the event that any of the possible previous operations failed.
+<2> When using catch, you get the error type in and can inspect it to choose how you provide a response.
+<3> The Just publisher is frequently used to either start another one-shot pipeline or to directly provide a placeholder response in the event of failure.
+
+A possible problem with this technique is that the if the original publisher generates more values to which you wish to react, the original pipeline has been ended.
+If you are creating a pipeline that reacts to a <<reference#reference-published,@Published>> property, then after any failed value that activates the catch operator, the pipeline will cease to react further.
+See <<reference#reference-catch,catch>> for more details of how this works.
+
+If you want to continue to respond to errors and handle them, see the pattern <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>.
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

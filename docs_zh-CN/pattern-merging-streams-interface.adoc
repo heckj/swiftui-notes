@@ -1,0 +1,164 @@
+
+[#patterns-merging-streams-interface]
+== Merging multiple pipelines to update UI elements
+
+__Goal__::
+
+* Watch and react to multiple UI elements publishing values, and updating the interface based on the combination of values updated.
+
+__References__::
+
+* The ViewController with this code is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/FormViewController.swift[UIKit-Combine/FormViewController.swift]
+
+* Publishers:
+<<reference#reference-published,@Published>>,
+* Operators:
+<<reference#reference-combinelatest,combineLatest>>,
+<<reference#reference-map,map>>,
+<<reference#reference-receive,receive>>
+* Subscribers:
+<<reference#reference-assign,assign>>
+
+__See also__::
+
+* <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>
+
+__Code and explanation__::
+
+This example intentionally mimics a lot of web form style validation scenarios, but within UIKit and using Combine.
+
+A view controller is set up with multiple elements to declaratively update.
+The view controller hosts 3 primary text input fields:
+
+* `value1`
+* `value2`
+* `value2_repeat`
+
+It also hosts a button to submit the combined values, and two labels to provide feedback.
+
+The rules of these update that are implemented:
+
+* The entry in `value1` has to be at least 5 characters.
+* The entry in `value2` has to be at least 5 characters.
+* The entry in `value2_repeat` has to be the same as `value2`.
+
+If any of these rules aren't met, then we want the submit button to be disabled and relevant messages displayed explaining what needs to be done.
+
+This can be achieved by setting up a cascade of pipelines that link and merge together.
+
+* There is a <<reference#reference-published,@Published>> property matching each of the user input fields.
+<<reference#reference-combinelatest,combineLatest>> is used to take the continually published updates from the properties and merge them into a single pipeline.
+A <<reference#reference-map,map>> operator enforces the rules about characters required and the values needing to be the same.
+If the values don't match the required output, we pass a nil value down the pipeline.
+
+* Another validation pipeline is set up for value1, just using a <<reference#reference-map,map>> operator to validate the value, or return nil.
+
+* The logic within the map operators  doing the validation is also used to update the label messages in the user interface.
+
+* A final pipeline uses <<reference#reference-combinelatest,combineLatest>> to merge the two validation pipelines into a single pipeline.
+A subscriber is attached to this combined pipeline to determine if the submission button should be enabled.
+
+The example below shows these all connected.
+
+.https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/FormViewController.swift[UIKit-Combine/FormViewController.swift]
+[source, swift]
+----
+import UIKit
+import Combine
+
+class FormViewController: UIViewController {
+
+    @IBOutlet weak var value1_input: UITextField!
+    @IBOutlet weak var value2_input: UITextField!
+    @IBOutlet weak var value2_repeat_input: UITextField!
+    @IBOutlet weak var submission_button: UIButton!
+    @IBOutlet weak var value1_message_label: UILabel!
+    @IBOutlet weak var value2_message_label: UILabel!
+
+    @IBAction func value1_updated(_ sender: UITextField) { <1>
+        value1 = sender.text ?? ""
+    }
+    @IBAction func value2_updated(_ sender: UITextField) {
+        value2 = sender.text ?? ""
+    }
+    @IBAction func value2_repeat_updated(_ sender: UITextField) {
+        value2_repeat = sender.text ?? ""
+    }
+
+    @Published var value1: String = ""
+    @Published var value2: String = ""
+    @Published var value2_repeat: String = ""
+
+    var validatedValue1: AnyPublisher<String?, Never> { <2>
+        return $value1.map { value1 in
+            guard value1.count > 2 else {
+                DispatchQueue.main.async { <3>
+                    self.value1_message_label.text = "minimum of 3 characters required"
+                }
+                return nil
+            }
+            DispatchQueue.main.async {
+                self.value1_message_label.text = ""
+            }
+            return value1
+        }.eraseToAnyPublisher()
+    }
+
+    var validatedValue2: AnyPublisher<String?, Never> { <4>
+        return Publishers.CombineLatest($value2, $value2_repeat)
+            .receive(on: RunLoop.main) <5>
+            .map { value2, value2_repeat in
+                guard value2_repeat == value2, value2.count > 4 else {
+                    self.value2_message_label.text = "values must match and have at least 5 characters"
+                    return nil
+                }
+                self.value2_message_label.text = ""
+                return value2
+            }.eraseToAnyPublisher()
+    }
+
+    var readyToSubmit: AnyPublisher<(String, String)?, Never> { <6>
+        return Publishers.CombineLatest(validatedValue2, validatedValue1)
+            .map { value2, value1 in
+                guard let realValue2 = value2, let realValue1 = value1 else {
+                    return nil
+                }
+                return (realValue2, realValue1)
+            }
+            .eraseToAnyPublisher()
+    }
+
+    private var cancellableSet: Set<AnyCancellable> = [] <7>
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        self.readyToSubmit
+            .map { $0 != nil } <8>
+            .receive(on: RunLoop.main)
+            .assign(to: \.isEnabled, on: submission_button)
+            .store(in: &cancellableSet) <9>
+    }
+}
+----
+
+<1> The start of this code follows the same patterns laid out in <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>.
+IBAction messages are used to update the <<reference#reference-published,@Published>> properties, triggering updates to any subscribers attached.
+<2> The first validation pipeline uses a <<reference#reference-map,map>> operator to take the string value input and convert it to nil if it doesn't match the validation rules.
+This is also converting the output type from the published property of `<String>` to the optional `<String?>`.
+The same logic is also used to trigger updates to the messages label to provide information about what is required.
+<3> Since we are updating user interface elements, we explicitly make those updates wrapped in `DispatchQueue.main.async` to invoke on the main thread.
+<4> <<reference#reference-combinelatest,combineLatest>> takes two publishers and merges them into a single pipeline with an output type that is the combined values of each of the upstream publishers.
+In this case, the output type is a tuple of `(<String>, <String>)`.
+<5> Rather than use `DispatchQueue.main.async`, we can use the <<reference#reference-receive,receive>> operator to explicitly run the next operator on the main thread, since it will be doing UI updates.
+<6> The two validation pipelines are combined with <<reference#reference-combinelatest,combineLatest>>, and the output of those checked and merged into a single tuple output.
+<7> We could store the assignment pipeline as an `AnyCancellable?` reference (to map it to the life of the viewcontroller) but another option is to create something to collect all the cancellable references.
+This starts as an empty set, and any sinks or assignment subscribers can be added to it to keep a reference to them so that they operate over the full lifetime of the view controller.
+If you are creating a number of pipelines, this can be a convenient way to maintain references to all of them.
+<8> If any of the values are nil, the <<reference#reference-map,map>> operator returns nil down the pipeline.
+Checking against a nil value provides the boolean used to enable (or disable) the submission button.
+<9> the `store` method is available on the https://developer.apple.com/documentation/combine/cancellable[Cancellable] protocol, which is explicitly set up to support saving off references that can be used to cancel a pipeline.
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

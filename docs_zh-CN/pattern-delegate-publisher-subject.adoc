@@ -1,0 +1,192 @@
+[#patterns-delegate-publisher-subject]
+== Creating a repeating publisher by wrapping a delegate based API
+
+__Goal__::
+
+* To use one of the Apple delegate APIs to provide values for a Combine pipeline.
+
+__References__::
+
+* <<reference#reference-passthroughsubject,passthroughSubject>>
+* <<reference#reference-currentvaluesubject,currentValueSubject>>
+
+__See also__::
+
+* <<patterns#patterns-future,Wrapping an asynchronous call with a Future to create a one-shot publisher>>
+* <<reference#reference-passthroughsubject,passthroughSubject>>
+* <<reference#reference-delay,delay>>
+
+__Code and explanation__::
+
+Where a <<reference#reference-future,Future>> publisher is great for wrapping existing code to make a single request, it doesn't serve as well to make a publisher that produces lengthy, or potentially unbounded, amount of output.
+
+Apple's Cocoa APIs have tended to use a object/delegate pattern, where you can opt in to receiving any number of different callbacks (often with data).
+One such example of that is included within the CoreLocation library, which offers a number of different data sources.
+
+If you want to consume data provided by one of these kinds of APIs within a pipeline, you can wrap the object and use <<reference#reference-passthroughsubject,passthroughSubject>> to expose a publisher.
+The sample code below shows an example of wrapping CoreLocation's CLManager object and consuming the data from it through a UIKit view controller.
+
+.https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/LocationHeadingProxy.swift[UIKit-Combine/LocationHeadingProxy.swift]
+[source, swift]
+----
+import Foundation
+import Combine
+import CoreLocation
+
+final class LocationHeadingProxy: NSObject, CLLocationManagerDelegate {
+
+    let mgr: CLLocationManager <1>
+    private let headingPublisher: PassthroughSubject<CLHeading, Error> <2>
+    var publisher: AnyPublisher<CLHeading, Error> <3>
+
+    override init() {
+        mgr = CLLocationManager()
+        headingPublisher = PassthroughSubject<CLHeading, Error>()
+        publisher = headingPublisher.eraseToAnyPublisher()
+
+        super.init()
+        mgr.delegate = self <4>
+    }
+
+    func enable() {
+        mgr.startUpdatingHeading() <5>
+    }
+
+    func disable() {
+        mgr.stopUpdatingHeading()
+    }
+    // MARK - delegate methods
+
+    /*
+     *  locationManager:didUpdateHeading:
+     *
+     *  Discussion:
+     *    Invoked when a new heading is available.
+     */
+    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+        headingPublisher.send(newHeading) <6>
+    }
+
+    /*
+     *  locationManager:didFailWithError:
+     *  Discussion:
+     *    Invoked when an error has occurred. Error types are defined in "CLError.h".
+     */
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        headingPublisher.send(completion: Subscribers.Completion.failure(error)) <7>
+    }
+}
+----
+
+<1> https://developer.apple.com/documentation/corelocation/cllocationmanager[CLLocationManager] is the heart of what is being wrapped, part of CoreLocation.
+Because it has additional methods that need to be called for using the framework, I exposed it as a public read-only property.
+This is useful for requesting user permission to use the location API, which the framework exposes as a method on `CLLocationManager`.
+<2> A private instance of `PassthroughSubject` with the data type we want to publish provides our inside-the-class access to forward data.
+<3> A public property `publisher` exposes the publisher from that subject for external subscriptions.
+<4> The heart of this works by assigning this class as the delegate to the `CLLocationManager` instance, which is set up at the tail end of initialization.
+<5> The CoreLocation API doesn't immediately start sending information.
+There are methods that need to be called to start (and stop) the data flow, and these are wrapped and exposed on this proxy object.
+Most publishers are set up to subscribe and drive consumption based on subscription, so this is a bit out of the norm for how a publisher starts generating data.
+<6> With the delegate defined and the `CLLocationManager` activated, the data will be provided via callbacks defined on the https://developer.apple.com/documentation/corelocation/cllocationmanagerdelegate[CLLocationManagerDelegate].
+We implement the callbacks we want for this wrapped object, and within them we use <<reference#reference-passthroughsubject,passthroughSubject>> `.send()` to forward the information to any existing subscribers.
+<7> While not strictly required, the delegate provided an `Error` reporting callback, so we included that as an example of forwarding an error through <<reference#reference-passthroughsubject,passthroughSubject>>.
+
+.https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/HeadingViewController.swift[UIKit-Combine/HeadingViewController.swift]
+[source, swift]
+----
+import UIKit
+import Combine
+import CoreLocation
+
+class HeadingViewController: UIViewController {
+
+    var headingSubscriber: AnyCancellable?
+
+    let coreLocationProxy = LocationHeadingProxy()
+    var headingBackgroundQueue: DispatchQueue = DispatchQueue(label: "headingBackgroundQueue")
+
+    // MARK - lifecycle methods
+
+    @IBOutlet weak var permissionButton: UIButton!
+    @IBOutlet weak var activateTrackingSwitch: UISwitch!
+    @IBOutlet weak var headingLabel: UILabel!
+    @IBOutlet weak var locationPermissionLabel: UILabel!
+
+    @IBAction func requestPermission(_ sender: UIButton) {
+        print("requesting corelocation permission")
+        let _ = Future<Int, Never> { promise in <1>
+            self.coreLocationProxy.mgr.requestWhenInUseAuthorization()
+            return promise(.success(1))
+        }
+        .delay(for: 2.0, scheduler: headingBackgroundQueue) <2>
+        .receive(on: RunLoop.main)
+        .sink { _ in
+            print("updating corelocation permission label")
+            self.updatePermissionStatus() <3>
+        }
+    }
+
+    @IBAction func trackingToggled(_ sender: UISwitch) {
+        switch sender.isOn {
+        case true:
+            self.coreLocationProxy.enable() <4>
+            print("Enabling heading tracking")
+        case false:
+            self.coreLocationProxy.disable()
+            print("Disabling heading tracking")
+        }
+    }
+
+    func updatePermissionStatus() {
+        let x = CLLocationManager.authorizationStatus()
+        switch x {
+        case .authorizedWhenInUse:
+            locationPermissionLabel.text = "Allowed when in use"
+        case .notDetermined:
+            locationPermissionLabel.text = "notDetermined"
+        case .restricted:
+            locationPermissionLabel.text = "restricted"
+        case .denied:
+            locationPermissionLabel.text = "denied"
+        case .authorizedAlways:
+            locationPermissionLabel.text = "authorizedAlways"
+        @unknown default:
+            locationPermissionLabel.text = "unknown default"
+        }
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+
+        // request authorization for the corelocation data
+        self.updatePermissionStatus()
+
+        let corelocationsub = coreLocationProxy
+            .publisher
+            .print("headingSubscriber")
+            .receive(on: RunLoop.main)
+            .sink { someValue in <5>
+                self.headingLabel.text = String(someValue.trueHeading)
+            }
+        headingSubscriber = AnyCancellable(corelocationsub)
+    }
+
+}
+----
+
+<1> One of the quirks of CoreLocation is the requirement to ask for permission from the user to access the data.
+The API provided to initiate this request returns immediately, but provides no detail if the user allowed or denied the request.
+The `CLLocationManager` class includes the information, and exposes it as a class method when you want to retrieve it, but there is no information provided to know when, or if, the user has responded to the request.
+Since the operation doesn't provide any return, we provide an integer as the pipeline data, primarily to represent that the request has been made.
+<2> Since there isn't a clear way to judge when the user will grant permission, but the permission is persistent, we simply use a <<reference#reference-delay,delay>> operator before attempting to retrieve the data.
+This use simply delays the propagation of the value for two seconds.
+<3> After that delay, we invoke the class method and attempt to update information in the interface with the results of the current provided status.
+
+<4> Since CoreLocation requires methods to be explicitly enabled or disabled to provide the data, this connects a `UISwitch` toggle `IBAction` to the methods exposed on our publisher proxy.
+
+<5> The heading data is received in this <<reference#reference-sink,sink>> subscriber, where in this example we write it to a text label.
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

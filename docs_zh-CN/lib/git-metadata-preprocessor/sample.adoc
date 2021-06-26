@@ -1,0 +1,123 @@
+= Test Document
+
+[cols="1,m,m,1",options="header"]
+|===
+|Item
+|Example from this repository
+|Attribute Name
+|Comment
+
+|latest commit sha
+|{git-metadata-sha}
+|git-metadata-sha
+|
+
+|short (7-char) commit sha
+|{git-metadata-sha-short}
+|git-metadata-sha-short
+|NB: Git tools and Github use 7 chars, Gitlab folks use 8 chars.
+
+|latest commit author
+|{git-metadata-author-name}
+|git-metadata-author-name
+|
+
+|latest commit author email
+|{git-metadata-author-email}
+|git-metadata-author-email
+|
+
+|latest commit date
+|{git-metadata-date}
+|git-metadata-date
+|
+
+|latest commit time
+|{git-metadata-time}
+|git-metadata-time
+|
+
+|latest commit timezone
+|{git-metadata-timezone}
+|git-metadata-timezone
+|
+
+|latest commit message
+|{git-metadata-commit-message}
+|git-metadata-commit-message
+|
+
+|latest commit message
+|{git-metadata-commit-message}
+|git-metadata-commit-message
+|
+
+|the current branch
+|{git-metadata-branch}
+|git-metadata-branch
+|if head is detached, returns `HEAD detached`
+
+|the current tags(s)
+|{git-metadata-tag}
+|git-metadata-tag
+|only defined if there are tags. 
+If there are  multiple tags they are combined with a ``, ``.
+Does both annotated and lightweight tags.
+
+|the path to this repository
+|{git-metadata-repo-path}
+|git-metadata-repo-path
+|
+
+|the relative path from this file to the repository root
+|{git-metadata-relative-path}
+|git-metadata-relative-path
+|useful for relative referencing and locating static resources
+
+|the `origin` remote if exists
+|{git-metadata-remotes-origin}
+|git-metadata-remotes-origin
+|empty if the remote does not exist
+|===
+
+Improvements and additions would be most welcome!
+
+== How can you use this?
+
+=== An automatically updating version
+
+I like to do something like the following in my document header for versioning purposes:
+
+----
+\ifeval::["{git-metadata-branch}" == "master"]
+:version: {git-metadata-branch}-{git-metadata-sha-short}
+\endif::[]
+\ifeval::["{git-metadata-branch}" != "master"]
+:version: {git-metadata-branch}
+\endif::[]
+----
+
+or perhaps:
+
+----
+\ifdef::git-metadata-tag[]
+:version: {git-metadata-tag}
+\endif::[]
+\ifndef::git-metadata-tag[]
+:version: {git-metadata-branch}-{git-metadata-sha-short}
+\endif::[]
+----
+
+=== Locating assets used by multiple documents
+
+I use the following when I have a range of asciidoc files in different places in a repository.
+I want them to all have perhaps a common stylesheet or other information.
+In this case I want to always pull in `attributes.adoc`.
+The `git-metadata-relative-path` gives the path from the current document back to the repository root.
+This saves the user needing to specify it for each document.
+
+----
+:assetdir: {git-metadata-relative-path}/assets
+:stylesdir: {assetdir}
+\include::{assetdir}/attributes.adoc[]
+----

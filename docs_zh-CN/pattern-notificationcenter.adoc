@@ -1,0 +1,88 @@
+[#patterns-notificationcenter]
+== Responding to updates from NotificationCenter
+
+__Goal__::
+
+* Receiving notifications from NotificationCenter as a publisher to declaratively react to the information provided.
+
+__References__::
+
+* <<reference#reference-notificationcenter,NotificationCenter>>
+
+__See also__::
+
+* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/NotificationCenterPublisherTests.swift[`UsingCombineTests/NotificationCenterPublisherTests.swift`]
+
+__Code and explanation__::
+
+A large number of frameworks and user interface components provide information about their state and interactions via Notifications from NotificationCenter.
+Apple's documentation includes an article on https://developer.apple.com/documentation/combine/receiving_and_handling_events_with_combine[receiving and handling events with Combine] specifically referencing NotificationCenter.
+
+https://developer.apple.com/documentation/foundation/notification[Notifications] flowing through https://developer.apple.com/documentation/foundation/notificationcenter[NotificationCenter] provide a common, central location for events within your application.
+
+You can also add your own notifications to your application, and upon sending them may include an additional dictionary in their `userInfo` property.
+An example of defining your own notification `.myExampleNotification`:
+
+[source, swift]
+----
+extension Notification.Name {
+    static let myExampleNotification = Notification.Name("an-example-notification")
+}
+----
+
+Notification names are structured, and based on Strings.
+Object references can be passed when a notification is posted to the NotificationCenter, indicating which object sent the notification.
+Additionally, Notifications may include a `userInfo`, which has a type of `[AnyHashable : Any]?`.
+This allows for arbitrary dictionaries, either reference or value typed, to be included with a notification.
+
+[source, swift]
+----
+let myUserInfo = ["foo": "bar"]
+
+let note = Notification(name: .myExampleNotification, userInfo: myUserInfo)
+NotificationCenter.default.post(note)
+----
+
+[NOTE]
+====
+While commonly in use within AppKit and macOS applications, not all developers are comfortable with heavily using NotificationCenter.
+Originating within the more dynamic Objective-C runtime, Notifications leverage Any and optional types quite extensively.
+Using them within Swift code, or a pipeline, implies that the pipeline will have to provide the type assertions and deal with any possible errors related to data that may or may not be expected.
+====
+
+When creating the NotificationCenter publisher, you provide the name of the notification for which you want to receive, and optionally an object reference to filter to specific types of objects.
+A number of AppKit components that are subclasses of https://developer.apple.com/documentation/appkit/nscontrol[NSControl] share a set of notifications, and filtering can be critical to getting the right notification.
+
+An example of subscribing to AppKit generated notifications:
+
+[source, swift]
+----
+let sub = NotificationCenter.default.publisher(for: NSControl.textDidChangeNotification, <1>
+                                               object: filterField) <2>
+    .map { ($0.object as! NSTextField).stringValue }  <3>
+    .assign(to: \MyViewModel.filterString, on: myViewModel) <4>
+----
+<1> TextFields within AppKit generate a `textDidChangeNotification` when the values are updated.
+<2> An AppKit application can frequently have a large number of text fields that may be changed.
+Including a reference to the sending control can be used to filter to text changed notifications to which you are specifically interested in responding.
+<3> the <<reference#reference-map,map>> operator can be used to get into the object references included with the notification, in this case the `.stringValue` property of the text field that sent the notification, providing its updated value
+<4> The resulting string can be assigned using a writable `KeyValue` path.
+
+An example of subscribing to your own notifications:
+[source, swift]
+----
+let cancellable = NotificationCenter.default.publisher(for: .myExampleNotification, object: nil)
+    // can't use the object parameter to filter on a value reference, only class references, but
+    // filtering on 'nil' only constrains to notification name, so value objects *can* be passed
+    // in the notification itself.
+    .sink { receivedNotification in
+        print("passed through: ", receivedNotification)
+        // receivedNotification.name
+        // receivedNotification.object - object sending the notification (sometimes nil)
+        // receivedNotification.userInfo - often nil
+    }
+----
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

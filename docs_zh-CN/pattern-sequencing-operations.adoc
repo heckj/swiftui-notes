@@ -1,0 +1,198 @@
+[#patterns-sequencing-operations]
+== Sequencing asynchronous operations
+
+__Goal__::
+
+* To explicitly order asynchronous operations with a Combine pipeline
+
+[TIP]
+====
+This is similar to a concept called "promise chaining".
+While you can arrange combine such that it acts similarly, it is likely not a good replacement for using a promise library.
+The primary difference is that promise libraries always deal with a single result per promise, and a Combine brings along the complexity of needing to handle the possibility of many values.
+====
+
+__References__::
+
+* <<reference#reference-future,Future>>
+* <<reference#reference-flatmap,flatMap>>
+* <<reference#reference-zip,zip>>
+* <<reference#reference-sink,sink>>
+
+__See also__::
+
+* <<patterns#patterns-delegate-publisher-subject,Creating a repeating publisher by wrapping a delegate based API>>
+* The ViewController with this code is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/AsyncCoordinatorViewController.swift[UIKit-Combine/AsyncCoordinatorViewController.swift].
+
+__Code and explanation__::
+
+Any asynchronous (or synchronous) set of tasks that need to happen in a specific order can also be coordinated using a Combine pipeline.
+By using <<reference#reference-future,Future>> operator, the act of completing an asynchronous call can be captured, and sequencing operators provides the structure of that coordination.
+
+By wrapping any asynchronous API calls with the <<reference#reference-future,Future>> publisher and then chaining them together with the <<reference#reference-flatmap,flatMap>> operator, you invoke the wrapped asynchronous API calls in a specific order.
+Multiple parallel asynchronous efforts can be created by creating multiple pipelines, with <<reference#reference-future,Future>> or another publisher, and waiting for the pipelines to complete in parallel by merging them together with the <<reference#reference-zip,zip>> operator.
+
+If you want force an <<reference#reference-future,Future>> publisher to not be invoked until another has completed, then creating the future publisher in the <<reference#reference-flatmap,flatMap>> closure causes it to wait to be created until a value has been passed to the flatMap operator.
+
+These techniques can be composed to create any structure of parallel or serial tasks.
+
+This technique of coordinating asynchronous calls can be especially effective if later tasks need data from earlier tasks.
+In those cases, the data results needed can be passed directly the pipeline.
+
+An example of this sequencing follows below.
+In this example, buttons (arranged visually to show the ordering of actions) are highlighted when they complete.
+The whole sequence is triggered by a separate button action, which also resets the state of all the buttons and cancels any existing running sequence if it's not yet finished.
+In this example, the asynchronous API call is a call that simply takes a random amount of time to complete to provide an example of how the timing works.
+
+The workflow that is created is represented in steps:
+
+* step 1 runs first.
+* step 2 has three parallel efforts, running after step 1 completes.
+* step 3 waits to start until all three elements of step 2 complete.
+* step 4 runs after step 3 has completed.
+
+Additionally, there is an activity indicator that is triggered to start animating when the sequence begins, stopping when step 4 has completed.
+
+.https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/AsyncCoordinatorViewController.swift[UIKit-Combine/AsyncCoordinatorViewController.swift]
+[source, swift]
+----
+
+import UIKit
+import Combine
+
+class AsyncCoordinatorViewController: UIViewController {
+
+    @IBOutlet weak var startButton: UIButton!
+
+    @IBOutlet weak var step1_button: UIButton!
+    @IBOutlet weak var step2_1_button: UIButton!
+    @IBOutlet weak var step2_2_button: UIButton!
+    @IBOutlet weak var step2_3_button: UIButton!
+    @IBOutlet weak var step3_button: UIButton!
+    @IBOutlet weak var step4_button: UIButton!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+
+    var cancellable: AnyCancellable?
+    var coordinatedPipeline: AnyPublisher<Bool, Error>?
+
+    @IBAction func doit(_ sender: Any) {
+        runItAll()
+    }
+
+    func runItAll() {
+        if self.cancellable != nil { <1>
+            print("Cancelling existing run")
+            cancellable?.cancel()
+            self.activityIndicator.stopAnimating()
+        }
+        print("resetting all the steps")
+        self.resetAllSteps() <2>
+        // driving it by attaching it to .sink
+        self.activityIndicator.startAnimating() <3>
+        print("attaching a new sink to start things going")
+        self.cancellable = coordinatedPipeline? <4>
+            .print()
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion: ", String(describing: completion))
+                self.activityIndicator.stopAnimating()
+            }, receiveValue: { value in
+                print(".sink() received value: ", value)
+            })
+    }
+    // MARK: - helper pieces that would normally be in other files
+
+    // this emulates an async API call with a completion callback
+    // it does nothing other than wait and ultimately return with a boolean value
+    func randomAsyncAPI(completion completionBlock: @escaping ((Bool, Error?) -> Void)) {
+        DispatchQueue.global(qos: .background).async {
+            sleep(.random(in: 1...4))
+            completionBlock(true, nil)
+        }
+    }
+
+    /// Creates and returns pipeline that uses a Future to wrap randomAsyncAPI
+    /// and then updates a UIButton to represent the completion of the async
+    /// work before returning a boolean True.
+    /// - Parameter button: button to be updated
+    func createFuturePublisher(button: UIButton) -> AnyPublisher<Bool, Error> { <5>
+        return Future<Bool, Error> { promise in
+            self.randomAsyncAPI() { (result, err) in
+                if let err = err {
+                    promise(.failure(err))
+                } else {
+                    promise(.success(result))
+                }
+            }
+        }
+        .receive(on: RunLoop.main)
+            // so that we can update UI elements to show the "completion"
+            // of this step
+        .map { inValue -> Bool in <6>
+            // intentionally side effecting here to show progress of pipeline
+            self.markStepDone(button: button)
+            return true
+        }
+        .eraseToAnyPublisher()
+    }
+
+    /// highlights a button and changes the background color to green
+    /// - Parameter button: reference to button being updated
+    func markStepDone(button: UIButton) {
+        button.backgroundColor = .systemGreen
+        button.isHighlighted = true
+    }
+
+    func resetAllSteps() {
+        for button in [self.step1_button, self.step2_1_button, self.step2_2_button, self.step2_3_button, self.step3_button, self.step4_button] {
+            button?.backgroundColor = .lightGray
+            button?.isHighlighted = false
+        }
+        self.activityIndicator.stopAnimating()
+    }
+
+    // MARK: - view setup
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.activityIndicator.stopAnimating()
+
+        // Do any additional setup after loading the view.
+
+        coordinatedPipeline = createFuturePublisher(button: self.step1_button) <7>
+            .flatMap { flatMapInValue -> AnyPublisher<Bool, Error> in
+            let step2_1 = self.createFuturePublisher(button: self.step2_1_button)
+            let step2_2 = self.createFuturePublisher(button: self.step2_2_button)
+            let step2_3 = self.createFuturePublisher(button: self.step2_3_button)
+            return Publishers.Zip3(step2_1, step2_2, step2_3)
+                .map { _ -> Bool in
+                    return true
+                }
+                .eraseToAnyPublisher()
+            }
+        .flatMap { _ in
+            return self.createFuturePublisher(button: self.step3_button)
+        }
+        .flatMap { _ in
+            return self.createFuturePublisher(button: self.step4_button)
+        }
+        .eraseToAnyPublisher()
+    }
+}
+----
+
+<1> `runItAll` coordinates the operation of this workflow, starting with checking to see if one is currently running.
+If defined, it invokes `cancel()` on the existing subscriber.
+<2> `resetAllSteps` iterates through all the existing buttons used represent the progress of this workflow, and resets them to gray and unhighlighted to reflect an initial state.
+It also verifies that the activity indicator is not currently animated.
+<3> Then we get things started, first with activating the animation on the activity indicator.
+<4> Creating the subscriber with <<reference#reference-sink,sink>> and storing the reference initiates the workflow.
+The publisher to which it is subscribing is setup outside this function, allowing it to be re-used multiple times.
+The <<reference#reference-print,print>> operator in the pipeline is for debugging, showing console output when the pipeline is triggered.
+<5> Each step is represented by the invocation of a <<reference#reference-future,Future>> publisher, followed immediately by pipeline elements to switch to the main thread and then update a UIButton's background to show the step has completed.
+This is encapsulated in a `createFuturePublisher` call, using <<reference#reference-erasetoanypublisher,eraseToAnyPublisher>> to simplify the type being returned.
+<6> The <<reference#reference-map,map>> operator is used to create this specific side effect of updating the a UIButton to show the step has been completed.
+<7> The creation of the overall pipeline and its structure of serial and parallel tasks is created from the combination of calls to `createFuturePublisher` using the operators <<reference#reference-flatmap,flatMap>> and  <<reference#reference-zip,zip>>.
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''

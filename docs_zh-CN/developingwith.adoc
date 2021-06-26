@@ -1,0 +1,165 @@
+[#developingwith]
+= Developing with Combine
+
+A common starting point is composing pipelines, leveraging existing publishers, operators, and subscribers.
+A number of examples within this book highlight various patterns, many of which are aimed at providing declarative responses to user inputs within interfaces.
+
+You may also want to create APIs that integrate more easily into Combine.
+For example, creating a publisher that encapsulates a remote API, returning a single result or a series of results.
+Or you might be creating a subscriber to consume and process data over time.
+
+== Reasoning about pipelines
+
+When developing with Combine, there are two broader patterns of publishers that frequently recur: expecting a publisher to return a single value and complete and expecting a publisher to return many values over time.
+
+The first is what I'm calling a "one-shot" publisher or pipeline.
+These publishers are expected to create a single response (or perhaps no response) and then terminate normally.
+
+The second is what I'm calling a "continuous" publisher.
+These publishers and associated pipelines are expected to be always active and providing the means to respond to ongoing events.
+In this case, the lifetime of the pipeline is significantly longer, and it is often not desirable to have such pipelines fail or terminate.
+
+When you are thinking about your development and how to use Combine, it is often beneficial to think about pipelines as being one of these types, and mixing them together to achieve your goals.
+For example, the pattern <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>> explicitly uses one-shot pipelines to support error handling on a continual pipeline.
+
+When you are creating an instance of a publisher or a pipeline, it is worthwhile to be thinking about how you want it to work - to either be a one-shot, or continuous.
+This choice will inform how you handle errors or if you want to deal with operators that manipulate the timing of the events (such as <<reference#reference-debounce,debounce>> or <<reference#reference-throttle,throttle>>).
+
+In addition to how much data the pipeline or publisher will provide, you will often want to think about what type pair the pipeline is expected to provide.
+A number of pipelines are more about transforming data through various types, and handling possible error conditions in that processing.
+An example of this is returning a pipeline returning a list in the example <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>> to provide a means to represent an "empty" result, even though the list is never expected to have more than 1 item within it.
+
+Ultimately, using Combine types are grounded at both ends; by the originating publisher, and how it is providing data (when it is available), and the subscriber ultimately consuming the data.
+
+[#developingwith-types]
+== Swift types with Combine publishers and subscribers
+
+When you compose pipelines within Swift, the chaining of functions results in the type being aggregated as nested generic types.
+If you are creating a pipeline, and then wanting to provide that as an API to another part of your code, the type definition for the exposed property or function can be exceptionally (and un-usefully) complex for the developer.
+
+To illustrate the exposed type complexity, if you created a publisher from a PassthroughSubject such as:
+
+// Source for this at SwiftUI-NotesTests/CombinePatternTests.swift
+[source, swift]
+----
+let x = PassthroughSubject<String, Never>()
+    .flatMap { name in
+        return Future<String, Error> { promise in
+            promise(.success(""))
+            }.catch { _ in
+                Just("No user found")
+            }.map { result in
+                return "\(result) foo"
+        }
+}
+----
+
+The resulting type is:
+
+[source, swift]
+----
+Publishers.FlatMap<Publishers.Map<Publishers.Catch<Future<String, Error>, Just<String>>, String>, PassthroughSubject<String, Never>>
+----
+
+When you want to expose the subject, all of that composition detail can be very distracting and make your code harder to use.
+
+To clean up that interface, and provide a nice API boundary, there are type-erased classes which can wrap either publishers or subscribers.
+These explicitly hide the type complexity that builds up from chained functions in Swift.
+
+The two classes used to expose simplified types for subscribers and publishers are:
+
+* https://developer.apple.com/documentation/combine/anysubscriber[AnySubscriber]
+* https://developer.apple.com/documentation/combine/anypublisher[AnyPublisher]
+
+Every publisher also inherits a convenience method `eraseToAnyPublisher()` that returns an instance of AnyPublisher.
+`eraseToAnyPublisher()` is used very much like an operator, often as the last element in a chained pipeline, to simplify the type returned.
+
+If you updated the above code to add `.eraseToAnyPublisher()` at the end of the pipeline:
+
+[source, swift]
+----
+let x = PassthroughSubject<String, Never>()
+    .flatMap { name in
+        return Future<String, Error> { promise in
+            promise(.success(""))
+            }.catch { _ in
+                Just("No user found")
+            }.map { result in
+                return "\(result) foo"
+        }
+}.eraseToAnyPublisher()
+----
+
+The resulting type would simplify to:
+
+[source, swift]
+----
+AnyPublisher<String, Never>
+----
+
+This same technique can be immensely useful when constructing smaller pipelines within closures.
+For example, when you want to return a publisher in the closure for a <<reference#reference-flatmap>> operator, you get simpler reasoning about types by explicitly asserting the closure should expect `AnyPublisher`.
+An example of this can be seen in the pattern <<patterns#patterns-sequencing-operations,Sequencing operations with Combine>>.
+
+[#developingwith-threads]
+== Pipelines and threads
+
+Combine is not just a single threaded construct.
+Operators, as well as publishers, can run on different dispatch queues or runloops.
+Composed pipelines can run across a single queue, or transfer across a number of queues or threads.
+
+Combine allows for publishers to specify the scheduler used when either receiving from an upstream publisher (in the case of operators), or when sending to a downstream subscriber.
+This is critical when working with a subscriber that updates UI elements, as that should always be called on the main thread.
+
+For example, you may see this in code as an operator:
+
+[source, swift]
+----
+.receive(on: RunLoop.main)
+----
+
+A number of operators can impact what thread or queue is being used to do the relevant processing.
+<<reference#reference-receive,receive>> and <<reference#reference-subscribe,subscribe>> are the two most common, explicitly moving execution of operators after and prior to their invocation respectively.
+
+A number of additional operators have parameters that include a scheduler.
+Examples include <<reference#reference-delay,delay>>, <<reference#reference-debounce,debounce>>, and <<reference#reference-throttle,throttle>>.
+These also have an impact on the queue executing the work - both for themselves and then any operators following in a pipeline.
+These operators all take a `scheduler` parameter, which switches to the relevant thread or queue to do the work.
+Any operators following them will also be invoked on their scheduler, giving them an impact somewhat like <<reference#reference-receive,receive>>.
+
+[TIP]
+====
+If you want to be explicit about which thread context an operator or subsequent operation will run within, define it with the <<reference#reference-receive,receive>> operator.
+====
+
+== Leveraging Combine with your development
+
+There are two common paths to developing code leveraging Combine.
+
+* First is simply leveraging synchronous (blocking) calls within a closure to one of the common operators.
+The two most prevalent operators leveraged for this are <<reference#reference-map,map>> and <<reference#reference-trymap,tryMap>>, for when your code needs to throw an Error.
+
+* Second is integrating your own code that is asynchronous, or APIs that provide a completion callback.
+If the code you are integrating is asynchronous, then you can't (quite) as easily use it within a closure.
+You need to wrap the asynchronous code with a structure that the Combine operators can work with and invoke.
+In practice, this often implies creating a call that returns a publisher instance, and then using that within the pipeline.
+
+The <<reference#reference-future,Future>> publisher was specifically created to support this kind of integration, and the pattern <<patterns#patterns-future,Wrapping an asynchronous call with a Future to create a one-shot publisher>> shows an example.
+
+If you want to use data provided by a publisher as a parameter or input to creating this publisher, there are two common means of enabling this:
+
+. Using the <<reference#reference-flatmap,flatMap>> operator, using the data passed in to create or return a Publisher instance.
+This is a variation of the pattern illustrated in <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>.
+
+. Alternately, <<reference#reference-map,map>> or <<reference#reference-trymap,tryMap>> can be used to create an instance of a publisher, followed immediately by chaining <<reference#reference-switchtolatest,switchToLatest>> to resolve that publisher into a value (or values) to be passed within the pipeline.
+
+The patterns <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>> and <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>> illustrate these patterns.
+
+You may find it worthwhile to create objects which return a publisher.
+Often this enables your code to encapsulate the details of communicating with a remote or network based API.
+These can be developed using <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> or your own code.
+A simple example of this is detailed in the pattern <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>>.
+
+// force a page break - ignored in HTML rendering
+<<<
+'''

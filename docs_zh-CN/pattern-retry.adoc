@@ -1,0 +1,75 @@
+[#patterns-retry]
+== Retrying in the event of a temporary failure
+
+__Goal__::
+
+* The <<reference#reference-retry,retry>> operator can be included in a pipeline to retry a subscription when a `.failure` completion occurs.
+
+__References__::
+
+* <<reference#reference-catch,catch>>
+* <<reference#reference-retry,retry>>
+* <<reference#reference-delay,delay>>
+* <<reference#reference-trymap,tryMap>>
+
+__See also__::
+
+* <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
+* <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>
+
+__Code and explanation__::
+
+When requesting data from a `dataTaskPublisher`, the request may fail.
+In that case you will receive a `.failure` completion with an error.
+When it fails, the <<reference#reference-retry,retry>> operator will let you retry that same request for a set number of attempts.
+The `retry` operator passes through the resulting values when the publisher does not send a `.failure` completion.
+`retry` only reacts within a combine pipeline when a `.failure` completion is sent.
+
+When `retry` receives a `.failure` completion, the way it retries is by recreating the subscription to the operator or publisher to which  it was chained.
+
+The <<reference#reference-retry,retry>> operator is commonly desired when attempting to request network resources with an unstable connection, or other situations where the request might succeed if the request happens again.
+If the number of retries specified all fail, then the `.failure` completion is passed down to the subscriber.
+
+In our example below, we are using retry in combination with a <<reference#reference-delay,delay>> operator.
+Our use of the delay operator puts a small random delay before the next request.
+This spaces out the retry attempts, so that the retries do not happen in quick succession.
+
+This example also includes the use of the <<reference#reference-trymap,tryMap>> operator to more fully inspect any URLResponse returned from the `dataTaskPublisher`.
+Any response from the server is encapsulated by `URLSession`, and passed forward as a valid response.
+`URLSession` does not treat a _404 Not Found_ http response as an error response, nor any of the _50x_ error codes.
+Using `tryMap` lets us inspect the response code that was sent, and verify that it was a 200 response code.
+In this example, if the response code is anything but a 200 response, it throws an exception - which in turn causes the tryMap operator to pass down a `.failure` completion rather than data.
+This example sets the `tryMap` *after* the retry operator so that retry will only re-attempt the request when the site didn't respond.
+
+[source, swift]
+----
+let remoteDataPublisher = urlSession.dataTaskPublisher(for: self.URL!)
+    .delay(for: DispatchQueue.SchedulerTimeType.Stride(integerLiteral: Int.random(in: 1..<5)), scheduler: backgroundQueue) <1>
+    .retry(3) <2>
+    .tryMap { data, response -> Data in <3>
+        guard let httpResponse = response as? HTTPURLResponse,
+            httpResponse.statusCode == 200 else {
+                throw TestFailureCondition.invalidServerResponse
+        }
+        return data
+    }
+    .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder())
+    .subscribe(on: backgroundQueue)
+    .eraseToAnyPublisher()
+----
+
+<1> The <<reference#reference-delay,delay>> operator will hold the results flowing through the pipeline for a short duration, in this case for a random selection of 1 to 5 seconds. By adding delay here in the pipeline, it will always occur, even if the original request is successful.
+<2> Retry is specified as trying 3 times.
+This will result in a total of four attempts if each fails - the original request and 3 additional attempts.
+<3> tryMap is being used to inspect the data result from dataTaskPublisher and return a `.failure` completion if the response from the server is valid, but not a 200 HTTP response code.
+
+[WARNING]
+====
+When using the <<reference#reference-retry,retry>> operator with <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>, verify that the URL you are requesting isn't going to have negative side effects if requested repeatedly or with a retry.
+Ideally such requests are be expected to be idempotent.
+If they are not, the <<reference#reference-retry,retry>> operator may make multiple requests, with very unexpected side effects.
+====
+
+// force a page break - in HTML rendering is just a <HR>
+<<<
+'''
