@@ -1,115 +1,115 @@
 [#introduction]
-= Introduction to Combine
+= Combine 简介
 
-In Apple's words, Combine is:
+用苹果公司的话来说，Combine 是:
 
 [quote]
 a declarative Swift API for processing values over time.
 
-Combine is Apple's take on a functional reactive programming library, akin to https://github.com/ReactiveX/RxSwift[RxSwift].
-RxSwift itself is a port of http://reactivex.io[ReactiveX].
-Combine uses many of the same functional reactive concepts that can be found in other languages and libraries, applying the staticly typed nature of Swift to their solution.
+Combine 是苹果用来实现函数响应式编程的库， 类似于 https://github.com/ReactiveX/RxSwift[RxSwift]。
+RxSwift 是 http://reactivex.io[ReactiveX] 对 Swift 语言的实现。
+Combine 使用了许多可以在其他语言和库中找到的相同的函数响应式概念，并将 Swift 的静态类型特性应用其中。
 
 [NOTE]
 ====
-If you are already familiar with RxSwift there is https://github.com/CombineCommunity/rxswift-to-combine-cheatsheet[a good collected cheat-sheet] for how to map concepts and APIs from RxSwift to Combine.
+如果你已经熟悉 RxSwift 了，这里有 https://github.com/CombineCommunity/rxswift-to-combine-cheatsheet[一份整理好的表单] 可以让你把 RxSwift 的概念和 API 对应到 Combine 上。
 ====
 
-== Functional reactive programming
+== 函数响应式编程
 
-https://en.wikipedia.org/wiki/Functional_reactive_programming[Functional reactive programming], also known as data-flow programming, builds on the concepts of https://en.wikipedia.org/wiki/Functional_programming[functional programming].
-Where functional programming applies to lists of elements, functional reactive programming is applied to streams of elements.
-The kinds of functions in functional programming, such as `map`, `filter`, and `reduce` have analogues that can be applied to streams.
-In addition to functional programming primitives, functional reactive programming includes functions to split and merge streams.
-Like functional programming, you may create operations to transform the data flowing through the stream.
+https://en.wikipedia.org/wiki/Functional_reactive_programming[函数响应式编程]， 也称为数据流编程, 建立在 https://en.wikipedia.org/wiki/Functional_programming[函数式编程] 的概念上。
+其中函数式编程适用于元素列表，函数响应式编程应用于元素流。
+函数式编程中的各种函数，例如 `map`, `filter`, 和 `reduce` 也有可以应用于流的类似函数。
+除了函数式编程原本的能力外，函数响应式编程还包括用于分割和合并流的功能。
+像函数式编程一样，你可以对在流中的数据进行转换。
 
-There are many parts of the systems we program that can be viewed as asynchronous streams of information - events, objects, or pieces of data.
-The observer pattern watches a single object, providing notifications of changes and updates.
-If you view these notifications over time, they make up a stream of objects.
-Functional reactive programming, Combine in this case, allows you to create code that describes what happens when getting data in a stream.
+在我们编程的系统中有许多部分可以被视为异步信息流 - 事件、对象或数据。
+观察者模式监听单个对象，在其更改变化时提供通知事件。
+如果你随着时间的推移查看这些通知，它们会构成一个对象流。
+函数响应式编程 Combine，允许你创建代码，来描述在流中获取到数据时发生的事情。
 
-You may want to create logic to watch more than one element that is changing.
-You may also want to include logic that does additional asynchronous operations, some of which may fail.
-You may want to change the content of the streams based on timing, or change the timing of the content.
-Handling the flow of these event streams, the timing, errors when they happen, and coordinating how a system responds to all those events is at the heart of functional reactive programming.
+你可能希望创建逻辑以监听多个元素的改变。
+你可能还希望包含有异步操作的逻辑，其中一些可能会失败。
+您可能想要根据时序更改数据流的内容，或更改内容的时序。
+处理这些事件流的流程、时序、发生的错误以及协调系统如何响应所有这些事件是函数响应式编程的核心。
 
-A solution based on functional reactive programming is particularly effective when programming user interfaces.
-Or more generally for creating pipelines that process data from external sources or rely on asynchronous APIs.
+基于函数响应式编程的解决方案在开发用户界面时特别有效。
+它也更通常用于创建流水线，用来处理从外部源或异步 API 返回的数据。
 
-== Combine specifics
+== Combine 的特性
 
-Applying these concepts to a strongly typed language like Swift is part of what Apple has created in Combine.
-Combine extends functional reactive programming by embedding the concept of back-pressure.
-Back-pressure is the idea that the subscriber should control how much information it gets at once and needs to process.
-This leads to efficient operation with the added notion that the volume of data processed through a stream is controllable as well as cancellable.
+将这些概念应用于像 Swift 这样的强类型语言是 Apple 在 Combine 中所创造的一部分。
+Combine 通过嵌入 back-pressure 来扩展函数响应式编程。
+Back-pressure 是指订阅者应该控制它一次获得多少信息以及需要处理多少信息。
+这带来了高效的数据操作，并且通过流处理的数据量是可控和可取消的。
 
-Combine elements are set up to be composed, including affordances to integrate existing code to incrementally support adoption.
+Combine 的元素被设置为组合式的，这有利于逐步地集成于现有的代码以采用它。
 
-Combine is leveraged by some of Apple's other frameworks.
-SwiftUI is the obvious example that has the most attention, with both subscriber and publisher elements.
-RealityKit also has publishers that you can use to react to events.
-And Foundation has a number of Combine specific additions including NotificationCenter, URLSession, and Timer as publishers.
+苹果公司的其他一些框架利用了Combine。
+SwiftUI 是最受关注的明显示例，同时包含订阅者和发布者。
+RealityKit 也具有可用于对事件做出反应的发布者。
+Foundation 有许多 Combine 特定的附加功能，包括作为发布者的 NotificationCenter、URLSession 和 Timer。
 
-Any asynchronous API _can_ be leveraged with Combine.
-For example, you could use some of the APIs in the Vision framework, composing data flowing to it, and from it, by leveraging Combine.
+任何异步 API _都可以_ 与 Combine 一起使用。
+例如，你可以使用 Vision 框架中的一些 API，通过利用 Combine 组合流入和流出的数据。
 
 [sidebar]
 ****
-In this work, I'm going to call a set of composed operations in Combine a **pipeline**.
-Pipeline is not a term that Apple is (yet?) using in its documentation.
+在这本书中，我将把 Combine 中的一系列组合操作称作 **管道**。
+管道 也许不是 Apple 在其文档中使用的术语。
 ****
 
-== When to use Combine
+== 什么情况使用 Combine
 
-Combine fits most naturally when you want to set up something that reacts to a variety of inputs.
-User interfaces fit very naturally into this pattern.
+当你想要设置对各种输入做出反应时，Combine 最合适，
+用户界面也非常适合这种模式。
 
-The classic examples using functional reactive programming in user interfaces frequently show form validation, where user events such as changing text fields, taps, or mouse-clicks on UI elements make up the data being streamed.
-Combine takes this further, enabling watching of properties, binding to objects, sending and receiving higher level events from UI controls, and supporting integration with almost all of Apple's existing API ecosystem.
+在用户界面中使用函数响应式编程的经典示例是显示表单验证，其中用户事件如更改文本字段、点击或鼠标点击 UI 元素构成正在流式传输的数据。
+Combine 更进一步，支持监听属性、绑定到对象、从 UI 控件发送和接收更高级别的事件，并支持与几乎所有 Apple 现有 API 生态系统的集成。
 
-Some things you can do with Combine include:
+你可以使用 Combine 执行的一些操作包括：
 
-* You can set up pipelines to enable a button for submission only when values entered into the fields are valid.
-* A pipeline can also do asynchronous actions (such as checking with a network service) and using the values returned to choose how and what to update within a view.
-* Pipelines can also be used to react to a user typing dynamically into a text field and updating the user interface view based on what they're typing.
+* 你可以设置管道以仅在字段中输入的值有效时启用提交按钮。
+* 管道还可以执行异步操作（例如检查网络服务）并使用返回的值来选择在视图中更新的方式和内容。
+* 管道还可用于对用户在文本字段中动态输入做出反应，并根据他们输入的内容更新用户界面视图。
 
-Combine is not limited to user interfaces.
-Any sequence of asynchronous operations can be effective as a pipeline, especially when the results of each step flow to the next step.
-An example of such might be a series of network service requests, followed by decoding the results.
+Combine 不限于用户界面。
+任何异步操作序列都可以被作为管道，尤其是当每个步骤的结果流向下一步时。
+此类示例可能是一系列网络服务请求，然后对结果进行解码。
 
-Combine can also be used to define how to handle errors from asynchronous operations.
-Combine supports doing this by setting up pipelines and merging them together.
-One of Apple's examples with Combine include a pipeline to fall back to getting a lower-resolution image from a network service when the local network is constrained.
+Combine 也可用于定义如何处理异步操作中的错误。
+通过设置管道并将它们合并在一起，Combine 支持这样做。
+Apple 使用 Combine 的示例之一是在本地网络受限时退而求其次地从网络服务获取较低分辨率图像的管道。
 
-Many of the pipelines you create with Combine will only be a few operations.
-Even with just a few operations, Combine can still make it much easier to view and understand what's happening when you compose a pipeline.
-Combine pipelines are a declarative way to define what processing should happen to a stream of values over time.
+你使用 Combine 创建的许多管道只是少数操作。
+即使只进行少量操作，Combine 仍然可以让你更轻松地查看和理解在组合管道时发生的情况。
+Combine 的管道是一种声明性方式，用于定义随着时间的推移对数据流中值进行的处理。
 
 // force a page break - ignored in HTML rendering
 <<<
 '''
 
 [#introduction-appledocs]
-== Apple's Combine Documentation
+== 苹果提供的 Combine 文档
 
 icon:apple[size=2x,set=fab]
 
-The https://developer.apple.com/documentation/combine[online documentation for Combine] can be found at https://developer.apple.com/documentation/combine.
-Apple's developer documentation is hosted at https://developer.apple.com/documentation/.
+https://developer.apple.com/documentation/combine[Combine 的在线文档] 可以在 https://developer.apple.com/documentation/combine 找到。
+Apple 的开发者文档托管在 https://developer.apple.com/documentation/ 。
 
-=== WWDC 2019 content
+=== WWDC 2019 内容
 
-Apple provides video, slides, and some sample code in sessions at its developer conferences.
-Details on Combine are primarily from https://developer.apple.com/videos/play/wwdc2019[WWDC 2019].
+Apple 在其开发者大会中提供了视频、幻灯片和一些示例代码。
+关于 Combine 的详细信息主要来自 https://developer.apple.com/videos/play/wwdc2019[WWDC 2019]。
 
 [NOTE]
 ====
-Combine has evolved since its initial release at WWDC 2019.
-Some of the content in these presentations are now slightly dated or changed from what currently exists.
-The majority of this content is still immensely valuable in getting an introduction or feel for what Combine is and can do.
+自从在 WWDC 2019 上首次发布以来，Combine 一直在发展。
+这些演示文稿中的一些内容现在略有过时或与当前存在的内容有所不同。
+这些内容的大部分内容对于介绍或了解 Combine 是什么以及可以做什么仍然非常有价值。
 ====
 
-A number of these introduce and go into some depth on Combine:
+其中一些介绍并深入讲解了 Combine：
 
 * https://developer.apple.com/videos/play/wwdc2019/722/[Introducing Combine]
 ** https://devstreaming-cdn.apple.com/videos/wwdc/2019/722l6blhn0efespfgx/722/722_introducing_combine.pdf?dl=1[PDF of presentation notes]
@@ -117,7 +117,7 @@ A number of these introduce and go into some depth on Combine:
 * https://developer.apple.com/videos/play/wwdc2019/721/[Combine in Practice]
 ** https://devstreaming-cdn.apple.com/videos/wwdc/2019/721ga0kflgr4ypfx/721/721_combine_in_practice.pdf?dl=1[PDF of presentation notes]
 
-A number of additional WWDC19 sessions mention Combine:
+许多其他 WWDC19 会议提到了 Combine：
 
 * https://developer.apple.com/videos/play/wwdc2019/415/[Modern Swift API Design]
 * https://developer.apple.com/videos/play/wwdc2019/226[Data Flow Through SwiftUI]
@@ -127,13 +127,13 @@ A number of additional WWDC19 sessions mention Combine:
 * https://developer.apple.com/videos/play/wwdc2019/610/[Building Collaborative AR Experiences]
 * https://developer.apple.com/videos/play/wwdc2019/223/[Expanding the Sensory Experience with Core Haptics]
 
-== Additional Online Combine Resources
+== 其他线上的 Combine 资源
 
-In addition to Apple's documentation, there are a number of other online resources where you can find questions, answers, discussion, and descriptions of how Combine operates.
+除了 Apple 的文档之外，还有许多其他在线资源，你可以在其中找到有关 Combine 运作方式的问题、答案、讨论和说明。
 
-* The https://forums.swift.org/[Swift Forums] (hosted from the https://swift.org/[swift open source project]) has a https://forums.swift.org/tags/combine[combine tag] with a number of interesting threads. While the Combine framework is *not* open source, some of its implementation and specifics are discussed in these forums.
+* https://forums.swift.org/[Swift 论坛]（托管于 https://swift.org/[swift 开源项目]）有一个 https://forums.swift.org/tags/combine[combine tag] 有许多有趣讨论。虽然 Combine 框架 *不是* 开源的，但在这些论坛中有它的一些实现和细节的讨论。
 
-* https://stackoverflow.com[Stackoverflow] also has a sizable (and growing) collection of https://stackoverflow.com/questions/tagged/combine[Combine related Q&A].
+* https://stackoverflow.com[Stackoverflow] 也有大量（并且还在不断增加）的 https://stackoverflow.com/questions/tagged/combine[Combine 相关问答]。
 
 // force a page break - ignored in HTML rendering
 <<<
