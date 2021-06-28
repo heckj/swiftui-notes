@@ -17,7 +17,7 @@
 
 **_如果您觉得内容有用，请购买没有数字版权管理的 PDF 或 ePub 版本 http://gumroad.com/l/usingcombine._**
 
-这本书提供免费的 https://heckj.github.io/swiftui-notes/[线上版].
+这本书提供免费的 https://heckj.github.io/swiftui-notes/[线上版]。
 
 如果发现有拼写、语法或者技术错误想要指出，请在 GitHub https://github.com/heckj/swiftui-notes/issues/new/choose[新建一个 issue]。
 如果你愿意的话，也可以 fork 这个仓库，更新或者纠正之后创建一个 https://github.com/heckj/swiftui-notes/compare?expand=1[pull requests] 给我。
@@ -26,7 +26,7 @@
 
 .感谢
 ****
-Michael Critz 设计并提供封面.
+Michael Critz 设计并提供封面。
 
 以下人员的检查、指正和更新:
 
@@ -82,9 +82,9 @@ Joe 广泛的贡献和参与到各种开源项目的工作中。
 没有数字版权管理的 PDF 或 ePub 版本可以在 http://gumroad.com/l/usingcombine 购买。
 
 随着开发的继续，将对线上版本的内容持续更新。
-更大的更新和宣告也会通过 https://gumroad.com/heckj[作者在 Gumroad 的简介] 进行提供.
+更大的更新和宣告也会通过 https://gumroad.com/heckj[作者在 Gumroad 的简介] 进行提供。
 
-本书的内容包括示例代码和测试，都放在 GitHub 的仓库中: https://github.com/heckj/swiftui-notes.
+本书的内容包括示例代码和测试，都放在 GitHub 的仓库中: https://github.com/heckj/swiftui-notes 。
 
 === 下载项目
 
@@ -96,7 +96,7 @@ Joe 广泛的贡献和参与到各种开源项目的工作中。
 
 image::welcomeToXcode.png[Welcome to Xcode,406,388]
 
-* 从 Welcome to Xcode 窗口, 选择 **Clone an existing project**
+* 从 Welcome to Xcode 窗口，选择 **Clone an existing project**
 * 输入 `https://github.com/heckj/swiftui-notes.git` 然后点击 `Clone`
 
 image::cloneRepository.png[clone Repository,463,263]
