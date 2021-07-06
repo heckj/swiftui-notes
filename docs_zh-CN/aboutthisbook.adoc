@@ -8,7 +8,7 @@
 这是一本中高级难度的书，主要关注在如何使用 Combine 框架。
 你需要对 Swift 及其中的引用和值类型、协议有透彻的理解，并且能够熟练使用 Foundation 框架中的常用元素，才能阅读本书和其中的示例。
 
-如果你刚开始学习 Swift， https://developer.apple.com/swift/resources/[苹果提供了一些资源] 可以用来学习，
+如果你刚开始学习 Swift， https://developer.apple.com/swift/resources/[Apple 提供了一些资源] 可以用来学习，
 还有一些作者写了非常棒的教程和入门书籍， 例如 Daniel Steinberg 写的 https://gumroad.com/l/swift-kickstart[A Swift Kickstart] 和 Paul Hudson 写的 https://www.hackingwithswift.com[Hacking with Swift]。
 
 这本书提供了对函数响应式编程概念的 <<introduction#introduction,简短介绍>>， 这正是 Combine 所要提供的编程方式。
@@ -66,7 +66,7 @@ Joe 开发了从移动和桌面应用程序开发的项目到基于云的分布�
 Joe 还指导人们学习、构建、验证、部署和运行软件服务和基础架构。
 
 Joe 广泛的贡献和参与到各种开源项目的工作中。
-他把各种各样的话题写在网站 https://rhonabwy.com/ 上。
+他在网站 https://rhonabwy.com/ 上撰写了各种主题的文章。
 
 [cols="3*^",frame=none,grid=none,width=50%]
 |===
@@ -89,8 +89,8 @@ Joe 广泛的贡献和参与到各种开源项目的工作中。
 === 下载项目
 
 本书的内容以及本书引用的示例代码和单元测试，都被链接到了一个 Xcode 的项目中（`swiftui-notes.xcodeproj`）。
-该 Xcode 项目包括完全可实操的示例代码，展示了与 Uikit 和 SwiftUI 集成的示例。
-该项目还包括练习框架的大量单元测试，以说明框架组件的行为。
+该 Xcode 项目包括完全可实操的示例代码，展示了 Combine 与 Uikit 和 SwiftUI 集成的示例。
+该项目还包括运用此框架的大量单元测试，以说明框架组件的行为。
 
 与本书关联的项目需要 Xcode 11 和 Macos 10.14 或更高版本。
 
