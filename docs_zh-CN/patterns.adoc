@@ -1,8 +1,8 @@
 [#patterns]
-= Patterns and Recipes
+= 常用模式和方法
 
-Included are a series of patterns and examples of Publishers, Subscribers, and pipelines.
-These examples are meant to illustrate how to use the Combine framework to accomplish various tasks.
+本章包括一系列模式和发布者、订阅者和管道的示例。
+这些示例旨在说明如何使用 Combine 框架完成各种任务。
 
 include::pattern-sink.adoc[]
 include::pattern-assign.adoc[]
@@ -12,24 +12,24 @@ include::pattern-future.adoc[]
 include::pattern-sequencing-operations.adoc[]
 
 [#patterns-general-error-handling]
-== Error Handling
+== 错误处理
 
-Previous examples above expect that the subscriber would handle the error conditions, if they occurred.
-However, you are not always able to control what the subscriber requires - as might be the case if you are using SwiftUI.
-In these cases, you need to build your pipeline so that the output types match the subscriber types.
-This implies that you are handling any errors within the pipeline.
+上述示例都假设，如果发生错误情况，订阅者将处理这些情况。
+但是，你并不总是能够控制订阅者的要求——如果你使用 SwiftUI，情况可能如此。
+在这些情况下，你需要构建管道，以便输出类型与订阅者的类型匹配。
+这意味着你在处理管道内的任何错误。
 
-For example, if you are working with SwiftUI and the you want to use <<reference#reference-assign,assign>> to set the `isEnabled` property on a button, the subscriber will have a few requirements:
+例如，如果你正在使用 SwiftUI，并且你希望使用 <<reference#reference-assign,assign>> 在按钮上设置 `isEnabled` 属性，则订阅者将有几个要求：
 
-. the subscriber should match the type output of `<Bool, Never>`
-. the subscriber should be called on the main thread
+. 订阅者应匹配 `<Bool, Never>` 的类型输出
+. 应该在主线程调用订阅者
 
-With a publisher that can throw an error (such as <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>), you need to construct a pipeline to convert the output type, but also handle the error within the pipeline to match a failure type of `<Never>`.
+如果发布器可能会出错（例如 <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> ），你需要构建一个管道来转换输出类型，还需要处理管道内的错误，以匹配错误类型 `<Never>`。
 
-How you handle the errors within a pipeline is dependent on how the pipeline is defined.
-If the pipeline is set up to return a single result and terminate, a good example is <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>.
-If the pipeline is set up to continually update, the error handling needs to be a little more complex.
-In this case, look at the example <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>.
+如何处理管道内的错误取决于管道的定义方式。
+如果管道设置为返回单个结果并终止， 一个很好的例子就是 <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>。
+如果管道被设置为持续更新，则错误处理要复杂一点。
+这种情况下的一个很好的例子是 <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>。
 
 :leveloffset: +1
 include::pattern-assertnofailure.adoc[]
@@ -40,7 +40,7 @@ include::pattern-constrained-network.adoc[]
 :leveloffset: -1
 
 [#patterns-uikit-integration]
-== UIKit or AppKit Integration
+== 和 UIKit 或 AppKit 集成
 
 :leveloffset: +1
 include::pattern-update-interface-userinput.adoc[]
@@ -51,29 +51,29 @@ include::pattern-notificationcenter.adoc[]
 :leveloffset: -1
 
 [#patterns-swiftui-integration]
-== SwiftUI Integration
+== 和 SwiftUI 集成
 
 :leveloffset: +1
 include::pattern-observableobject.adoc[]
 :leveloffset: -1
 
 [#patterns-testing-and-debugging]
-== Testing and Debugging
+== 测试和调试
 
-The Publisher/Subscriber interface in Combine is beautifully suited to be an easily testable interface.
+Combine 中的发布者和订阅者接口是非常易于测试的。
 
-With the composability of Combine, you can use this to your advantage, creating APIs that present, or consume, code that conforms to https://developer.apple.com/documentation/combine/publisher[Publisher].
+借助 Combine 的可组合性，你可以利用此优势创建或消费符合 https://developer.apple.com/documentation/combine/publisher[Publisher] 协议的 API。
 
-With the https://developer.apple.com/documentation/combine/publisher[publisher protocol] as the key interface, you can replace either side to validate your code in isolation.
+以 https://developer.apple.com/documentation/combine/publisher[publisher protocol] 为关键接口，你可以替换任何一方以单独验证你的代码。
 
-For example, if your code was focused on providing its data from external web services through Combine, you might make the interface to this conform to `AnyPublisher<Data, Error>`.
-You could then use that interface to test either side of that pipeline independently.
+例如，如果你的代码专注于通过 Combine 从外部 Web 服务中提供其数据，则可能会使此接口遵循 `AnyPublisher<Data, Error>`。 
+然后，你可以使用该接口独立测试管道的任何一侧。
 
-* You can mock data responses that emulate the underlying API calls and possible responses, including various error conditions.
-This might include returning data from a publisher created with <<reference#reference-just,Just>> or <<reference#reference-fail,Fail>>, or something more complex using <<reference#reference-future,Future>>.
-None of these options require you to make actual network interface calls.
+* 你可以模拟 API 请求和可能响应的数据，包括各种错误条件。
+这可以包括从使用发布者 <<reference#reference-just,Just>> 或 <<reference#reference-fail,Fail>>，或者更复杂的 <<reference#reference-future,Future>>。 
+使用这些方案都不需要你进行实际的网络接口调用。
 
-* Likewise you can isolate the testing of making the publisher do the API calls and verify the various success and failure conditions expected.
+* 同样，你也可以隔离测试，让发布者进行 API 调用，并验证预期的各种成功和失败条件。
 
 :leveloffset: +1
 include::pattern-test-pipeline-expectation.adoc[]
