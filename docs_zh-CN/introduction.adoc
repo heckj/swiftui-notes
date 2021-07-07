@@ -1,12 +1,12 @@
 [#introduction]
 = Combine 简介
 
-用苹果公司的话来说，Combine 是:
+用 Apple 官方的话来说，Combine 是:
 
 [quote]
 a declarative Swift API for processing values over time.
 
-Combine 是苹果用来实现函数响应式编程的库， 类似于 https://github.com/ReactiveX/RxSwift[RxSwift]。
+Combine 是 Apple 用来实现函数响应式编程的库， 类似于 https://github.com/ReactiveX/RxSwift[RxSwift]。
 RxSwift 是 http://reactivex.io[ReactiveX] 对 Swift 语言的实现。
 Combine 使用了许多可以在其他语言和库中找到的相同的函数响应式概念，并将 Swift 的静态类型特性应用其中。
 
@@ -20,7 +20,7 @@ Combine 使用了许多可以在其他语言和库中找到的相同的函数响
 https://en.wikipedia.org/wiki/Functional_reactive_programming[函数响应式编程]， 也称为数据流编程, 建立在 https://en.wikipedia.org/wiki/Functional_programming[函数式编程] 的概念上。
 其中函数式编程适用于元素列表，函数响应式编程应用于元素流。
 函数式编程中的各种函数，例如 `map`, `filter`, 和 `reduce` 也有可以应用于流的类似函数。
-除了函数式编程原本的能力外，函数响应式编程还包括用于分割和合并流的功能。
+除了函数式编程原本的能力外，函数响应式编程还包括用于分割和合并流的函数。
 像函数式编程一样，你可以对在流中的数据进行转换。
 
 在我们编程的系统中有许多部分可以被视为异步信息流 - 事件、对象或数据。
@@ -45,7 +45,7 @@ Back-pressure 是指订阅者应该控制它一次获得多少信息以及需要
 
 Combine 的元素被设置为组合式的，这有利于逐步地集成于现有的代码以采用它。
 
-苹果公司的其他一些框架利用了Combine。
+Apple 的其他一些框架利用了Combine。
 SwiftUI 是最受关注的明显示例，同时包含订阅者和发布者。
 RealityKit 也具有可用于对事件做出反应的发布者。
 Foundation 有许多 Combine 特定的附加功能，包括作为发布者的 NotificationCenter、URLSession 和 Timer。
@@ -90,7 +90,7 @@ Combine 的管道是一种声明性方式，用于定义随着时间的推移对
 '''
 
 [#introduction-appledocs]
-== 苹果提供的 Combine 文档
+== Apple 官方提供的 Combine 文档
 
 icon:apple[size=2x,set=fab]
 
