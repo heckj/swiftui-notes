@@ -1,26 +1,26 @@
 [#patterns-assign-subscriber]
-== Creating a subscriber with assign
+== 使用 assign 创建一个订阅者
 
-__Goal__::
+__目的__::
 
-* To use the results of a pipeline to set a value, often a property on a user interface view or control, but any KVO compliant object can be the provider.
+* 使用管道的结果来设置值，这个值通常是位于用户界面或控制组件上的属性，不过任何符合 KVO 的对象都可以提供该值。
 
-__References__::
+__参考__::
 
 * <<reference#reference-assign,assign>>
 * <<reference#reference-receive,receive>>
 
-__See also__::
+__另请参阅__::
 
 * <<patterns#patterns-sink-subscriber,Creating a subscriber with sink>>
 
-__Code and explanation__::
+__代码和解释__::
 
-Assign is a subscriber that's specifically designed to apply data from a publisher or pipeline into a property, updating that property whenever it receives data.
-Like sink, it activates when created and requests an unlimited data.
-Assign requires the failure type to be specified as `<Never>`, so if your pipeline could fail (such as using an operator like tryMap) you will need to <<patterns#patterns-general-error-handling,convert or handle the failure cases>> before using `.assign`.
+Assign 是专门设计用于将来自发布者或管道的数据应用到属性的订阅者，每当它收到数据时都会更新该属性。
+与 sink 一样，它创建时激活并请求无限数据。
+Assign 要求将失败类型指定为 `<Never>`，因此，如果你的管道可能失败（例如使用 tryMap 等操作符），则需要在使用 `.assign` 之前 <<patterns#patterns-general-error-handling,convert or handle the failure cases>>。
 
-.simple assign
+.简单的 assign 例子
 [source, swift]
 ----
 let cancellablePipeline = publishingSource <1>
@@ -30,10 +30,10 @@ let cancellablePipeline = publishingSource <1>
 cancellablePipeline.cancel() <4>
 ----
 
-<1> `.assign` is typically chained onto a publisher when you create it, and the return value is cancellable.
-<2> If `.assign` is being used to update a user interface element, you need to make sure that it is being updated on the main thread. This call makes sure the subscriber is received on the main thread.
-<3> Assign references the property being updated using a https://developer.apple.com/documentation/swift/referencewritablekeypath[key path], and a reference to the object being updated.
-<4> At any time you can cancel to terminate and invalidate pipelines with `cancel()`. Frequently, you cancel the pipelines when you deactivate the objects (such as a viewController) that are getting updated from the pipeline.
+<1> `.assign` 通常在创建时链接到发布者，并且返回值是可取消的。
+<2> 如果 `.assign` 被用于更新用户界面的元素，则需要确保在主线程更新它。这个调用确保了订阅者是在主线程上接收数据的。
+<3> Assign 持有对使用 https://developer.apple.com/documentation/swift/referencewritablekeypath[key path] 更新的属性的引用，以及对正在更新的对象的引用。
+<4> 在任何时候，你都可以调用 `cancel()` 终止和使管道失效。通常，当把从管道中更新的对象（如 viewController）销毁时，我们会取消管道。
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
