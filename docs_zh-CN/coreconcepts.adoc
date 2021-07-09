@@ -15,7 +15,7 @@
 
 两个关键概念， https://developer.apple.com/documentation/combine/publisher[*publisher*] 和 https://developer.apple.com/documentation/combine/subscriber[*subscriber*]，在 Swift 中被描述为协议。
 
-当你谈论编程（尤其是 Swift 和 Combine）时，类型描述了很多。
+当你谈论编程（尤其是 Swift 和 Combine）时，很多都使用类型描述。
 当你说一个函数或方法返回一个值时，该值通常被描述为“此类型之一”。
 
 Combine 就是定义随着时间的推移使用许多可能的值进行操作的过程。
@@ -25,7 +25,7 @@ Combine 还不仅仅是定义结果，它还定义了我们如何处理失败。
 现在我们要引入的第一个核心概念是发布者。
 当其被订阅之后，根据请求会提供数据，
 没有任何订阅请求的发布者不会提供任何数据。
-当你表达一个 Combine 的发布者时，应该用两种相关的类型来描述它：一种用于输出，一种用于失败。
+当你描述一个 Combine 的发布者时，应该用两种相关的类型来描述它：一种用于输出，一种用于失败。
 
 image::diagrams/basic_types.svg[basic types]
 
@@ -59,7 +59,7 @@ image::diagrams/pipeline.svg[pipeline]
 操作符可用于转换值或类型 - 输出和失败类型都可以。
 操作符还可以拆分或复制流，或将流合并在一起。
 操作符必须始终按输出/失败这样的类型组合对齐。
-编译器将强制执行匹配类型，因此错误将导致编译器错误（如果幸运的话，会有一个有用的 _fixit_ 片段建议给你解决方案）。
+编译器将强制执行匹配类型，因此类型错误将导致编译器错误（如果幸运的话，会有一个有用的 _fixit_ 片段建议给你解决方案）。
 
 用 swift 编写的简单的 Combine 管道如下所示：
 [source, swift]
@@ -93,10 +93,10 @@ let _ = Just(5) <1>
 `map` 操作符可以转换输出和失败类型的任意组合。
 `tryMap` 接受任何输入和失败类型，并允许输出任何类型，但始终会输出 `<Error>` 的失败类型。
 
-像 `map` 这样的操作符，你在定义返回的输出类型时，允许你通过基于你在提供给操作符的闭包中返回的内容推断输出类型。
+像 `map` 这样的操作符，你在定义返回的输出类型时，允许你基于提供给操作符的闭包中返回的内容推断输出类型。
 在上面的例子中，`map` 操作符返回一个 `String` 的输出类型，因为这正是闭包返回的类型。
 
-为了更具体地说明更改类型的示例，我们扩展了值在传输过程中的转换逻辑。此示例仍然以提供类型 `<Int, Never>` 的发布者开始，并以订阅类型为 `<String, Never>` 的值结束。
+为了更具体地说明更改类型的示例，我们扩展了值在传输过程中的转换逻辑。此示例仍然以提供类型 `<Int, Never>` 的发布者开始，并以类型为 `<String, Never>` 的订阅结束。
 
 .https://github.com/heckj/swiftui-notes/blob/master/SwiftUI-NotesTests/CombinePatternTests.swift[SwiftUI-NotesTests/CombinePatternTests.swift]
 [source, swift]
