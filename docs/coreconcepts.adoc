@@ -193,7 +193,7 @@ If a publisher is being described, the two lines are below the element, followin
 An operator, which acts as both a publisher and subscriber, would have two sets - one above and one below.
 A subscriber has the lines above it.
 
-To illustrate how these diagrams relate to code, let's look at a simple example.
+To illustrate how these diagrams relate to code, lets look at a simple example.
 In this case, we will focus on the map operator and how it can be described with this diagram.
 
 [source, swift]
