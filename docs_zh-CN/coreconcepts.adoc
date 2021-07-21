@@ -225,7 +225,7 @@ let _ = Just(5)
 以下图表表示了此代码片段。
 此图描述了更详细的内容：它在图表中展示了闭包中的代码，以显示其关联性。
 
-.上面示例代码中的 map 操作符
+.上面代码中的 map 操作符示例
 image::diagrams/example_map_operator.svg[map operator]
 
 许多 Combine 的操作符都由你用一个闭包来配置。
@@ -236,7 +236,7 @@ image::diagrams/example_map_operator.svg[map operator]
 传递给该操作符的失败类型为 `<Never>`，在输入类型的正下方用同一语法中表示。
 
 `map` 操作符没有更改或影响失败类型，只是将其进行了传递。
-为了表示这一点，上面输入的失败类型和下面的输出都用虚线来表示，以弱化它。
+为了表示这一点，上面输入和下面输出的失败类型都用虚线来表示，以弱化它。
 
 最上面的线上展示了单一输入值（`5`），
 在这个例子中，它在线上的具体位置是没有意义的，仅表示它是单一值。
@@ -251,7 +251,7 @@ image::diagrams/example_map_operator.svg[map operator]
 ====
 本书中的大多数图表不会像这个例子那样复杂或详细。
 这些图表大多将侧重于描述操作符。
-此图更复杂，是为了说明如何解释图表以及它们与你代码的关系。
+此图更复杂，是为了说明如何解释图表以及它们与你的代码之间的关系。
 ====
 
 // force a page break - ignored in HTML rendering
@@ -298,8 +298,8 @@ Combine 的设计使订阅者控制数据流，因此它也控制着在管道中
 image::diagrams/combine_lifecycle_diagram.svg[combine lifecycle diagram]
 <1> 当调用 `.subscribe(_: Subscriber)` 时，订阅者被连接到了发布者。
 <2> 发布者随后调用 `receive(subscription: Subscription)` 来确认该订阅。
-<3> 在订阅被确认后，订阅者请求值 _N_，此时调用 `request(_: Demand)`。
-<4> 发布者可能随后（当它有值时）发送 _N_ 或者更少的值，通过调用 `receive(_: Input)`。
+<3> 在订阅被确认后，订阅者请求 _N_ 个值，此时调用 `request(_: Demand)`。
+<4> 发布者可能随后（当它有值时）发送 _N_ 个或者更少的值，通过调用 `receive(_: Input)`。
 发布者不会发送**超过**需求量的值。
 <5> 订阅确认后的任何时间，订阅者都可能调用 `.cancel()` 来发送 https://developer.apple.com/documentation/combine/subscribers/completion[cancellation]
 <6> 发布者可以选择性地发送 https://developer.apple.com/documentation/combine/subscribers/completion[completion]：`receive(completion:)`。
@@ -348,7 +348,7 @@ Combine 提供了一些额外的便捷的发布者：
 
 |===
 
-Combine 之外的一些苹果的 API 也提供发布者。
+Combine 之外的一些 Apple API 也提供发布者。
 
 * <<reference#reference-swiftui,SwiftUI>> 使用 `@Published` 和 `@ObservedObject` 属性包装，由 Combine 提供，含蓄地创建了一个发布者，用来支持它的声明式 UI 的机制。
 
@@ -362,7 +362,7 @@ Combine 之外的一些苹果的 API 也提供发布者。
 [#coreconcepts-operators]
 == 操作符
 
-操作符是苹果参考文档中包含的一些预构建功能的便捷名称。
+操作符是 Apple 参考文档中发布者下包含的一些预构建函数的便捷名称。
 操作符用来组合成管道。
 许多操作符会接受开发人员的一个或多个闭包，以定义业务逻辑，同时保持并持有发布者/订阅者的生命周期。
 
@@ -566,7 +566,7 @@ SwiftUI 中有一个订阅者： <<reference#reference-onreceive,onReceive>>。
 
 https://developer.apple.com/documentation/combine/subscribers/assign[`Assign`] 将从发布者传下来的值应用到由 keypath 定义的对象，
 keypath 在创建管道时被设置。
-一个在 Swift 中这样的例子：
+一个在 Swift 中的例子：
 
 [source, swift]
 ----
@@ -576,7 +576,7 @@ keypath 在创建管道时被设置。
 https://developer.apple.com/documentation/combine/subscribers/sink[`Sink`] 接受一个闭包，该闭包接收从发布者发送的任何结果值。
 这允许开发人员使用自己的代码终止管道。
 此订阅者在编写单元测试以验证发布者或管道时也非常有帮助。
-一个在 Swift 中这样的例子：
+一个在 Swift 中的例子：
 
 [source, swift]
 ----
@@ -590,7 +590,7 @@ https://developer.apple.com/documentation/combine/subscribers/sink[`Sink`] 接�
 SwiftUI 中的 https://developer.apple.com/documentation/swiftui/view/[View 协议] 定义了一个 `.onReceive(publisher)` 函数，可以把视图当作订阅者使用。
 `onReceive` 函数接受一个类似于 `sink` 接受的闭包，可以操纵 SwiftUI 中的 `@State` 或 `@Bindings`。
 
-一个在 SwiftUI 中这样的例子：
+一个在 SwiftUI 中的例子：
 
 [source, swift]
 ----
