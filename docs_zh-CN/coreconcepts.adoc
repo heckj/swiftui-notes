@@ -1,10 +1,10 @@
 [#coreconcepts]
-= Core Concepts
+= 核心概念
 
-There are only a few core concepts that you need to know to use Combine effectively, but they are very important to understand.
-Each of these concepts is mirrored in the framework with a generic protocol, formalizing the concepts into expected functions.
+你只需要了解几个核心概念，就能使用好 Combine，但理解它们非常重要。
+这些概念中的每一个都通过通用协议反映在框架中，以将概念转化为预期的功能。
 
-These core concepts are:
+这些核心概念是：
 
 * <<coreconcepts-publisher-subscriber>>
 * <<coreconcepts-operators>>
@@ -13,55 +13,55 @@ These core concepts are:
 [#coreconcepts-publisher-subscriber]
 == Publisher and Subscriber
 
-Two key concepts, https://developer.apple.com/documentation/combine/publisher[*publisher*] and https://developer.apple.com/documentation/combine/subscriber[*subscriber*], are described in Swift as protocols.
+两个关键概念， https://developer.apple.com/documentation/combine/publisher[*publisher*] 和 https://developer.apple.com/documentation/combine/subscriber[*subscriber*]，在 Swift 中被描述为协议。
 
-When you are talking about programming (and especially with Swift and Combine), quite a lot is described by the types.
-When you say a function or method returns a value, that value is generally described as being "one of this type".
+当你谈论编程（尤其是 Swift 和 Combine）时，很多都使用类型描述。
+当你说一个函数或方法返回一个值时，该值通常被描述为“此类型之一”。
 
-Combine is all about defining the process of what you do with many possible values over time.
-Combine also goes farther than defining the result, it also defines how it can fail.
-It not only talks about the types that can be returned, but the failures that might happen as well.
+Combine 就是定义随着时间的推移使用许多可能的值进行操作的过程。
+Combine 还不仅仅是定义结果，它还定义了我们如何处理失败。
+它不仅讨论可以返回的类型，还讨论可能发生的失败。
 
-The first core concept to introduce in this respect is the publisher.
-A publisher provides data when available and upon request.
-A publisher that has not had any subscription requests will not provide any data.
-When you are describing a Combine publisher, you describe it with two associated types: one for Output and one for Failure.
+现在我们要引入的第一个核心概念是发布者。
+当其被订阅之后，根据请求会提供数据，
+没有任何订阅请求的发布者不会提供任何数据。
+当你描述一个 Combine 的发布者时，应该用两种相关的类型来描述它：一种用于输出，一种用于失败。
 
 image::diagrams/basic_types.svg[basic types]
 
-These are often written using the generics syntax which uses the `<` and `>` symbol around text describing the types.
-This represents that we are talking about a generic instance of this type of value.
-For example, if a publisher returned an instance of `String`, and could return a failure in the form of an instance of `URLError`, then the publisher might be described with the string `<String, URLError>`.
+这些通常使用泛型语法编写，该语法在描述类型的文本周围使用 `<` 和 `>` 符号。
+这表示我们正在谈论这种类型的值的通用实例。
+例如，如果发布者返回了一个 `String` 类型的实例，并且可能以 `URLError` 实例的形式返回失败，那么发布者可能会用 `<String, URLError>` 来描述。
 
-The corresponding concept that matches with a publisher is a subscriber, and is the second core concept to introduce.
+与发布者匹配的对应概念是订阅者，是第二个要介绍的核心概念。
 
-A subscriber is responsible for requesting data and accepting the data (and possible failures) provided by a publisher.
-A subscriber is described with two associated types, one for Input and one for Failure.
-The subscriber initiates the request for data, and controls the amount of data it receives.
-It can be thought of as "driving the action" within Combine, as without a subscriber, the other components stay idle.
+订阅者负责请求数据并接受发布者提供的数据（和可能的失败）。
+订阅者同样被描述为两种关联类型，一种用于输入，一种用于失败。
+订阅者发起数据请求，并控制它接收的数据量。
+它可以被认为是在 Combine 中起“驱动作用”的，因为如果没有订阅者，其他组件将保持闲置状态，没有数据会流动起来。
 
-Publishers and subscribers are meant to be connected, and make up the core of Combine.
-When you connect a subscriber to a publisher, both types must match: Output to Input, and Failure to Failure.
-One way to visualize this is as a series of operations on two types in parallel, where both types need to match in order to plug the components together.
+发布者和订阅者是相互连接的，它们构成了 Combine 的核心。
+当你将订阅者连接到发布者时，两种类型都必须匹配：发布者的输出和订阅者的输入以及它们的失败类型。
+将其可视化的一种方法是对两种类型进行一系列并行操作，其中两种类型都需要匹配才能将组件插入在一起。
 
 image::diagrams/input_output.svg[publisher output to subscriber input]
 
-The third core concept is an operator - an object that acts both like a subscriber and a publisher.
-Operators are classes that adopt both the https://developer.apple.com/documentation/combine/subscriber[Subscriber protocol] and https://developer.apple.com/documentation/combine/publisher[Publisher protocol].
-They support subscribing to a publisher, and sending results to any subscribers.
+第三个核心概念是操作符——一个既像订阅者又像发布者的对象。
+操作符是同时实现了 https://developer.apple.com/documentation/combine/subscriber[订阅者协议] 和 https://developer.apple.com/documentation/combine/publisher[发布者协议] 的类。
+它们支持订阅发布者，并将结果发送给任何订阅者。
 
-You can create chains of these together, for processing, reacting, and transforming the data provided by a publisher, and requested by the subscriber.
+你可以用这些创建成链，用于处理和转换发布者提供的数据和订阅者请求的数据。
 
-I'm calling these composed sequences **pipelines**.
+我称这些组合序列为**管道**。
 
 image::diagrams/pipeline.svg[pipeline]
 
-Operators can be used to transform either values or types - both the Output and Failure type.
-Operators may also split or duplicate streams, or merge streams together.
-Operators must always be aligned by the combination of Output/Failure types.
-The compiler will enforce the matching types, so getting it wrong will result in a compiler error (and, if you are lucky, a useful _fixit_ snippet suggesting a solution).
+操作符可用于转换值或类型 - 输出和失败类型都可以。
+操作符还可以拆分或复制流，或将流合并在一起。
+操作符必须始终按输出/失败这样的类型组合对齐。
+编译器将强制执行匹配类型，因此类型错误将导致编译器错误（如果幸运的话，会有一个有用的 _fixit_ 片段建议给你解决方案）。
 
-A simple Combine pipeline written in swift might look like:
+用 swift 编写的简单的 Combine 管道如下所示：
 [source, swift]
 ----
 let _ = Just(5) <1>
@@ -76,27 +76,27 @@ let _ = Just(5) <1>
     }
 ----
 
-<1> The pipeline starts with the publisher `Just`, which responds with the value that its defined with (in this case, the Integer `5`). The output type is `<Integer>`, and the failure type is `<Never>`.
-<2> The pipeline then has a `map` operator, which is transforming the value and its type.
-In this example it is ignoring the published input and returning a string.
-This is also transforming the output type to `<String>`, and leaving the failure type still set as `<Never>`.
-<3> The pipeline then ends with a `sink` subscriber.
+<1> 管道从发布者 `Just` 开始，它用它定义的值（在本例中为整数 `5`）进行响应。输出类型为 `<Integer>`，失败类型为 `<Never>`。
+<2> 然后管道有一个 `map` 操作符，它在转换值及其类型。
+在此示例中，它忽略了发布者发出的输入并返回了一个字符串。
+这也将输出类型转换为 `<String>`，并将失败类型仍然保持为 `<Never>`。
+<3> 然后管道以 `sink` 订阅者结束。
 
-When you are thinking about a pipeline you can think of it as a sequence of operations linked by both output and failure types.
-This pattern will come in handy when you start constructing your own pipelines.
-When creating pipelines, you are often selecting operators to help you transform the data, types, or both to achieve your end goal.
-That end goal might be enabling or disabling a user interface element, or it might be retrieving some piece of data to be displayed.
-Many Combine operators are specifically created to help with these transformations.
+当你去尝试理解管道时，你可以将其视为由输出和失败类型链接的一系列操作。
+当你开始构建自己的管道时，这种模式就会派上用场。
+创建管道时，你可以选择操作符来帮助你转换数据、类型或两者同时使用以实现最终目的。
+最终目标可能是启用或禁用用户界面的某个元素，或者可能是得到某些数据用来显示。
+许多 Combine 的操作符专门设计用来做这些转换。
 
-There are a number of operators that have a similar operator prefixed with `try`, which indicates they return an `<Error>` failure type.
-An example of this is <<reference#reference-map,map>> and <<reference#reference-trymap,tryMap>>.
-The `map` operator allows for any combination of Output and Failure type and passes them through.
-`tryMap` accepts any Input, Failure types, and allows any Output type, but will always output an `<Error>` failure type.
+有许多操作符是以 `try` 为前缀的，这表示它们返回一个 `<Error>` 的失败类型。
+例如 <<reference#reference-map,map>> 和 <<reference#reference-trymap,tryMap>>。
+`map` 操作符可以转换输出和失败类型的任意组合。
+`tryMap` 接受任何输入和失败类型，并允许输出任何类型，但始终会输出 `<Error>` 的失败类型。
 
-Operators like `map` allow you to define the output type being returned by inferring the output type based on what you return in a closure provided to the operator.
-In the example above, the `map` operator is returning a `String` output type since that it what the closure returns.
+像 `map` 这样的操作符，你在定义返回的输出类型时，允许你基于提供给操作符的闭包中返回的内容推断输出类型。
+在上面的例子中，`map` 操作符返回一个 `String` 的输出类型，因为这正是闭包返回的类型。
 
-To illustrate the example of changing types more concretely, we expand upon the logic to use the values being passed. This example still starts with a publisher providing the types `<Int, Never>` and end with a subscription taking the types `<String, Never>`.
+为了更具体地说明更改类型的示例，我们扩展了值在传输过程中的转换逻辑。此示例仍然以提供类型 `<Int, Never>` 的发布者开始，并以类型为 `<String, Never>` 的订阅结束。
 
 .https://github.com/heckj/swiftui-notes/blob/master/SwiftUI-NotesTests/CombinePatternTests.swift[SwiftUI-NotesTests/CombinePatternTests.swift]
 [source, swift]
@@ -122,79 +122,79 @@ let _ = Just(5) <1>
         print("The end result was \(receivedValue)")
     }
 ----
-<1> Just is a publisher that creates an `<Int, Never>` type combination, provides a single value and then completes.
-<2> the closure provided to the `.map()` function takes in an `<Int>` and transforms it into a `<String>`. Since the failure type of `<Never>` is not changed, it is passed through.
-<3> `sink`, the subscriber, receives the `<String, Never>` combination.
+<1> Just 是创建一个 `<Int, Never>` 类型组合的发布者，提供单个值然后完成。
+<2> 提供给 `.map()` 函数的闭包接受一个 `<Int>` 并将其转换为一个 `<String>`。由于 `<Never>` 的失败类型没有被改变，所以就直接输出了。
+<3> `sink` 作为订阅者，接受 `<String, Never>` 类型的组合数据。
 
 
 [TIP]
 ====
-When you are creating pipelines in Xcode and don't match the types, the error message from Xcode may include a helpful _fixit_.
-In some cases, such as the example above, the compiler is unable to infer the return types of closure provided to `map` without specifying the return type.
-Xcode (11 beta 2 and beta 3) displays this as the error message: `Unable to infer complex closure return type; add explicit type to disambiguate`.
-In the example above, we explicitly specified the type being returned with the line `value -> String in`.
+当你在 Xcode 中创建管道，类型不匹配时，Xcode 中的错误消息可能包含一个有用的修复建议 _fixit_。
+在某些情况下，例如上个例子，当提供给 `map` 的闭包中不指定特定的返回类型时，编译器就无法推断其返回值类型。
+Xcode (11 beta 2 and beta 3) 显示此为错误消息： `Unable to infer complex closure return type; add explicit type to disambiguate`。
+在上面示例中，我们用 `value -> String in` 明确指定了返回的类型。
 ====
 
-You can view Combine publishers, operators, and subscribers as having two parallel types that both need to be aligned - one for the functional case and one for the error case.
-Designing your pipeline is frequently choosing how to convert one or both of those types and the associated data with it.
+你可以将 Combine 的发布者、操作符和订阅者视为具有两种需要对齐的平行类型 —— 一种用于成功的有用值，另一种用于错误处理。
+设计管道时经常会选择如何转换其中一种或两种类型以及与之相关的数据。
 
 // force a page break - ignored in HTML rendering
 <<<
 
 [#coreconcepts-marblediagram]
-== Describing pipelines with marble diagrams
+== 用弹珠图描述管道
 
-A functional reactive pipeline can be tricky to understand.
-A publisher is generating and sending data, operators are reacting to that data and potentially changing it, and subscribers requesting and accepting it.
-That in itself would be complicated, but some operators in Combine also may change the timing when events happen - introducing delays, collapsing multiple values into one, and so forth.
-Because these can be complex to understand, the functional reactive programming community illustrates these changes with a visual description called a *marble diagram*.
+函数响应式编程的管道可能难以理解。
+发布者生成和发送数据，操作符对该数据做出响应并有可能更改它，订阅者请求并接收这些数据。
+这本身就很复杂，但 Combine 的一些操作符还可能改变事件发生的时序 —— 引入延迟、将多个值合并成一个值等等。
+由于这些比较复杂可能难以理解，因此函数响应式编程社区使用一种称为 *弹珠图* 的视觉描述来说明这些变化。
 
-As you explore the concepts behind Combine, you may find yourself looking at other functional reactive programming systems, such as RxSwift or ReactiveExtensions.
-The documentation associated with these systems often use marble diagrams.
+在探索 Combine 背后的概念时，你可能会发现自己正在查看其他函数响应式编程系统，如 RxSwift 或 ReactiveExtensions。
+与这些系统相关的文档通常使用弹珠图。
 
-Marble diagrams focus on describing how a specific pipeline changes the stream of data.
-It shows data changing over time, as well as the timing of those changes.
+弹珠图侧重于描述特定的管道如何更改数据流。
+它显示数据是如何随着时间的变化而变化的，以及这些变化的时序。
 
-.An example marble diagram
+.一个弹珠图的示例
 image::diagrams/marble_diagram.svg[marble diagram]
 
-=== How to read a marble diagram:
+=== 怎么看懂弹珠图:
 
-* The diagram centers around whatever element is being described, an operator in this case.
-The name of the operator is often on the central block.
+* 不管周围描述的是什么元素，在该例子的图上，中心是一个操作符。
+具体的操作符的名称通常位于中心块上。
 
-* The lines above and below represent data moving through time.
-The left is earlier and the right is later.
-The symbols on the line represent discrete bits of data.
+* 上面和下面的线表示随着时间移动的数据，
+由左到右。
+线上的符号表示离散着的数据。
 
-* It is often assumed that data is flowing downward.
-With this pattern, the top line is indicating the inputs to the operator and the bottom line represents the outputs.
+* 我们通常假定数据正在向下流动。
+在这种情况下，顶线表示对操作符的输入，底线表示输出。
 
-* In some diagrams, the symbols on the top line may differ from the symbols on the bottom line.
-When they are different, the diagram is typically implying that the type of the output is different from the type of the input.
+* 在某些图表中，顶线上的符号可能与底线上的符号不同，
+这时图表通常意味着输出的类型与输入的类型不同。
 
-* In other places, you may also see a vertical bar or an `X` on the timeline, or ending the timeline.
-That is used to indicate the end of a stream.
-A bar at the end of a line implies the stream has terminated normally.
-An `X` indicates that an error or exception was thrown.
+* 在有些图中，你也可能在时间线上看到竖线 “｜” 或 “ X ” 或终结时间线，
+这用于表示数据流的结束。
+时间线末端的竖线意味着数据流已正常终止。
+“X” 表示抛出了错误或异常。
 
-These diagrams intentionally ignore the setup (or teardown) of a pipeline, preferring to focus on one element to describe how that element works.
+这些图表有意忽略管道的配置，而倾向于关注一个元素来描述该元素的工作原理。
 
-=== Marble diagrams for Combine
+=== 用弹珠图描述 Combine
 
-This book uses an expansion of the basic marble diagram, modified slightly to highlight some of the specifics of Combine.
-The most notable difference are two lines for input and output.
-Since Combine explicitly types both the input and the failure, these are represented separately and the types described in the diagram.
+这本书对基本的弹珠图做了扩展并稍作修改，用来突出 Combine 的一些细节。
+最显著的区别是输入和输出是两条线。
+由于 Combine 明确了输入和失败类型，因此它们在图表中也被分开来单独表示。
 
-.An expanded Combine specific marble diagram
+.一个为 Combine 进行了扩展的特殊弹珠图
 image::diagrams/combine_marble_diagram.svg[combine marble diagram]
 
-If a publisher is being described, the two lines are below the element, following the pattern of "data flows down".
-An operator, which acts as both a publisher and subscriber, would have two sets - one above and one below.
-A subscriber has the lines above it.
+发布者的输出和失败类型，用上面的两条线来表示，然后数据经过操作符之后会流向下方。
+操作符同时作为订阅者和发布者，处在中间，
+订阅者接收的数据和失败类型，用下面的两条线来表示。
 
-To illustrate how these diagrams relate to code, let's look at a simple example.
-In this case, we will focus on the map operator and how it can be described with this diagram.
+为了说明这些图表与代码的关系，让我们来看一个简单的示例。
+在这个例子中，我们将关注 `map` 操作符以及如何用此图表描述它。
 
 [source, swift]
 ----
@@ -219,39 +219,39 @@ let _ = Just(5)
         print("The end result was \(receivedValue)")
     }
 ----
-<1> The closure provided to the `.map()` function takes in an `<Int>` and transforms it into a `<String>`.
-Since the failure type of <Never> is not changed, it is passed through.
+<1> 提供给 “.map()” 函数的闭包接收一个 `<Int>` 类型的值，并将其转换为 `<String>` 类型。
+由于失败类型 `<Never>` 没有改变，因此直接输出它。
 
-The following diagram represents this code snippet.
-This diagram goes further than others in this book; it includes the closure from the sample code in the diagram to show how it relates.
+以下图表表示了此代码片段。
+此图描述了更详细的内容：它在图表中展示了闭包中的代码，以显示其关联性。
 
-.The example map operator from the code above:
+.上面代码中的 map 操作符示例
 image::diagrams/example_map_operator.svg[map operator]
 
-Many combine operators are configured with code provided by you, written in a closure.
-Most diagrams will not attempt to include it in the diagram.
-It is implied that any code you provide through a closure in Combine will be used within the box rather than explicitly detailed.
+许多 Combine 的操作符都由你用一个闭包来配置。
+大多数图表都不会将它包含在其中。
+这意味着你通过 Combine 中的闭包提供的任何代码都将被简化成一个框，而不是详细的描述它。
 
-The input type for this map operator is `<Int>`, which is described with generic syntax on the top line.
-The failure type that is being passed to this operator is `<Never>`, described in the same syntax just below the Input type.
+此 `map` 操作符的输入类型为 `<Int>`，在最上面的线上用通用的语法进行表示。
+传递给该操作符的失败类型为 `<Never>`，在输入类型的正下方用同一语法中表示。
 
-The map operator doesn't change or interact with the failure type, only passing it along.
-To represent that, the failure types - both input (above) and output (below) - have been lightened.
+`map` 操作符没有更改或影响失败类型，只是将其进行了传递。
+为了表示这一点，上面输入和下面输出的失败类型都用虚线来表示，以弱化它。
 
-A single input value provided (`5`) is represented on the top line.
-The location on the line isn't meaningful in this case, only representing that it is a single value.
-If multiple values were on the line, the ones on the left would be presented to the map operator before any on the right.
+最上面的线上展示了单一输入值（`5`），
+在这个例子中，它在线上的具体位置是没有意义的，仅表示它是单一值。
+如果线上有多个值，则左侧的值将优于在右侧的任意值被发送给 `map` 操作符。
 
-When it arrives, the value `5` is passed to the closure as the variable `value`.
-The return type of the closure (`<String>` in this case), defines the output type for the map operator when the code within the closure completes and returns its value.
-In this case, the string `some` is returned for the input value `5`.
-The string `some` is represented on the output line directly below its input value, implying there was no explicit delay.
+当值到达操作符时，值 `5` 作为变量的 `值` 传递给闭包。
+这个例子中，闭包的返回类型（本例中为 `<String>` ）定义了当闭包中的代码完成并返回其值时 `map` 操作符的输出类型。
+在这个例子中，输入了 `5` 然后返回了字符串 `some`。
+字符串 `some` 展示在输入值正下方的输出线上，这意味着没有明显的延迟。
 
 [TIP]
 ====
-Most diagrams in this book won't be as complex or detailed as this example.
-Most of these diagrams will focus on describing the operator.
-This one is more complex to illustrate how the diagrams can be interpreted and how they relate to your code.
+本书中的大多数图表不会像这个例子那样复杂或详细。
+这些图表大多将侧重于描述操作符。
+此图更复杂，是为了说明如何解释图表以及它们与你的代码之间的关系。
 ====
 
 // force a page break - ignored in HTML rendering
@@ -260,73 +260,73 @@ This one is more complex to illustrate how the diagrams can be interpreted and h
 [#coreconcepts-backpressure]
 == Back pressure
 
-Combine is designed such that the subscriber controls the flow of data, and because of that it also controls what and when processing happens in the pipeline.
-This is a feature of Combine called *back-pressure*.
+Combine 的设计使订阅者控制数据流，因此它也控制着在管道中处理数据的内容和时间。
+这是一个在 Combine 中被叫做 *back-pressure* 的特性。
 
-This means that the subscriber drives the processing within a pipeline by providing information about how much information it wants or can accept.
-When a subscriber is connected to a publisher, it requests data based on a specific https://developer.apple.com/documentation/combine/subscribers/demand[Demand].
+这意味着由订阅者通过提供其想要或能够接受多少信息量来推动管道内数据的处理。
+当订阅者连接到发布者时，它会基于特定的 https://developer.apple.com/documentation/combine/subscribers/demand[需求] 去请求数据。
 
-The demand request is propagated up through the composed pipeline.
-Each operator in turn accepts the request for data and in turn requests information from the publishers to which it is connected.
+特定需求的请求通过组成管道进行传递。
+每个操作符依次接受数据请求，然后请求与之相连的发布者提供信息。
 
 [NOTE]
 ====
-In the first release of the Combine framework - in iOS 13 prior to iOS 13.3 and macOS prior to 10.15.2 - when the subscriber requested data with a Demand, that call itself was asynchronous.
-Because this process acted as the driver which triggered attached operators and ultimately the source publisher, it meant that there were scenarios where data might appear to be lost.
-Due to this, in iOS 13.3 and later Combine releases, the process of requesting demand has been updated to a synchronous/blocking call.
-In practice, this means that you can be a bit more certain of having any pipelines created and fully engaged prior to a publisher receiving the request to send any data.
+在 Combine 框架的第一个版本中（ iOS 13.3 和 macOS 10.15.2 之前），当订阅者请求具有特定需求的数据时，该请求是异步发生的。
+由于此过程中是充当触发器的订阅者，去触发其连接的操作符，并最终触发发布者去请求数据，因此这意味着在某些情况下存在数据丢失的可能性。
+因此，在 iOS 13.3 和以后的 Combine 版本中，请求的过程被改成了同步/阻塞线程的。
+实际上，这意味着在发布者收到发送数据的请求之前，你可以更确信后序的管道已经完全准备好处理接下来的数据了。
 
-There is an https://forums.swift.org/t/combine-receive-on-runloop-main-loses-sent-value-how-can-i-make-it-work/28631/39[extended thread on the Swift forums] about this topic, if you are interested in reading the history.
+如果你有兴趣阅读相关的更新历史，在 Swift 论坛上由关于此主题的 https://forums.swift.org/t/combine-receive-on-runloop-main-loses-sent-value-how-can-i-make-it-work/28631/39[延伸讨论]
 ====
 
-With the subscriber driving this process, it allows Combine to support cancellation.
-Subscribers all conform to the https://developer.apple.com/documentation/combine/cancellable[Cancellable] protocol.
-This means they all have a function `cancel()` that can be invoked to terminate a pipeline and stop all related processing.
+有了订阅者驱动数据流这个特性，它允许 Combine 去取消这个过程。
+订阅者均遵循 https://developer.apple.com/documentation/combine/cancellable[Cancellable] 协议。
+这意味着它们都有一个 `cancel()` 函数，可以调用该函数来终止管道并停止所有相关处理。
 
 [TIP]
 ====
-When a pipeline has been cancelled, the pipeline is not expected to be restarted.
-Rather than restarting a cancelled pipeline, the developer is expected to create a new pipeline.
+当管道被取消时，管道是不期望被重新启动的。
+相比于重启一个被取消的管道，开发者更应该去创建一个新的管道。
 ====
 
 [#coreconcepts-lifecycle]
-== Lifecycle of Publishers and Subscribers
+== 发布者和订阅者的生命周期
 
-The end to end lifecycle is enabled by subscribers and publishers communicating in a well defined sequence:
+订阅者和发布者以明确定义的顺序进行通信，因此使得它们具有从开始到结束的生命周期：
 
-.An The lifecycle of a combine pipeline
+.一个 Combine 管道的生命周期
 image::diagrams/combine_lifecycle_diagram.svg[combine lifecycle diagram]
-<1> When the subscriber is attached to a publisher, it starts with a call to `.subscribe(_: Subscriber)`.
-<2> The publisher in turn acknowledges the subscription calling `receive(subscription: Subscription)`.
-<3> After the subscription has been acknowledged, the subscriber requests _N_ values with `request(_: Demand)`.
-<4> The publisher may then (as it has values) send _N_ (or fewer) values using `receive(_: Input)`.
-A publisher should never send **more** than the demand requested.
-<5> Any time after the subscription has been acknowledged, the subscriber may send a https://developer.apple.com/documentation/combine/subscribers/completion[cancellation] with `.cancel()`
-<6> A publisher may optionally send https://developer.apple.com/documentation/combine/subscribers/completion[completion]: `receive(completion:)`.
-A completion can be either a normal termination, or may be a `.failure` completion, optionally propagating an error type.
-A pipeline that has been cancelled will not send any completions.
+<1> 当调用 `.subscribe(_: Subscriber)` 时，订阅者被连接到了发布者。
+<2> 发布者随后调用 `receive(subscription: Subscription)` 来确认该订阅。
+<3> 在订阅被确认后，订阅者请求 _N_ 个值，此时调用 `request(_: Demand)`。
+<4> 发布者可能随后（当它有值时）发送 _N_ 个或者更少的值，通过调用 `receive(_: Input)`。
+发布者不会发送**超过**需求量的值。
+<5> 订阅确认后的任何时间，订阅者都可能调用 `.cancel()` 来发送 https://developer.apple.com/documentation/combine/subscribers/completion[cancellation]
+<6> 发布者可以选择性地发送 https://developer.apple.com/documentation/combine/subscribers/completion[completion]：`receive(completion:)`。
+完成可以是正常终止，也可以是通过 `.failure` 完成，可选地传递一个错误类型。
+已取消的管道不会发送任何完成事件。
 
-Included in the above diagram is a stacked up set of the example marble diagrams.
-This is to highlight where Combine marble diagrams focus in the overall lifecycle of a pipeline.
-Generally the diagrams infer that all of the setup has been done and data requested.
-The heart of a combine marble diagram is the series of events between when data was requested and any completions or cancellations are triggered.
+在上述图表中包含了一组堆积起来的弹珠图，
+这是为了突出 Combine 的弹珠图在管道的整体生命周期中的重点。
+通常，图表推断所有的连接配置都已完成并已发送了数据请求。
+Combine 的弹珠图的核心是从请求数据到触发任何完成或取消之间的一系列事件。
 
 [#coreconcepts-publishers]
-== Publishers
+== 发布者
 
-The publisher is the provider of data.
-The https://developer.apple.com/documentation/combine/publisher[publisher protocol] has a strict contract returning values when asked from subscribers, and possibly terminating with an explicit completion enumeration.
+发布者是数据的提供者。
+当订阅者请求数据时， https://developer.apple.com/documentation/combine/publisher[publisher protocol] 有严格的返回值类型约定，并有一系列明确的完成信号可能会终止它。
 
-<<reference#reference-just,Just>> and <<reference#reference-future,Future>> are common sources to start your own publisher from a value or asynchronous function.
+你可以从 <<reference#reference-just,Just>> 和 <<reference#reference-future,Future>> 开始使用发布者，它们分别作为单一数据源和异步函数来使用。
 
-Many publishers will immediately provide data when requested by a subscriber.
-In some cases, a publisher may have a separate mechanism to enable it to return data after subscription.
-This is codified by the protocol https://developer.apple.com/documentation/combine/connectablepublisher[ConnectablePublisher].
-A publisher conforming to `ConnectablePublisher` will have an additional mechanism to start the flow of data after a subscriber has provided a request.
-This could be a separate `.connect()` call on the publisher itself.
-The other option is `.autoconnect()`, which will start the flow of data as soon as a subscriber requests it.
+当订阅者发出请求时，许多发布者会立即提供数据。
+在某些情况下，发布者可能有一个单独的机制，使其能够在订阅后返回数据。
+这是由协议 https://developer.apple.com/documentation/combine/connectablepublisher[ConnectablePublisher] 来约定实现的。
+遵循 `ConnectablePublisher` 的发布者将有一个额外的机制，在订阅者发出请求后才启动数据流。
+这可能是对发布者单独的调用 `.connect()` 来完成。
+另一种可能是 `.autoconnect()`，一旦订阅者请求，它将立即启动数据流。
 
-Combine provides a number of additional convenience publishers:
+Combine 提供了一些额外的便捷的发布者：
 
 [cols="3*^"]
 |===
@@ -348,9 +348,9 @@ Combine provides a number of additional convenience publishers:
 
 |===
 
-A number of Apple API outside of Combine provide publishers as well.
+Combine 之外的一些 Apple API 也提供发布者。
 
-* <<reference#reference-swiftui,SwiftUI>> uses the `@Published` and `@ObservedObject` property wrappers, provided by Combine, to implicitly create a publisher and support its declarative view mechanisms.
+* <<reference#reference-swiftui,SwiftUI>> 使用 `@Published` 和 `@ObservedObject` 属性包装，由 Combine 提供，含蓄地创建了一个发布者，用来支持它的声明式 UI 的机制。
 
 * Foundation
 ** <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>
@@ -360,15 +360,15 @@ A number of Apple API outside of Combine provide publishers as well.
 ** <<reference#reference-result,Result>>
 
 [#coreconcepts-operators]
-== Operators
+== 操作符
 
-Operators are a convenient name for a number of pre-built functions that are included under Publisher in Apple's reference documentation.
-Operators are meant to be composed into pipelines.
-Many will accept one or more closures from the developer to define the business logic while maintaining the adherence to the publisher/subscriber lifecycle.
+操作符是 Apple 参考文档中发布者下包含的一些预构建函数的便捷名称。
+操作符用来组合成管道。
+许多操作符会接受开发人员的一个或多个闭包，以定义业务逻辑，同时保持并持有发布者/订阅者的生命周期。
 
-Some operators support bringing together outputs from different pipelines, changing the timing of data, or filtering the data provided.
-Operators may also have constraints on the types they will operate on.
-Operators can also be used to define error handling and retry logic, buffering and prefetch, and supporting debugging.
+一些操作符支持合并来自不同管道的输出、更改数据的时序或过滤所提供的数据。
+操作符可能还会对操作类型有限制，
+还可用于定义错误处理和重试逻辑、缓冲和预先载入以及支持调试。
 
 [cols="3*^"]
 |===
@@ -526,57 +526,57 @@ Operators can also be used to define error handling and retry logic, buffering a
 [#coreconcepts-subjects]
 == Subjects
 
-Subjects are a special case of publisher that also adhere to the https://developer.apple.com/documentation/combine/subject[`Subject`] protocol.
-This protocol requires subjects to have a `.send(_:)` method to allow the developer to send specific values to a subscriber (or pipeline).
+Subjects 是一种遵循 https://developer.apple.com/documentation/combine/subject[`Subject`] 协议的特殊的发布者。
+这个协议要求 subjects 有一个 `.send(_:)` 方法，来允许开发者发送特定的值给订阅者或管道。
 
-Subjects can be used to "inject" values into a stream, by calling the subject's `.send(_:)` method.
-This is useful for integrating existing imperative code with Combine.
+Subjects 可以通过调用 `.send(_:)` 方法来将值“注入”到流中，
+这对于将现有的命令式的代码与 Combine 集成非常有用。
 
-A subject can also broadcast values to multiple subscribers.
-If multiple subscribers are connected to a subject, it will fan out values to the multiple subscribers when `send(_:)` is invoked.
-A subject is also frequently used to connect or cascade multiple pipelines together, especially to fan out to multiple pipelines.
+一个 subject 还可以向多个订阅者广播消息。
+如果多个订阅者连接到一个 subject，它将在调用 `send(_:)` 时向多个订阅者发送值。
+一个 subject 还经常用于连接或串联多个管道，特别是同时给多个管道发送值时。
 
-A subject does not blindly pass through the demand from its subscribers.
-Instead, it provides an aggregation point for demand.
-A subject will not signal for demand to its connected publishers until it has received at least one subscriber itself.
-When it receives any demand, it then signals for `unlimited` demand to connected publishers.
-With the subject supporting multiple subscribers, any subscribers that have not requested data with a demand are not provided the data until they do.
+Subject 不会盲目地传递其订阅者的需求。
+相反，它为需求提供了一个聚合点。
+在没有收到订阅消息之前，一个 subject 不会向其连接的发布者发出需求信号。
+当它收到订阅者的需求时，它会向它连接的发布者发出 `unlimited` 需求信号。
+虽然 subject 支持多个订阅者，但任何未请求数据的订阅者，在请求之前均不会给它们提供数据。
 
-There are two types of built-in subjects with Combine: <<reference#reference-currentvaluesubject,CurrentValueSubject>> and <<reference#reference-passthroughsubject,PassthroughSubject>>.
-They act similarly, the difference being CurrentValueSubject remembers and requires an initial state, where PassthroughSubject does not.
-Both will provide updated values to any subscribers when `.send()` is invoked.
+Combine 中有两种内建的 subject : <<reference#reference-currentvaluesubject,CurrentValueSubject>> 和 <<reference#reference-passthroughsubject,PassthroughSubject>>。
+它们的行为类似，但不同的是 `CurrentValueSubject` 需要一个初始值并记住它当前的值，`PassthroughSubject` 则不会。
+当调用 `.send()` 时，两者都将向它们的订阅者提供更新的值。
 
-Both `CurrentValueSubject` and `PassthroughSubject` are also useful for creating publishers for objects conforming to https://developer.apple.com/documentation/combine/observableobject[`ObservableObject`].
-This protocol is supported by a number of declarative components within SwiftUI.
+在给遵循  https://developer.apple.com/documentation/combine/observableobject[`ObservableObject`] 协议的对象创建发布者时，`CurrentValueSubject` 和 `PassthroughSubject` 也很有用。
+SwiftUI 中的多个声明式组件都遵循这个协议。
 
 [#coreconcepts-subscribers]
-== Subscribers
+== 订阅者
 
-While https://developer.apple.com/documentation/combine/subscriber[`Subscriber`] is the protocol used to receive data throughout a pipeline, _the subscriber_ typically refers to the end of a pipeline.
+虽然 https://developer.apple.com/documentation/combine/subscriber[`Subscriber`] 是用于接收整个管道数据的协议，但通常 _the subscriber_ 指的是管道的末端。
 
-There are two subscribers built-in to Combine: <<reference#reference-assign,Assign>> and <<reference#reference-sink,Sink>>.
-There is a subscriber built in to SwiftUI: <<reference#reference-onreceive,onReceive>>.
+Combine 中有两个内建的订阅者： <<reference#reference-assign,Assign>> 和 <<reference#reference-sink,Sink>>。
+SwiftUI 中有一个订阅者： <<reference#reference-onreceive,onReceive>>。
 
-Subscribers can support cancellation, which terminates a subscription and shuts down all the stream processing prior to any Completion sent by the publisher.
-Both `Assign` and `Sink` conform to the https://developer.apple.com/documentation/combine/cancellable[Cancellable protocol].
+订阅者支持取消操作，取消时将终止订阅关系以及所有流完成之前，由发布者发送的数据。
+`Assign` 和 `Sink` 都遵循 https://developer.apple.com/documentation/combine/cancellable[Cancellable 协议].
 
-When you are storing a reference to your own subscriber in order to clean up later, you generally want a reference to cancel the subscription.
-<<reference#reference-anycancellable,AnyCancellable>> provides a type-erased reference that converts any subscriber to the type AnyCancellable, allowing the use of `.cancel()` on that reference, but not access to the subscription itself (which could, for instance, request more data).
-It is important to store a reference to the subscriber, as when the reference is deallocated it will implicitly cancel its operation.
+当你存储和自己订阅者的引用以便稍后清理时，你通常希望引用销毁时能自己取消订阅。
+<<reference#reference-anycancellable,AnyCancellable>> 提供类型擦除的引用，可以将任何订阅者转换为 `AnyCancellable` 类型，允许在该引用上使用 `.cancel()`，但无法访问订阅者本身（对于实例来说可以，但是需要更多数据）。
+存储对订阅者的引用非常重要，因为当引用被释放销毁时，它将隐含地取消其操作。
 
-https://developer.apple.com/documentation/combine/subscribers/assign[`Assign`] applies values passed down from the publisher to an object defined by a keypath.
-The keypath is set when the pipeline is created.
-An example of this in Swift might look like:
+https://developer.apple.com/documentation/combine/subscribers/assign[`Assign`] 将从发布者传下来的值应用到由 keypath 定义的对象，
+keypath 在创建管道时被设置。
+一个在 Swift 中的例子：
 
 [source, swift]
 ----
 .assign(to: \.isEnabled, on: signupButton)
 ----
 
-https://developer.apple.com/documentation/combine/subscribers/sink[`Sink`] accepts a closure that receives any resulting values from the publisher.
-This allows the developer to terminate a pipeline with their own code.
-This subscriber is also extremely helpful when writing unit tests to validate either publishers or pipelines.
-An example of this in Swift might look like:
+https://developer.apple.com/documentation/combine/subscribers/sink[`Sink`] 接受一个闭包，该闭包接收从发布者发送的任何结果值。
+这允许开发人员使用自己的代码终止管道。
+此订阅者在编写单元测试以验证发布者或管道时也非常有帮助。
+一个在 Swift 中的例子：
 
 [source, swift]
 ----
@@ -585,12 +585,12 @@ An example of this in Swift might look like:
 }
 ----
 
-Other subscribers are part of other Apple frameworks.
-For example, nearly every control in SwiftUI can act as a subscriber.
-The https://developer.apple.com/documentation/swiftui/view/[View protocol] in SwiftUI defines an `.onReceive(publisher)` function to use views as a subscriber.
-The `onReceive` function takes a closure akin to `sink` that can manipulate `@State` or `@Bindings` within SwiftUI.
+其他订阅者是其他 Apple 框架的一部分。
+例如，SwiftUI 中的几乎每个 `control` 都可以充当订阅者。
+SwiftUI 中的 https://developer.apple.com/documentation/swiftui/view/[View 协议] 定义了一个 `.onReceive(publisher)` 函数，可以把视图当作订阅者使用。
+`onReceive` 函数接受一个类似于 `sink` 接受的闭包，可以操纵 SwiftUI 中的 `@State` 或 `@Bindings`。
 
-An example of that in SwiftUI might look like:
+一个在 SwiftUI 中的例子：
 
 [source, swift]
 ----
@@ -606,7 +606,7 @@ struct MyView : View {
 }
 ----
 
-For any type of UI object (UIKit, AppKit, or SwiftUI), <<reference#reference-assign,Assign>> can be used with pipelines to update properties.
+对于任何类型的 UI 对象 (UIKit、AppKit 或者 SwiftUI)， <<reference#reference-assign,Assign>> 可以在管道中使用来更新其属性。
 
 // force a page break - ignored in HTML rendering
 <<<
