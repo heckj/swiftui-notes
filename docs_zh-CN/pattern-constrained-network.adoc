@@ -1,22 +1,22 @@
 [#patterns-constrained-network]
-== Requesting data from an alternate URL when the network is constrained
+== 网络受限时从备用 URL 请求数据
 
-__Goal__::
+__目的__::
 
-* From Apple's WWDC 2019 presentation https://developer.apple.com/videos/play/wwdc2019/712/[Advances in Networking, Part 1], a sample pattern was provided using `tryCatch` and `tryMap` operators to react to the specific error of the network being constrained.
+* 在 Apple 的 WWDC 2019 演示 https://developer.apple.com/videos/play/wwdc2019/712/[Advances in Networking, Part 1] 中，使用 `tryCatch` 和 `tryMap` 操作符提供了示例模式，以响应网络受到限制的特殊错误。
 
-__References__::
+__参考__::
 
 * <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>
 * <<reference#reference-trycatch,tryCatch>>
 * <<reference#reference-trymap,tryMap>>
 
-__See also__::
+__另请参阅__::
 
 * <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
 * <<patterns#patterns-retry,Retrying in the event of a temporary failure>>
 
-__Code and explanation__::
+__代码和解释__::
 
 [source, swift]
 ----
@@ -40,19 +40,19 @@ func adaptiveLoader(regularURL: URL, lowDataURL: URL) -> AnyPublisher<Data, Erro
 .eraseToAnyPublisher() <7>
 ----
 
-This example, from Apple's WWDC, provides a function that takes two URLs - a primary and a fallback.
-It returns a publisher that will request data and fall back requesting a secondary URL when the network is constrained.
+在苹果的 WWDC 中的这个例子，提供了一个函数，接受两个 URL 作为参数 —— 一个主要的 URL 和一个备用的。
+它会返回一个发布者，该发布者将请求数据，并在网络受到限制时向备用 URL 请求数据。
 
-<1> The request starts with an attempt requesting data.
-<2> Setting `request.allowsConstrainedNetworkAccess` will cause the `dataTaskPublisher` to error if the network is constrained.
-<3> Invoke the `dataTaskPublisher` to make the request.
-<4> `tryCatch` is used to capture the immediate error condition and check for a specific error (the constrained network).
-<5> If it finds an error, it creates a new one-shot publisher with the fall-back URL.
-<6> The resulting publisher can still fail, and `tryMap` can map this a failure by throwing an error on HTTP response codes that map to error conditions
-<7> `eraseToAnyPublisher` enables type erasure on the chain of operators so the resulting signature of the adaptiveLoader function is `AnyPublisher<Data, Error>`
+<1> request 变量是一个尝试请求数据的 `URLRequest`。
+<2> 设置 `request.allowsConstrainedNetworkAccess` 将导致 `dataTaskPublisher` 在网络受限时返回错误。
+<3> 调用 `dataTaskPublisher` 发起请求。
+<4> `tryCatch` 用于捕获当前的错误状态并检查特定错误（受限的网络）。
+<5> 如果它发现错误，它会使用备用 URL 创建一个新的一次性发布者。
+<6> 由此产生的发布者仍可能失败，`tryMap` 可以通过在响应数据不可用或者 HTTP 响应码不为 200 时，来抛出错误。
+<7> `eraseToAnyPublisher` 可在操作符链上进行类型擦除，因此 adaptiveLoader 函数的返回类型为 `AnyPublisher<Data, Error>`。
 
-In the sample, if the error returned from the original request wasn't an issue of the network being constrained, it passes on the `.failure` completion down the pipeline.
-If the error is that the network is constrained, then the `tryCatch` operator creates a new request to an alternate URL.
+在示例中，如果从原始请求返回的错误不是网络受限的问题，则它会将 `.failure`  结束事件传到管道中。
+如果错误是网络受限，则 `tryCatch` 操作符会创建对备用 URL 的新请求。
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
