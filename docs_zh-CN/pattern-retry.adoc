@@ -1,45 +1,45 @@
 [#patterns-retry]
-== Retrying in the event of a temporary failure
+== 在发生暂时失败时重试
 
-__Goal__::
+__目的__::
 
-* The <<reference#reference-retry,retry>> operator can be included in a pipeline to retry a subscription when a `.failure` completion occurs.
+* 当 `.failure` 发生时，<<reference#reference-retry,retry>> 操作符可以被包含在管道中以重试订阅。
 
-__References__::
+__参考__::
 
 * <<reference#reference-catch,catch>>
 * <<reference#reference-retry,retry>>
 * <<reference#reference-delay,delay>>
 * <<reference#reference-trymap,tryMap>>
 
-__See also__::
+__另请参阅__::
 
 * <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
 * <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>
 
-__Code and explanation__::
+__代码和解释__::
 
-When requesting data from a `dataTaskPublisher`, the request may fail.
-In that case you will receive a `.failure` completion with an error.
-When it fails, the <<reference#reference-retry,retry>> operator will let you retry that same request for a set number of attempts.
-The `retry` operator passes through the resulting values when the publisher does not send a `.failure` completion.
-`retry` only reacts within a combine pipeline when a `.failure` completion is sent.
+当向 `dataTaskPublisher` 请求数据时，请求可能会失败。
+在这种情况下，你将收到一个带有 error 的 `.failure` 事件。
+当失败时，<<reference#reference-retry,retry>> 操作符将允许你对相同请求进行一定次数的重试。
+当发布者不发送 `.failure` 事件时，`retry` 操作符会传递结果值。
+`retry` 仅在发送 `.failure` 事件时才在 Combine 管道内做出响应。
 
-When `retry` receives a `.failure` completion, the way it retries is by recreating the subscription to the operator or publisher to which  it was chained.
+当 `retry` 收到 `.failure` 结束事件时，它重试的方式是通过重新创建订阅给它所链接的操作符或发布商。
 
-The <<reference#reference-retry,retry>> operator is commonly desired when attempting to request network resources with an unstable connection, or other situations where the request might succeed if the request happens again.
-If the number of retries specified all fail, then the `.failure` completion is passed down to the subscriber.
+当尝试请求连接不稳定的网络资源时，通常需要 <<reference#reference-retry,retry>> 操作符，或者再次请求时可能会成功的情况。
+如果指定的重试次数全部失败，则将 `.failure` 结束事件传递给订阅者。
 
-In our example below, we are using retry in combination with a <<reference#reference-delay,delay>> operator.
-Our use of the delay operator puts a small random delay before the next request.
-This spaces out the retry attempts, so that the retries do not happen in quick succession.
+在下面的示例中，我们将 retry 与 <<reference#reference-delay,delay>> 操作符相结合使用。
+我们使用延迟操作符在下一个请求之前使其出现少量随机延迟。
+这使得重试的尝试行为被分隔开，使重试不会快速连续的发生。
 
-This example also includes the use of the <<reference#reference-trymap,tryMap>> operator to more fully inspect any URLResponse returned from the `dataTaskPublisher`.
-Any response from the server is encapsulated by `URLSession`, and passed forward as a valid response.
-`URLSession` does not treat a _404 Not Found_ http response as an error response, nor any of the _50x_ error codes.
-Using `tryMap` lets us inspect the response code that was sent, and verify that it was a 200 response code.
-In this example, if the response code is anything but a 200 response, it throws an exception - which in turn causes the tryMap operator to pass down a `.failure` completion rather than data.
-This example sets the `tryMap` *after* the retry operator so that retry will only re-attempt the request when the site didn't respond.
+此示例还包括使用 <<reference#reference-trymap,tryMap>> 操作符以更全面地检查从 `dataTaskPublisher` 返回的任何 URL 响应。
+服务器的任何响应都由 `URLSession` 封装，并作为有效的响应转发。
+`URLSession` 不将 _404 Not Found_ 的 http 响应视为错误响应，也不将任何 _50x_ 错误代码视作错误。
+使用 `tryMap`，我们可检查已发送的响应代码，并验证它是 200 的成功响应代码。
+在此示例中，如果响应代码不是 200 ，则会抛出一个异常 —— 这反过来又会导致 tryMap 操作符传递 `.failure` 事件，而不是数据。
+此示例将 `tryMap` 设置在 retry 操作符 *之后*，以便仅在网站未响应时重新尝试请求。
 
 [source, swift]
 ----
@@ -58,16 +58,16 @@ let remoteDataPublisher = urlSession.dataTaskPublisher(for: self.URL!)
     .eraseToAnyPublisher()
 ----
 
-<1> The <<reference#reference-delay,delay>> operator will hold the results flowing through the pipeline for a short duration, in this case for a random selection of 1 to 5 seconds. By adding delay here in the pipeline, it will always occur, even if the original request is successful.
-<2> Retry is specified as trying 3 times.
-This will result in a total of four attempts if each fails - the original request and 3 additional attempts.
-<3> tryMap is being used to inspect the data result from dataTaskPublisher and return a `.failure` completion if the response from the server is valid, but not a 200 HTTP response code.
+<1> <<reference#reference-delay,delay>> 操作符将流经过管道的结果保持一小段时间，在这个例子中随机选择1至5秒。通过在管道中添加延迟，即使原始请求成功，重试也始终会发生。
+<2> 重试被指定为尝试3次。
+如果每次尝试都失败，这将导致总共 4 次尝试 - 原始请求和 3 次额外尝试。
+<3> tryMap 被用于检查 dataTaskPublisher 返回的数据，如果服务器的响应数据有效，但不是 200 HTTP 响应码，则返回 `.failure` 完成事件。
 
 [WARNING]
 ====
-When using the <<reference#reference-retry,retry>> operator with <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>, verify that the URL you are requesting isn't going to have negative side effects if requested repeatedly or with a retry.
-Ideally such requests are be expected to be idempotent.
-If they are not, the <<reference#reference-retry,retry>> operator may make multiple requests, with very unexpected side effects.
+使用 <<reference#reference-retry,retry>> 操作符与 <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> 时，请验证你请求的 URL 如果反复请求或重试，不会产生副作用。
+理想情况下，此类请求应具有幂等性。
+如果没有，<<reference#reference-retry,retry>> 操作符可能会发出多个请求，并产生非常意想不到的副作用。
 ====
 
 // force a page break - in HTML rendering is just a <HR>
