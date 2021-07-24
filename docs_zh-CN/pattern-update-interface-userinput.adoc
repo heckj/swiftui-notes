@@ -1,13 +1,13 @@
 [#patterns-update-interface-userinput]
-== Declarative UI updates from user input
+== 通过用户输入更新声明式 UI
 
-__Goal__::
+__目的__::
 
-* Querying a web based API and returning the data to be displayed in your UI
+* 查询基于 Web 的 API 并将要显示在 UI 中的数据返回
 
-__References__::
+__参考__::
 
-* The Xcode project ViewController with this code is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubViewController.swift[`UIKit-Combine/GithubViewController.swift`]
+* 带有此代码的 Xcode 项目 ViewController 在 github 工程中，位于 https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubViewController.swift[`UIKit-Combine/GithubViewController.swift`]
 
 * Publishers:
 <<reference#reference-published,@Published>>,
@@ -21,21 +21,21 @@ __References__::
 * Subscribers:
 <<reference#reference-assign,assign>>
 
-__See also__::
+__另请参阅__::
 
 * <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>
 * <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
 * <<patterns#patterns-datataskpublisher-trymap,Stricter request processing with dataTaskPublisher>>
 
-__Code and explanation__::
+__代码和解释__::
 
-One of the primary benefits of a framework like Combine is setting up a declarative structure that defines how an interface will update to user input.
+像 Combine 这样的框架的主要好处之一是建立一个声明性结构，定义界面将如何根据用户输入进行更新。
 
-A pattern for integrating Combine with UIKit is setting up a variable which will hold a reference to the updated state, and linking the controls using IBAction.
+将 Combine 与 UIKit 集成的模式是设置一个变量，该变量将保持对更新状态的引用，并使用 IBAction 连接控件。
 
-The sample is a portion of the code at in a larger view controller implementation.
+以下示例是更大的 ViewController 实现中的代码的一部分。
 
-This example overlaps with the next pattern <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>>, which builds upon the initial publisher.
+这个例子与下一个模式  <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>> 有点重叠，都建立在一个初始的发布者上。
 
 .https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubAPI.swift[UIKit-Combine/GithubAPI.swift]
 [source, swift]
@@ -89,25 +89,25 @@ class ViewController: UIViewController {
             .assign(to: \.githubUserData, on: self) <9>
 ----
 
-<1> The `UITextField` is the interface element which is driving the updates from user interaction.
-<2> We defined a <<reference#reference-published,@Published>> property to both hold the data and reflect updates when they happen.
-Because its a `@Published` property, it provides a publisher that we can use with Combine pipelines to update other variables or elements of the interface.
-<3> We set the variable `username` from within an IBAction, which in turn triggers a data flow if the publisher `$username` has any subscribers.
-<4> We in turn set up a subscriber on the publisher `$username` that does further actions.
-In this case it uses updated values of `username` to retrieves an instance of a GithubAPIUser from Github's REST API.
-It will make a new HTTP request to the every time the username value is updated.
-<5> The <<reference#reference-throttle,throttle>> is there to keep from triggering a network request on every possible edit of the text field.
-The throttle keeps it to a maximum of 1 request every half-second.
-<6> <<reference#reference-removeduplicates,removeDuplicates>> collapses events from the changing username so that API requests are not made on the same value twice in a row.
-The `removeDuplicates` prevents redundant requests from being made, should the user edit and the return the previous value.
-<7> map is used similarly to flatMap in error handling here, returning an instance of a publisher.
-The API object returns a publisher, which this map is invoking.
-This doesn't return the value from the call, but the publisher itself.
-<8> <<reference#reference-switchtolatest,switchToLatest>> operator takes the instance of the publisher and resolves out the data.
-`switchToLatest` resolves a publisher into a value and passes that value down the pipeline, in this case an instance of `[GithubAPIUser]`.
-<9> And `assign` at the end up the pipeline is the subscriber, which assigns the value into another variable: `githubUserData`.
+<1> `UITextField` 是从用户交互推动更新的界面元素。
+<2> 我们定义了一个 <<reference#reference-published,@Published>> 属性，既能保存数据，又能响应更新。
+因为它是一个 `@Published` 属性，它提供了一个发布者，我们可以使用 Combine 的管道更新界面的其他变量或元素。
+<3> 我们从 IBAction 内部设置变量 `username`，如果发布者 `$username` 有任何订阅者，它反过来就会触发数据流更新。
+<4> 我们又在发布者 `$username` 上设置了一个订阅者，以触发进一步的行为。
+在这个例子中，它使用更新过的 `username` 的值从 Github 的 REST API 取回一个 GithubAPIUser 实例。
+每次更新用户名值时，它都会发起新的 HTTP 请求。
+<5> <<reference#reference-throttle,throttle>> 在这里是防止每编辑一次 `UITextField` 都触发一个网络请求。
+throttle 操作符保证了每半秒最多可发出 1 个请求。
+<6> <<reference#reference-removeduplicates,removeDuplicates>> 移除重复的更改用户名事件，以便不会连续两次对相同的值发起 API 请求。
+如果用户结束编辑时返回的是之前的值，`removeDuplicates` 可防止发起冗余请求。
+<7> map 在此处和 flatMap 处理错误类似，返回一个发布者的实例。
+在 map 被调用时，API 对象返回一个发布者。
+它不会返回请求的值，而是返回发布者本身。
+<8> <<reference#reference-switchtolatest,switchToLatest>> 操作符接收发布者实例并解析其中的数据。
+`switchToLatest` 将发布者解析为值，并将该值传递到管道中，在这个例子中，是一个 `[GithubAPIUser]` 的实例。
+<9> 在管道末尾的 `assign` 是订阅者，它将值分配到另一个变量：`githubUserData`。
 
-The pattern <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>> expands upon this code to multiple cascading updates of various UI elements.
+模式 <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>> 在此代码上扩展为各种UI元素的多个级联更新。
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
