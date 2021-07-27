@@ -1,43 +1,43 @@
 [#developingwith]
-= Developing with Combine
+= 使用 Combine 进行开发
 
-A common starting point is composing pipelines, leveraging existing publishers, operators, and subscribers.
-A number of examples within this book highlight various patterns, many of which are aimed at providing declarative responses to user inputs within interfaces.
+通常从利用现有的发布者、操作符和订阅者来组成管道开始。
+本书中的许多示例突出了各种模式，其中许多模式旨在对界面内的用户输入提供声明性响应。
 
-You may also want to create APIs that integrate more easily into Combine.
-For example, creating a publisher that encapsulates a remote API, returning a single result or a series of results.
-Or you might be creating a subscriber to consume and process data over time.
+你可能还希望创建更容易集成到 Combine 的 API。
+例如，创建一个封装远程 API 的发布者，返回单个结果或一系列结果。
+或者，你可能正在创建一个订阅者来随着时间的推移去处理和消费数据。
 
-== Reasoning about pipelines
+== 关于管道运用的思考
 
-When developing with Combine, there are two broader patterns of publishers that frequently recur: expecting a publisher to return a single value and complete and expecting a publisher to return many values over time.
+在用 Combine 进行开发时，有两种更广泛的发布者模式经常出现：期望发布者返回单一的值并完成，和期望发布者随着时间的推移返回多个值。
 
-The first is what I'm calling a "one-shot" publisher or pipeline.
-These publishers are expected to create a single response (or perhaps no response) and then terminate normally.
+我把第一个称作 “one-shot”（一次性）的发布者或管道。
+这些发布者会创建单个响应（或者可能没有响应），然后正常终止。
 
-The second is what I'm calling a "continuous" publisher.
-These publishers and associated pipelines are expected to be always active and providing the means to respond to ongoing events.
-In this case, the lifetime of the pipeline is significantly longer, and it is often not desirable to have such pipelines fail or terminate.
+我把第二个称作 “continuous”（连续）的发布者。
+这些发布者和相关管道应始终处于活动状态，并提供处理持续事件的方法。
+在这种情况下，管道的寿命要长得多，而且通常不希望此类管道发生失败或终止。
 
-When you are thinking about your development and how to use Combine, it is often beneficial to think about pipelines as being one of these types, and mixing them together to achieve your goals.
-For example, the pattern <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>> explicitly uses one-shot pipelines to support error handling on a continual pipeline.
+当你在考虑如何使用 Combine 进行开发时，把管道视作这两个类型之一，并把它们混合在一起以实现你的目标，往往是很有帮助的。
+例如，模式 <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>> 明确地在不间断的管道中使用一次性的管道来处理错误。
 
-When you are creating an instance of a publisher or a pipeline, it is worthwhile to be thinking about how you want it to work - to either be a one-shot, or continuous.
-This choice will inform how you handle errors or if you want to deal with operators that manipulate the timing of the events (such as <<reference#reference-debounce,debounce>> or <<reference#reference-throttle,throttle>>).
+当你创建发布者或管道的实例时，好好思考你希望它如何工作是值得的 —— 要么是一次性的，要么是连续的。
+你的选择将关系到你如何处理错误，或者你是否要处理操纵事件时序的操作符 (例如 <<reference#reference-debounce,debounce>> 或者 <<reference#reference-throttle,throttle>>).
 
-In addition to how much data the pipeline or publisher will provide, you will often want to think about what type pair the pipeline is expected to provide.
-A number of pipelines are more about transforming data through various types, and handling possible error conditions in that processing.
-An example of this is returning a pipeline returning a list in the example <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>> to provide a means to represent an "empty" result, even though the list is never expected to have more than 1 item within it.
+除了管道或发布者将提供多少数据外，你还经常需要考虑管道将提供哪种类型对。
+许多管道更多的是通过各种类型转换数据，并处理该过程中可能出现的错误情况。
+该情况的一个例子是返回一个管道，在管道中如例子 <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>> 所示返回一个列表，以提供一种表示“空”结果的方法，即使列表中永远不会有超过 1 个元素。
 
-Ultimately, using Combine types are grounded at both ends; by the originating publisher, and how it is providing data (when it is available), and the subscriber ultimately consuming the data.
+最终，使用 Combine 来连接两端的数据：当数据可用时，由原始的发布者发送它们，然后订阅者最终消费数据。
 
 [#developingwith-types]
-== Swift types with Combine publishers and subscribers
+== Combine 发布者和订阅者涉及到的 Swift 类型
 
-When you compose pipelines within Swift, the chaining of functions results in the type being aggregated as nested generic types.
-If you are creating a pipeline, and then wanting to provide that as an API to another part of your code, the type definition for the exposed property or function can be exceptionally (and un-usefully) complex for the developer.
+当你在 Swift 中构建管道时，函数链导致该类型被聚合为嵌套的通用类型。
+如果你正在创建一个管道，然后想要将该管道作为 API 提供给代码的另一部分，则对于开发人员来说，暴露的属性或函数的类型定义可能异常复杂且毫无用处。
 
-To illustrate the exposed type complexity, if you created a publisher from a PassthroughSubject such as:
+为了说明暴露的类型复杂性，如果你从 PassthroughSubject 创建了一个发布者，例如：
 
 // Source for this at SwiftUI-NotesTests/CombinePatternTests.swift
 [source, swift]
@@ -54,27 +54,27 @@ let x = PassthroughSubject<String, Never>()
 }
 ----
 
-The resulting type is:
+结果的类型是：
 
 [source, swift]
 ----
 Publishers.FlatMap<Publishers.Map<Publishers.Catch<Future<String, Error>, Just<String>>, String>, PassthroughSubject<String, Never>>
 ----
 
-When you want to expose the subject, all of that composition detail can be very distracting and make your code harder to use.
+当你想要暴露这个 subject 时，所有这些混合的细节可能会让你感到非常迷惑，使你的代码更难使用。
 
-To clean up that interface, and provide a nice API boundary, there are type-erased classes which can wrap either publishers or subscribers.
-These explicitly hide the type complexity that builds up from chained functions in Swift.
+为了清理该接口，并提供一个好用的 API，可以使用类型擦除类来包装发布者或订阅者。
+这样明确隐藏了 Swift 中从链式函数中构建的类型复杂性。
 
-The two classes used to expose simplified types for subscribers and publishers are:
+用于为订阅者和发布者暴露简化类型的两个类是：
 
 * https://developer.apple.com/documentation/combine/anysubscriber[AnySubscriber]
 * https://developer.apple.com/documentation/combine/anypublisher[AnyPublisher]
 
-Every publisher also inherits a convenience method `eraseToAnyPublisher()` that returns an instance of AnyPublisher.
-`eraseToAnyPublisher()` is used very much like an operator, often as the last element in a chained pipeline, to simplify the type returned.
+每个发布者还继承了一种便利的方法 `eraseToAnyPublisher()`，它返回一个 `AnyPublisher` 实例。
+`eraseToAnyPublisher()` 的使用非常像操作符，通常作为链式管道中的最后一个元素，以简化返回的类型。
 
-If you updated the above code to add `.eraseToAnyPublisher()` at the end of the pipeline:
+如果你在上述代码的管道末尾添加 `.eraseToAnyPublisher()`：
 
 [source, swift]
 ----
@@ -90,75 +90,75 @@ let x = PassthroughSubject<String, Never>()
 }.eraseToAnyPublisher()
 ----
 
-The resulting type would simplify to:
+结果的类型将被简化为：
 
 [source, swift]
 ----
 AnyPublisher<String, Never>
 ----
 
-This same technique can be immensely useful when constructing smaller pipelines within closures.
-For example, when you want to return a publisher in the closure for a <<reference#reference-flatmap>> operator, you get simpler reasoning about types by explicitly asserting the closure should expect `AnyPublisher`.
-An example of this can be seen in the pattern <<patterns#patterns-sequencing-operations,Sequencing operations with Combine>>.
+同样的技术在闭包内构造较小的管道时将非常有用。
+例如，当你想在闭包中给操作符 <<reference#reference-flatmap>> 返回一个发布者时，你可以通过明确的声明闭包应返回 `AnyPublisher` 来获得更简单的类型推断。
+可以在模式 <<patterns#patterns-sequencing-operations,Sequencing operations with Combine>> 中找到这样的一个例子。
 
 [#developingwith-threads]
-== Pipelines and threads
+== 管道和线程
 
-Combine is not just a single threaded construct.
-Operators, as well as publishers, can run on different dispatch queues or runloops.
-Composed pipelines can run across a single queue, or transfer across a number of queues or threads.
+Combine 不是一个单线程的结构。
+操作符和发布者可以在不同的调度队列或 runloops 中运行。
+构建的管道可以在单个队列中，也可以跨多个队列或线程传输数据。
 
-Combine allows for publishers to specify the scheduler used when either receiving from an upstream publisher (in the case of operators), or when sending to a downstream subscriber.
-This is critical when working with a subscriber that updates UI elements, as that should always be called on the main thread.
+Combine 允许发布者指定线程调度器，不论是从上游的发布者（操作符）接收数据或者向下游的订阅者发送数据，都使用它调度到指定线程。
+在与更新 UI 元素的订阅者配合使用时，这一点至关重要，因为更新 UI 始终应该在主线程上。
 
-For example, you may see this in code as an operator:
+例如，你可能在代码中看到这样的操作符：
 
 [source, swift]
 ----
 .receive(on: RunLoop.main)
 ----
 
-A number of operators can impact what thread or queue is being used to do the relevant processing.
-<<reference#reference-receive,receive>> and <<reference#reference-subscribe,subscribe>> are the two most common, explicitly moving execution of operators after and prior to their invocation respectively.
+许多操作符可以修改用于进行相关处理的线程或队列。
+<<reference#reference-receive,receive>> 和 <<reference#reference-subscribe,subscribe>> 是最常见的两个，它们分别负责把调用操作符之后和之前的执行代码调度到对应的线程。
 
-A number of additional operators have parameters that include a scheduler.
-Examples include <<reference#reference-delay,delay>>, <<reference#reference-debounce,debounce>>, and <<reference#reference-throttle,throttle>>.
-These also have an impact on the queue executing the work - both for themselves and then any operators following in a pipeline.
-These operators all take a `scheduler` parameter, which switches to the relevant thread or queue to do the work.
-Any operators following them will also be invoked on their scheduler, giving them an impact somewhat like <<reference#reference-receive,receive>>.
+许多其他操作符的参数也包括调度器。
+例如 <<reference#reference-delay,delay>>, <<reference#reference-debounce,debounce>>, 和 <<reference#reference-throttle,throttle>>.
+这些也会对执行代码的队列产生影响 - 无论是对自己，还是对于后续在管道中执行的任何操作符。
+这些操作符都使用 `scheduler` 参数，来切换到相应的线程或队列以完成工作。
+任何后面连接着他们的操作符也会在其调度器上被调用，从而产生一些影响，如 <<reference#reference-receive,receive>>。
 
 [TIP]
 ====
-If you want to be explicit about which thread context an operator or subsequent operation will run within, define it with the <<reference#reference-receive,receive>> operator.
+如果你想明确指定操作符或后续的操作在哪个线程环境中运行，可以使用 <<reference#reference-receive,receive>>  操作符。
 ====
 
-== Leveraging Combine with your development
+== 把 Combine 运用到你的开发中
 
-There are two common paths to developing code leveraging Combine.
+通常有两种途径使用 Combine 来进行开发：
 
-* First is simply leveraging synchronous (blocking) calls within a closure to one of the common operators.
-The two most prevalent operators leveraged for this are <<reference#reference-map,map>> and <<reference#reference-trymap,tryMap>>, for when your code needs to throw an Error.
+* 首先，简单的使用是把你闭包中的同步调用改成一个操作符。
+最普遍的两个操作符是 <<reference#reference-map,map>> 和 <<reference#reference-trymap,tryMap>>，后者是当你的代码需要抛出错误时使用。
 
-* Second is integrating your own code that is asynchronous, or APIs that provide a completion callback.
-If the code you are integrating is asynchronous, then you can't (quite) as easily use it within a closure.
-You need to wrap the asynchronous code with a structure that the Combine operators can work with and invoke.
-In practice, this often implies creating a call that returns a publisher instance, and then using that within the pipeline.
+* 第二是集成你自己的代码，即提供完成回调的异步代码或 API。
+如果你集成的代码是异步的，则大概无法在闭合内轻松地使用它。
+你需要将异步代码包装成一个 Combine 操作符可以配合和调用的结构。
+在实践中，这通常意味着需要创建一个发布者的实例，然后在管道中使用它。
 
-The <<reference#reference-future,Future>> publisher was specifically created to support this kind of integration, and the pattern <<patterns#patterns-future,Wrapping an asynchronous call with a Future to create a one-shot publisher>> shows an example.
+<<reference#reference-future,Future>> 发布者是专门用来支持这类集成的, 在模式 <<patterns#patterns-future,Wrapping an asynchronous call with a Future to create a one-shot publisher>> 中有一个这样的示例。
 
-If you want to use data provided by a publisher as a parameter or input to creating this publisher, there are two common means of enabling this:
+如果你想使用发布者提供的数据作为创建此发布者的参数或输入，则有两种通用的方法可以这么做：
 
-. Using the <<reference#reference-flatmap,flatMap>> operator, using the data passed in to create or return a Publisher instance.
-This is a variation of the pattern illustrated in <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>.
+. 使用 <<reference#reference-flatmap,flatMap>> 操作符, 使用传入的数据创建或返回发布者实例。
+这是模式 <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>> 的一种变体。
 
-. Alternately, <<reference#reference-map,map>> or <<reference#reference-trymap,tryMap>> can be used to create an instance of a publisher, followed immediately by chaining <<reference#reference-switchtolatest,switchToLatest>> to resolve that publisher into a value (or values) to be passed within the pipeline.
+. 或者，<<reference#reference-map,map>> 或 <<reference#reference-trymap,tryMap>> 可被用做创建发布者实例，紧跟 <<reference#reference-switchtolatest,switchToLatest>> 链将该发布者解析为将在管道内传递的值。
 
-The patterns <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>> and <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>> illustrate these patterns.
+<<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>> 和 <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>> 模式说明了这种使用方法。
 
-You may find it worthwhile to create objects which return a publisher.
-Often this enables your code to encapsulate the details of communicating with a remote or network based API.
-These can be developed using <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> or your own code.
-A simple example of this is detailed in the pattern <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>>.
+你可能会发现创建返回发布者的对象是值得的。
+这通常使你的代码能够封装与远程或基于网络的 API 通信的详细信息。
+可以使用 <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> 或你自己的代码进行开发。
+在模式 <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>> 中详细介绍了这方面的一个简单的示例。
 
 // force a page break - ignored in HTML rendering
 <<<
