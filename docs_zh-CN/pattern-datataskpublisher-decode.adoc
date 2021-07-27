@@ -3,7 +3,7 @@
 
 __目的__::
 
-* 一个常见的用例是从 URL 请求 JSON 数据并解码它。
+* 一个常见的用例是从 URL 请求 JSON 数据并解码。
 
 __参考__::
 
@@ -21,7 +21,7 @@ __另请参阅__::
 
 __代码和解释__::
 
-这可以通过使用 Combine 的 <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> 搭配一系列操作符处理数据来轻松完成。
+这可以通过使用 Combine 的 <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> 搭配一系列处理数据的操作符来轻松完成。
 
 
 最简单的，调用 https://developer.apple.com/documentation/foundation/urlsession[URLSession] 的 https://developer.apple.com/documentation/foundation/urlsession/3329708-datataskpublisher[dataTaskPublisher]，然后在数据到达订阅者之前使用 <<reference#reference-map,map>> 和 <<reference#reference-decode,decode>>。
@@ -61,11 +61,11 @@ let cancellableSink = remoteDataPublisher
 不需要定义完整的 JSON 结构。
 <2> `dataTaskPublisher` 是从 `URLSession` 实例化的。 你可以配置你自己的 `URLSession`，或者使用 shared session.
 <3> 返回的数据是一个元组：`(data: Data, response: URLResponse)`。
-<<reference#reference-map,map>> 操作符用来获取数据并转换传输 `URLResponse`，只把 `Data` 沿管道向下传递。
+<<reference#reference-map,map>> 操作符用来获取数据并丢弃 `URLResponse`，只把 `Data` 沿管道向下传递。
 <4> <<reference#reference-decode,decode>> 用于加载数据并尝试解析它。
-如果解码失败，解码本身可能会抛出一个错误。
+如果解码失败，它会抛出一个错误。
 如果它成功，通过管道传递的对象将是来自 JSON 数据的结构体。
-<5> 如果解码完成时没有错误，则将触发完成操作，并将值传递给 `receiveValue` 闭包。
+<5> 如果解码完成且没有错误，则将触发完成操作，并将值传递给 `receiveValue` 闭包。
 <6> 如果发生失败（无论是网络请求还是解码），则错误将被传递到 `failure` 闭包。
 <7> 只有当数据请求并解码成功时，才会调用此闭包，并且收到的数据格式将是结构体 `PostmanEchoTimeStampCheckResponse` 的实例。
 
