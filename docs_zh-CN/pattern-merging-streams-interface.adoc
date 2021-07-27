@@ -1,64 +1,64 @@
 
 [#patterns-merging-streams-interface]
-== Merging multiple pipelines to update UI elements
+== 合并多个管道以更新 UI 元素
 
-__Goal__::
+__目的__::
 
-* Watch and react to multiple UI elements publishing values, and updating the interface based on the combination of values updated.
+* 观察并响应多个 UI 元素发送的值，并将更新的值联合起来以更新界面。
 
-__References__::
+__参考__::
 
-* The ViewController with this code is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/FormViewController.swift[UIKit-Combine/FormViewController.swift]
+* 带有此代码的 ViewController 在 github 项目中，位于 https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/FormViewController.swift[UIKit-Combine/FormViewController.swift]
 
-* Publishers:
+* 发布者:
 <<reference#reference-published,@Published>>,
-* Operators:
+* 操作符:
 <<reference#reference-combinelatest,combineLatest>>,
 <<reference#reference-map,map>>,
 <<reference#reference-receive,receive>>
-* Subscribers:
+* 订阅者:
 <<reference#reference-assign,assign>>
 
-__See also__::
+__另请参阅__::
 
 * <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>
 
-__Code and explanation__::
+__代码和解释__::
 
-This example intentionally mimics a lot of web form style validation scenarios, but within UIKit and using Combine.
+此示例故意模仿许多 Web 表单样式的验证场景，不过是在 UIKit 中使用 Combine。 
 
-A view controller is set up with multiple elements to declaratively update.
-The view controller hosts 3 primary text input fields:
+ViewController 被配置了多个通过声明式更新的元素。
+同时持有了 3 个主要的文本输入字段：
 
 * `value1`
 * `value2`
 * `value2_repeat`
 
-It also hosts a button to submit the combined values, and two labels to provide feedback.
+它还有一个按钮来提交合并的值，以及两个 labels 来提供反馈。
 
-The rules of these update that are implemented:
+这些字段的更新规则被实现为：
 
-* The entry in `value1` has to be at least 5 characters.
-* The entry in `value2` has to be at least 5 characters.
-* The entry in `value2_repeat` has to be the same as `value2`.
+* `value1` 中的条目至少有 3 个字符。
+* `value2` 中的条目至少有 5 个字符。
+* `value2_repeat` 中的条目必须与 `value2` 相同。
 
-If any of these rules aren't met, then we want the submit button to be disabled and relevant messages displayed explaining what needs to be done.
+如果这些规则中的任何一个未得到满足，则我们希望禁用提交按钮并显示相关消息，解释需要满足的内容。
 
-This can be achieved by setting up a cascade of pipelines that link and merge together.
+这可以通过设置连接与合并在一起的一系列管道来实现。
 
-* There is a <<reference#reference-published,@Published>> property matching each of the user input fields.
-<<reference#reference-combinelatest,combineLatest>> is used to take the continually published updates from the properties and merge them into a single pipeline.
-A <<reference#reference-map,map>> operator enforces the rules about characters required and the values needing to be the same.
-If the values don't match the required output, we pass a nil value down the pipeline.
+* 有一个 <<reference#reference-published,@Published>> 属性匹配每个用户输入字段。
+<<reference#reference-combinelatest,combineLatest>> 用于从属性中获取不断发布的更新，并将它们合并到单个管道中。
+<<reference#reference-map,map>> 操作符执行有关所需字符和需要相同的值的规则。
+如果值与所需的输出不匹配，我们将在管道中传递 nil。
 
-* Another validation pipeline is set up for value1, just using a <<reference#reference-map,map>> operator to validate the value, or return nil.
+* value1 还另外有一个验证管道，只使用了 <<reference#reference-map,map>> 操作符来验证值，或返回 nil。
 
-* The logic within the map operators  doing the validation is also used to update the label messages in the user interface.
+* 执行验证的 map 操作符内部的逻辑也用于更新用户界面中的 label 信息。
 
-* A final pipeline uses <<reference#reference-combinelatest,combineLatest>> to merge the two validation pipelines into a single pipeline.
-A subscriber is attached to this combined pipeline to determine if the submission button should be enabled.
+* 最终管道使用 <<reference#reference-combinelatest,combineLatest>> 将两条验证管道合并为一条管道。
+此组合的管道上连接了订阅者，以确定是否应启用提交按钮。
 
-The example below shows these all connected.
+下面的示例将这些结合起来进行了展示。
 
 .https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/FormViewController.swift[UIKit-Combine/FormViewController.swift]
 [source, swift]
@@ -142,22 +142,22 @@ class FormViewController: UIViewController {
 }
 ----
 
-<1> The start of this code follows the same patterns laid out in <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>.
-IBAction messages are used to update the <<reference#reference-published,@Published>> properties, triggering updates to any subscribers attached.
-<2> The first validation pipeline uses a <<reference#reference-map,map>> operator to take the string value input and convert it to nil if it doesn't match the validation rules.
-This is also converting the output type from the published property of `<String>` to the optional `<String?>`.
-The same logic is also used to trigger updates to the messages label to provide information about what is required.
-<3> Since we are updating user interface elements, we explicitly make those updates wrapped in `DispatchQueue.main.async` to invoke on the main thread.
-<4> <<reference#reference-combinelatest,combineLatest>> takes two publishers and merges them into a single pipeline with an output type that is the combined values of each of the upstream publishers.
-In this case, the output type is a tuple of `(<String>, <String>)`.
-<5> Rather than use `DispatchQueue.main.async`, we can use the <<reference#reference-receive,receive>> operator to explicitly run the next operator on the main thread, since it will be doing UI updates.
-<6> The two validation pipelines are combined with <<reference#reference-combinelatest,combineLatest>>, and the output of those checked and merged into a single tuple output.
-<7> We could store the assignment pipeline as an `AnyCancellable?` reference (to map it to the life of the viewcontroller) but another option is to create something to collect all the cancellable references.
-This starts as an empty set, and any sinks or assignment subscribers can be added to it to keep a reference to them so that they operate over the full lifetime of the view controller.
-If you are creating a number of pipelines, this can be a convenient way to maintain references to all of them.
-<8> If any of the values are nil, the <<reference#reference-map,map>> operator returns nil down the pipeline.
-Checking against a nil value provides the boolean used to enable (or disable) the submission button.
-<9> the `store` method is available on the https://developer.apple.com/documentation/combine/cancellable[Cancellable] protocol, which is explicitly set up to support saving off references that can be used to cancel a pipeline.
+<1> 此代码的开头遵照了 <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>> 中的模式.
+IBAction 消息用于更新 <<reference#reference-published,@Published>> 属性，触发对所连接的任何订阅者的更新。
+<2> 第一个验证管道使用 <<reference#reference-map,map>> 操作符接收字符串值输入，如果与验证规则不符，则将其转换为 nil。
+这也将发布者属性的输出类型从 `<String>` 转换为可选的 `<String?>`。
+同样的逻辑也用于触发消息文本的更新，以提供有关所需要求的信息。
+<3> 由于我们正在更新用户界面元素，因此我们明确将这些更新包裹在 `DispatchQueue.main.async` 中，以在主线程上调用。
+<4> <<reference#reference-combinelatest,combineLatest>> 将两个发布者合并到一个管道中，该管道的输出类型是每个上游发布者的合并值。
+在这个例子中，输出类型是 `(<String>, <String>)` 的元组。
+<5> 与其使用 `DispatchQueue.main.async`，不如使用 <<reference#reference-receive,receive>> 操作符在主线程上明确执行下一个操作符，因为它将执行 UI 更新。
+<6> 两条验证管道通过 <<reference#reference-combinelatest,combineLatest>> 相结合，并将检查的输出合并为单个元组输出。
+<7> 我们可以将分配的管道存储为 `AnyCancellable?` 引用（将其映射到 viewcontroller 的生命周期），但另一种选择是创建一个变量来收集所有可取消的引用。
+这从空集合开始，任何 sink 或 assign 的订阅者都可以被添加到其中，以持有对它们的引用，以便他们在 viewcontroller 的整个生命周期内运行。
+如果你正在创建多个管道，这可能是保持对所有管道的引用的便捷方式。
+<8> 如果任何值为 nil，则 <<reference#reference-map,map>> 操作符将向管道传递 false 值。
+对 nil 值的检查提供了用于启用（或禁用）提交按钮的布尔值。
+<9> `store` 方法可在 https://developer.apple.com/documentation/combine/cancellable[Cancellable] 协议上调用，该协议明确设置为支持存储可用于取消管道的引用。
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
