@@ -57,7 +57,7 @@ cancellablePipeline.cancel() <2>
 ----
 
 <1> Sinks 是通过发布者或管道中的代码链创建的，并为管道提供终点。
-当 sink 在发布者创建或调用时，它通过 `subscribe` 方法请求无限制的数据，隐式地开始了 <<coreconcepts#coreconcepts-lifecycle,the lifecycle>> 。
+当 sink 在发布者创建或调用时，它通过 `subscribe` 方法隐式地开始了 <<coreconcepts#coreconcepts-lifecycle,the lifecycle>>，并请求无限制的数据。
 <2> Sinks 是可取消的订阅者。在任何时候，你可以使用 sink 末端对其的引用，并在上面调用 `.cancel()` 来使管道失效并关闭管道。
 
 // force a page break - in HTML rendering is just a <HR>
