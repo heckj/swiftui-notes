@@ -24,7 +24,7 @@ include::pattern-sequencing-operations.adoc[]
 . 订阅者应匹配 `<Bool, Never>` 的类型输出
 . 应该在主线程调用订阅者
 
-如果发布器可能会出错（例如 <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> ），你需要构建一个管道来转换输出类型，还需要处理管道内的错误，以匹配错误类型 `<Never>`。
+如果发布者抛出一个错误（例如 <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> ），你需要构建一个管道来转换输出类型，还需要处理管道内的错误，以匹配错误类型 `<Never>`。
 
 如何处理管道内的错误取决于管道的定义方式。
 如果管道设置为返回单个结果并终止， 一个很好的例子就是 <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>。
@@ -70,7 +70,7 @@ Combine 中的发布者和订阅者接口是非常易于测试的。
 然后，你可以使用该接口独立测试管道的任何一侧。
 
 * 你可以模拟 API 请求和可能响应的数据，包括各种错误条件。
-这可以包括从使用发布者 <<reference#reference-just,Just>> 或 <<reference#reference-fail,Fail>>，或者更复杂的 <<reference#reference-future,Future>>。 
+这可以包括使用 <<reference#reference-just,Just>> 或 <<reference#reference-fail,Fail>> 创建的发布者来返回数据，或者更复杂的使用 <<reference#reference-future,Future>>。
 使用这些方案都不需要你进行实际的网络接口调用。
 
 * 同样，你也可以隔离测试，让发布者进行 API 调用，并验证预期的各种成功和失败条件。
