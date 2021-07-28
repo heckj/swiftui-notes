@@ -1,11 +1,11 @@
 [#patterns-datataskpublisher-decode]
-== Making a network request with dataTaskPublisher
+== 使用 dataTaskPublisher 发起网络请求
 
-__Goal__::
+__目的__::
 
-* One common use case is requesting JSON data from a URL and decoding it.
+* 一个常见的用例是从 URL 请求 JSON 数据并解码。
 
-__References__::
+__参考__::
 
 * <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>
 * <<reference#reference-map,map>>
@@ -13,21 +13,21 @@ __References__::
 * <<reference#reference-sink,sink>>
 * <<reference#reference-subscribe,subscribe>>
 
-__See also__::
+__另请参阅__::
 
 * <<patterns#patterns-datataskpublisher-trymap,Stricter request processing with dataTaskPublisher>>
 * <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
 * <<patterns#patterns-retry,Retrying in the event of a temporary failure>>
 
-__Code and explanation__::
+__代码和解释__::
 
-This can be readily accomplished with Combine using
-<<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> followed by a series of operators that process the
-data.
-Minimally, https://developer.apple.com/documentation/foundation/urlsession/3329708-datataskpublisher[dataTaskPublisher] on https://developer.apple.com/documentation/foundation/urlsession[URLSession]
-uses <<reference#reference-map,map>> and <<reference#reference-decode,decode>> before going to the subscriber.
+这可以通过使用 Combine 的 <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> 搭配一系列处理数据的操作符来轻松完成。
 
-The simplest case of using this might be:
+
+最简单的，调用 https://developer.apple.com/documentation/foundation/urlsession[URLSession] 的 https://developer.apple.com/documentation/foundation/urlsession/3329708-datataskpublisher[dataTaskPublisher]，然后在数据到达订阅者之前使用 <<reference#reference-map,map>> 和 <<reference#reference-decode,decode>>。
+
+
+使用此操作的最简单例子可能是：
 
 [source, swift]
 ----
@@ -57,17 +57,17 @@ let cancellableSink = remoteDataPublisher
     })
 ----
 
-<1> Commonly you will have a struct defined that supports at least https://developer.apple.com/documentation/swift/decodable[Decodable] (if not the full https://developer.apple.com/documentation/swift/codable[Codable protocol]). This struct can be defined to only pull the pieces you are interested in from the JSON provided over the network.
-The complete JSON payload does not need to be defined.
-<2> `dataTaskPublisher` is instantiated from `URLSession`. You can configure your own options on `URLSession`, or use a shared session.
-<3> The data that is returned is a tuple: `(data: Data, response: URLResponse)`.
-The <<reference#reference-map,map>> operator is used to get the data and drops the `URLResponse`, returning just `Data` down the pipeline.
-<4> <<reference#reference-decode,decode>> is used to load the data and attempt to parse it.
-Decode can throw an error itself if the decode fails.
-If it succeeds, the object passed down the pipeline will be the struct from the JSON data.
-<5> If the decoding completed without errors, the finished completion will be triggered and the value will be passed to the `receiveValue` closure.
-<6> If the a failure happens (either with the original network request or the decoding), the error will be passed into with the `failure` closure.
-<7> Only if the data succeeded with request and decoding will this closure get invoked, and the data format received will be an instance of the struct `PostmanEchoTimeStampCheckResponse`.
+<1> 通常，你将有一个结构体的定义，至少遵循 https://developer.apple.com/documentation/swift/decodable[Decodable] 协议（即使没有完全遵循 https://developer.apple.com/documentation/swift/codable[Codable protocol]）。此结构体可以只定义从网络拉取到的 JSON 中你感兴趣的字段。
+不需要定义完整的 JSON 结构。
+<2> `dataTaskPublisher` 是从 `URLSession` 实例化的。 你可以配置你自己的 `URLSession`，或者使用 shared session.
+<3> 返回的数据是一个元组：`(data: Data, response: URLResponse)`。
+<<reference#reference-map,map>> 操作符用来获取数据并丢弃 `URLResponse`，只把 `Data` 沿管道向下传递。
+<4> <<reference#reference-decode,decode>> 用于加载数据并尝试解析它。
+如果解码失败，它会抛出一个错误。
+如果它成功，通过管道传递的对象将是来自 JSON 数据的结构体。
+<5> 如果解码完成且没有错误，则将触发完成操作，并将值传递给 `receiveValue` 闭包。
+<6> 如果发生失败（无论是网络请求还是解码），则错误将被传递到 `failure` 闭包。
+<7> 只有当数据请求并解码成功时，才会调用此闭包，并且收到的数据格式将是结构体 `PostmanEchoTimeStampCheckResponse` 的实例。
 
 
 // force a page break - in HTML rendering is just a <HR>
