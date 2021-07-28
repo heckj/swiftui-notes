@@ -1,27 +1,27 @@
 [#patterns-notificationcenter]
-== Responding to updates from NotificationCenter
+== 响应 NotificationCenter 的更新
 
-__Goal__::
+__目的__::
 
-* Receiving notifications from NotificationCenter as a publisher to declaratively react to the information provided.
+* 作为发布者接收 NotificationCenter 的通知，以声明式的对所提供的信息做出响应。
 
-__References__::
+__参考__::
 
 * <<reference#reference-notificationcenter,NotificationCenter>>
 
-__See also__::
+__另请参阅__::
 
-* The unit tests at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/NotificationCenterPublisherTests.swift[`UsingCombineTests/NotificationCenterPublisherTests.swift`]
+* 单元测试在 https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/NotificationCenterPublisherTests.swift[`UsingCombineTests/NotificationCenterPublisherTests.swift`]
 
-__Code and explanation__::
+__代码和解释__::
 
-A large number of frameworks and user interface components provide information about their state and interactions via Notifications from NotificationCenter.
-Apple's documentation includes an article on https://developer.apple.com/documentation/combine/receiving_and_handling_events_with_combine[receiving and handling events with Combine] specifically referencing NotificationCenter.
+大量的框架和用户界面组件通过 NotificationCenter 的通知提供有关其状态和交互的信息。
+Apple 的文档包括一篇关于 https://developer.apple.com/documentation/combine/receiving_and_handling_events_with_combine[receiving and handling events with Combine] 的文章，特别提及了 NotificationCenter。
 
-https://developer.apple.com/documentation/foundation/notification[Notifications] flowing through https://developer.apple.com/documentation/foundation/notificationcenter[NotificationCenter] provide a common, central location for events within your application.
+通过 https://developer.apple.com/documentation/foundation/notificationcenter[NotificationCenter] 发送的 https://developer.apple.com/documentation/foundation/notification[Notifications] 为你应用中的事件提供了一个通用的中心化的位置。
 
-You can also add your own notifications to your application, and upon sending them may include an additional dictionary in their `userInfo` property.
-An example of defining your own notification `.myExampleNotification`:
+你还可以将自己的通知添加到你的应用程序中，在发送通知时，还可以在其 `userInfo` 属性中添加一个额外的字典来发送数据。
+一个定义你自己通知的示例 `.myExampleNotification`：
 
 [source, swift]
 ----
@@ -30,10 +30,10 @@ extension Notification.Name {
 }
 ----
 
-Notification names are structured, and based on Strings.
-Object references can be passed when a notification is posted to the NotificationCenter, indicating which object sent the notification.
-Additionally, Notifications may include a `userInfo`, which has a type of `[AnyHashable : Any]?`.
-This allows for arbitrary dictionaries, either reference or value typed, to be included with a notification.
+通知名称是基于字符串的结构体。
+当通知发布到 NotificationCenter 时，可以传递对象引用，表明发送通知的具体对象。
+此外，通知可以包括 `userInfo`，是一个 `[AnyHashable : Any]?` 类型的值。
+这允许将任意的字典（无论是引用类型还是值类型）包含在通知中。
 
 [source, swift]
 ----
@@ -45,15 +45,15 @@ NotificationCenter.default.post(note)
 
 [NOTE]
 ====
-While commonly in use within AppKit and macOS applications, not all developers are comfortable with heavily using NotificationCenter.
-Originating within the more dynamic Objective-C runtime, Notifications leverage Any and optional types quite extensively.
-Using them within Swift code, or a pipeline, implies that the pipeline will have to provide the type assertions and deal with any possible errors related to data that may or may not be expected.
+虽然在 AppKit 和 macOS 应用程序中普遍地使用了通知，但并非所有开发人员都乐于大量使用 NotificationCenter。
+通知起源于更具动态性的 Objective-C 运行时，广泛利用 Any 和可选类型。
+在 Swift 代码或管道中使用它们意味着管道必须提供类型检查并处理与预期或非预期的数据相关的任何可能错误。
 ====
 
-When creating the NotificationCenter publisher, you provide the name of the notification for which you want to receive, and optionally an object reference to filter to specific types of objects.
-A number of AppKit components that are subclasses of https://developer.apple.com/documentation/appkit/nscontrol[NSControl] share a set of notifications, and filtering can be critical to getting the right notification.
+创建 NotificationCenter 发布者时，你提供要接收的通知的名称，并可选地提供对象引用，以过滤特定类型的对象。
+属于 https://developer.apple.com/documentation/appkit/nscontrol[NSControl] 子类的多个 AppKit 组件共享了一组通知，过滤操作对于获得这些组件的正确的通知至关重要。
 
-An example of subscribing to AppKit generated notifications:
+订阅 AppKit 生成通知的示例：
 
 [source, swift]
 ----
@@ -62,13 +62,13 @@ let sub = NotificationCenter.default.publisher(for: NSControl.textDidChangeNotif
     .map { ($0.object as! NSTextField).stringValue }  <3>
     .assign(to: \MyViewModel.filterString, on: myViewModel) <4>
 ----
-<1> TextFields within AppKit generate a `textDidChangeNotification` when the values are updated.
-<2> An AppKit application can frequently have a large number of text fields that may be changed.
-Including a reference to the sending control can be used to filter to text changed notifications to which you are specifically interested in responding.
-<3> the <<reference#reference-map,map>> operator can be used to get into the object references included with the notification, in this case the `.stringValue` property of the text field that sent the notification, providing its updated value
-<4> The resulting string can be assigned using a writable `KeyValue` path.
+<1> AppKit 中的 TextField 在值更新时生成 `textDidChangeNotification` 通知。
+<2> 一个 AppKit 的应用程序通常可以具有大量可能被更改的 TextField。
+包含对发送控件的引用可用于过滤你特别感兴趣的文本的更改通知。
+<3> <<reference#reference-map,map>> 操作符可用于获取通知中包含的对象引用，在这个例子中，发送通知的 TextField 的 `.stringValue` 属性提供了它更新后的值。
+<4> 由此产生的字符串可以使用可写入的 `KeyValue` 路径进行 assign。
 
-An example of subscribing to your own notifications:
+一个订阅你自己的通知事件的示例：
 [source, swift]
 ----
 let cancellable = NotificationCenter.default.publisher(for: .myExampleNotification, object: nil)
