@@ -1,25 +1,25 @@
 [#patterns-sink-subscriber]
-== Creating a subscriber with sink
+== 使用 sink 创建一个订阅者
 
-__Goal__::
+__目的__::
 
-* To receive the output, and the errors or completion messages, generated from a publisher or through a pipeline, you can create a subscriber with <<reference#reference-sink,sink>>.
+* 要接收来自发布者或管道生成的输出以及错误或者完成消息，你可以使用 <<reference#reference-sink,sink>> 创建一个订阅者。
 
-__References__::
+__参考__::
 
 * <<reference#reference-sink,sink>>
 
-__See also__::
+__另请参阅__::
 
 * <<patterns#patterns-assign-subscriber,Creating a subscriber with assign>>
 * <<patterns#patterns-testing-publisher,Testing a publisher with XCTestExpectation>>
 * <<patterns#patterns-testing-subscriber-scheduled,Testing a subscriber with scheduled sends from PassthroughSubject>>
 
-__Code and explanation__::
+__代码和解释__::
 
-Sink creates an all-purpose subscriber to capture or react to the data from a Combine pipeline, while also supporting cancellation and the <<coreconcepts#coreconcepts-lifecycle,publisher subscriber lifecycle>>.
+Sink 创建了一个通用订阅者来捕获或响应来自 Combine 管道的数据，同时支持取消和 <<coreconcepts#coreconcepts-lifecycle,publisher subscriber lifecycle>>。
 
-.simple sink
+.简单的 sink 例子
 [source, swift]
 ----
 let cancellablePipeline = publishingSource.sink { someValue in <1>
@@ -29,9 +29,9 @@ let cancellablePipeline = publishingSource.sink { someValue in <1>
     print(".sink() received \(someValue)")
 })
 ----
-<1> The simple version of a sink is very compact, with a single trailing closure receiving data when presented through the pipeline.
+<1> 简单版本的 sink 是非常简洁的，跟了一个尾随闭包来接收从管道发送来的数据。
 
-.sink with completions and data
+.带有完成事件和数据的 sink
 [source, swift]
 ----
 let cancellablePipeline = publishingSource.sink(receiveCompletion: { completion in <1>
@@ -56,9 +56,9 @@ let cancellablePipeline = publishingSource.sink(receiveCompletion: { completion 
 cancellablePipeline.cancel() <2>
 ----
 
-<1> Sinks are created by chaining the code from a publisher or pipeline, and provide an end point for the pipeline.
-When the sink is created or invoked on a publisher, it implicitly starts <<coreconcepts#coreconcepts-lifecycle,the lifecycle>> with the `subscribe` method, requesting unlimited data.
-<2> Sinks are cancellable subscribers. At any time you can take the reference that terminated with sink and invoke `.cancel()` on it to invalidate and shut down the pipeline.
+<1> Sinks 是通过发布者或管道中的代码链创建的，并为管道提供终点。
+当 sink 在发布者创建或调用时，它通过 `subscribe` 方法隐式地开始了 <<coreconcepts#coreconcepts-lifecycle,the lifecycle>>，并请求无限制的数据。
+<2> Sinks 是可取消的订阅者。在任何时候，你可以使用 sink 末端对其的引用，并在上面调用 `.cancel()` 来使管道失效并关闭管道。
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
