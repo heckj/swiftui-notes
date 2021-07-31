@@ -1,12 +1,12 @@
 
 [#patterns-testing-publisher]
-== Testing a publisher with XCTestExpectation
+== 使用 XCTestExpectation 测试发布者
 
-__Goal__::
+__目的__::
 
-* For testing a publisher (and any pipeline attached)
+* 用于测试发布者（以及连接的任何管道）
 
-__References__::
+__参考__::
 
 * https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DataTaskPublisherTests.swift[UsingCombineTests/DataTaskPublisherTests.swift]
 * https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/EmptyPublisherTests.swift[UsingCombineTests/EmptyPublisherTests.swift]
@@ -14,29 +14,29 @@ __References__::
 * https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift[UsingCombineTests/PublisherTests.swift]
 * https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift[UsingCombineTests/DebounceAndRemoveDuplicatesPublisherTests.swift]
 
-__See also__::
+__另请参阅__::
 
 * <<patterns#patterns-testing-publisher,Testing a publisher with XCTestExpectation>>
 * <<patterns#patterns-testing-subscriber-scheduled,Testing a subscriber with scheduled sends from PassthroughSubject>>
 * <<patterns#patterns-testing-subscriber,Testing a subscriber with a PassthroughSubject>>
 
-__Code and explanation__::
+__代码和解释__::
 
-When you are testing a publisher, or something that creates a publisher, you may not have the option of controlling when the publisher returns data for your tests.
-Combine, being driven by its subscribers, can set up a sync that initiates the data flow.
-You can use an https://developer.apple.com/documentation/xctest/xctestexpectation[XCTestExpectation] to wait an explicit amount of time for the test to run to completion.
+当你测试发布者或创建发布者的某些代码时，你可能无法控制发布者何时返回数据以进行测试。
+由其订阅者驱动的 Combine 可以设置一个同步事件来启动数据流。
+你可以使用 https://developer.apple.com/documentation/xctest/xctestexpectation[XCTestExpectation] 等待一段确定的时间之后，再调用 completion 闭包进行测试。
 
-A general pattern for using this with Combine includes:
+此与 Combine 一起使用的模式：
 
-. set up the expectation within the test
-. establish the code you are going to test
-. set up the code to be invoked such that on the success path you call the expectation's `.fulfill()` function
-. set up a `wait()` function with an explicit timeout that will fail the test if the expectation isn't fulfilled within that time window.
+. 在测试中设置 expectation。
+. 确定要测试的代码。
+. 设置要调用的代码，以便在执行成功的情况下，你调用 expectation 的 `.fulfill()` 函数。
+. 设置具有明确超时时间的 `wait()` 函数，如果 expectation 在该时间窗口内未调用 `fulfill()`，则测试将失败。
 
-If you are testing the data results from a pipeline, then triggering the `fulfill()` function within the <<reference#reference-sink>> operator `receiveValue` closure can be very convenient.
-If you are testing a failure condition from the pipeline, then often including `fulfill()` within the <<reference#reference-sink>> operator `receiveCompletion` closure is effective.
+如果你正在测试管道中的结果数据，那么在 <<reference#reference-sink>> 操作符的 `receiveValue` 闭包中触发 `fulfill()` 函数是非常方便的。
+如果你正在测试管道中的失败情况，则通常在 <<reference#reference-sink>> 操作符的 `receiveCompletion` 闭包中包含 `fulfill()` 方法是有效的。
 
-The following example shows testing a one-shot publisher (<<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> in this case) using expectation, and expecting the data to flow without an error.
+下列示例显示使用 expectation 测试一次性发布者(本例中是 <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>)，并期望数据在不出错的情况下流动。
 
 .https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/DataTaskPublisherTests.swift#L47[UsingCombineTests/DataTaskPublisherTests.swift - testDataTaskPublisher]
 [source, swift]
@@ -69,21 +69,21 @@ func testDataTaskPublisher() {
     }
 ----
 
-<1> The expectation is set up with a string that makes debugging in the event of failure a bit easier.
-This string is really only seen when a test failure occurs.
-The code we are testing here is `dataTaskPublisher` retrieving data from a preset test URL, defined earlier in the test.
-The publisher is invoked by attaching the <<reference#reference-sink,sink>> subscriber to it.
-Without the expectation, the code will still run, but the test running structure wouldn't wait to see if there were any exceptions.
-The expectation within the test "holds the test" waiting for a response to let the operators do their work.
-<2> In this case, the test is expected to complete successfully and terminate normally, therefore the `expectation.fulfill()` invocation is set within the receiveCompletion closure,  specifically linked to a received `.finished` completion.
-<3> Since we don't expect a failure, we also have an explicit `XCTFail()` invocation if we receive a `.failure` completion.
-<4> We have a few additional assertions within the receiveValue.
-Since this publisher set returns a single value and then terminates, we can make inline assertions about the data received.
-If we received multiple values, then we could collect those and make assertions on what was received after the fact.
-<5> This test uses a single expectation, but you can include multiple independent expectations to require fulfillment.
-It also sets that maximum time that this test can run to five seconds.
-The test will not always take five seconds, as it will complete the test as soon as the fulfill is received.
-If for some reason the test takes longer than five seconds to respond, the XCTest will report a test failure.
+<1> Expectation 设置为一个字符串，使调试在发生失败时更容易一点。
+此字符串仅在测试失败时才能看到。
+我们在这里测试的代码是 `dataTaskPublisher` 从测试早期定义的预设 URL 中取回数据。
+发布者通过将 <<reference#reference-sink,sink>> 订阅者连接到它开始触发请求。
+如果没有 expectation，代码仍将运行，但构建的测试运行结构不会等待结果返回，然后去检查是否有任何意外。
+测试中的 expectation "暂停测试" 去等待响应，让操作符先发挥它们的作用。
+<2> 在这个例子中，测试期望可以成功完成并正常终止，因此在 `receiveCompletion` 闭包内调用 `expectation.fulfill()`，具体是接收到 `.finished` 完成事件后调用。
+<3> 由于我们不期望失败，如果我们收到 `.failure` "完成事件，我们也明确地调用 `XCTFail()`。
+<4> 我们在 `receiveValue` 中还有一些其他断言。
+由于此发布者设置返回单个值然后终止，因此我们可以对收到的数据进行内联断言。
+如果我们收到多个值，那么我们可以收集这些值，并就事后收到的内容做出断言。
+<5> 此测试使用单个 expectation，但你可以包含多个独立的 expectation，去要求它们都被 `fulfill()`。
+它还规定此测试的最长运行时间为 5 秒。
+测试并不总是需要五秒钟，因为一旦收到 fulfill，它就会完成。
+如果出于某种原因，测试需要超过五秒钟的响应时间，XCTest 将报告测试失败。
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
