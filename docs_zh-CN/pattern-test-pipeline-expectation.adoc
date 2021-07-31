@@ -69,14 +69,14 @@ func testDataTaskPublisher() {
     }
 ----
 
-<1> Expectation 设置为一个字符串，使调试在发生失败时更容易一点。
+<1> Expectation 设置为一个字符串，这样在发生失败时更容易调试。
 此字符串仅在测试失败时才能看到。
-我们在这里测试的代码是 `dataTaskPublisher` 从测试早期定义的预设 URL 中取回数据。
+我们在这里测试的代码是 `dataTaskPublisher` 从测试前就已定义好的预设的 URL 中取回数据。
 发布者通过将 <<reference#reference-sink,sink>> 订阅者连接到它开始触发请求。
-如果没有 expectation，代码仍将运行，但构建的测试运行结构不会等待结果返回，然后去检查是否有任何意外。
+如果没有 expectation，代码仍将运行，但构建的测试运行结构将不会等到结果返回之后再去检查是否有任何意外。
 测试中的 expectation "暂停测试" 去等待响应，让操作符先发挥它们的作用。
-<2> 在这个例子中，测试期望可以成功完成并正常终止，因此在 `receiveCompletion` 闭包内调用 `expectation.fulfill()`，具体是接收到 `.finished` 完成事件后调用。
-<3> 由于我们不期望失败，如果我们收到 `.failure` "完成事件，我们也明确地调用 `XCTFail()`。
+<2> 在这个例子中，测试期望可以成功完成并正常终止，因此在 `receiveCompletion` 闭包内调用 `expectation.fulfill()`，具体是接收到 `.finished` completion 后调用。
+<3> 由于我们不期望失败，如果我们收到 `.failure` completion，我们也明确地调用 `XCTFail()`。
 <4> 我们在 `receiveValue` 中还有一些其他断言。
 由于此发布者设置返回单个值然后终止，因此我们可以对收到的数据进行内联断言。
 如果我们收到多个值，那么我们可以收集这些值，并就事后收到的内容做出断言。
