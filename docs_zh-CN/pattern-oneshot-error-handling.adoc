@@ -1,33 +1,33 @@
 [#patterns-oneshot-error-handling]
-== Using catch to handle errors in a one-shot pipeline
+== 使用 catch 处理一次性管道中的错误
 
-__Goal__::
+__目的__::
 
-* If you need to handle a failure within a pipeline, for example before using the `assign` operator or another operator that requires the failure type to be `<Never>`, you can use `catch` to provide the appropriate logic.
+* 如果你需要在管道内处理失败，例如在使用 `assign` 操作符或其他要求失败类型为 `<Never>` 的操作符之前，你可以使用 `catch` 来提供适当的逻辑。
 
-__References__::
+__参考__::
 
 * <<reference#reference-catch,catch>>
 * <<reference#reference-just,Just>>
 
-__See also__::
+__另请参阅__::
 
 * <<patterns#patterns-retry,Retrying in the event of a temporary failure>>
 * <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>
 * <<patterns#patterns-constrained-network,Requesting data from an alternate URL when the network is constrained>>
 
-__Code and explanation__::
+__代码和解释__::
 
-<<reference#reference-catch,catch>> handles errors by replacing the upstream publisher with another publisher that you provide as a return in a closure.
+<<reference#reference-catch,catch>> 处理错误的方式，是将上游发布者替换为另一个发布者，这是你在闭包中用返回值提供的。
 
 [WARNING]
 ====
-Be aware that this effectively terminates the pipeline.
-If you're using a one-shot publisher (one that doesn't create more than a single event), then this is fine.
+请注意，这实际上终止了管道。
+如果你使用的是一次性发布者（不创建多个事件），那这就没什么。
 ====
 
-For example, <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> is a one-shot publisher and you might use catch with it to ensure that you get a response, returning a placeholder in the event of an error.
-Extending our previous example to provide a default response:
+例如，<<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> 是一个一次性的发布者，你可以使用 catch 在发生错误时返回默认值，以确保你得到响应结果。
+扩展我们以前的示例以提供默认的响应：
 
 [source, swift]
 ----
@@ -51,15 +51,15 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
     .eraseToAnyPublisher()
 ----
 
-<1> Often, a catch operator will be placed after several operators that could fail, in order to provide a fallback or placeholder in the event that any of the possible previous operations failed.
-<2> When using catch, you get the error type in and can inspect it to choose how you provide a response.
-<3> The Just publisher is frequently used to either start another one-shot pipeline or to directly provide a placeholder response in the event of failure.
+<1> 通常，catch 操作符将被放置在几个可能失败的操作符之后，以便在之前任何可能的操作失败时提供回退或默认值。
+<2> 使用 catch 时，你可以得到错误类型，并可以检查它以选择如何提供响应。
+<3> Just 发布者经常用于启动另一个一次性管道，或在发生失败时直接提供默认的响应。
 
-A possible problem with this technique is that the if the original publisher generates more values to which you wish to react, the original pipeline has been ended.
-If you are creating a pipeline that reacts to a <<reference#reference-published,@Published>> property, then after any failed value that activates the catch operator, the pipeline will cease to react further.
-See <<reference#reference-catch,catch>> for more details of how this works.
+此技术的一个可能问题是，如果你希望原始发布者生成多个响应值，但使用 catch 之后原始管道就已结束了。
+如果你正在创建一条对 <<reference#reference-published,@Published>> 属性做出响应的管道，那么在任何失败值激活 catch 操作符之后，管道将不再做出进一步响应。
+有关此工作原理的详细信息，请参阅 <<reference#reference-catch,catch>>。
 
-If you want to continue to respond to errors and handle them, see the pattern <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>.
+如果你要继续响应错误并处理它们，请参阅 <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>。
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
