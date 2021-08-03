@@ -68,8 +68,8 @@ let cancellableSink = remoteDataPublisher
 
 在 <<patterns#patterns-datataskpublisher-decode, previous pattern>> 中使用了 <<reference#reference-map,map>> 操作符， 这里我们使用 tryMap，这使我们能够根据返回的内容识别并在管道中抛出错误。
 
-<1> <<reference#reference-trymap,tryMap>> 仍旧获得元组 `(data: Data, response: URLResponse)`，作为返回值在这里被定义为沿着管道向下传递的数据类型。
-<2> 在 `tryMap` 的闭包内，我们可以对 `HTTPURLResponse` 做出响应，并深入挖掘，包括查看特定的状态码。
+<1> <<reference#reference-trymap,tryMap>> 仍旧获得元组 `(data: Data, response: URLResponse)`，并且在这里定义仅返回管道中的 Data 类型。
+<2> 在 `tryMap` 的闭包内，我们将响应转换为 `HTTPURLResponse` 并深入进去，包括查看特定的状态码。
 <3> 在这个例子中，我们希望将 200 状态码以外的**任何**响应视为失败。`HTTPURLResponse`.`statusCode` 是一种 Int 类型，因此你也可以使用 `httpResponse.statusCode > 300` 等逻辑。
 <4> 如果判断条件未满足，则会抛出我们选择的错误实例：在这个例子中，是 `invalidServerResponse`。
 <5> 如果没有出现错误，则我们只需传递 `Data` 以进行进一步处理。
@@ -78,9 +78,9 @@ let cancellableSink = remoteDataPublisher
 
 当在管道上触发错误时，不管错误发生在管道中的什么位置，都会发送 `.failure` 完成回调，并把错误封装在其中。
 
-此模式可以扩展，以返回使用此通用模式可接受并处理任意数量特定错误条件的发布器。
+此模式可以扩展来返回一个发布者，该发布者使用此通用模式可接受并处理任意数量的特定错误。
 在许多示例中，我们用默认值替换错误条件。
-如果我们想要返回一个发布者的函数，在发生失败时该发布者不干预将发生什么，则同样 <<reference#reference-trymap,tryMap>> 操作符可以与 <<reference#reference-maperror,mapError>> 一起使用用于转换响应对象以及转换 URLError 错误类型。
+如果我们想要返回一个发布者的函数，该发布者不会根据失败来选择将发生什么，则同样 <<reference#reference-trymap,tryMap>> 操作符可以与 <<reference#reference-maperror,mapError>> 一起使用来转换响应对象以及转换 URLError 错误类型。
 
 [source, swift]
 ----
@@ -144,10 +144,10 @@ func fetch(url: URL) -> AnyPublisher<Data, APIError> {
 }
 ----
 
-<1> `APIError` 是一个错误类型的枚举，我们在此示例中使用该列举来列举可能发生的所有错误。
+<1> `APIError` 是一个错误类型的枚举，我们在此示例中使用该枚举来列举可能发生的所有错误。
 <2> `.networkError` 是 `APIError` 的一个特定情况，当 <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> 返回错误时我们将把错误转换为该类型。
 <3> 我们使用标准 dataTaskPublisher 开始生成此发布者。
-<4> 然后，我们将路由到 <<reference#reference-trymap,tryMap>> 操作符来检查响应，根据服务器响应创建特定的错误类型。
+<4> 然后，我们将路由到 <<reference#reference-trymap,tryMap>> 操作符来检查响应，根据服务器响应创建特定的错误。
 <5> 最后，我们使用 <<reference#reference-maperror,mapError>> 将任何其他不可忽视的错误类型转换为通用的错误类型 `APIError`。
 
 
