@@ -30,7 +30,7 @@ let futureAsyncPublisher = Future<Bool, Error> { promise in <1>
 ----
 
 <1> `Future` 本身由你定义返回类型，并接受一个闭包。
-它把你定义的类型放在一个类型相匹配的 `Result` 对象中。
+它给出一个与类型描述相匹配的 `Result` 对象，你可以与之交互。
 <2> 只要传入的闭包符合类型要求，任何异步的 API 你都可以调用。
 <3> 在异步 API 完成的回调中，由你决定什么是失败还是成功。
 对 `promise(.failure(<FailureType>))` 的调用返回一个失败的结果。
