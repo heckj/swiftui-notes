@@ -48,7 +48,7 @@ func adaptiveLoader(regularURL: URL, lowDataURL: URL) -> AnyPublisher<Data, Erro
 <3> 调用 `dataTaskPublisher` 发起请求。
 <4> `tryCatch` 用于捕获当前的错误状态并检查特定错误（受限的网络）。
 <5> 如果它发现错误，它会使用备用 URL 创建一个新的一次性发布者。
-<6> 由此产生的发布者仍可能失败，`tryMap` 可以通过在响应数据不可用或者 HTTP 响应码不为 200 时，来抛出错误。
+<6> 由此产生的发布者仍可能失败，`tryMap` 可以基于对应到错误条件的 HTTP 响应码来抛出错误，将此映射为失败。
 <7> `eraseToAnyPublisher` 可在操作符链上进行类型擦除，因此 adaptiveLoader 函数的返回类型为 `AnyPublisher<Data, Error>`。
 
 在示例中，如果从原始请求返回的错误不是网络受限的问题，则它会将 `.failure`  结束事件传到管道中。
