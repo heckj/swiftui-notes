@@ -1,30 +1,30 @@
 [#patterns-debugging-breakpoint]
-== Debugging pipelines with the debugger
+== 使用调试器调试管道
 
-__Goal__::
+__目的__::
 
-* To force the pipeline to trap into a debugger on specific scenarios or conditions.
+* 强制管道在特定场景或条件下进入调试器。
 
-__References__::
+__参考__::
 
 * <<reference#reference-handleevents,handleEvents>>
 * <<reference#reference-map,map>>
 
-__See also__::
+__另请参阅__::
 
 * <<patterns#patterns-debugging-print,Debugging pipelines with the print operator>>
 * <<patterns#patterns-debugging-handleevents,Debugging pipelines with the handleEvents operator>>
 
-__Code and explanation__::
+__代码和解释__::
 
-You can set a breakpoint within any closure to any operator within a pipeline, triggering the debugger to activate to inspect the data.
-Since the <<reference#reference-map,map>> operator is frequently used for simple output type conversions, it is often an excellent candidate that has a closure you can use.
-If you want to see into the control messages, then a breakpoint within any of the closures provided to <<reference#reference-handleevents,handleEvents>> makes a very convenient target.
+你可以在管道内的任何操作符的任何闭包内设置一个断点，触发调试器激活以检查数据。
+由于 <<reference#reference-map,map>> 操作符经常用于简单的输出类型转换，因此它通常是具有你可以使用的闭包的优秀候选者。
+如果你想查看控制消息，那么为 <<reference#reference-handleevents,handleEvents>> 提供的任何闭包添加一个断点，目标实现起来将非常方便。
 
-You can also use the <<reference#reference-breakpoint,breakpoint>> operator to trigger the debugger, which can be a very quick and convenient way to see what is happening in a pipeline.
-The breakpoint operator acts very much like handleEvents, taking a number of optional parameters, closures that are expected to return a boolean, and if true will invoke the debugger.
+你还可以使用 <<reference#reference-breakpoint,breakpoint>> 操作符触发调试器，这是查看管道中发生情况的一种非常快速和方便的方式。
+breakpoint 操作符的行为非常像 handleEvents，使用一些可选参数，期望返回一个布尔值的闭包，如果返回 true 将会调用调试器。
 
-The optional closures include:
+可选的闭包包括：
 
 * `receiveSubscription`
 * `receiveOutput`
@@ -41,11 +41,11 @@ The optional closures include:
 })
 ----
 
-This allows you to provide logic to evaluate the data being passed through, and only triggering a breakpoint when your specific conditions are met.
-With very active pipelines processing a lot of data, this can be a great tool to be more surgical in getting the debugger active when you need it, and letting the other data move on by.
+这允许你提供逻辑来评估正在传递的数据，并且仅在满足特定条件时触发断点。
+通过非常活跃的管道会处理大量数据，这将是一个非常有效的工具，在需要调试器时，让调试器处于活动状态，并让其他数据继续移动。
 
-If you are only interested in the breaking into the debugger on error conditions, then convenience operator <<reference#reference-breakpointonerror,breakPointOnError>> is perfect.
-It takes no parameters or closures, simply invoking the debugger when an error condition of any form is passed through the pipeline.
+如果你只想在错误条件下进入调试器，则有一个便利的操作符 <<reference#reference-breakpointonerror,breakPointOnError>> 是完美的选择。
+它不需要参数或闭包，当任何形式的错误条件通过管道时，它都会调用调试器。
 
 [source, swift]
 ----
@@ -55,12 +55,12 @@ It takes no parameters or closures, simply invoking the debugger when an error c
 
 [NOTE]
 ====
-The location of the breakpoint that is triggered by the breakpoint operator isn't in your code, so getting to local frames and information can be a bit tricky.
-This does allow you to inspect global application state in highly specific instances (whenever the closure returns `true`, with logic you provide), but you may find it more effective to use regular breakpoints within closures.
-The breakpoint() and breakpointOnError() operators don't immediately drop you into a closure where you can see the data being passed, error thrown, or control signals that may have triggered the breakpoint.
-You can often walk back up the stack trace within the debugging window to see the publisher.
+断点操作符触发的断点位置不在你的代码中，因此访问本地堆栈和信息可能有点棘手。
+这确实允许你在极其特定的情况下检查全局应用状态（每当闭包返回 `true` 时，使用你提供的逻辑），但你可能会发现在闭包中使用常规断点更有效。
+breakpoint() 和 breakpointOnError() 操作符不会立即将你带到闭包的位置，在那里你可以看到可能触发断点而传递的数据、抛出的错误或控制信号。
+你通常可以在调试窗口内通过堆栈跟踪以查看发布者。
 
-When you trigger a breakpoint within an operator's closure, the debugger immediately gets the context of that closure as well, so you can see/inspect the data being passed.
+当你在操作符的闭包中触发断点时，调试器也会立即获取该闭包的上下文，以便你可以查看/检查正在传递的数据。
 ====
 
 // force a page break - in HTML rendering is just a <HR>
