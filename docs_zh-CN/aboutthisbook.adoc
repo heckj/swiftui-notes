@@ -52,6 +52,10 @@ Andrius Shiaulis,
 Antoine Weber,
 Paul Wood III,
 Federico Zanetello
+
+中文版翻译：
+樊志颖，
+卫林霄
 ****
 
 谢谢你们所有人花费时间和精力提交 pull request，使这本书变得更好！
@@ -73,6 +77,43 @@ Joe 广泛的贡献和参与到各种开源项目的工作中。
 .^| https://github.com/heckj[icon:github[size=2x,set=fab]]
 .^| https://www.linkedin.com/in/josephheck/[icon:linkedin[size=2x,set=fab]]
 .^| http://twitter.com/heckj[icon:twitter[size=2x,set=fab]]
+|===
+
+== 译者简介
+
+樊志颖，专注于 iOS 开发。
+
+个人网站：https://zhiying.space/
+
+Github: https://github.com/zhiying-fan
+
+卫林霄，
+
+== 翻译术语表
+
+[cols="2*^"]
+|===
+| Framework
+| 框架
+
+| Pipeline
+| 管道
+
+| Functional programming
+| 函数式编程
+
+| Functional reactive programming
+| 函数响应式编程
+
+| Publisher
+| 发布者
+
+| Subscriber
+| 订阅者
+
+| Operator
+| 操作符
+
 |===
 
 == 从哪获取这本书

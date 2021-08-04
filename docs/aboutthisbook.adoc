@@ -52,6 +52,10 @@ Andrius Shiaulis,
 Antoine Weber,
 Paul Wood III,
 Federico Zanetello
+
+Chinese translation from:
+Zhiying Fan,
+Linxiao Wei
 ****
 
 Thank you all for taking the time and effort to submit a pull request to make this work better!
@@ -85,6 +89,10 @@ Updates of the content will be made to the online version as development continu
 Larger updates and announcements will also be provided through https://gumroad.com/heckj[the author's profile at Gumroad].
 
 The content for this book, including sample code and tests, are sourced from the GitHub repository: https://github.com/heckj/swiftui-notes.
+
+=== Translations
+
+* Chinese translation(中文版本) and its https://github.com/zhiying-fan/swiftui-notes[GitHub project]
 
 === Download the project
 
