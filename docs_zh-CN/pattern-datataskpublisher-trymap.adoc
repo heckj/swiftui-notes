@@ -1,13 +1,13 @@
 [#patterns-datataskpublisher-trymap]
-== Stricter request processing with dataTaskPublisher
+== 使用 dataTaskPublisher 进行更严格的请求处理
 
-__Goal__::
+__目的__::
 
-* When URLSession makes a connection, it only reports an error if the remote server does not respond.
-You may want to consider a number of responses, based on status code, to be errors.
-To accomplish this, you can use tryMap to inspect the http response and throw an error in the pipeline.
+* 当 URLSesion 进行连接时，它仅在远程服务器未响应时报告错误。
+你可能需要根据状态码将各种响应视为不同的错误。
+为此，你可以使用 tryMap 检查 http 响应并在管道中抛出错误。
 
-__References__::
+__参考__::
 
 * <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>>
 * <<reference#reference-trymap,tryMap>>
@@ -16,19 +16,19 @@ __References__::
 * <<reference#reference-subscribe,subscribe>>
 * <<reference#reference-maperror,mapError>>
 
-__See also__::
+__另请参阅__::
 
 * <<patterns#patterns-datataskpublisher-decode,Making a network request with dataTaskPublisher>>
 * <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
 * <<patterns#patterns-retry,Retrying in the event of a temporary failure>>
 
 
-__Code and explanation__::
+__代码和解释__::
 
-To have more control over what is considered a failure in the URL response, use a `tryMap` operator on the tuple response from `dataTaskPublisher`.
-Since `dataTaskPublisher` returns both the response data and the `URLResponse` into the pipeline, you can immediately inspect the response and throw an error of your own if desired.
+要对 URL 响应中被认为是失败的操作进行更多控制，可以对 `dataTaskPublisher` 的元组响应使用 `tryMap` 操作符。
+由于 `dataTaskPublisher` 将响应数据和 `URLResponse` 都返回到了管道中，你可以立即检查响应，并在需要时抛出自己的错误。
 
-An example of that might look like:
+这方面的一个例子可能看起来像：
 
 [source, swift]
 ----
@@ -66,21 +66,21 @@ let cancellableSink = remoteDataPublisher
     })
 ----
 
-Where the <<patterns#patterns-datataskpublisher-decode, previous pattern>> used a <<reference#reference-map,map>> operator, this uses tryMap, which allows us to identify and throw errors in the pipeline based on what was returned.
+在 <<patterns#patterns-datataskpublisher-decode, previous pattern>> 中使用了 <<reference#reference-map,map>> 操作符， 这里我们使用 tryMap，这使我们能够根据返回的内容识别并在管道中抛出错误。
 
-<1> <<reference#reference-trymap,tryMap>> still gets the tuple of `(data: Data, response: URLResponse)`, and is defined here as returning just the type of Data down the pipeline.
-<2> Within the closure for `tryMap`, we can cast the response to `HTTPURLResponse` and dig deeper into it, including looking at the specific status code.
-<3> In this case, we want to consider **anything** other than a 200 response code as a failure. `HTTPURLResponse`.`statusCode` is an Int type, so you could also have logic such as `httpResponse.statusCode > 300`.
-<4> If the predicates are not met it throws an instance of an error of our choosing; `invalidServerResponse` in this case.
-<5> If no error has occurred, then we simply pass down `Data` for further processing.
+<1> <<reference#reference-trymap,tryMap>> 仍旧获得元组 `(data: Data, response: URLResponse)`，并且在这里定义仅返回管道中的 Data 类型。
+<2> 在 `tryMap` 的闭包内，我们将响应转换为 `HTTPURLResponse` 并深入进去，包括查看特定的状态码。
+<3> 在这个例子中，我们希望将 200 状态码以外的**任何**响应视为失败。`HTTPURLResponse`.`statusCode` 是一种 Int 类型，因此你也可以使用 `httpResponse.statusCode > 300` 等逻辑。
+<4> 如果判断条件未满足，则会抛出我们选择的错误实例：在这个例子中，是 `invalidServerResponse`。
+<5> 如果没有出现错误，则我们只需传递 `Data` 以进行进一步处理。
 
-=== Normalizing errors from a dataTaskPublisher
+=== 标准化 dataTaskPublisher 返回的错误
 
-When an error is triggered on the pipeline, a `.failure` completion is sent with the error encapsulated within it, regardless of where it happened in the pipeline.
+当在管道上触发错误时，不管错误发生在管道中的什么位置，都会发送 `.failure` 完成回调，并把错误封装在其中。
 
-This pattern can be expanded to return a publisher that accommodates any number of specific error conditions using this general pattern.
-In many of the examples, we replace the error conditions with a default value.
-If we want to have a function that returns a publisher that *doesn't* choose what happens on failure, then the same <<reference#reference-trymap,tryMap>> operator can be used in conjunction with <<reference#reference-maperror,mapError>> to translate review the response object as well as convert URLError error types.
+此模式可以扩展来返回一个发布者，该发布者使用此通用模式可接受并处理任意数量的特定错误。
+在许多示例中，我们用默认值替换错误条件。
+如果我们想要返回一个发布者的函数，该发布者不会根据失败来选择将发生什么，则同样 <<reference#reference-trymap,tryMap>> 操作符可以与 <<reference#reference-maperror,mapError>> 一起使用来转换响应对象以及转换 URLError 错误类型。
 
 [source, swift]
 ----
@@ -144,11 +144,11 @@ func fetch(url: URL) -> AnyPublisher<Data, APIError> {
 }
 ----
 
-<1> `APIError` is a Error enumeration that we are using in this example to collect all the variant errors that can occur.
-<2> `.networkError` is one of the specific cases of `APIError` that we will translate into when <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> returns an error.
-<3> We start the generation of this publisher with a standard dataTaskPublisher.
-<4> We then route into the <<reference#reference-trymap,tryMap>> operator to inspect the response, creating specific error conditions based on the server response.
-<5> And finally we use <<reference#reference-maperror,mapError>> to convert any lingering error types down into a common Failure type of `APIError`.
+<1> `APIError` 是一个错误类型的枚举，我们在此示例中使用该枚举来列举可能发生的所有错误。
+<2> `.networkError` 是 `APIError` 的一个特定情况，当 <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> 返回错误时我们将把错误转换为该类型。
+<3> 我们使用标准 dataTaskPublisher 开始生成此发布者。
+<4> 然后，我们将路由到 <<reference#reference-trymap,tryMap>> 操作符来检查响应，根据服务器响应创建特定的错误。
+<5> 最后，我们使用 <<reference#reference-maperror,mapError>> 将任何其他不可忽视的错误类型转换为通用的错误类型 `APIError`。
 
 
 // force a page break - in HTML rendering is just a <HR>
