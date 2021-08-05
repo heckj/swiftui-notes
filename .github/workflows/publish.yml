@@ -19,8 +19,8 @@ jobs:
     #  run: pwd
     # result: /home/runner/work/swiftui-notes/swiftui-notes
 
-    - name: generate html with asciidoctor from docs/
-      run: docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
+    - name: generate html with asciidoctor from docs_zh-CN/
+      run: docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs_zh-CN/lib/google-analytics-docinfoprocessor.rb docs_zh-CN/using-combine-book.adoc
       # results to appear in the directory 'output', which on GH action is owned by root, not `me`
 
     - name: permission check
@@ -35,7 +35,7 @@ jobs:
         mkdir -p build/images
 
     - name: copy images into HTML output directory
-      run: cp -r docs/images/* build/images
+      run: cp -r docs_zh-CN/images/* build/images
 
     - name: copy HTML into build directory
       run: cp output/using-combine-book.html build/index.html
