@@ -1,57 +1,57 @@
 [#patterns-sequencing-operations]
-== Sequencing asynchronous operations
+== 有序的异步操作
 
-__Goal__::
+__目的__::
 
-* To explicitly order asynchronous operations with a Combine pipeline
+* 使用 Combine 的管道来显式地对异步操作进行排序
 
 [TIP]
 ====
-This is similar to a concept called "promise chaining".
-While you can arrange combine such that it acts similarly, it is likely not a good replacement for using a promise library.
-The primary difference is that promise libraries always deal with a single result per promise, and a Combine brings along the complexity of needing to handle the possibility of many values.
+这类似于一个叫做 "promise chaining" 的概念。
+虽然你可以将 Combine 处理的和其行为一致，但它可能不能良好地替代对 promise 库的使用。
+主要区别在于，promise 库总是将每个 promise 作为单一结果处理，而 Combine 带来了可能需要处理许多值的复杂性。
 ====
 
-__References__::
+__参考__::
 
 * <<reference#reference-future,Future>>
 * <<reference#reference-flatmap,flatMap>>
 * <<reference#reference-zip,zip>>
 * <<reference#reference-sink,sink>>
 
-__See also__::
+__另请参阅__::
 
 * <<patterns#patterns-delegate-publisher-subject,Creating a repeating publisher by wrapping a delegate based API>>
-* The ViewController with this code is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/AsyncCoordinatorViewController.swift[UIKit-Combine/AsyncCoordinatorViewController.swift].
+* 使用此代码的 ViewController 在 github 的项目中 https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/AsyncCoordinatorViewController.swift[UIKit-Combine/AsyncCoordinatorViewController.swift].
 
-__Code and explanation__::
+__代码和解释__::
 
-Any asynchronous (or synchronous) set of tasks that need to happen in a specific order can also be coordinated using a Combine pipeline.
-By using <<reference#reference-future,Future>> operator, the act of completing an asynchronous call can be captured, and sequencing operators provides the structure of that coordination.
+任何需要按特定顺序执行的异步（或同步）任务组都可以使用 Combine 管道进行协调管理。
+通过使用 <<reference#reference-future,Future>> 操作符，可以捕获完成异步请求的行为，序列操作符提供了这种协调功能的结构。
 
-By wrapping any asynchronous API calls with the <<reference#reference-future,Future>> publisher and then chaining them together with the <<reference#reference-flatmap,flatMap>> operator, you invoke the wrapped asynchronous API calls in a specific order.
-Multiple parallel asynchronous efforts can be created by creating multiple pipelines, with <<reference#reference-future,Future>> or another publisher, and waiting for the pipelines to complete in parallel by merging them together with the <<reference#reference-zip,zip>> operator.
+通过将任何异步 API 请求与 <<reference#reference-future,Future>> 发布者进行封装，然后将其与 <<reference#reference-flatmap,flatMap>> 操作符链接在一起，你可以以特定顺序调用被封装的异步 API 请求。
+通过使用 <<reference#reference-future,Future>> 或其他发布者创建多个管道，使用 <<reference#reference-zip,zip>> 操作符将它们合并之后等待管道完成，通过这种方法可以创建多个并行的异步请求。
 
-If you want force an <<reference#reference-future,Future>> publisher to not be invoked until another has completed, then creating the future publisher in the <<reference#reference-flatmap,flatMap>> closure causes it to wait to be created until a value has been passed to the flatMap operator.
+如果你想强制一个 <<reference#reference-future,Future>> 发布者直到另一个发布者完成之后才被调用，你可以把 future 发布者创建在 <<reference#reference-flatmap,flatMap>> 的闭包中，这样它就会等待有值被传入 flatMap 操作符之后才会被创建。
 
-These techniques can be composed to create any structure of parallel or serial tasks.
+通过组合这些技术，可以创建任何并行或串行任务的结构。
 
-This technique of coordinating asynchronous calls can be especially effective if later tasks need data from earlier tasks.
-In those cases, the data results needed can be passed directly the pipeline.
+如果后面的任务需要较早任务的数据，这种协调异步请求的技术会特别有效。
+在这些情况下，所需的数据结果可以直接通过管道传输。
 
-An example of this sequencing follows below.
-In this example, buttons (arranged visually to show the ordering of actions) are highlighted when they complete.
-The whole sequence is triggered by a separate button action, which also resets the state of all the buttons and cancels any existing running sequence if it's not yet finished.
-In this example, the asynchronous API call is a call that simply takes a random amount of time to complete to provide an example of how the timing works.
+此排序的示例如下。 
+在此示例中，按钮在完成时会高亮显示，按钮的排列顺序是特意用来显示操作顺序的。
+整个序列由单独的按钮操作触发，该操作还会重置所有按钮的状态，如果序列中有尚未完成的任务，则都将被取消。
+在此示例中，异步 API 请求会在随机的时间之后完成，作为例子来展示时序的工作原理。
 
-The workflow that is created is represented in steps:
+创建的工作流分步表示如下：
 
-* step 1 runs first.
-* step 2 has three parallel efforts, running after step 1 completes.
-* step 3 waits to start until all three elements of step 2 complete.
-* step 4 runs after step 3 has completed.
+* 步骤 1 先运行。
+* 步骤 2 有三个并行的任务，在步骤 1 完成之后运行。
+* 步骤 3 等步骤 2 的三个任务全部完成之后，再开始执行。
+* 步骤 4 在步骤 3 完成之后开始执行。
 
-Additionally, there is an activity indicator that is triggered to start animating when the sequence begins, stopping when step 4 has completed.
+此外，还有一个 activity indicator 被触发，以便在序列开始时开始动画，在第 4 步完成时停止。
 
 .https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/AsyncCoordinatorViewController.swift[UIKit-Combine/AsyncCoordinatorViewController.swift]
 [source, swift]
@@ -180,18 +180,18 @@ class AsyncCoordinatorViewController: UIViewController {
 }
 ----
 
-<1> `runItAll` coordinates the operation of this workflow, starting with checking to see if one is currently running.
-If defined, it invokes `cancel()` on the existing subscriber.
-<2> `resetAllSteps` iterates through all the existing buttons used represent the progress of this workflow, and resets them to gray and unhighlighted to reflect an initial state.
-It also verifies that the activity indicator is not currently animated.
-<3> Then we get things started, first with activating the animation on the activity indicator.
-<4> Creating the subscriber with <<reference#reference-sink,sink>> and storing the reference initiates the workflow.
-The publisher to which it is subscribing is setup outside this function, allowing it to be re-used multiple times.
-The <<reference#reference-print,print>> operator in the pipeline is for debugging, showing console output when the pipeline is triggered.
-<5> Each step is represented by the invocation of a <<reference#reference-future,Future>> publisher, followed immediately by pipeline elements to switch to the main thread and then update a UIButton's background to show the step has completed.
-This is encapsulated in a `createFuturePublisher` call, using <<reference#reference-erasetoanypublisher,eraseToAnyPublisher>> to simplify the type being returned.
-<6> The <<reference#reference-map,map>> operator is used to create this specific side effect of updating the a UIButton to show the step has been completed.
-<7> The creation of the overall pipeline and its structure of serial and parallel tasks is created from the combination of calls to `createFuturePublisher` using the operators <<reference#reference-flatmap,flatMap>> and  <<reference#reference-zip,zip>>.
+<1> `runItAll` 协调此工作流的进行，它从检查当前是否正在执行开始。
+如果是，它会在当前的订阅者上调用 `cancel()`。
+<2> `resetAllSteps` 通过遍历所有表示当前工作流状态的按钮，并将它们重置为灰色和未高亮以回到初始状态。
+它还验证 activity indicator 当前未处于动画中。
+<3> 然后我们开始执行请求，首先开启 activity indicator 的旋转动画。
+<4> 使用 <<reference#reference-sink,sink>> 创建订阅者并存储对工作流的引用。
+被订阅的发布者是在该函数外创建的，允许被多次复用。
+管道中的 <<reference#reference-print,print>> 操作符用于调试，在触发管道时在控制台显示输出。
+<5> 每个步骤都由 <<reference#reference-future,Future>> 发布者紧跟管道构建而成，然后立即由管道操作符切换到主线程，然后更新 UIButton 的背景色，以显示该步骤已完成。
+这封装在 `createFuturePublisher` 的调用中，使用 <<reference#reference-erasetoanypublisher,eraseToAnyPublisher>> 以简化返回的类型。
+<6> <<reference#reference-map,map>> 操作符用于创建并更新 UIButton，作为特定的效果以显示步骤已完成。
+<7> 创建整个管道及其串行和并行任务结构，是结合了对 `createFuturePublisher` 的调用以及对 <<reference#reference-flatmap,flatMap>> 和 <<reference#reference-zip,zip>> 操作符的使用共同完成的。
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
