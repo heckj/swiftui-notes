@@ -1,17 +1,17 @@
 [#patterns-debugging-handleevents]
-== Debugging pipelines with the handleEvents operator
+== 使用 handleEvents 操作符调试管道
 
-__Goal__::
+__目的__::
 
-* To get more targeted understanding of what is happening within a pipeline, employing breakpoints, print or logging statements, or additional logic.
+* 使用断点、打印、记录语句或其他额外的逻辑，以便更有针对性地了解管道内发生的情况。
 
-__References__::
+__参考__::
 
 * <<reference#reference-handleevents>>
-* A ViewController using handleEvents is in the github project at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubViewController.swift[UIKit-Combine/GithubViewController.swift]
-* The handleEvents unit tests in the github project at https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/HandleEventsPublisherTests.swift[UsingCombineTests/HandleEventsPublisherTests.swift]
+* 使用 handleEvents 的 ViewController 在 github 项目中位于 https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubViewController.swift[UIKit-Combine/GithubViewController.swift]
+* 有关 handleEvents 的单元测试在 github 项目中位于 https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/HandleEventsPublisherTests.swift[UsingCombineTests/HandleEventsPublisherTests.swift]
 
-__See also__::
+__另请参阅__::
 
 * <<patterns#patterns-debugging-print,Debugging pipelines with the print operator>>
 * <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>>
@@ -19,13 +19,13 @@ __See also__::
 * <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>
 * <<patterns#patterns-debugging-breakpoint,Debugging pipelines with the debugger>>
 
-__Code and explanation__::
+__代码和解释__::
 
-<<reference#reference-handleevents,handleEvents>> passes data through, making no modifications to the output and failure types, or the data.
-When you put in the operator, you can specify a number of optional closures, allowing you to focus on the aspect of what you want to see.
-The <<reference#reference-handleevents,handleEvents>> operator with specific closures can be a great way to get a window to see what is happening when a pipeline is cancelling, erroring, or otherwise terminating expectedly.
+<<reference#reference-handleevents,handleEvents>> 传入数据，不对输出和失败类型或数据进行任何修改。
+当你在管道中加入该操作符时，可以指定一些可选的闭包，从而让你能够专注于你想要看到的信息。
+具有特定闭包的 <<reference#reference-handleevents,handleEvents>> 操作符是一个打开新窗口的好方法，通过该窗口可以查看管道取消、出错或以其他预期的方式终止时发生的情况。
 
-The closures you can provide include:
+可以指定的闭包包括：
 
 * `receiveSubscription`
 * `receiveRequest`
@@ -33,15 +33,15 @@ The closures you can provide include:
 * `receiveOutput`
 * `receiveCompletion`
 
-If the closures each included a print statement, this operator would be acting very much like the <<reference#reference-print,print>> operator, as detailed in <<patterns#patterns-debugging-print,Debugging pipelines with the print operator>>.
+如果每个闭包都包含打印语句，则该操作符将非常像 <<reference#reference-print,print>> 操作符，具体表现在 <<patterns#patterns-debugging-print,Debugging pipelines with the print operator>>。
 
-The power of handleEvents for debugging is in selecting what you want to view, reducing the amount of output, or manipulating the data to get a better understanding of it.
+使用 handleEvents 调试的强大之处在于可以选择要查看的内容、减少输出量或操作数据以更好地了解它。
 
-In the example viewcontroller at https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubViewController.swift[UIKit-Combine/GithubViewController.swift], the subscription, cancellation, and completion handlers are used to provide a side effect of starting, or stopping, an activity indicator.
+在 https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubViewController.swift[UIKit-Combine/GithubViewController.swift] 的示例 viewcontroller 中，订阅、取消和 completion 的事件被用于启动或停止 UIActivityIndicatorView。
 
-If you only wanted to see the data being passed on the pipeline, and didn't care about the control messages, then providing a single closure for receiveOutput and ignoring the other closures can let you focus on just that detail.
+如果你只想看到管道上传递的数据，而不关心控制消息，那么为 `receiveOutput` 提供单个闭包并忽略其他闭包可以让你专注于这些详细信息。
 
-The unit test example showing handleEvents has all options active with comments:
+handleEvents 的单元测试示例展示了所有可提供的闭包：
 
 .https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/HandleEventsPublisherTests.swift[UsingCombineTests/HandleEventsPublisherTests.swift]
 [source, swift]
@@ -58,20 +58,20 @@ The unit test example showing handleEvents has all options active with comments:
     print("receiveRequest event called with \(String(describing: aValue))")
 })
 ----
-<1> The first closure called is `receiveRequest`, which will have the demand value passed into it.
-<2> The second closure `receiveSubscription` is commonly the returning subscription from the publisher, which passes in a reference to the publisher.
-At this point, the pipeline is operational, and the publisher will provide data based on the amount of data requested in the original request.
-<3> This data is passed into `receiveOutput` as the publisher makes it available, invoking the closure for each value passed.
-This will repeat for as many values as the publisher sends.
-<4> If the pipeline is closed - either normally or terminated due to a failure - the `receiveCompletion` closure will get the completion.
-Just the like the <<reference#reference-sink,sink>> closure, you can switch on the completion provided, and if it is a `.failure` completion, then you can inspect the enclosed error.
-<5> If the pipeline is cancelled, then the `receiveCancel` closure will be called.
-No data is passed into the cancellation closure.
+<1> 第一个被调用的闭包是 `receiveRequest`，所需要的值（the demand value）将传递给它。
+<2> 第二个闭包 `receiveSubscription` 通常是从发布者返回的订阅消息，它将对订阅的引用传递给发布者。
+此时，管道已运行，发布者将根据原始请求中请求的数据量提供数据。
+<3> 当发布者提供这些数据时，这些数据将传递到 `receiveOutput` 中，每次有值传递过来都将调用该闭包。
+这将随着发布者发送更多的值而重复调用。
+<4> 如果管道正常关闭或因失败而终止，`receiveCompletion` 闭包将收到 completion 事件。
+就像 <<reference#reference-sink,sink>> 闭包一样，你可以对提供的 completion 事件使用 switch，如果它是一个 `.failure` completion，那么你可以检查附带的错误。
+<5> 如果管道被取消，则将调用 `receiveCancel` 闭包。
+不会有任何数据传递到该取消闭包中。
 
 [NOTE]
 ====
-While you can also use <<reference#reference-breakpoint>> and <<reference#reference-breakpointonerror>> operators to break into a debugger (as shown in <<patterns#patterns-debugging-breakpoint>>), the `handleEvents()` operator with closures allows you to set breakpoints within Xcode.
-This allows you to immediately jump into the debugger to inspect the data flowing through the pipeline, or to get references to the subscriber, or the error in the case of a failed completion.
+虽然你还可以使用 <<reference#reference-breakpoint>> 和 <<reference#reference-breakpointonerror>> 操作符进入调试模式（如<<patterns#patterns-debugging-breakpoint>> 中所示），带有闭包的 `handleEvents()` 操作符允许你在 Xcode 内设置断点。
+这允许你立即进入调试器，检查流经管道的数据，或获取订阅者的引用，或在失败的 completion 事件中获取错误信息。
 ====
 
 // force a page break - in HTML rendering is just a <HR>
