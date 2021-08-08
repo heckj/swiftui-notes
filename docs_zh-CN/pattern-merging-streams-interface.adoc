@@ -48,7 +48,7 @@ ViewController 被配置了多个通过声明式更新的元素。
 
 * 有一个 <<reference#reference-published,@Published>> 属性匹配每个用户输入字段。
 <<reference#reference-combinelatest,combineLatest>> 用于从属性中获取不断发布的更新，并将它们合并到单个管道中。
-<<reference#reference-map,map>> 操作符执行有关所需字符和需要相同的值的规则。
+<<reference#reference-map,map>> 操作符强制执行所需字符和值必须相同的规则。
 如果值与所需的输出不匹配，我们将在管道中传递 nil。
 
 * value1 还另外有一个验证管道，只使用了 <<reference#reference-map,map>> 操作符来验证值，或返回 nil。
@@ -146,12 +146,12 @@ class FormViewController: UIViewController {
 IBAction 消息用于更新 <<reference#reference-published,@Published>> 属性，触发对所连接的任何订阅者的更新。
 <2> 第一个验证管道使用 <<reference#reference-map,map>> 操作符接收字符串值输入，如果与验证规则不符，则将其转换为 nil。
 这也将发布者属性的输出类型从 `<String>` 转换为可选的 `<String?>`。
-同样的逻辑也用于触发消息文本的更新，以提供有关所需要求的信息。
+同样的逻辑也用于触发消息文本的更新，以提供有关所需内容的信息。
 <3> 由于我们正在更新用户界面元素，因此我们明确将这些更新包裹在 `DispatchQueue.main.async` 中，以在主线程上调用。
 <4> <<reference#reference-combinelatest,combineLatest>> 将两个发布者合并到一个管道中，该管道的输出类型是每个上游发布者的合并值。
 在这个例子中，输出类型是 `(<String>, <String>)` 的元组。
-<5> 与其使用 `DispatchQueue.main.async`，不如使用 <<reference#reference-receive,receive>> 操作符在主线程上明确执行下一个操作符，因为它将执行 UI 更新。
-<6> 两条验证管道通过 <<reference#reference-combinelatest,combineLatest>> 相结合，并将检查的输出合并为单个元组输出。
+<5> 与其使用 `DispatchQueue.main.async`，不如使用 <<reference#reference-receive,receive>> 操作符明确在主线程上执行下一个操作符，因为它将执行 UI 更新。
+<6> 两条验证管道通过 <<reference#reference-combinelatest,combineLatest>> 相结合，并将经过检查的输出合并为单个元组输出。
 <7> 我们可以将分配的管道存储为 `AnyCancellable?` 引用（将其映射到 viewcontroller 的生命周期），但另一种选择是创建一个变量来收集所有可取消的引用。
 这从空集合开始，任何 sink 或 assign 的订阅者都可以被添加到其中，以持有对它们的引用，以便他们在 viewcontroller 的整个生命周期内运行。
 如果你正在创建多个管道，这可能是保持对所有管道的引用的便捷方式。
