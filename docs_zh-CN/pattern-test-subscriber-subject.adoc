@@ -3,7 +3,7 @@
 
 __目的__::
 
-* 对于测试订阅者或包含订阅者的代码，我们可以使用 PassthroughSubject 模拟发布源，明确地控制哪些数据被发送和何时发送。
+* 为了测试订阅者或包含订阅者的代码，我们可以使用 PassthroughSubject 模拟发布源，明确地控制哪些数据被发送和何时发送。
 
 __参考__::
 
@@ -136,4 +136,3 @@ func testSinkReceiveDataThenError() {
 // force a page break - in HTML rendering is just a <HR>
 <<<
 '''
-
