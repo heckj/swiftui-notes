@@ -1,36 +1,36 @@
 [#patterns-testable-publisher-subscriber]
-== Using EntwineTest to create a testable publisher and subscriber
+== 使用 EntwineTest 创建可测试的发布器和订阅者
 
-__Goal__::
+__目的__::
 
-* For testing a pipeline, or subscriber, when what you want to test is the timing of the pipeline.
+* 当你想要测试的是管道的时序时，用于测试管道或订阅者。
 
-__References__::
+__参考__::
 
 * https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/EntwineTestExampleTests.swift[UsingCombineTests/EntwineTestExampleTests.swift]
 
-__See also__::
+__另请参阅__::
 
 * <<patterns#patterns-testing-publisher,Testing a publisher with XCTestExpectation>>
 * <<patterns#patterns-testing-subscriber,Testing a subscriber with a PassthroughSubject>>
 * <<patterns#patterns-testing-subscriber-scheduled,Testing a subscriber with scheduled sends from PassthroughSubject>>
 * <<reference#reference-passthroughsubject,passthroughSubject>>
 
-__Code and explanation__::
+__代码和解释__::
 
-The EntwineTest library, available from GitHub at https://github.com/tcldr/Entwine.git, provides some additional options for making your pipelines testable.
-In addition to a virtual time scheduler, EntwineTest has a `TestablePublisher` and a `TestableSubscriber`.
-These work in coordination with the virtual time scheduler to allow you to specify the timing of the publisher generating data, and to valid the data received by the subscriber.
+EntwineTest 库可在 gitHub https://github.com/tcldr/Entwine.git 找到，为使管道可测试提供了一些额外的选择。
+除了虚拟时间调度器外，EntwineTest 还有一个 `TestablePublisher` 和 `TestableSubscriber`。
+这些与虚拟时间调度器协调工作，允许你指定发布者生成数据的时间，并验证订阅者收到的数据。
 
 [WARNING]
 ====
-As of Xcode 11.2, there is a bug with SwiftPM that impacts the use of Entwine as a testing library.
-The details can be found at https://bugs.swift.org/plugins/servlet/mobile#issue/SR-11564[SR-11564] in Swift's open source bug reporting.
+截至 Xcode 11.2，SwiftPM 存在影响使用 Entwine 作为测试库的 bug。
+详细信息可在 Swift 的开源 bug 报告中找到 https://bugs.swift.org/plugins/servlet/mobile#issue/SR-11564[SR-11564]。
 
-The workaround, which you may need to apply if using Xcode 11.2, is to set the project setting `DEAD_CODE_STRIPPING=NO`.
+如果使用 Xcode 11.2，你可能需要应用该解决方法，将项目设置修改为 `DEAD_CODE_STRIPPING=NO`。
 ====
 
-An example of this from the EntwineTest project is included:
+包含在 EntwineTest 项目中的一个这样的例子：
 
 .https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/EntwineTestExampleTests.swift[UsingCombineTests/EntwineTestExampleTests.swift - testMap]
 [source, swift]
@@ -77,19 +77,19 @@ class EntwineTestExampleTests: XCTestCase {
 }
 ----
 
-<1> The `TestablePublisher` lets you set up a publisher that returns specific values at specific times.
-In this case, it's returning 3 items at consistent intervals.
-<2> When you use the virtual time scheduler, it is important to make sure to invoke it with start.
-This runs the virtual time scheduler, which can run faster than a clock since it only needs to increment the virtual time and not wait for elapsed time.
-<3> `results` is a TestableSubscriber object, and includes a `recordedOutput` property which provides  an ordered list of all the data and combine control path interactions with their timing.
+<1> `TestablePublisher` 允许你设置一个在特定时间返回特定值的发布者。
+在这个例子中，它会以相同的间隔返回 3 个值。
+<2> 当你使用虚拟时间调度器时，重要的是要确保从 start 开始调用它。
+这会启动虚拟时间调度器，它的运行速度可以比时钟快，因为它只需要增加虚拟时间，而不是等待真实过去的时间。
+<3> `results` 是一个 TestableSubscriber 对象，包括 `recordedOutput` 属性，该属性提供所有数据的有序列表，并将控制事件的交互与其时间组合在一起。
 
-If this test sequence had been done with asyncAfter, then the test would have taken a minimum of 500ms to complete.
-When I ran this test on my laptop, it was recording 0.0121 seconds to complete the test (12.1ms).
+如果这个测试序列是用 asyncAfter 完成的，那么测试将至少需要 500ms 才能完成。
+当我在我的笔记本电脑上运行此测试时，它记录花费了 0.0121 秒以完成测试（12.1ms）。
 
 [NOTE]
 ====
-A side effect of EntwineTest is that tests using the virtual time scheduler can run much faster than a real time clock.
-The same tests being created using real time scheduling mechanisms to delay data sending values can take significantly longer to complete.
+EntwineTest 的副作用是，使用虚拟时间调度器的测试比实时时钟运行速度快得多。
+使用实时调度机制来延迟数据发送值的相同测试可能需要更长的时间才能完成。
 ====
 
 // force a page break - in HTML rendering is just a <HR>
