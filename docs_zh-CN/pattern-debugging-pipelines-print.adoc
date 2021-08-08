@@ -107,7 +107,7 @@ username pipeline: : receive value: (heckj)
 github user data: : receive value: ([UIKit_Combine.GithubAPIUser(login: "heckj", public_repos: 69, avatar_url: "https://avatars0.githubusercontent.com/u/43388?v=4")])
 ----
 
-一些放在 <<reference#reference-sink,sink>> 闭包中，用来查看最终结果的无关的打印已被删除。
+一些放在 <<reference#reference-sink,sink>> 闭包中，用来查看最终结果的无关打印语句已被删除。
 
 你可以在开始时看到初始化订阅的设置，然后看到通知，包括通过 `print` 操作符传递的值的调试信息。
 虽然上面的示例内容中未显示它，但你还会在出现错误时看到取消管道的事件，或在发布者报告没有进一步数据时的 completions 事件。
