@@ -46,7 +46,7 @@ NotificationCenter.default.post(note)
 [NOTE]
 ====
 虽然在 AppKit 和 macOS 应用程序中普遍地使用了通知，但并非所有开发人员都乐于大量使用 NotificationCenter。
-通知起源于更具动态性的 Objective-C 运行时，广泛利用 Any 和可选类型。
+通知起源于更具动态性的 Objective-C runtime ，广泛利用 Any 和 optional 类型。
 在 Swift 代码或管道中使用它们意味着管道必须提供类型检查并处理与预期或非预期的数据相关的任何可能错误。
 ====
 
