@@ -18,7 +18,7 @@ __另请参阅__::
 
 __代码和解释__::
 
-使用 <<reference#reference-future,Future>> 发布者包装现有代码来发起一个单一请求是一个很好的例子，它并没有使发布者产生冗长的，或潜在的无限量的输出。
+<<reference#reference-future,Future>> 发布者非常适合包装现有代码以发出单个请求，但它不适用于产生冗长或可能无限量输出的发布者。
 
 Apple 的 Cocoa API 倾向于使用对象/代理模式，你可以选择接收任意数量的不同回调（通常包含数据）。
 其中一个例子是在 CoreLocation 库中，提供了许多不同的数据源。
@@ -81,12 +81,12 @@ final class LocationHeadingProxy: NSObject, CLLocationManagerDelegate {
 <1> https://developer.apple.com/documentation/corelocation/cllocationmanager[CLLocationManager] 作为 CoreLocation 的一部分，是被包装的核心。
 因为要使用该框架，它有其他方法需要被调用，因此我将它暴露为一个 public 的只读属性。
 这对于先请求用户许可然后使用位置 API 很有用，框架将该位置 API 暴露为一个在 `CLLocationManager` 上的方法。
-<2> 使用一个 private 的 `PassthroughSubject` 实例，来在我们类内部提供我们想要发送的数据类型。
-<3> 一个 public 的属性 `publisher` 将发布者从上面的 subject 中暴露给外部以供订阅。
+<2> 使用一个具有我们要发布的数据类型的 private 的 `PassthroughSubject` 实例，来提供我们的类内部访问以转发数据。
+<3> 一个 public 的属性 `publisher` 将来自上面的 subject 的发布者暴露给外部以供订阅。
 <4> 其核心是将该类指定为 `CLLocationManager` 实例的代理，在该实例初始化的尾端进行设置。
 <5> CoreLocation API 不会立即开始发送信息。
 有些方法需要调用才能启动（并停止）数据流，这些方法被包装并暴露在此 `LocationHeadingProxy` 对象上。
-大多数发布者都是根据订阅关系来订阅和驱动消费的，因此这对于发布者如何开始生成数据有点不规范。
+大多数发布者都设置为订阅并根据订阅驱动消费，因此这有点不符合发布者如何开始生成数据的规范。
 <6> 在定义代理和激活 `CLLocationManager` 后，数据将通过在 https://developer.apple.com/documentation/corelocation/cllocationmanagerdelegate[CLLocationManagerDelegate] 上定义的回调提供。
 我们为这个包装的对象实现了我们想要的回调，并在其中使用 <<reference#reference-passthroughsubject,passthroughSubject>> `.send()` 将信息转发给任何现有的订阅者。
 <7> 虽然没有严格要求，但代理提供了 `Error` 上报回调，因此我们也将其包括在示例中通过 <<reference#reference-passthroughsubject,passthroughSubject>> 转发。
