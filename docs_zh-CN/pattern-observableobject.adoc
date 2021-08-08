@@ -1,11 +1,11 @@
 [#pattern-observableobject]
-== Using ObservableObject with SwiftUI models as a publisher source
+== 使用 ObservableObject 与 SwiftUI 模型作为发布源
 
-__Goal__::
+__目的__::
 
-* SwiftUI includes @ObservedObject and the ObservableObject protocol, which provides a means of externalizing state for a SwiftUI view while alerting SwiftUI to the model changing.
+* SwiftUI 包含 @ObservedObject 和 ObservableObject 协议，它为 SwiftUI 的视图提供了将状态外部化的手段，同时通知 SwiftUI 模型的变化。
 
-__References__::
+__参考__::
 
 * <<reference#reference-published,@Published>>
 * <<reference#reference-observableobject,ObservableObject>>
@@ -14,28 +14,28 @@ __References__::
 * <<reference#reference-map>>
 * <<reference#reference-onreceive,onReceive>>
 
-__See also__::
+__另请参阅__::
 
-The SwiftUI example code:
+SwiftUI 的例子：
 
 * https://github.com/heckj/swiftui-notes/blob/master/SwiftUI-Notes/ReactiveForm.swift[`SwiftUI-Notes/ReactiveForm.swift`]
 * https://github.com/heckj/swiftui-notes/blob/master/SwiftUI-Notes/ReactiveFormModel.swift[`SwiftUI-Notes/ReactiveFormModel.swift`]
 
-__Code and explanation__::
+__代码和解释__::
 
-SwiftUI views are declarative structures that are rendered based on some known state, being invalidated and updated when that state changes.
-We can use Combine to provide reactive updates to manipulate this state and expose it back to SwiftUI.
-The example provided here is a simple form entry input, with the goal of providing reactive and dynamic feedback based on the inputs to two fields.
+SwiftUI 视图是基于某些已知状态呈现的声明性结构，当该状态发生变化时，这些当前的结构将失效并更新。
+我们可以使用 Combine 来提供响应式更新来操纵此状态，并将其暴露回 SwiftUI。
+此处提供的示例是一个简单的输入表单，目的是根据对两个字段的输入提供响应式和动态的反馈。
 
-The following rules are encoded into Combine pipelines:
-1. the two fields need to be identical - as in entering a password or email address and then validating it by a second entry.
-2. the value entered is required to be a minimum of 5 characters in length.
-3. A button to submit is enabled or disabled based on the results of these rules.
+以下规则被编码到 Combine 的管道中：
+1. 两个字段必须相同 - 如输入密码或电子邮件地址，然后通过第二个条目进行确认。
+2. 输入的值至少为 5 个字符的长度。
+3. 根据这些规则的结果启用或禁用提交按钮。
 
-This is accomplished with SwiftUI by externalizing the state into properties on a class and referencing that class into the model using the `ObservableObject` protocol.
-Two properties are directly represented: `firstEntry` and `secondEntry` as Strings using the <<reference-published,@Published>> property wrapper to allow SwiftUI to bind to their updates, as well as update them.
-A third property `submitAllowed` is exposed as a Combine publisher to be used within the view, which maintains the @State internally to the view.
-A fourth property - an array of Strings called `validationMessages` - is computed within the Combine pipelines from the first two properties, and also exposed to SwiftUI using the <<reference-published,@Published>> property wrapper.
+SwiftUI 通过将状态外化为类中的属性，并使用 `ObservableObject` 协议将该类引用到模型中来实现此目的。
+两个属性 `firstEntry` 和 `secondEntry` 作为字符串使用 <<reference-published,@Published>> 属性包装，允许 SwiftUI 绑定到它们的更新，以及更新它们。
+第三个属性 `submitAllowed` 暴露为 Combine 发布者，可在视图内使用，从而维护视图内部的 `@State buttonIsDisabled` 状态。
+第四个属性 —— 一个 `validationMessages` 字符串数组 - 在 Combine 管道中将前两个属性进行组合计算，并且使用 <<reference-published,@Published>> 属性包装暴露给 SwiftUI。
 
 
 .https://github.com/heckj/swiftui-notes/blob/master/SwiftUI-Notes/ReactiveFormModel.swift[SwiftUI-Notes/ReactiveFormModel.swift]
@@ -93,18 +93,18 @@ class ReactiveFormModel : ObservableObject {
 }
 ----
 
-<1> The firstEntry and secondEntry properties are both set with default values of an empty string.
-<2> These properties are then also mirrored with a <<reference#reference-currentvaluesubject,currentValueSubject>>, which is updated using `didSet` from each of the `@Published` properties. This drives the combine pipelines defined below to trigger the reactive updates when the values are changed from the SwiftUI view.
-<3> <<reference#reference-combinelatest,combineLatest>> is used to merge updates from either of `firstEntry` or `secondEntry` so that updates will be triggered from either source.
-<4> <<reference#reference-map>> takes the input values and uses them to determine and publish a list of validating messages. This overall flow is the source for two follow on pipelines.
-<5> The first of the follow on pipelines uses the list of validation messages to determine a true or false Boolean publisher that is used to enable, or disable, the submit button.
-<6> The second of the follow on pipelines takes the validation messages and updates them locally on this ObservedObject reference for SwiftUI to watch and use as it sees fit.
+<1> firstEntry 和 secondEntry 都使用空字符串作为默认值。
+<2> 然后，这些属性还用 <<reference#reference-currentvaluesubject,currentValueSubject>> 进行镜像，该镜像属性使用来自每个 `@Published` 属性的 `didSet` 发送更新事件。这驱动下面定义的 Combine 管道，以便在值从 SwiftUI 视图更改时触发响应式更新。
+<3> <<reference#reference-combinelatest,combineLatest>> 用于合并来自 `firstEntry` 或 `secondEntry` 的更新，以便从任一来源来触发更新。
+<4> <<reference#reference-map>> 接受输入值并使用它们来确定和发布验证过的消息数组。该数据流 `validationPipeline` 是两个后续管道的发布源。
+<5> 第一个后续管道使用验证过的消息数组来确定一个 true 或 false 的布尔值发布者，用于启用或禁用提交按钮。
+<6> 第二个后续管道接受验证过的消息数组，并更新持有的该 ObservedObject 实例的 `validationMessages`，以便 SwiftUI 在需要时监听和使用它。
 
-The two different methods of exposing state changes - as a publisher, or as external state, are presented as examples for how you can utilize either pattern.
-The submit button enable/disable choice could be exposed as a `@Published` property, and the validation messages could be exposed as a publisher of `<String[], Never>`.
-If the need involves tracking as explicit state, it is likely cleaner and less directly coupled by exposing `@Published` properties - but either mechanism can be used.
+两种不同的状态更新的暴露方法 —— 作为发布者或外部状态，在示例中都进行了展示，以便于你可以更好的利用任一种方法。
+提交按钮启用/禁用的选项可作为 `@Published` 属性进行暴露，验证消息的数组可作为 `<String[], Never>` 类型的发布者而对外暴露。
+如果需要涉及作为显式状态去跟踪用户行为，则通过暴露 `@Published` 属性可能更清晰、不直接耦合，但任一种机制都是可以使用的。
 
-The model above is coupled to a SwiftUI View declaration that uses the externalized state.
+上述模型与声明式地使用外部状态的 SwiftUI 视图相耦合。
 
 .https://github.com/heckj/swiftui-notes/blob/master/SwiftUI-Notes/ReactiveForm.swift[SwiftUI-Notes/ReactiveForm.swift]
 [source, swift]
@@ -169,11 +169,11 @@ struct ReactiveForm_Previews: PreviewProvider {
 }
 ----
 
-<1> The model is exposed to SwiftUI using `@ObservedObject`.
-<2> `@State` buttonIsDisabled is declared locally to this view, with a default value of `true`.
-<3> The projected value from the property wrapper (`$model.firstEntry` and `$model.secondEntry`) are used to pass a Binding to the TextField view element. The `Binding` will trigger updates back on the reference model when the user changes a value, and will let SwiftUI's components know that changes are about to happen if the exposed model is changing.
-<4> The validation messages, which are generated and assigned within the model is invisible to SwiftUI here as a combine publisher pipeline. Instead this only reacts to the model changes being exposed by those values changing, irregardless of what mechanism changed them.
-<5> As an example of how to use a published with <<reference#reference-onreceive,onReceive>>, an `onReceive` subscriber is used to listen to a publisher which is exposed from the model reference. In this case, we take the value and store is locally as `@State` within the SwiftUI view, but it could also be used after some transformation if that logic were more relevant to just the view display of the resulting values. In this case, we use it with `disabled` on `Button` to enabled SwiftUI to enable or disable that UI element based on the value stored in the `@State`.
+<1> 数据模型使用 `@ObservedObject` 暴露给 SwiftUI。
+<2> `@State` buttonIsDisabled 在该视图中被声明为局部变量，有一个默认值 `true`。
+<3> 属性包装(`$model.firstEntry` 和 `$model.secondEntry`) 的预计值用于将绑定传递到 TextField 视图元素。当用户更改值时，`Binding` 将触发引用模型上的更新，并让 SwiftUI 的组件知道，如果暴露的模型正在被更改，则组件的更改也即将发生。
+<4> 在数据模型中生成和 assign 的验证消息，作为 Combine 管道的发布者，在这儿对于 SwiftUI 是不可见的。相反，这只能对这些被暴露的值的变化所引起的模型的变化做出反应，而不关心改变这些值的机制。
+<5> 作为如何使用带有 <<reference#reference-onreceive,onReceive>> 的发布者的示例，使用 `onReceive` 订阅者来监听引用模型中暴露的发布者。在这个例子中，我们接受值并把它们作为局部变量 `@State` 存储在 SwiftUI 的视图中，但它也可以在一些转化后使用，如果该逻辑只和视图显示的结果值强相关的话。在这，我们将其与 `Button` 上的 `disabled` 一起使用，使 SwiftUI 能够根据 `@State` 中存储的值启用或禁用该 UI 元素。
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
