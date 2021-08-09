@@ -1,30 +1,30 @@
 [#patterns-delegate-publisher-subject]
-== Creating a repeating publisher by wrapping a delegate based API
+== 通过包装基于 delegate 的 API 创建重复发布者
 
-__Goal__::
+__目的__::
 
-* To use one of the Apple delegate APIs to provide values for a Combine pipeline.
+* 将 Apple delegate API 之一包装为 Combine 管道来提供值。
 
-__References__::
+__参考__::
 
 * <<reference#reference-passthroughsubject,passthroughSubject>>
 * <<reference#reference-currentvaluesubject,currentValueSubject>>
 
-__See also__::
+__另请参阅__::
 
 * <<patterns#patterns-future,Wrapping an asynchronous call with a Future to create a one-shot publisher>>
 * <<reference#reference-passthroughsubject,passthroughSubject>>
 * <<reference#reference-delay,delay>>
 
-__Code and explanation__::
+__代码和解释__::
 
-Where a <<reference#reference-future,Future>> publisher is great for wrapping existing code to make a single request, it doesn't serve as well to make a publisher that produces lengthy, or potentially unbounded, amount of output.
+<<reference#reference-future,Future>> 发布者非常适合包装现有代码以发出单个请求，但它不适用于产生冗长或可能无限量输出的发布者。
 
-Apple's Cocoa APIs have tended to use a object/delegate pattern, where you can opt in to receiving any number of different callbacks (often with data).
-One such example of that is included within the CoreLocation library, which offers a number of different data sources.
+Apple 的 Cocoa API 倾向于使用对象/代理模式，你可以选择接收任意数量的不同回调（通常包含数据）。
+其中一个例子是在 CoreLocation 库中，提供了许多不同的数据源。
 
-If you want to consume data provided by one of these kinds of APIs within a pipeline, you can wrap the object and use <<reference#reference-passthroughsubject,passthroughSubject>> to expose a publisher.
-The sample code below shows an example of wrapping CoreLocation's CLManager object and consuming the data from it through a UIKit view controller.
+如果你想在管道中使用此类 API 之一提供的数据，你可以将对象包装起来，并使用 <<reference#reference-passthroughsubject,passthroughSubject>> 来暴露发布者。
+下面的示例代码显示了一个包装 CoreLocation 中 CLManager 的对象并通过 UIKit 的 ViewController 消费其数据的示例。
 
 .https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/LocationHeadingProxy.swift[UIKit-Combine/LocationHeadingProxy.swift]
 [source, swift]
@@ -78,18 +78,18 @@ final class LocationHeadingProxy: NSObject, CLLocationManagerDelegate {
 }
 ----
 
-<1> https://developer.apple.com/documentation/corelocation/cllocationmanager[CLLocationManager] is the heart of what is being wrapped, part of CoreLocation.
-Because it has additional methods that need to be called for using the framework, I exposed it as a public read-only property.
-This is useful for requesting user permission to use the location API, which the framework exposes as a method on `CLLocationManager`.
-<2> A private instance of `PassthroughSubject` with the data type we want to publish provides our inside-the-class access to forward data.
-<3> A public property `publisher` exposes the publisher from that subject for external subscriptions.
-<4> The heart of this works by assigning this class as the delegate to the `CLLocationManager` instance, which is set up at the tail end of initialization.
-<5> The CoreLocation API doesn't immediately start sending information.
-There are methods that need to be called to start (and stop) the data flow, and these are wrapped and exposed on this proxy object.
-Most publishers are set up to subscribe and drive consumption based on subscription, so this is a bit out of the norm for how a publisher starts generating data.
-<6> With the delegate defined and the `CLLocationManager` activated, the data will be provided via callbacks defined on the https://developer.apple.com/documentation/corelocation/cllocationmanagerdelegate[CLLocationManagerDelegate].
-We implement the callbacks we want for this wrapped object, and within them we use <<reference#reference-passthroughsubject,passthroughSubject>> `.send()` to forward the information to any existing subscribers.
-<7> While not strictly required, the delegate provided an `Error` reporting callback, so we included that as an example of forwarding an error through <<reference#reference-passthroughsubject,passthroughSubject>>.
+<1> https://developer.apple.com/documentation/corelocation/cllocationmanager[CLLocationManager] 作为 CoreLocation 的一部分，是被包装的核心。
+因为要使用该框架，它有其他方法需要被调用，因此我将它暴露为一个 public 的只读属性。
+这对于先请求用户许可然后使用位置 API 很有用，框架将该位置 API 暴露为一个在 `CLLocationManager` 上的方法。
+<2> 使用一个具有我们要发布的数据类型的 private 的 `PassthroughSubject` 实例，来提供我们的类内部访问以转发数据。
+<3> 一个 public 的属性 `publisher` 将来自上面的 subject 的发布者暴露给外部以供订阅。
+<4> 其核心是将该类指定为 `CLLocationManager` 实例的代理，在该实例初始化的尾端进行设置。
+<5> CoreLocation API 不会立即开始发送信息。
+有些方法需要调用才能启动（并停止）数据流，这些方法被包装并暴露在此 `LocationHeadingProxy` 对象上。
+大多数发布者都设置为订阅并根据订阅驱动消费，因此这有点不符合发布者如何开始生成数据的规范。
+<6> 在定义代理和激活 `CLLocationManager` 后，数据将通过在 https://developer.apple.com/documentation/corelocation/cllocationmanagerdelegate[CLLocationManagerDelegate] 上定义的回调提供。
+我们为这个包装的对象实现了我们想要的回调，并在其中使用 <<reference#reference-passthroughsubject,passthroughSubject>> `.send()` 将信息转发给任何现有的订阅者。
+<7> 虽然没有严格要求，但代理提供了 `Error` 上报回调，因此我们也将其包括在示例中通过 <<reference#reference-passthroughsubject,passthroughSubject>> 转发。
 
 .https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/HeadingViewController.swift[UIKit-Combine/HeadingViewController.swift]
 [source, swift]
@@ -175,17 +175,17 @@ class HeadingViewController: UIViewController {
 }
 ----
 
-<1> One of the quirks of CoreLocation is the requirement to ask for permission from the user to access the data.
-The API provided to initiate this request returns immediately, but provides no detail if the user allowed or denied the request.
-The `CLLocationManager` class includes the information, and exposes it as a class method when you want to retrieve it, but there is no information provided to know when, or if, the user has responded to the request.
-Since the operation doesn't provide any return, we provide an integer as the pipeline data, primarily to represent that the request has been made.
-<2> Since there isn't a clear way to judge when the user will grant permission, but the permission is persistent, we simply use a <<reference#reference-delay,delay>> operator before attempting to retrieve the data.
-This use simply delays the propagation of the value for two seconds.
-<3> After that delay, we invoke the class method and attempt to update information in the interface with the results of the current provided status.
+<1> CoreLocation 的特点之一是要向用户请求访问数据的许可。
+启动此请求的 API 将立即返回，但即使用户允许或拒绝请求，它并不提供任何详细信息。
+`CLLocationManager` 类包括信息，并在想要获取信息时将其作为类方法暴露给外部，但未提供任何信息来了解用户何时或是否响应了请求。
+由于操作不提供任何返回信息，我们将整数提供给管道作为数据，主要表示已发出请求。
+<2> 由于没有明确的方法来判断用户何时会授予权限，但权限是持久的，因此在尝试获取数据之前，我们简单地使用了 <<reference#reference-delay,delay>> 操作符。
+此使用只会将值的传递延迟两秒钟。
+<3> 延迟后，我们调用类方法，并尝试根据当前提供的状态的结果更新界面中的信息。
 
-<4> Since CoreLocation requires methods to be explicitly enabled or disabled to provide the data, this connects a `UISwitch` toggle `IBAction` to the methods exposed on our publisher proxy.
+<4> 由于 CoreLocation 需要调用方法来明确启用或禁用数据，因此将我们发布者 proxy 的方法连接到了一个 `UISwitch` 的 `IBAction` 开关上。
 
-<5> The heading data is received in this <<reference#reference-sink,sink>> subscriber, where in this example we write it to a text label.
+<5> 方位数据在本 <<reference#reference-sink,sink>> 订阅者中接收，在此示例中，我们将其写到文本 label 上。
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
