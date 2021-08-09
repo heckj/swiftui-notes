@@ -13,13 +13,15 @@
 
 这本书提供了对函数响应式编程概念的 <<introduction#introduction,简短介绍>>， 这正是 Combine 所要提供的编程方式。
 
-== 支持我们
+== 支持作者
 
-**_如果您觉得内容有用，请购买没有数字版权管理的 PDF 或 ePub 版本 http://gumroad.com/l/usingcombine._**
+**_如果您觉得内容有用，可购买没有数字版权管理英文原版的 PDF 或 ePub 版本 http://gumroad.com/l/usingcombine._**
 
-这本书提供免费的 https://heckj.github.io/swiftui-notes/[线上版]。
+这本书提供免费的 https://heckj.github.io/swiftui-notes/[线上英文原版] 和 https://zhiying.space/swiftui-notes/[中文翻译版]。
 
-如果发现有拼写、语法或者技术错误想要指出，请在 GitHub https://github.com/heckj/swiftui-notes/issues/new/choose[新建一个 issue]。
+如果发现中文翻译版有拼写、语法或者技术错误想要指出，可以 fork 这个仓库，更新或者纠正之后创建一个 https://github.com/zhiying-fan/swiftui-notes/pulls[pull requests] 给我。
+
+如果发现英文原版有拼写、语法或者技术错误想要指出，请在 GitHub https://github.com/heckj/swiftui-notes/issues/new/choose[新建一个 issue]。
 如果你愿意的话，也可以 fork 这个仓库，更新或者纠正之后创建一个 https://github.com/heckj/swiftui-notes/compare?expand=1[pull requests] 给我。
 
 == 致谢
@@ -52,6 +54,10 @@ Andrius Shiaulis,
 Antoine Weber,
 Paul Wood III,
 Federico Zanetello
+
+中文版翻译：
+樊志颖，
+卫林霄
 ****
 
 谢谢你们所有人花费时间和精力提交 pull request，使这本书变得更好！
@@ -75,11 +81,48 @@ Joe 广泛的贡献和参与到各种开源项目的工作中。
 .^| http://twitter.com/heckj[icon:twitter[size=2x,set=fab]]
 |===
 
+== 译者简介
+
+樊志颖，专注于 iOS 开发。
+
+个人网站：https://zhiying.space/
+
+Github: https://github.com/zhiying-fan
+
+卫林霄，
+
+== 翻译术语表
+
+[cols="2*^"]
+|===
+| Framework
+| 框架
+
+| Pipeline
+| 管道
+
+| Functional programming
+| 函数式编程
+
+| Functional reactive programming
+| 函数响应式编程
+
+| Publisher
+| 发布者
+
+| Subscriber
+| 订阅者
+
+| Operator
+| 操作符
+
+|===
+
 == 从哪获取这本书
 
-本书的线上版本以 https://heckj.github.io/swiftui-notes/[HTML] 的形式免费提供。
+本书的线上版本以 HTML 的形式免费提供， https://heckj.github.io/swiftui-notes/[英文原版] 和 https://zhiying.space/swiftui-notes/[中文翻译版]。
 
-没有数字版权管理的 PDF 或 ePub 版本可以在 http://gumroad.com/l/usingcombine 购买。
+没有数字版权管理英文原版的 PDF 或 ePub 版本可以在 http://gumroad.com/l/usingcombine 购买。
 
 随着开发的继续，将对线上版本的内容持续更新。
 更大的更新和宣告也会通过 https://gumroad.com/heckj[作者在 Gumroad 的简介] 进行提供。
