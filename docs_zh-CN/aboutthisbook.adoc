@@ -85,11 +85,13 @@ Joe 广泛的贡献和参与到各种开源项目的工作中。
 
 樊志颖，专注于 iOS 开发。
 
-个人网站：https://zhiying.space/
+个人网站: https://zhiying.space
 
 Github: https://github.com/zhiying-fan
 
-卫林霄，
+卫林霄，iOS 开发。
+
+GitHub: https://github.com/yeland
 
 == 翻译术语表
 
