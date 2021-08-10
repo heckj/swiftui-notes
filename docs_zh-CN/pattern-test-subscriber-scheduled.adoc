@@ -58,7 +58,7 @@ func testKVOPublisher() {
 }
 ----
 
-<1> 这将为你的测试添加 `DispatchQueue`，并在测试 expectation 之后为它命名。
+<1> 这将为你的测试添加 `DispatchQueue`，并以测试的描述 debugDescription 来命名该队列。
 这只在调试中测试失败时显示，并且在还有其它后台线程也在使用时，方便地提醒测试代码中发生了什么情况。
 <2> `.asyncAfter` 和参数 deadline 一起使用，用来定义何时发起请求.
 <3> 这是将任何相关的断言嵌入到订阅者或其周围的最简单的方式。此外，将 `.fulfill()` 作为你发送队列的最后一个条目，好让测试知道它现在已完成。
