@@ -13,8 +13,8 @@ __参考__::
 
 __另请参阅__::
 
-* <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
-* <<patterns#patterns-retry,Retrying in the event of a temporary failure>>
+* <<patterns#patterns-oneshot-error-handling>>
+* <<patterns#patterns-retry>>
 
 __代码和解释__::
 

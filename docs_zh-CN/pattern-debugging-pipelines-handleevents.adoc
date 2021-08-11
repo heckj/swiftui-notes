@@ -13,11 +13,11 @@ __参考__::
 
 __另请参阅__::
 
-* <<patterns#patterns-debugging-print,Debugging pipelines with the print operator>>
-* <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>>
-* <<patterns#patterns-sequencing-operations,Sequencing operations with Combine>>
-* <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>
-* <<patterns#patterns-debugging-breakpoint,Debugging pipelines with the debugger>>
+* <<patterns#patterns-debugging-print>>
+* <<patterns#patterns-cascading-update-interface>>
+* <<patterns#patterns-sequencing-operations>>
+* <<patterns#patterns-update-interface-userinput>>
+* <<patterns#patterns-debugging-breakpoint>>
 
 __代码和解释__::
 
@@ -33,7 +33,7 @@ __代码和解释__::
 * `receiveOutput`
 * `receiveCompletion`
 
-如果每个闭包都包含打印语句，则该操作符将非常像 <<reference#reference-print,print>> 操作符，具体表现在 <<patterns#patterns-debugging-print,Debugging pipelines with the print operator>>。
+如果每个闭包都包含打印语句，则该操作符将非常像 <<reference#reference-print,print>> 操作符，具体表现在 <<patterns#patterns-debugging-print>>。
 
 使用 handleEvents 调试的强大之处在于可以选择要查看的内容、减少输出量或操作数据以更好地了解它。
 

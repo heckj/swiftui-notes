@@ -23,9 +23,9 @@ __参考__::
 
 __另请参阅__::
 
-* <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>
-* <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
-* <<patterns#patterns-datataskpublisher-trymap,Stricter request processing with dataTaskPublisher>>
+* <<patterns#patterns-continual-error-handling>>
+* <<patterns#patterns-oneshot-error-handling>>
+* <<patterns#patterns-datataskpublisher-trymap>>
 
 __代码和解释__::
 
@@ -35,7 +35,7 @@ __代码和解释__::
 
 以下示例是更大的 ViewController 实现中的代码的一部分。
 
-这个例子与下一个模式  <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>> 有点重叠，都建立在一个初始的发布者上。
+这个例子与下一个模式  <<patterns#patterns-cascading-update-interface>> 有点重叠，都建立在一个初始的发布者上。
 
 .https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubAPI.swift[UIKit-Combine/GithubAPI.swift]
 [source, swift]
@@ -107,7 +107,7 @@ throttle 操作符保证了每半秒最多可发出 1 个请求。
 `switchToLatest` 将发布者解析为值，并将该值传递到管道中，在这个例子中，是一个 `[GithubAPIUser]` 的实例。
 <9> 在管道末尾的 `assign` 是订阅者，它将值分配到另一个变量：`githubUserData`。
 
-模式 <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>> 在此代码上扩展为各种UI元素的多个级联更新。
+模式 <<patterns#patterns-cascading-update-interface>> 在此代码上扩展为各种UI元素的多个级联更新。
 
 // force a page break - in HTML rendering is just a <HR>
 <<<

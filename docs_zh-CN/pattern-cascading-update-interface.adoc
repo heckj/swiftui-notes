@@ -34,13 +34,13 @@ __参考__::
 
 __另请参阅__::
 
-* <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>
-* <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
-* <<patterns#patterns-datataskpublisher-trymap,Stricter request processing with dataTaskPublisher>>
+* <<patterns#patterns-continual-error-handling>>
+* <<patterns#patterns-oneshot-error-handling>>
+* <<patterns#patterns-datataskpublisher-trymap>>
 
 __代码和解释__::
 
-以下提供的示例是扩展了 <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>> 例子中的发布者, 添加了额外的 Combine 管道，当有人与所提供的界面交互时以更新多个 UI 元素。
+以下提供的示例是扩展了 <<patterns#patterns-update-interface-userinput>> 例子中的发布者, 添加了额外的 Combine 管道，当有人与所提供的界面交互时以更新多个 UI 元素。
 
 此视图的模式从接受用户输入的文本框开始，紧接着是一系列操作事件流：
 
@@ -338,7 +338,7 @@ class ViewController: UIViewController {
 }
 ----
 <1> 我们向我们之前的 controller 添加一个订阅者，它将来自 GithubAPI 对象的活跃状态的通知连接到我们的 activityIndicator。
-<2> 从 IBAction 更新用户名的地方（来自我们之前的示例 <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>）我们让订阅者发出网络请求并将结果放入一个我们的 ViewController 的新变量中（还是 <<reference#reference-published,@Published>>）。
+<2> 从 IBAction 更新用户名的地方（来自我们之前的示例 <<patterns#patterns-update-interface-userinput>>）我们让订阅者发出网络请求并将结果放入一个我们的 ViewController 的新变量中（还是 <<reference#reference-published,@Published>>）。
 <3> 第一个订阅者连接在发布者 `$githubUserData` 上。
 此管道提取用户仓库的个数并更新到 UILabel 实例上。
 当列表为空时，管道中间有一些逻辑来返回字符串 “unknown”。

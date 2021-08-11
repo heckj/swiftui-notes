@@ -18,9 +18,9 @@ __参考__::
 
 __另请参阅__::
 
-* <<patterns#patterns-datataskpublisher-decode,Making a network request with dataTaskPublisher>>
-* <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
-* <<patterns#patterns-retry,Retrying in the event of a temporary failure>>
+* <<patterns#patterns-datataskpublisher-decode>>
+* <<patterns#patterns-oneshot-error-handling>>
+* <<patterns#patterns-retry>>
 
 
 __代码和解释__::
@@ -66,7 +66,7 @@ let cancellableSink = remoteDataPublisher
     })
 ----
 
-在 <<patterns#patterns-datataskpublisher-decode, previous pattern>> 中使用了 <<reference#reference-map,map>> 操作符， 这里我们使用 tryMap，这使我们能够根据返回的内容识别并在管道中抛出错误。
+在 <<patterns#patterns-datataskpublisher-decode, 上个模式>> 中使用了 <<reference#reference-map,map>> 操作符， 这里我们使用 tryMap，这使我们能够根据返回的内容识别并在管道中抛出错误。
 
 <1> <<reference#reference-trymap,tryMap>> 仍旧获得元组 `(data: Data, response: URLResponse)`，并且在这里定义仅返回管道中的 Data 类型。
 <2> 在 `tryMap` 的闭包内，我们将响应转换为 `HTTPURLResponse` 并深入进去，包括查看特定的状态码。

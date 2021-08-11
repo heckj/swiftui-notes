@@ -12,9 +12,9 @@ __参考__::
 
 __另请参阅__::
 
-* <<patterns#patterns-retry,Retrying in the event of a temporary failure>>
-* <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>
-* <<patterns#patterns-constrained-network,Requesting data from an alternate URL when the network is constrained>>
+* <<patterns#patterns-retry>>
+* <<patterns#patterns-continual-error-handling>>
+* <<patterns#patterns-constrained-network>>
 
 __代码和解释__::
 
@@ -59,7 +59,7 @@ let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: myURL!)
 如果你正在创建一条对 <<reference#reference-published,@Published>> 属性做出响应的管道，那么在任何失败值激活 catch 操作符之后，管道将不再做出进一步响应。
 有关此工作原理的详细信息，请参阅 <<reference#reference-catch,catch>>。
 
-如果你要继续响应错误并处理它们，请参阅 <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>。
+如果你要继续响应错误并处理它们，请参阅 <<patterns#patterns-continual-error-handling>>。
 
 // force a page break - in HTML rendering is just a <HR>
 <<<

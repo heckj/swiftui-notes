@@ -15,11 +15,11 @@ __参考__::
 
 __另请参阅__::
 
-* <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>>
-* <<patterns#patterns-sequencing-operations,Sequencing operations with Combine>>
-* <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>
-* <<patterns#patterns-debugging-breakpoint,Debugging pipelines with the debugger>>
-* <<patterns#patterns-debugging-handleevents,Debugging pipelines with the handleEvents operator>>
+* <<patterns#patterns-cascading-update-interface>>
+* <<patterns#patterns-sequencing-operations>>
+* <<patterns#patterns-update-interface-userinput>>
+* <<patterns#patterns-debugging-breakpoint>>
+* <<patterns#patterns-debugging-handleevents>>
 
 
 __代码和解释__::
@@ -29,7 +29,7 @@ __代码和解释__::
 要理解简单的管道，使用 `.print()` 作为没有任何参数的操作符是非常简单的。
 一旦你想要添加多个 print 操作符，你可能要使用 string 参数，该参数会作为前缀放在输出中。
 
-示例 <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>> 在几个地方都有用到它，使用比较长的描述性前缀，以明确是哪个管道在提供信息。
+示例 <<patterns#patterns-cascading-update-interface>> 在几个地方都有用到它，使用比较长的描述性前缀，以明确是哪个管道在提供信息。
 
 通过连接到一个私有的 `@Published` 的变量 —— githubUserData，两个管道被层叠到了一起。
 该示例代码中的两个相关管道：
@@ -173,7 +173,7 @@ Test Suite 'Selected tests' passed at 2019-07-26 15:59:48.057.
 
 虽然非常有效，但 `print` 操作符是一个钝器，它会生成大量的输出，你必须分析和审查它们以得到你想要的信息。
 如果你想让标识和打印的内容更具选择性，或者如果你需要处理传输的数据才能更有意义地使用它们，那么你可以查看 <<reference#reference-handleevents,handleEvents>> 操作符。
-有关如何使用此操作符进行调试的更多详细信息，请查阅 <<patterns#patterns-debugging-handleevents,Debugging pipelines with the handleEvents operator>>。
+有关如何使用此操作符进行调试的更多详细信息，请查阅 <<patterns#patterns-debugging-handleevents>>。
 
 // force a page break - in HTML rendering is just a <HR>
 <<<

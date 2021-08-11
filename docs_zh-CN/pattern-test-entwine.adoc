@@ -11,9 +11,9 @@ __参考__::
 
 __另请参阅__::
 
-* <<patterns#patterns-testing-publisher,Testing a publisher with XCTestExpectation>>
-* <<patterns#patterns-testing-subscriber,Testing a subscriber with a PassthroughSubject>>
-* <<patterns#patterns-testing-subscriber-scheduled,Testing a subscriber with scheduled sends from PassthroughSubject>>
+* <<patterns#patterns-testing-publisher>>
+* <<patterns#patterns-testing-subscriber>>
+* <<patterns#patterns-testing-subscriber-scheduled>>
 * <<reference#reference-passthroughsubject,passthroughSubject>>
 
 __代码和解释__::

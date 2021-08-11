@@ -14,8 +14,8 @@ __参考__::
 
 __另请参阅__::
 
-* <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>
-* <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>
+* <<patterns#patterns-oneshot-error-handling>>
+* <<patterns#patterns-continual-error-handling>>
 
 __代码和解释__::
 

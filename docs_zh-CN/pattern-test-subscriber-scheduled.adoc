@@ -20,9 +20,9 @@ __参考__::
 __另请参阅__::
 
 
-* <<patterns#patterns-testing-subscriber,Testing a subscriber with a PassthroughSubject>>
-* <<patterns#patterns-testable-publisher-subscriber,Using EntwineTest to create a testable publisher and subscriber>>
-* <<patterns#patterns-testing-publisher,Testing a publisher with XCTestExpectation>>
+* <<patterns#patterns-testing-subscriber>>
+* <<patterns#patterns-testable-publisher-subscriber>>
+* <<patterns#patterns-testing-publisher>>
 * <<reference#reference-passthroughsubject,passthroughSubject>>
 
 __代码和解释__::
@@ -31,7 +31,7 @@ __代码和解释__::
 在进行 UI 测试之外，你可能需要测试你的管道时序具有所需的效果。
 
 实现这个的方法之一是利用 https://developer.apple.com/documentation/xctest/xctestexpectation[XCTestExpectation] 和 <<reference#reference-passthroughsubject,passthroughSubject>>，将两者结合起来。
-基于 <<patterns#patterns-testing-publisher,Testing a publisher with XCTestExpectation>> 和 <<patterns#patterns-testing-subscriber,Testing a subscriber with a PassthroughSubject>>，在测试中添加 https://developer.apple.com/documentation/dispatch/dispatchqueue[DispatchQueue]，以安排 PassthroughSubject 的 `.send()` 方法的调用。
+基于 <<patterns#patterns-testing-publisher>> 和 <<patterns#patterns-testing-subscriber>>，在测试中添加 https://developer.apple.com/documentation/dispatch/dispatchqueue[DispatchQueue]，以安排 PassthroughSubject 的 `.send()` 方法的调用。
 
 一个这种用法的例子：
 
@@ -99,7 +99,7 @@ func testExampleUsingVirtualTimeScheduler() {
 EntwineTest 中的虚拟时间调度器将以 `200` 的值开始订阅，如果管道在时间为 `900` 时还没完成，则会超时。
 <2> 你和以往创建任何发布者或订阅者一样，创建你的管道。
 EntwineTest 还提供可测试的发布者和订阅者，以供使用。
-有关 EntwineTest 这些部分的更多详细信息，请看 <<patterns#patterns-testable-publisher-subscriber,Using EntwineTest to create a testable publisher and subscriber>>.
+有关 EntwineTest 这些部分的更多详细信息，请看 <<patterns#patterns-testable-publisher-subscriber>>.
 <3> `.resume()` 需要在虚拟时间调度器上调用，以开始其工作和触发管道运行。
 <4> 在管道运行到完成后，对预期的最终结果进行断言。
 
