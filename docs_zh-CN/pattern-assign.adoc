@@ -12,13 +12,13 @@ __参考__::
 
 __另请参阅__::
 
-* <<patterns#patterns-sink-subscriber,Creating a subscriber with sink>>
+* <<patterns#patterns-sink-subscriber>>
 
 __代码和解释__::
 
 Assign 是专门设计用于将来自发布者或管道的数据应用到属性的订阅者，每当它收到数据时都会更新该属性。
 与 sink 一样，它创建时激活并请求无限数据。
-Assign 要求将失败类型指定为 `<Never>`，因此，如果你的管道可能失败（例如使用 tryMap 等操作符），则需要在使用 `.assign` 之前 <<patterns#patterns-general-error-handling,convert or handle the failure cases>>。
+Assign 要求将失败类型指定为 `<Never>`，因此，如果你的管道可能失败（例如使用 tryMap 等操作符），则需要在使用 `.assign` 之前 <<patterns#patterns-general-error-handling>>。
 
 .简单的 assign 例子
 [source, swift]

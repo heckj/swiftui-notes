@@ -12,7 +12,7 @@ __参考__::
 
 __另请参阅__::
 
-* <<patterns#patterns-future,Wrapping an asynchronous call with a Future to create a one-shot publisher>>
+* <<patterns#patterns-future>>
 * <<reference#reference-passthroughsubject,passthroughSubject>>
 * <<reference#reference-delay,delay>>
 

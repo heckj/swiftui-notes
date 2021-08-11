@@ -12,8 +12,8 @@ __参考__::
 
 __另请参阅__::
 
-* <<patterns#patterns-debugging-print,Debugging pipelines with the print operator>>
-* <<patterns#patterns-debugging-handleevents,Debugging pipelines with the handleEvents operator>>
+* <<patterns#patterns-debugging-print>>
+* <<patterns#patterns-debugging-handleevents>>
 
 __代码和解释__::
 

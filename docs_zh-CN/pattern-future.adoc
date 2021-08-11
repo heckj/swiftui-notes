@@ -11,7 +11,7 @@ __参考__::
 
 __另请参阅__::
 
-* <<patterns#patterns-delegate-publisher-subject,Creating a repeating publisher by wrapping a delegate based API>>
+* <<patterns#patterns-delegate-publisher-subject>>
 
 __代码和解释__::
 

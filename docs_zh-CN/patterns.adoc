@@ -27,9 +27,9 @@ include::pattern-sequencing-operations.adoc[]
 如果发布者抛出一个错误（例如 <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> ），你需要构建一个管道来转换输出类型，还需要处理管道内的错误，以匹配错误类型 `<Never>`。
 
 如何处理管道内的错误取决于管道的定义方式。
-如果管道设置为返回单个结果并终止， 一个很好的例子就是 <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>>。
+如果管道设置为返回单个结果并终止， 一个很好的例子就是 <<patterns#patterns-oneshot-error-handling>>。
 如果管道被设置为持续更新，则错误处理要复杂一点。
-这种情况下的一个很好的例子是 <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>>。
+这种情况下的一个很好的例子是 <<patterns#patterns-continual-error-handling>>。
 
 :leveloffset: +1
 include::pattern-assertnofailure.adoc[]
