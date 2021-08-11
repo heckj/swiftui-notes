@@ -1,29 +1,29 @@
 [#patterns-assertnofailure]
-== Verifying a failure hasn't happened using assertNoFailure
+== 使用 assertNoFailure 验证未发生失败
 
-__Goal__::
+__目的__::
 
-* Verify no error has occurred within a pipeline
+* 验证管道内未发生错误
 
-__References__::
+__参考__::
 
 * <<reference#reference-assertnofailure,assertNoFailure>>
 
-__See also__::
+__另请参阅__::
 
 * <<reference#reference-catch,catch>>
 * <<reference#reference-flatmap,flatMap>>
 
-__Code and explanation__::
+__代码和解释__::
 
-Useful in testing invariants in pipelines, the assertNoFailure operator also converts the failure type to `<Never>`.
-The operator will cause the application to terminate (or tests to crash to a debugger) if the assertion is triggered.
+在管道中测试常量时，断言 assertNoFailure 非常有用，可将失败类型转换为 `<Never>`。
+如果断言被触发，该操作符将导致应用程序终止（或测试时导致调试器崩溃）。
 
-This is useful for verifying the invariant of having dealt with an error.
-If you are sure you handled the errors and need to map a pipeline which technically can generate a failure type of `<Error>` to a subscriber that requires a failure type of `<Never>`.
+这对于验证已经处理过错误的常量很有用。
+比如你确信你处理了错误，对管道进行了 map 操作，该操作可以将 `<Error>` 的失败类型转换为 `<Never>` 传给所需的订阅者。
 
-It is far more likely that you want to handle the error with and not have the application terminate.
-Look forward to <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>> and <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>> for patterns of how to provide logic to handle errors in a pipeline.
+更有可能的是，你希望将错误处理掉，而不是终止应用程序。
+期待后面的 <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>> 和 <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>> 模式吧，它们会告诉你如何提供逻辑来处理管道中的错误。
 
 // force a page break - in HTML rendering is just a <HR>
 <<<
