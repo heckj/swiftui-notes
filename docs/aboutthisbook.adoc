@@ -92,7 +92,7 @@ The content for this book, including sample code and tests, are sourced from the
 
 === Translations
 
-* https://zhiying.space/swiftui-notes/[Chinese translation(中文版本)] and its https://github.com/zhiying-fan/swiftui-notes[GitHub project]
+* https://zhiying.space/using-combine/[Chinese translation(中文版本)] and its https://github.com/zhiying-fan/using-combine[GitHub project]
 
 === Download the project
 

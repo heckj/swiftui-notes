@@ -17,12 +17,12 @@
 
 **_如果您觉得内容有用，可购买没有数字版权管理英文原版的 PDF 或 ePub 版本 http://gumroad.com/l/usingcombine._**
 
-这本书提供免费的 https://heckj.github.io/swiftui-notes/[线上英文原版] 和 https://zhiying.space/swiftui-notes/[中文翻译版]。
+这本书提供免费的 https://heckj.github.io/swiftui-notes/[线上英文原版] 和 https://zhiying.space/using-combine/[中文翻译版]。
 
-如果发现中文翻译版有拼写、语法或者技术错误想要指出，可以 fork 这个仓库，更新或者纠正之后创建一个 https://github.com/zhiying-fan/swiftui-notes/pulls[pull requests] 给我。
+如果发现中文翻译版有拼写、语法或者技术错误想要指出，可以 fork 这个仓库，更新或者纠正之后创建一个 https://github.com/zhiying-fan/using-combine/pulls[pull requests] 给我。
 
 如果发现英文原版有拼写、语法或者技术错误想要指出，请在 GitHub https://github.com/heckj/swiftui-notes/issues/new/choose[新建一个 issue]。
-如果你愿意的话，也可以 fork 这个仓库，更新或者纠正之后创建一个 https://github.com/heckj/swiftui-notes/compare?expand=1[pull requests] 给我。
+如果你愿意的话，也可以 fork 英文原版的仓库，更新或者纠正之后创建一个 https://github.com/heckj/swiftui-notes/compare?expand=1[pull requests] 给作者。
 
 == 致谢
 
@@ -122,7 +122,7 @@ GitHub: https://github.com/yeland
 
 == 从哪获取这本书
 
-本书的线上版本以 HTML 的形式免费提供， https://heckj.github.io/swiftui-notes/[英文原版] 和 https://zhiying.space/swiftui-notes/[中文翻译版]。
+本书的线上版本以 HTML 的形式免费提供， https://heckj.github.io/swiftui-notes/[英文原版] 和 https://zhiying.space/using-combine/[中文翻译版]。
 
 没有数字版权管理英文原版的 PDF 或 ePub 版本可以在 http://gumroad.com/l/usingcombine 购买。
 
