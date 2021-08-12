@@ -23,7 +23,7 @@ __代码和解释__::
 比如你确信你处理了错误，对管道进行了 map 操作，该操作可以将 `<Error>` 的失败类型转换为 `<Never>` 传给所需的订阅者。
 
 更有可能的是，你希望将错误处理掉，而不是终止应用程序。
-期待后面的 <<patterns#patterns-oneshot-error-handling,Using catch to handle errors in a one-shot pipeline>> 和 <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>> 模式吧，它们会告诉你如何提供逻辑来处理管道中的错误。
+期待后面的 <<patterns#patterns-oneshot-error-handling>> 和 <<patterns#patterns-continual-error-handling>> 模式吧，它们会告诉你如何提供逻辑来处理管道中的错误。
 
 // force a page break - in HTML rendering is just a <HR>
 <<<

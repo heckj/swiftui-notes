@@ -21,7 +21,7 @@ __参考__::
 
 __另请参阅__::
 
-* <<patterns#patterns-delegate-publisher-subject,Creating a repeating publisher by wrapping a delegate based API>>
+* <<patterns#patterns-delegate-publisher-subject>>
 * 使用此代码的 ViewController 在 github 的项目中 https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/AsyncCoordinatorViewController.swift[UIKit-Combine/AsyncCoordinatorViewController.swift].
 
 __代码和解释__::

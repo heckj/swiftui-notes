@@ -23,10 +23,10 @@ __参考__::
 
 __另请参阅__::
 
-* <<patterns#patterns-testing-publisher,Testing a publisher with XCTestExpectation>>
+* <<patterns#patterns-testing-publisher>>
 * <<reference#reference-passthroughsubject,passthroughSubject>>
-* <<patterns#patterns-testing-subscriber-scheduled,Testing a subscriber with scheduled sends from PassthroughSubject>>
-* <<patterns#patterns-testable-publisher-subscriber,Using EntwineTest to create a testable publisher and subscriber>>
+* <<patterns#patterns-testing-subscriber-scheduled>>
+* <<patterns#patterns-testable-publisher-subscriber>>
 
 __代码和解释__::
 

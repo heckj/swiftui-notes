@@ -20,14 +20,14 @@
 在这种情况下，管道的寿命要长得多，而且通常不希望此类管道发生失败或终止。
 
 当你在考虑如何使用 Combine 进行开发时，把管道视作这两个类型之一，并把它们混合在一起以实现你的目标，往往是很有帮助的。
-例如，模式 <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>> 明确地在不间断的管道中使用一次性的管道来处理错误。
+例如，模式 <<patterns#patterns-continual-error-handling>> 明确地在不间断的管道中使用一次性的管道来处理错误。
 
 当你创建发布者或管道的实例时，好好思考你希望它如何工作是值得的 —— 要么是一次性的，要么是连续的。
 你的选择将关系到你如何处理错误，或者你是否要处理操纵事件时序的操作符 (例如 <<reference#reference-debounce,debounce>> 或者 <<reference#reference-throttle,throttle>>).
 
 除了管道或发布者将提供多少数据外，你还经常需要考虑管道将提供哪种类型对。
 许多管道更多的是通过各种类型转换数据，并处理该过程中可能出现的错误情况。
-该情况的一个例子是返回一个管道，在管道中如例子 <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>> 所示返回一个列表，以提供一种表示“空”结果的方法，即使列表中永远不会有超过 1 个元素。
+该情况的一个例子是返回一个管道，在管道中如例子 <<patterns#patterns-update-interface-userinput>> 所示返回一个列表，以提供一种表示“空”结果的方法，即使列表中永远不会有超过 1 个元素。
 
 最终，使用 Combine 来连接两端的数据：当数据可用时，由原始的发布者发送它们，然后订阅者最终消费数据。
 
@@ -99,7 +99,7 @@ AnyPublisher<String, Never>
 
 同样的技术在闭包内构造较小的管道时将非常有用。
 例如，当你想在闭包中给操作符 <<reference#reference-flatmap>> 返回一个发布者时，你可以通过明确的声明闭包应返回 `AnyPublisher` 来获得更简单的类型推断。
-可以在模式 <<patterns#patterns-sequencing-operations,Sequencing operations with Combine>> 中找到这样的一个例子。
+可以在模式 <<patterns#patterns-sequencing-operations>> 中找到这样的一个例子。
 
 [#developingwith-threads]
 == 管道和线程
@@ -144,21 +144,21 @@ Combine 允许发布者指定线程调度器，不论是从上游的发布者（
 你需要将异步代码包装成一个 Combine 操作符可以配合和调用的结构。
 在实践中，这通常意味着需要创建一个发布者的实例，然后在管道中使用它。
 
-<<reference#reference-future,Future>> 发布者是专门用来支持这类集成的, 在模式 <<patterns#patterns-future,Wrapping an asynchronous call with a Future to create a one-shot publisher>> 中有一个这样的示例。
+<<reference#reference-future,Future>> 发布者是专门用来支持这类集成的, 在模式 <<patterns#patterns-future>> 中有一个这样的示例。
 
 如果你想使用发布者提供的数据作为创建此发布者的参数或输入，则有两种通用的方法可以这么做：
 
 . 使用 <<reference#reference-flatmap,flatMap>> 操作符, 使用传入的数据创建或返回发布者实例。
-这是模式 <<patterns#patterns-continual-error-handling,Using flatMap with catch to handle errors>> 的一种变体。
+这是模式 <<patterns#patterns-continual-error-handling>> 的一种变体。
 
 . 或者，<<reference#reference-map,map>> 或 <<reference#reference-trymap,tryMap>> 可被用做创建发布者实例，紧跟 <<reference#reference-switchtolatest,switchToLatest>> 链将该发布者解析为将在管道内传递的值。
 
-<<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>> 和 <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>> 模式说明了这种使用方法。
+<<patterns#patterns-cascading-update-interface>> 和 <<patterns#patterns-update-interface-userinput>> 模式说明了这种使用方法。
 
 你可能会发现创建返回发布者的对象是值得的。
 这通常使你的代码能够封装与远程或基于网络的 API 通信的详细信息。
 可以使用 <<reference#reference-datataskpublisher,URLSession.dataTaskPublisher>> 或你自己的代码进行开发。
-在模式 <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>> 中详细介绍了这方面的一个简单的示例。
+在模式 <<patterns#patterns-cascading-update-interface>> 中详细介绍了这方面的一个简单的示例。
 
 // force a page break - ignored in HTML rendering
 <<<

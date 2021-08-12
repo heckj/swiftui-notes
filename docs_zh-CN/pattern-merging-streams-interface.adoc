@@ -21,7 +21,7 @@ __参考__::
 
 __另请参阅__::
 
-* <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>>
+* <<patterns#patterns-update-interface-userinput>>
 
 __代码和解释__::
 
@@ -142,7 +142,7 @@ class FormViewController: UIViewController {
 }
 ----
 
-<1> 此代码的开头遵照了 <<patterns#patterns-update-interface-userinput,Declarative UI updates from user input>> 中的模式.
+<1> 此代码的开头遵照了 <<patterns#patterns-update-interface-userinput>> 中的模式.
 IBAction 消息用于更新 <<reference#reference-published,@Published>> 属性，触发对所连接的任何订阅者的更新。
 <2> 第一个验证管道使用 <<reference#reference-map,map>> 操作符接收字符串值输入，如果与验证规则不符，则将其转换为 nil。
 这也将发布者属性的输出类型从 `<String>` 转换为可选的 `<String?>`。
