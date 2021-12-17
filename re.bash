@@ -22,7 +22,7 @@
 
 echo "Rendering HTML"
 # render the HTML, results will appear in `output` directory
-docker run --platform linux/amd64 --rm -v $(pwd):/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
+docker run --platform linux/amd64 --rm -v $(pwd):/documents/ --name asciidoc-to-html asciidoctor/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
 
 # copy in the images for the HTML
 mkdir -p output/images
@@ -36,7 +36,7 @@ fi
 if [ -n "${REBUILDPDF}" ]; then
 # render a PDF, results will appear in `output` directory
     echo "Rendering PDF"
-    docker run --platform linux/amd64 --rm -v $(pwd):/documents/ --name asciidoc-to-pdf heckj/docker-asciidoctor asciidoctor-pdf -v -t -D /documents/output docs/using-combine-book.adoc
+    docker run --platform linux/amd64 --rm -v $(pwd):/documents/ --name asciidoc-to-pdf asciidoctor/docker-asciidoctor asciidoctor-pdf -v -t -D /documents/output docs/using-combine-book.adoc
     if [ -n "${OPENIT}" ]; then
         open output/using-combine-book.pdf
     fi
@@ -46,7 +46,7 @@ fi
 if [ -n "${REBUILDEPUB}" ]; then
 # render an epub3 file, will should appear in `output` directory
     echo "Rendering ePub"
-    docker run --platform linux/amd64 --rm -v $(pwd):/documents/ --name asciidoc-to-epub3 heckj/docker-asciidoctor asciidoctor-epub3 -v -t -D /documents/output docs/using-combine-book.adoc
+    docker run --platform linux/amd64 --rm -v $(pwd):/documents/ --name asciidoc-to-epub3 asciidoctor/docker-asciidoctor asciidoctor-epub3 -v -t -D /documents/output docs/using-combine-book.adoc
     if [ -n "${OPENIT}" ]; then
         open output/using-combine-book.epub
     fi
