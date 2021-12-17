@@ -1,11 +1,11 @@
 = Using Combine
 Joseph Heck
-v 1.2, 2020-11-07
+v 1.2.1, 2021-12-17
 :doctype: book
 :creator: {author}
 :producer: Joseph Heck
 :keywords: Apple, Combine, ReactiveX, SwiftUI
-:copyright: Joseph Heck 2019-2020
+:copyright: Joseph Heck 2019-2021
 :publication-type: book
 // NOTE use 'anthology' for per-chapter author support
 :idprefix:
