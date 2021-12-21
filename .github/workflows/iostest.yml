@@ -18,7 +18,7 @@ jobs:
 
   build:
 
-    runs-on: macos-latest
+    runs-on: macos11
     env:
       # sets the version of Xcode to utilize within the VM for all steps
       DEVELOPER_DIR: /Applications/Xcode_12.4.app/Contents/Developer
@@ -57,5 +57,5 @@ jobs:
         xcodebuild -scheme SwiftUI-Notes \
         -configuration Debug \
         -sdk iphonesimulator14.4 \
-        -destination 'platform=iOS Simulator,OS=14.4,name=iPhone 8' \
+        -destination 'platform=iOS Simulator,OS=15.2,name=iPhone 8' \
         test -showBuildTimingSummary
