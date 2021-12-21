@@ -56,6 +56,6 @@ jobs:
       run: |
         xcodebuild -scheme SwiftUI-Notes \
         -configuration Debug \
-        -sdk iphonesimulator15.2 \
+        -sdk iphonesimulator15.0 \
         -destination 'platform=iOS Simulator,OS=15.2,name=iPhone 8' \
         test -showBuildTimingSummary
