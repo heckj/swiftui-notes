@@ -18,10 +18,10 @@ jobs:
 
   build:
 
-    runs-on: macos-latest
+    runs-on: macos-11
     env:
       # sets the version of Xcode to utilize within the VM for all steps
-      DEVELOPER_DIR: /Applications/Xcode_12.4.app/Contents/Developer
+      # DEVELOPER_DIR: /Applications/Xcode_13.app/Contents/Developer
     steps:
     - uses: actions/checkout@v2
 
