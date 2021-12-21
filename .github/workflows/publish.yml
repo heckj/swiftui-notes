@@ -45,7 +45,7 @@ jobs:
       run: cp output/using-combine-book.html build/index.html
 
     - name: copy zh-CN HTML into build directory
-      run: cp output/using-combine-book.html build/index_zh-CN.html
+      run: cp output/using-combine_zh-CN.html build/index_zh-CN.html
 
     - name: permission check
       run: ls -altr
