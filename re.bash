@@ -23,6 +23,8 @@
 echo "Rendering HTML"
 # render the HTML, results will appear in `output` directory
 docker run --platform linux/amd64 --rm -v $(pwd):/documents/ --name asciidoc-to-html asciidoctor/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
+# output appears into ./output/using-combine-book.html
+docker run --platform linux/amd64 --rm -v $(pwd):/documents/ --name asciidoc-to-html asciidoctor/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs_zh-CN/using-combine_zh-CN.adoc
 
 # copy in the images for the HTML
 mkdir -p output/images

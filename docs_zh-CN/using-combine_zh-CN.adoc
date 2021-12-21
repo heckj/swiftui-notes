@@ -1,0 +1,30 @@
+= Using Combine
+Joseph Heck
+v 1.2.1, 2021-12-21
+:doctype: book
+:creator: {author}
+:producer: Joseph Heck
+:keywords: Apple, Combine, ReactiveX, SwiftUI
+:copyright: Joseph Heck 2019-2021
+:publication-type: book
+// NOTE use 'anthology' for per-chapter author support
+:idprefix:
+:idseparator: -
+:imagesdir: images
+:front-cover-image: image:UsingCombineWithSwiftCoverArt_2560x1920.png[fit=cover]
+:google-analytics-account: UA-898243-5
+:source-highlighter: rouge
+:url-issues: https://github.com/heckj/swiftui-notes/issues
+:toc: left
+:toclevels: 4
+// enable font-awesome icons in content
+:icons: font
+
+ifndef::ebook-format[:leveloffset: 1]
+
+include::aboutthisbook.adoc[]
+include::introduction.adoc[]
+include::coreconcepts.adoc[]
+include::developingwith.adoc[]
+include::patterns.adoc[]
+include::reference.adoc[]

@@ -1,6 +1,10 @@
 [#aboutthisbook]
 = 关于本书
 
+ifeval::["{backend}" == "html5"]
+(link:./index.html[english]) (link:./index_zh-CN.html[普通话])
+endif::[]
+
 版本号: {revnumber}
 
 该版日期: {revdate}
