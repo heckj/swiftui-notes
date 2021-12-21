@@ -1,6 +1,10 @@
 [#aboutthisbook]
 = About This Book
 
+ifeval::["{backend}" == "html5"]
+(link:./index.html[english]) (link:./index_zh-CN.html[普通话])
+endif::[]
+
 Version: {revnumber}
 
 Version Date: {revdate}

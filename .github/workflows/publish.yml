@@ -23,6 +23,10 @@ jobs:
       run: docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
       # results to appear in the directory 'output', which on GH action is owned by root, not `me`
 
+    - name: generate zh-CN html with asciidoctor from docs/
+      run: docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs_zh-CN/using-combine_zh-CN.adoc
+      # results to appear in the directory 'output', which on GH action is owned by root, not `me` 
+
     - name: permission check
       run: ls -altr
 
@@ -37,8 +41,11 @@ jobs:
     - name: copy images into HTML output directory
       run: cp -r docs/images/* build/images
 
-    - name: copy HTML into build directory
+    - name: copy en HTML into build directory
       run: cp output/using-combine-book.html build/index.html
+
+    - name: copy zh-CN HTML into build directory
+      run: cp output/using-combine-book.html build/index_zh-CN.html
 
     - name: permission check
       run: ls -altr
