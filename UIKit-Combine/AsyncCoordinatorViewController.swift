@@ -29,10 +29,10 @@ class AsyncCoordinatorViewController: UIViewController {
     }
 
     func runItAll() {
-        if self.cancellable != nil {
+        if let cancellable = cancellable {
             print("Cancelling existing run")
-            cancellable?.cancel()
-            self.activityIndicator.stopAnimating()
+            cancellable.cancel()
+            activityIndicator.stopAnimating()
         }
         print("resetting all the steps")
         self.resetAllSteps()
