@@ -11,39 +11,16 @@ import Combine
 
 class ReactiveFormModel : ObservableObject {
 
-    @Published var firstEntry: String = "" {
-        didSet {
-            firstEntryPublisher.send(self.firstEntry)
-        }
-    }
-    private let firstEntryPublisher = CurrentValueSubject<String, Never>("")
-    
-    // NOTE(heckj): this didSet {} structure and the CurrentValueSubject
-    // firstEntryPublisher could be removed.
-    //
-    // The @Published property wrapper presents a publisher
-    // for the values as they change.
-    //
-    // It's not entirely obvious, but the relevant publisher is
-    // _firstEntry.projectedValue which is an instance of the type
-    // Published<String>.Publisher - with an Output type of String
-    // and a failure type of Never.
-
-    @Published var secondEntry: String = "" {
-        didSet {
-            secondEntryPublisher.send(self.secondEntry)
-        }
-    }
-    private let secondEntryPublisher = CurrentValueSubject<String, Never>("")
-
+    @Published var firstEntry: String = ""
+    @Published var secondEntry: String = ""
     @Published var validationMessages = [String]()
+
     private var cancellableSet: Set<AnyCancellable> = []
 
-    var submitAllowed: AnyPublisher<Bool, Never>
+    var submitAllowed: AnyPublisher<Bool, Never>!
     
     init() {
-
-        let validationPipeline = Publishers.CombineLatest(firstEntryPublisher, secondEntryPublisher)
+        let validationPipeline = Publishers.CombineLatest($firstEntry, $secondEntry)
             .map { (arg) -> [String] in
                 var diagMsgs = [String]()
                 let (value, value_repeat) = arg
