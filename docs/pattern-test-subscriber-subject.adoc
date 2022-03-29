@@ -49,7 +49,7 @@ A general pattern for using this kind of test construct is:
 
 An example of this pattern follows:
 
-.https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SinkSubscriberTests.swift#L44[UsingCombineTests/SinkSubscriberTests.swift - testSinkReceiveDataThenError]
+.https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SinkSubscriberTests.swift#L46[UsingCombineTests/SinkSubscriberTests.swift - testSinkReceiveDataThenError]
 [source, swift]
 ----
 func testSinkReceiveDataThenError() {
