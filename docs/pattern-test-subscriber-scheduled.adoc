@@ -35,7 +35,7 @@ Building on both <<patterns#patterns-testing-publisher,Testing a publisher with 
 
 An example of this:
 
-.https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift#L178[UsingCombineTests/PublisherTests.swift - testKVOPublisher]
+.https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift#L205[UsingCombineTests/PublisherTests.swift - testKVOPublisher]
 [source, swift]
 ----
 func testKVOPublisher() {
