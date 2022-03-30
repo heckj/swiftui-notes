@@ -6339,7 +6339,7 @@ Although it is not shown in the example content above, you will also see cancell
 <pre class="rouge highlight"><code data-lang="swift"><span class="kd">func</span> <span class="nf">testRetryWithOneShotFailPublisher</span><span class="p">()</span> <span class="p">{</span>
     <span class="c1">// setup</span>
 
-    <span class="k">let</span> <span class="nv">_</span> <span class="o">=</span> <span class="kt">Fail</span><span class="p">(</span><span class="nv">outputType</span><span class="p">:</span> <span class="kt">String</span><span class="o">.</span><span class="k">self</span><span class="p">,</span> <span class="nv">failure</span><span class="p">:</span> <span class="kt">TestFailureCondition</span><span class="o">.</span><span class="n">invalidServerResponse</span><span class="p">)</span>
+    <span class="k">let</span> <span class="nv">cancellable</span> <span class="o">=</span> <span class="kt">Fail</span><span class="p">(</span><span class="nv">outputType</span><span class="p">:</span> <span class="kt">String</span><span class="o">.</span><span class="k">self</span><span class="p">,</span> <span class="nv">failure</span><span class="p">:</span> <span class="kt">TestFailureCondition</span><span class="o">.</span><span class="n">invalidServerResponse</span><span class="p">)</span>
         <span class="o">.</span><span class="nf">print</span><span class="p">(</span><span class="s">"(1)&gt;"</span><span class="p">)</span> <i class="conum" data-value="1"></i><b>(1)</b>
         <span class="o">.</span><span class="nf">retry</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
         <span class="o">.</span><span class="nf">print</span><span class="p">(</span><span class="s">"(2)&gt;"</span><span class="p">)</span> <i class="conum" data-value="2"></i><b>(2)</b>
@@ -6349,6 +6349,7 @@ Although it is not shown in the example content above, you will also see cancell
             <span class="kt">XCTAssertNotNil</span><span class="p">(</span><span class="n">stringValue</span><span class="p">)</span>
             <span class="nf">print</span><span class="p">(</span><span class="s">" ** .sink() received </span><span class="se">\(</span><span class="n">stringValue</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
         <span class="p">})</span>
+    <span class="kt">XCTAssertNotNil</span><span class="p">(</span><span class="n">cancellable</span><span class="p">)</span>
 <span class="p">}</span></code></pre>
 </div>
 </div>
@@ -13174,7 +13175,7 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 <div id="footer">
 <div id="footer-text">
 Version 1.2.1<br>
-Last updated 2022-03-29 16:07:03 UTC
+Last updated 2022-03-30 15:14:08 UTC
 </div>
 </div>
 <style>
