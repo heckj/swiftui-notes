@@ -122,7 +122,7 @@ An example of doing this, leveraging the prefix to show the <<reference#referenc
 func testRetryWithOneShotFailPublisher() {
     // setup
 
-    let _ = Fail(outputType: String.self, failure: TestFailureCondition.invalidServerResponse)
+    let cancellable = Fail(outputType: String.self, failure: TestFailureCondition.invalidServerResponse)
         .print("(1)>") <1>
         .retry(3)
         .print("(2)>") <2>
@@ -132,6 +132,7 @@ func testRetryWithOneShotFailPublisher() {
             XCTAssertNotNil(stringValue)
             print(" ** .sink() received \(stringValue)")
         })
+    XCTAssertNotNil(cancellable)
 }
 ----
 
