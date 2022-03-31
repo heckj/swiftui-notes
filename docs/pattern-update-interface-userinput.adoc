@@ -37,13 +37,13 @@ The sample is a portion of the code at in a larger view controller implementatio
 
 This example overlaps with the next pattern <<patterns#patterns-cascading-update-interface,Cascading UI updates including a network request>>, which builds upon the initial publisher.
 
-.https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubAPI.swift[UIKit-Combine/GithubAPI.swift]
+.https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubViewController.swift[UIKit-Combine/GithubViewController.swift]
 [source, swift]
 ----
 import UIKit
 import Combine
 
-class ViewController: UIViewController {
+class GithubViewController: UIViewController {
 
     @IBOutlet weak var github_id_entry: UITextField! <1>
 
