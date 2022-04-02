@@ -294,7 +294,7 @@ Rather than restarting a cancelled pipeline, the developer is expected to create
 
 The end to end lifecycle is enabled by subscribers and publishers communicating in a well defined sequence:
 
-.An The lifecycle of a combine pipeline
+.The lifecycle of a combine pipeline
 image::diagrams/combine_lifecycle_diagram.svg[combine lifecycle diagram]
 <1> When the subscriber is attached to a publisher, it starts with a call to `.subscribe(_: Subscriber)`.
 <2> The publisher in turn acknowledges the subscription calling `receive(subscription: Subscription)`.
