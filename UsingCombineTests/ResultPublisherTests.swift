@@ -6,14 +6,12 @@
 //  Copyright © 2020 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
 import CombineSchedulers
+import XCTest
 
 class ResultPublisherTests: XCTestCase {
-
-    enum TestFailureCondition: Error, Codable, CodingKey
-    {
+    enum TestFailureCondition: Error, Codable, CodingKey {
         // reading on codable enums: https://www.objc.io/blog/2018/01/23/codable-enums/
         // and https://medium.com/@hllmandel/codable-enum-with-associated-values-swift-4-e7d75d6f4370
 
@@ -26,9 +24,9 @@ class ResultPublisherTests: XCTestCase {
             // let value =  try container.decode(TestFailureCondition.self, forKey: .invalidServerResponse)
             // self = .left(leftValue)
 
-            if (try container.decodeNil(forKey: .invalidServerResponse)) {
+            if try container.decodeNil(forKey: .invalidServerResponse) {
                 self = .invalidServerResponse
-            } else if (try container.decodeNil(forKey: .aDifferentFailure)) {
+            } else if try container.decodeNil(forKey: .aDifferentFailure) {
                 self = .aDifferentFailure
             } else {
                 // default if nothing else worked
@@ -41,10 +39,10 @@ class ResultPublisherTests: XCTestCase {
             switch self {
             case .invalidServerResponse:
                 try container.encodeNil(forKey: .invalidServerResponse)
-                // If the error enum was set up with associated values, we'd need to twiddle the
-                // encode/decode a bit along these lines:
-                //
-                // try container.encode("x", forKey: .invalidServerResponse)
+            // If the error enum was set up with associated values, we'd need to twiddle the
+            // encode/decode a bit along these lines:
+            //
+            // try container.encode("x", forKey: .invalidServerResponse)
             case .aDifferentFailure:
                 try container.encodeNil(forKey: .aDifferentFailure)
             }
@@ -64,7 +62,7 @@ class ResultPublisherTests: XCTestCase {
                 // creating a range below 0 will crash, so refuse
                 return .failure(.aDifferentFailure)
             } else {
-                let number = Int.random(in: 0...maximum)
+                let number = Int.random(in: 0 ... maximum)
                 return .success(number)
             }
         }
@@ -77,7 +75,7 @@ class ResultPublisherTests: XCTestCase {
         // record can be used directly as a publisher
         let cancellable = foo.sink(receiveCompletion: { err in
             print(".sink() received the completion: ", String(describing: err))
-            
+
         }, receiveValue: { value in
             print(".sink() received value: ", value)
         })
@@ -87,29 +85,29 @@ class ResultPublisherTests: XCTestCase {
 
     func testConvertingPublisherToAResultPublisher() {
         let testScheduler = DispatchQueue.testScheduler
-        var receivedValues:[String] = []
+        var receivedValues: [String] = []
         var errorCount = 0
         // goal is to convert a Publisher<String, Error> into a Publisher<Result<String, Error>, Never>
-        
+
         let victim = PassthroughSubject<String, Error>()
 
-        let xyz:AnyCancellable = victim
-        .receive(on: testScheduler)
-        .map {
-            Result<String, Error>.success($0)
-        }
-        .catch {
-            Just(Result<String, Error>.failure($0))
-        }
-        .print("S ")
-        .sink { aResult in
-            print("we got ", aResult);
-            do {
-                receivedValues.append(try aResult.get())
-            } catch {
-                errorCount += 1
+        let xyz: AnyCancellable = victim
+            .receive(on: testScheduler)
+            .map {
+                Result<String, Error>.success($0)
             }
-        }
+            .catch {
+                Just(Result<String, Error>.failure($0))
+            }
+            .print("S ")
+            .sink { aResult in
+                print("we got ", aResult)
+                do {
+                    receivedValues.append(try aResult.get())
+                } catch {
+                    errorCount += 1
+                }
+            }
 
         XCTAssertNotNil(xyz)
         XCTAssertEqual(receivedValues.count, 0)
@@ -131,10 +129,10 @@ class ResultPublisherTests: XCTestCase {
         // type, but the result is that the pipeline basically becomes a one-shot scenario.
         // To use on any repeating structure, you'd need to do the trick where you wrap
         // this structure within a flatMap to generate one-shot publishers as you needed.
-        
+
         victim.send("two")
         testScheduler.advance(by: 1)
-        
+
         XCTAssertEqual(receivedValues.count, 1)
         XCTAssertEqual(errorCount, 1)
 
@@ -145,7 +143,5 @@ class ResultPublisherTests: XCTestCase {
 //        S : receive value: (failure(TestFailureCondition(stringValue: "invalidServerResponse", intValue: nil)))
 //        we got  failure(TestFailureCondition(stringValue: "invalidServerResponse", intValue: nil))
 //        S : receive finished
-
     }
-    
 }

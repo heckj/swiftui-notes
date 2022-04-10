@@ -6,13 +6,11 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
+import XCTest
 
 class HandleEventsPublisherTests: XCTestCase {
-
     func testHandleEvents() {
-
         let publisher = PassthroughSubject<String?, Never>()
 
         // this sets up the chain of whatever it's going to do
@@ -51,5 +49,4 @@ class HandleEventsPublisherTests: XCTestCase {
         publisher.send(completion: .finished)
         XCTAssertNotNil(cancellable)
     }
-
 }

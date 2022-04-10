@@ -6,15 +6,13 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
+import XCTest
 
 class ObservableObjectPublisherTests: XCTestCase {
-
     func testCodeExample() {
-
-        let expectation = XCTestExpectation(description: self.debugDescription)
-        class Contact : ObservableObject {
+        let expectation = XCTestExpectation(description: debugDescription)
+        class Contact: ObservableObject {
             @Published var name: String
             @Published var age: Int
 
@@ -27,10 +25,10 @@ class ObservableObjectPublisherTests: XCTestCase {
                 age += 1
                 return age
             }
-         }
+        }
 
-         let john = Contact(name: "John Appleseed", age: 24)
-         let cancellable = john.objectWillChange.sink { _ in
+        let john = Contact(name: "John Appleseed", age: 24)
+        let cancellable = john.objectWillChange.sink { _ in
             expectation.fulfill()
             print("will change")
         }
@@ -51,13 +49,13 @@ class ObservableObjectPublisherTests: XCTestCase {
 
         func shoutProperty() -> String {
             // this function is an example of something changing a published property
-            self.someProperty = self.someProperty.uppercased()
+            someProperty = someProperty.uppercased()
             return someProperty
         }
     }
 
     func testObservableObjectPublisher() {
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
 
         let example = ExampleObject(someProperty: "quietly, please")
 
@@ -69,11 +67,9 @@ class ObservableObjectPublisherTests: XCTestCase {
                 switch completion {
                 case .finished:
                     XCTFail("No finished should be received from empty")
-                    break
-                case .failure(let anError):
+                case let .failure(anError):
                     XCTFail("No failure should be received from empty")
                     print("received error: ", anError)
-                    break
                 }
             }, receiveValue: { valueReceived in
                 XCTAssertNotNil(valueReceived)
@@ -91,5 +87,4 @@ class ObservableObjectPublisherTests: XCTestCase {
         wait(for: [expectation], timeout: 5.0)
         XCTAssertNotNil(cancellable)
     }
-
 }

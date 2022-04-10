@@ -9,7 +9,6 @@
 import SwiftUI
 
 struct ReactiveForm: View {
-
     @ObservedObject var model: ReactiveFormModel
     // $model is a ObservedObject<ExampleModel>.Wrapper
     // and $model.objectWillChange is a Binding<ObservableObjectPublisher>
@@ -47,12 +46,11 @@ struct ReactiveForm: View {
             }.disabled(buttonIsDisabled)
                 .onReceive(model.submitAllowed) { submitAllowed in
                     self.buttonIsDisabled = !submitAllowed
-            }
-            .padding()
-            .background(RoundedRectangle(cornerRadius: 10)      .stroke(Color.blue, lineWidth: 1)
-            )
+                }
+                .padding()
+                .background(RoundedRectangle(cornerRadius: 10).stroke(Color.blue, lineWidth: 1)
+                )
 
-            
             Spacer()
         }
     }
@@ -61,12 +59,11 @@ struct ReactiveForm: View {
 // MARK: - SwiftUI VIEW DEBUG
 
 #if DEBUG
-var localModel = ReactiveFormModel()
+    var localModel = ReactiveFormModel()
 
-struct ReactiveForm_Previews: PreviewProvider {
-    static var previews: some View {
-        ReactiveForm(model: localModel)
+    struct ReactiveForm_Previews: PreviewProvider {
+        static var previews: some View {
+            ReactiveForm(model: localModel)
+        }
     }
-}
 #endif
-

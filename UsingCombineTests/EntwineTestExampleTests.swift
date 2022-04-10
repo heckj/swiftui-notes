@@ -12,7 +12,6 @@ import EntwineTest
 import XCTest
 
 class EntwineTestExampleTests: XCTestCase {
-
     func testMap() {
         let testScheduler = TestScheduler(initialClock: 0)
 
@@ -30,10 +29,10 @@ class EntwineTestExampleTests: XCTestCase {
         let results = testScheduler.start { subjectUnderTest }
 
         XCTAssertEqual(results.recordedOutput, [
-            (200, .subscription),           // subscribed at 200
-            (300, .input("A")),             // received uppercased input @ 100 + subscription time
-            (400, .input("B")),             // received uppercased input @ 200 + subscription time
-            (500, .input("C")),             // received uppercased input @ 300 + subscription time
+            (200, .subscription), // subscribed at 200
+            (300, .input("A")), // received uppercased input @ 100 + subscription time
+            (400, .input("B")), // received uppercased input @ 200 + subscription time
+            (500, .input("C")), // received uppercased input @ 300 + subscription time
         ])
     }
 

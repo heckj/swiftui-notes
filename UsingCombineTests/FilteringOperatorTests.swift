@@ -6,24 +6,22 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
+import XCTest
 
 class FilteringOperatorTests: XCTestCase {
-
     enum TestExampleError: Error {
         case example
     }
 
     func testReplaceNil() {
-
         let passSubj = PassthroughSubject<String?, Never>()
         // no initial value is propagated from a PassthroughSubject
 
         var receivedList: [String] = []
 
         let cancellable = passSubj
-            .print(self.debugDescription)
+            .print(debugDescription)
             .replaceNil(with: "-replacement-")
             .sink { someValue in
                 print("value updated to: ", someValue)
@@ -42,14 +40,13 @@ class FilteringOperatorTests: XCTestCase {
     }
 
     func testReplaceEmptyWithValues() {
-
         let passSubj = PassthroughSubject<String?, Never>()
         // no initial value is propagated from a PassthroughSubject
 
         var receivedList: [String?] = []
 
         let cancellable = passSubj
-            .print(self.debugDescription)
+            .print(debugDescription)
             .replaceEmpty(with: "-replacement-")
             .sink { someValue in
                 print("value updated to: ", someValue as Any)
@@ -66,14 +63,13 @@ class FilteringOperatorTests: XCTestCase {
     }
 
     func testReplaceEmptyNoValues() {
-
         let passSubj = PassthroughSubject<String?, Never>()
         // no initial value is propagated from a PassthroughSubject
 
         var receivedList: [String?] = []
 
         let cancellable = passSubj
-            .print(self.debugDescription)
+            .print(debugDescription)
             .replaceEmpty(with: "-replacement-")
             .sink { someValue in
                 print("value updated to: ", someValue as Any)
@@ -87,24 +83,21 @@ class FilteringOperatorTests: XCTestCase {
     }
 
     func testReplaceEmptyWithFailure() {
-
         let passSubj = PassthroughSubject<String, Error>()
         // no initial value is propagated from a PassthroughSubject
 
         var receivedList: [String] = []
 
         let cancellable = passSubj
-            .print(self.debugDescription)
+            .print(debugDescription)
             .replaceEmpty(with: "-replacement-")
             .sink(receiveCompletion: { completion in
                 print(".sink() received the completion", String(describing: completion))
                 switch completion {
                 case .finished:
                     XCTFail()
-                    break
-                case .failure(let anError):
+                case let .failure(anError):
                     print("received error: ", anError)
-                    break
                 }
             }, receiveValue: { responseValue in
                 print(".sink() data received \(responseValue)")
@@ -119,16 +112,15 @@ class FilteringOperatorTests: XCTestCase {
     }
 
     func testCompactMap() {
-
         let passSubj = PassthroughSubject<String?, Never>()
         // no initial value is propagated from a PassthroughSubject
 
         var receivedList: [String] = []
 
         let cancellable = passSubj
-            .print(self.debugDescription)
+            .print(debugDescription)
             .compactMap {
-                return $0
+                $0
             }
             .sink { someValue in
                 print("value updated to: ", someValue as Any)
@@ -145,7 +137,6 @@ class FilteringOperatorTests: XCTestCase {
     }
 
     func testTryCompactMap() {
-
         let passSubj = PassthroughSubject<String?, Never>()
         // no initial value is propagated from a PassthroughSubject
 
@@ -153,7 +144,7 @@ class FilteringOperatorTests: XCTestCase {
 
         let cancellable = passSubj
             .tryCompactMap { someVal -> String? in
-                if (someVal == "boom") {
+                if someVal == "boom" {
                     throw TestExampleError.example
                 }
                 return someVal
@@ -163,10 +154,8 @@ class FilteringOperatorTests: XCTestCase {
                 switch completion {
                 case .finished:
                     XCTFail()
-                    break
-                case .failure(let anError):
+                case let .failure(anError):
                     print("received error: ", anError)
-                    break
                 }
             }, receiveValue: { responseValue in
                 receivedList.append(responseValue)

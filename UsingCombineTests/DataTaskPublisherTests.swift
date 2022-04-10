@@ -6,11 +6,10 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
+import XCTest
 
 class DataTaskPublisherTests: XCTestCase {
-
     var testURL: URL?
     var mockURL: URL?
     var myBackgroundQueue: DispatchQueue?
@@ -32,11 +31,11 @@ class DataTaskPublisherTests: XCTestCase {
     }
 
     override func setUp() {
-        self.testURL = URL(string: testUrlString)
-        self.myBackgroundQueue = DispatchQueue(label: "UsingCombineExample")
+        testURL = URL(string: testUrlString)
+        myBackgroundQueue = DispatchQueue(label: "UsingCombineExample")
         // Apple recommends NOT using .concurrent queue when working with Combine pipelines:
         // https://forums.swift.org/t/runloop-main-or-dispatchqueue-main-when-using-combine-scheduler/26635/4
-        self.mockURL = URL(string: "https://fakeurl.com/response")
+        mockURL = URL(string: "https://fakeurl.com/response")
         // ignore the testURL and let it pass through and do its thing
         Mocker.ignore(testURL!)
         Mocker.ignore(URL(string: test400UrlString)!)
@@ -47,7 +46,7 @@ class DataTaskPublisherTests: XCTestCase {
     func testDataTaskPublisher() {
         // setup
         let expectation = XCTestExpectation(description: "Download from \(String(describing: testURL))")
-        let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: self.testURL!)
+        let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: testURL!)
             // validate
             .sink(receiveCompletion: { fini in
                 print(".sink() received the completion", String(describing: fini))
@@ -55,7 +54,7 @@ class DataTaskPublisherTests: XCTestCase {
                 case .finished: expectation.fulfill()
                 case .failure: XCTFail()
                 }
-            }, receiveValue: { (data, response) in
+            }, receiveValue: { data, response in
                 guard let httpResponse = response as? HTTPURLResponse else {
                     XCTFail("Unable to parse response an HTTPURLResponse")
                     return
@@ -74,11 +73,11 @@ class DataTaskPublisherTests: XCTestCase {
     func testSimpleURLDecodePipeline() {
         // setup
         let expectation = XCTestExpectation(description: "Download from \(String(describing: testURL))")
-        let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: self.testURL!)
+        let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: testURL!)
             // the dataTaskPublisher output combination is (data: Data, response: URLResponse)
             .map { $0.data }
             .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder())
-            .subscribe(on: self.myBackgroundQueue!)
+            .subscribe(on: myBackgroundQueue!)
             .eraseToAnyPublisher()
 
         XCTAssertNotNil(remoteDataPublisher)
@@ -108,7 +107,7 @@ class DataTaskPublisherTests: XCTestCase {
             // the dataTaskPublisher output combination is (data: Data, response: URLResponse)
             .map { $0.data }
             .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder())
-            .subscribe(on: self.myBackgroundQueue!)
+            .subscribe(on: myBackgroundQueue!)
             .eraseToAnyPublisher()
 
             // validate
@@ -116,7 +115,7 @@ class DataTaskPublisherTests: XCTestCase {
                 print(".sink() received the completion", String(describing: fini))
                 switch fini {
                 case .finished: XCTFail()
-                case .failure(let anError):
+                case let .failure(anError):
                     print("received error: ", anError)
                     // URL doesn't exist, so a failure should be triggered
                     // normally, the error description would be "A server with the specified hostname could not be found."
@@ -137,23 +136,24 @@ class DataTaskPublisherTests: XCTestCase {
     func testDataTaskPublisherWithTryMap() {
         // setup
         let expectation = XCTestExpectation(description: "Download from \(String(describing: testURL))")
-        let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: self.testURL!)
+        let remoteDataPublisher = URLSession.shared.dataTaskPublisher(for: testURL!)
             .tryMap { data, response -> Data in
                 guard let httpResponse = response as? HTTPURLResponse,
-                    httpResponse.statusCode == 200 else {
-                        throw TestFailureCondition.invalidServerResponse
+                      httpResponse.statusCode == 200
+                else {
+                    throw TestFailureCondition.invalidServerResponse
                 }
                 return data
             }
             .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder())
-            .subscribe(on: self.myBackgroundQueue!)
+            .subscribe(on: myBackgroundQueue!)
             .eraseToAnyPublisher()
 
             // validate
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished: expectation.fulfill()
-                case .failure(let anError):
+                case let .failure(anError):
                     XCTFail(anError.localizedDescription)
                 }
             }, receiveValue: { decodedResponse in
@@ -165,7 +165,6 @@ class DataTaskPublisherTests: XCTestCase {
         wait(for: [expectation], timeout: 5.0)
     }
 
-
     func testDataTaskPublisherWithDelayedRetry() {
         // setup
         let expectation = XCTestExpectation(description: "Download from \(String(describing: testURL))")
@@ -176,7 +175,7 @@ class DataTaskPublisherTests: XCTestCase {
         let urlSession = URLSession(configuration: configuration)
 
         var m = Mock(url: mockURL!, ignoreQuery: false, reportFailure: true, dataType: .json, statusCode: 500,
-            data: [.get : Data()])
+                     data: [.get: Data()])
         m.delay = DispatchTimeInterval.milliseconds(500)
         m.completion = {
             countOfMockURLRequests += 1
@@ -184,18 +183,19 @@ class DataTaskPublisherTests: XCTestCase {
         }
         m.register()
 
-        guard let backgroundQueue = self.myBackgroundQueue else {
+        guard let backgroundQueue = myBackgroundQueue else {
             XCTFail()
             return
         }
 
-        let remoteDataPublisher = urlSession.dataTaskPublisher(for: self.mockURL!)
-            .delay(for: DispatchQueue.SchedulerTimeType.Stride(integerLiteral: Int.random(in: 1..<5)), scheduler: backgroundQueue)
+        let remoteDataPublisher = urlSession.dataTaskPublisher(for: mockURL!)
+            .delay(for: DispatchQueue.SchedulerTimeType.Stride(integerLiteral: Int.random(in: 1 ..< 5)), scheduler: backgroundQueue)
             .retry(3)
             .tryMap { data, response -> Data in
                 guard let httpResponse = response as? HTTPURLResponse,
-                    httpResponse.statusCode == 200 else {
-                        throw TestFailureCondition.invalidServerResponse
+                      httpResponse.statusCode == 200
+                else {
+                    throw TestFailureCondition.invalidServerResponse
                 }
                 return data
             }
@@ -209,14 +209,13 @@ class DataTaskPublisherTests: XCTestCase {
                 case .finished:
                     print("Finished without failure report")
                     XCTFail("Should have failed, not completed")
-                case .failure(let anError):
+                case let .failure(anError):
                     print("Received error from failure completion: ", anError.localizedDescription)
                 }
                 expectation.fulfill()
-            }, receiveValue: { decodedResponse in
+            }, receiveValue: { _ in
                 XCTFail("No data is expected to be received")
             })
-
 
         XCTAssertNotNil(remoteDataPublisher)
         wait(for: [expectation], timeout: 30.0)
@@ -234,7 +233,7 @@ class DataTaskPublisherTests: XCTestCase {
 
         var m = Mock(url: mockURL!, ignoreQuery: false, reportFailure: true, dataType: .json,
                      statusCode: 500,
-                     data: [.get : Data()])
+                     data: [.get: Data()])
         m.delay = DispatchTimeInterval.milliseconds(500)
 
         m.completion = {
@@ -243,19 +242,20 @@ class DataTaskPublisherTests: XCTestCase {
         }
         m.register()
 
-        guard let backgroundQueue = self.myBackgroundQueue else {
+        guard let backgroundQueue = myBackgroundQueue else {
             XCTFail()
             return
         }
 
-        let remoteDataPublisher = urlSession.dataTaskPublisher(for: self.mockURL!)
+        let remoteDataPublisher = urlSession.dataTaskPublisher(for: mockURL!)
             .delay(for: 2, scheduler: backgroundQueue)
             .retry(5) // 5 retries, 2 seconds each ~ 10 seconds for this to fall through
             .timeout(5, scheduler: backgroundQueue) // max time of 5 seconds before failing
             .tryMap { data, response -> Data in
                 guard let httpResponse = response as? HTTPURLResponse,
-                    httpResponse.statusCode == 200 else {
-                        throw TestFailureCondition.invalidServerResponse
+                      httpResponse.statusCode == 200
+                else {
+                    throw TestFailureCondition.invalidServerResponse
                 }
                 return data
             }
@@ -268,12 +268,12 @@ class DataTaskPublisherTests: XCTestCase {
                 switch completion {
                 case .finished:
                     break
-                case .failure(let anError):
+                case let .failure(anError):
                     print("Received error from failure completion: ", anError.localizedDescription)
                     XCTFail("Should have finished, not failed, with a timeout")
                 }
                 expectation.fulfill()
-            }, receiveValue: { decodedResponse in
+            }, receiveValue: { _ in
                 XCTFail("No data is expected to be received")
             })
 
@@ -288,28 +288,29 @@ class DataTaskPublisherTests: XCTestCase {
         // setup
         let expectation = XCTestExpectation(description: "Download from \(String(describing: testURL))")
 
-        let remoteDataPublisher = Just(self.testURL!)
+        let remoteDataPublisher = Just(testURL!)
             .flatMap { url in
                 URLSession.shared.dataTaskPublisher(for: url)
-                .tryMap { data, response -> Data in
+                    .tryMap { data, response -> Data in
                         guard let httpResponse = response as? HTTPURLResponse,
-                            httpResponse.statusCode == 200 else {
-                                throw TestFailureCondition.invalidServerResponse
+                              httpResponse.statusCode == 200
+                        else {
+                            throw TestFailureCondition.invalidServerResponse
                         }
                         return data
-                }
-                .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder())
-                    .catch {_ in
-                        return Just(PostmanEchoTimeStampCheckResponse(valid: false))
-                }
+                    }
+                    .decode(type: PostmanEchoTimeStampCheckResponse.self, decoder: JSONDecoder())
+                    .catch { _ in
+                        Just(PostmanEchoTimeStampCheckResponse(valid: false))
+                    }
             }
-            .subscribe(on: self.myBackgroundQueue!)
+            .subscribe(on: myBackgroundQueue!)
             .eraseToAnyPublisher()
             // validate
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished: expectation.fulfill()
-                case .failure(let anError):
+                case let .failure(anError):
                     XCTFail(anError.localizedDescription)
                 }
             }, receiveValue: { decodedResponse in
@@ -336,11 +337,11 @@ class DataTaskPublisherTests: XCTestCase {
                 switch fini {
                 case .finished:
                     break
-                case .failure(let anError):
+                case let .failure(anError):
                     print("received error: ", anError)
                 }
                 expectation.fulfill()
-            }, receiveValue: { (data, response) in
+            }, receiveValue: { data, response in
                 guard let httpResponse = response as? HTTPURLResponse else {
                     XCTFail("Unable to parse response an HTTPURLResponse")
                     return
@@ -394,11 +395,11 @@ class DataTaskPublisherTests: XCTestCase {
                 switch fini {
                 case .finished:
                     break
-                case .failure(let anError):
+                case let .failure(anError):
                     print("received error: ", anError)
                 }
                 expectation.fulfill()
-            }, receiveValue: { (data, response) in
+            }, receiveValue: { data, response in
                 guard let httpResponse = response as? HTTPURLResponse else {
                     XCTFail("Unable to parse response an HTTPURLResponse")
                     return
@@ -453,11 +454,11 @@ class DataTaskPublisherTests: XCTestCase {
                 switch fini {
                 case .finished:
                     break
-                case .failure(let anError):
+                case let .failure(anError):
                     print("received error: ", anError)
                 }
                 expectation.fulfill()
-            }, receiveValue: { (data, response) in
+            }, receiveValue: { data, response in
                 guard let httpResponse = response as? HTTPURLResponse else {
                     XCTFail("Unable to parse response an HTTPURLResponse")
                     return
@@ -497,5 +498,4 @@ class DataTaskPublisherTests: XCTestCase {
 
          */
     }
-
 }

@@ -6,11 +6,10 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
+import XCTest
 
 class SequentialOperatorTests: XCTestCase {
-
     enum TestExampleError: Error {
         case invalidValue
     }
@@ -23,21 +22,20 @@ class SequentialOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .first()
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .first()
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertFalse(terminatedStream)
 
@@ -62,21 +60,20 @@ class SequentialOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .first()
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .first()
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertFalse(terminatedStream)
         passSubj.send(completion: Subscribers.Completion.finished)
@@ -94,23 +91,22 @@ class SequentialOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .first { (incomingobject) -> Bool in
-            return incomingobject.count > 3
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
+            .first { incomingobject -> Bool in
+                incomingobject.count > 3
             }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertFalse(terminatedStream)
 
@@ -134,23 +130,22 @@ class SequentialOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .first { (incomingobject) -> Bool in
-            return incomingobject.count > 3
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
+            .first { incomingobject -> Bool in
+                incomingobject.count > 3
             }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertFalse(terminatedStream)
         passSubj.send(completion: Subscribers.Completion.finished)
@@ -168,26 +163,25 @@ class SequentialOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .tryFirst { (incomingobject) -> Bool in
-            if (incomingobject == "boom") {
-                throw TestExampleError.invalidValue
+            .tryFirst { incomingobject -> Bool in
+                if incomingobject == "boom" {
+                    throw TestExampleError.invalidValue
+                }
+                return incomingobject.count > 3
             }
-            return incomingobject.count > 3
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertFalse(terminatedStream)
 
@@ -211,26 +205,25 @@ class SequentialOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .tryFirst { (incomingobject) -> Bool in
-            if (incomingobject == "boom") {
-                throw TestExampleError.invalidValue
+            .tryFirst { incomingobject -> Bool in
+                if incomingobject == "boom" {
+                    throw TestExampleError.invalidValue
+                }
+                return incomingobject.count > 3
             }
-            return incomingobject.count > 3
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertFalse(terminatedStream)
         passSubj.send(completion: Subscribers.Completion.finished)
@@ -249,27 +242,26 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = passSubj
-        .tryFirst { (incomingobject) -> Bool in
-            if (incomingobject == "boom") {
-                throw TestExampleError.invalidValue
+            .tryFirst { incomingobject -> Bool in
+                if incomingobject == "boom" {
+                    throw TestExampleError.invalidValue
+                }
+                return incomingobject.count > 3
             }
-            return incomingobject.count > 3
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                errorReceived = true
-                break
-            }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                    errorReceived = true
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertFalse(terminatedStream)
         XCTAssertFalse(errorReceived)
@@ -295,21 +287,20 @@ class SequentialOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .last()
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .last()
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertFalse(terminatedStream)
 
@@ -341,21 +332,20 @@ class SequentialOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .last()
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .last()
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertFalse(terminatedStream)
         passSubj.send(completion: Subscribers.Completion.finished)
@@ -373,23 +363,22 @@ class SequentialOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .last { (incomingobject) -> Bool in
-            return incomingobject.count > 3
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
+            .last { incomingobject -> Bool in
+                incomingobject.count > 3
             }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertFalse(terminatedStream)
 
@@ -425,23 +414,22 @@ class SequentialOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .last { (incomingobject) -> Bool in
-            return incomingobject.count > 3
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
+            .last { incomingobject -> Bool in
+                incomingobject.count > 3
             }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertFalse(terminatedStream)
 
@@ -460,26 +448,25 @@ class SequentialOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .tryLast { (incomingobject) -> Bool in
-            if (incomingobject == "boom") {
-                throw TestExampleError.invalidValue
+            .tryLast { incomingobject -> Bool in
+                if incomingobject == "boom" {
+                    throw TestExampleError.invalidValue
+                }
+                return incomingobject.count > 3
             }
-            return incomingobject.count > 3
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertFalse(terminatedStream)
 
@@ -515,26 +502,25 @@ class SequentialOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .tryLast { (incomingobject) -> Bool in
-            if (incomingobject == "boom") {
-                throw TestExampleError.invalidValue
+            .tryLast { incomingobject -> Bool in
+                if incomingobject == "boom" {
+                    throw TestExampleError.invalidValue
+                }
+                return incomingobject.count > 3
             }
-            return incomingobject.count > 3
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertFalse(terminatedStream)
 
@@ -554,27 +540,26 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = passSubj
-        .tryLast { (incomingobject) -> Bool in
-            if (incomingobject == "boom") {
-                throw TestExampleError.invalidValue
+            .tryLast { incomingobject -> Bool in
+                if incomingobject == "boom" {
+                    throw TestExampleError.invalidValue
+                }
+                return incomingobject.count > 3
             }
-            return incomingobject.count > 3
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                errorReceived = true
-                break
-            }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                    errorReceived = true
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertFalse(terminatedStream)
         XCTAssertFalse(errorReceived)
@@ -603,21 +588,20 @@ class SequentialOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .drop(untilOutputFrom: triggerSubj)
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .drop(untilOutputFrom: triggerSubj)
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses.count, 0)
         XCTAssertFalse(terminatedStream)
@@ -659,21 +643,20 @@ class SequentialOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .drop(untilOutputFrom: triggerSubj)
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .drop(untilOutputFrom: triggerSubj)
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses.count, 0)
         XCTAssertFalse(terminatedStream)
@@ -705,22 +688,21 @@ class SequentialOperatorTests: XCTestCase {
         var receivedError = false
 
         let cancellable = passSubj
-        .drop(untilOutputFrom: triggerSubj)
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                receivedError = true
-                break
-            }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .drop(untilOutputFrom: triggerSubj)
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                    receivedError = true
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses.count, 0)
         XCTAssertFalse(terminatedStream)
@@ -756,22 +738,21 @@ class SequentialOperatorTests: XCTestCase {
         var receivedError = false
 
         let cancellable = passSubj
-        .drop(untilOutputFrom: triggerSubj)
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                receivedError = true
-                break
-            }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .drop(untilOutputFrom: triggerSubj)
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                    receivedError = true
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses.count, 0)
         XCTAssertFalse(terminatedStream)
@@ -793,23 +774,22 @@ class SequentialOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .drop { upstreamValue -> Bool in
-            return upstreamValue.count > 3
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
+            .drop { upstreamValue -> Bool in
+                upstreamValue.count > 3
             }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses.count, 0)
         XCTAssertFalse(terminatedStream)
@@ -829,7 +809,7 @@ class SequentialOperatorTests: XCTestCase {
 
         passSubj.send("xyz")
         XCTAssertEqual(responses.count, 2)
-        XCTAssertEqual(responses, ["abc","xyz"])
+        XCTAssertEqual(responses, ["abc", "xyz"])
         XCTAssertFalse(terminatedStream)
 
         passSubj.send("fini")
@@ -853,23 +833,22 @@ class SequentialOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .drop { upstreamValue -> Bool in
-            return upstreamValue.count > 3
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .drop { upstreamValue -> Bool in
+                upstreamValue.count > 3
+            }
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses.count, 0)
         XCTAssertFalse(terminatedStream)
@@ -890,7 +869,6 @@ class SequentialOperatorTests: XCTestCase {
         XCTAssertEqual(responses, ["abc", "hello", "world"])
         XCTAssertFalse(terminatedStream)
 
-
         passSubj.send(completion: Subscribers.Completion.finished)
         XCTAssertEqual(responses.count, 3)
         XCTAssertEqual(responses, ["abc", "hello", "world"])
@@ -907,23 +885,22 @@ class SequentialOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .drop { upstreamValue -> Bool in
-            return upstreamValue.count > 3
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .drop { upstreamValue -> Bool in
+                upstreamValue.count > 3
+            }
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses.count, 0)
         XCTAssertFalse(terminatedStream)
@@ -943,26 +920,25 @@ class SequentialOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .tryDrop { upstreamValue -> Bool in
-            if (upstreamValue == "boom") {
-                throw TestExampleError.invalidValue
+            .tryDrop { upstreamValue -> Bool in
+                if upstreamValue == "boom" {
+                    throw TestExampleError.invalidValue
+                }
+                return upstreamValue.count > 3
             }
-            return upstreamValue.count > 3
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses.count, 0)
         XCTAssertFalse(terminatedStream)
@@ -982,7 +958,7 @@ class SequentialOperatorTests: XCTestCase {
 
         passSubj.send("xyz")
         XCTAssertEqual(responses.count, 2)
-        XCTAssertEqual(responses, ["abc","xyz"])
+        XCTAssertEqual(responses, ["abc", "xyz"])
         XCTAssertFalse(terminatedStream)
 
         passSubj.send("fini")
@@ -1007,27 +983,26 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = passSubj
-        .tryDrop { upstreamValue -> Bool in
-            if (upstreamValue == "boom") {
-                throw TestExampleError.invalidValue
+            .tryDrop { upstreamValue -> Bool in
+                if upstreamValue == "boom" {
+                    throw TestExampleError.invalidValue
+                }
+                return upstreamValue.count > 3
             }
-            return upstreamValue.count > 3
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                errorReceived = true
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    errorReceived = true
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses.count, 0)
         XCTAssertFalse(terminatedStream)
@@ -1061,26 +1036,25 @@ class SequentialOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .tryDrop { upstreamValue -> Bool in
-            if (upstreamValue == "boom") {
-                throw TestExampleError.invalidValue
+            .tryDrop { upstreamValue -> Bool in
+                if upstreamValue == "boom" {
+                    throw TestExampleError.invalidValue
+                }
+                return upstreamValue.count > 3
             }
-            return upstreamValue.count > 3
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses.count, 0)
         XCTAssertFalse(terminatedStream)
@@ -1101,22 +1075,21 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = passSubj
-        .dropFirst()
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                errorReceived = true
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .dropFirst()
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    errorReceived = true
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses.count, 0)
         XCTAssertFalse(terminatedStream)
@@ -1151,22 +1124,21 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = passSubj
-        .dropFirst()
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                errorReceived = true
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .dropFirst()
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    errorReceived = true
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses.count, 0)
         XCTAssertFalse(terminatedStream)
@@ -1189,22 +1161,21 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = passSubj
-        .dropFirst(3)
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                errorReceived = true
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .dropFirst(3)
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    errorReceived = true
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses.count, 0)
         XCTAssertFalse(terminatedStream)
@@ -1251,21 +1222,20 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = Publishers.Concatenate(prefix: firstSubj, suffix: secondSubj)
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                errorReceived = true
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    errorReceived = true
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses.count, 0)
         XCTAssertFalse(terminatedStream)
@@ -1333,21 +1303,20 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = Publishers.Concatenate(prefix: firstSubj, suffix: secondSubj)
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                errorReceived = true
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    errorReceived = true
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses.count, 0)
         XCTAssertFalse(terminatedStream)
@@ -1399,21 +1368,20 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = Publishers.Concatenate(prefix: firstSubj, suffix: secondSubj)
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                errorReceived = true
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    errorReceived = true
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses.count, 0)
         XCTAssertFalse(terminatedStream)
@@ -1466,21 +1434,20 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = Publishers.Concatenate(prefix: firstSubj, suffix: secondSubj)
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                errorReceived = true
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    errorReceived = true
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses.count, 0)
         XCTAssertFalse(terminatedStream)
@@ -1517,22 +1484,21 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = secondSubj
-        .prepend(firstSubj) // aka Concatenate
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                errorReceived = true
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .prepend(firstSubj) // aka Concatenate
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    errorReceived = true
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses.count, 0)
         XCTAssertFalse(terminatedStream)
@@ -1598,22 +1564,21 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = firstSubj
-        .prepend(["one", "two"])
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                errorReceived = true
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .prepend(["one", "two"])
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    errorReceived = true
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses, ["one", "two"])
         XCTAssertFalse(terminatedStream)
@@ -1641,22 +1606,21 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = firstSubj
-        .prepend("singlevalue")
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                errorReceived = true
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .prepend("singlevalue")
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    errorReceived = true
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses, ["singlevalue"])
         XCTAssertFalse(terminatedStream)
@@ -1684,22 +1648,21 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = firstSubj
-        .prefix(2) // only two values published will propagate
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                errorReceived = true
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .prefix(2) // only two values published will propagate
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    errorReceived = true
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses, [])
         XCTAssertFalse(terminatedStream)
@@ -1738,24 +1701,23 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = firstSubj
-        .prefix { upstreamValue -> Bool in
-            return upstreamValue.count > 3
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                errorReceived = true
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .prefix { upstreamValue -> Bool in
+                upstreamValue.count > 3
+            }
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    errorReceived = true
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses, [])
         XCTAssertFalse(terminatedStream)
@@ -1790,27 +1752,26 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = firstSubj
-        .tryPrefix { upstreamValue -> Bool in
-            if (upstreamValue == "boom") {
-                throw TestExampleError.invalidValue
+            .tryPrefix { upstreamValue -> Bool in
+                if upstreamValue == "boom" {
+                    throw TestExampleError.invalidValue
+                }
+                return upstreamValue.count > 3
             }
-            return upstreamValue.count > 3
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                errorReceived = true
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    errorReceived = true
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses, [])
         XCTAssertFalse(terminatedStream)
@@ -1845,27 +1806,26 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = firstSubj
-        .tryPrefix { upstreamValue -> Bool in
-            if (upstreamValue == "boom") {
-                throw TestExampleError.invalidValue
+            .tryPrefix { upstreamValue -> Bool in
+                if upstreamValue == "boom" {
+                    throw TestExampleError.invalidValue
+                }
+                return upstreamValue.count > 3
             }
-            return upstreamValue.count > 3
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                errorReceived = true
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    errorReceived = true
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses, [])
         XCTAssertFalse(terminatedStream)
@@ -1895,22 +1855,21 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = firstSubj
-        .prefix(untilOutputFrom: secondSubj)
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                errorReceived = true
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .prefix(untilOutputFrom: secondSubj)
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    errorReceived = true
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses, [])
         XCTAssertFalse(terminatedStream)
@@ -1941,22 +1900,21 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = firstSubj
-        .prefix(untilOutputFrom: secondSubj)
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                errorReceived = true
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .prefix(untilOutputFrom: secondSubj)
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    errorReceived = true
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses, [])
         XCTAssertFalse(terminatedStream)
@@ -1986,22 +1944,21 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = firstSubj
-        .prefix(untilOutputFrom: secondSubj)
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                errorReceived = true
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .prefix(untilOutputFrom: secondSubj)
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    errorReceived = true
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses, [])
         XCTAssertFalse(terminatedStream)
@@ -2041,22 +1998,21 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = firstSubj
-        .output(at: 3) // selection is 0-indexed, so this will select the 4th item published
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                errorReceived = true
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .output(at: 3) // selection is 0-indexed, so this will select the 4th item published
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    errorReceived = true
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses, [])
         XCTAssertFalse(terminatedStream)
@@ -2099,22 +2055,21 @@ class SequentialOperatorTests: XCTestCase {
         var errorReceived = false
 
         let cancellable = firstSubj
-        .output(in: 2...3) // range selection is 0-indexed, so this will select the 3rd and 4th item published
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                errorReceived = true
-                print("received error: ", anError)
-                break
-        }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .output(in: 2 ... 3) // range selection is 0-indexed, so this will select the 3rd and 4th item published
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    errorReceived = true
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         XCTAssertEqual(responses, [])
         XCTAssertFalse(terminatedStream)

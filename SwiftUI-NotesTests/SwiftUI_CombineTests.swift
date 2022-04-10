@@ -6,32 +6,30 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
+import XCTest
 
 class SwiftUI_CombineTests: XCTestCase {
-
     func testVerifySignature() {
-
         let x = PassthroughSubject<String, Never>()
-            .flatMap { name in
-                return Future<String, Error> { promise in
+            .flatMap { _ in
+                Future<String, Error> { promise in
                     promise(.success(""))
-                    }.catch { _ in
-                        Just("No user found")
-                    }.map { result in
-                        return "\(result) foo"
+                }.catch { _ in
+                    Just("No user found")
+                }.map { result in
+                    "\(result) foo"
                 }
-        }.eraseToAnyPublisher()
+            }.eraseToAnyPublisher()
 
         let y = PassthroughSubject<String, Never>()
-            .flatMap { name in
-                return Future<String, Error> { promise in
+            .flatMap { _ in
+                Future<String, Error> { promise in
                     promise(.success(""))
-                    }.catch { _ in
-                        Just("No user found")
-                    }.map { result in
-                        return "\(result) foo"
+                }.catch { _ in
+                    Just("No user found")
+                }.map { result in
+                    "\(result) foo"
                 }
             }
 
@@ -42,8 +40,7 @@ class SwiftUI_CombineTests: XCTestCase {
     }
 
     func testSimplePipeline() {
-
-        let _ = Just(5)
+        _ = Just(5)
             .map { value -> String in
                 switch value {
                 case _ where value < 1:
@@ -62,26 +59,24 @@ class SwiftUI_CombineTests: XCTestCase {
             }
             .sink { receivedValue in
                 print("The end result was \(receivedValue)")
-        }
+            }
     }
 
     func testSimpleSequencePublisher() {
-
         let originalListOfString = ["foo", "bar", "baz"]
 
         // this publishes the stream combo: <String>,<Never>
-        let foo = Publishers.Sequence<Array<String>, Never>(sequence: originalListOfString)
+        let foo = Publishers.Sequence<[String], Never>(sequence: originalListOfString)
 
         // this may be a lot more sensible to create with a PropertyWrapper of some form...
         // there's a hint (that I haven't clued into) at the bottom of Combine of a function on Sequence called
         // publisher() that returns a publisher<Self, Never>
 
-
         let printingSubscriber = foo.sink { data in
             print(data)
         }
 
-        let _ = foo
+        _ = foo
             .collect(3)
             .sink { (listOfStrings: [String]) in
                 XCTAssertEqual(listOfStrings, originalListOfString)
@@ -126,16 +121,16 @@ class SwiftUI_CombineTests: XCTestCase {
     }
 
     /* - using this to explore - not functional or useful yet
-    func testPublisherFor() {
+     func testPublisherFor() {
 
-        let x: String = "whassup"
+         let x: String = "whassup"
 
-        // as good a place to start as any...
-        let publisher = PassthroughSubject<String?, Never>()
-            // Publishers.ValueForKey
-        .publisher(for: \.foo) // <- This is for getting a keypath to a property - not sure if it's passed down from the publisher, or if this is meant to send to a publisher keypath that the code scope has access to... (a variant on sink or assign)
-    }
-     */
+         // as good a place to start as any...
+         let publisher = PassthroughSubject<String?, Never>()
+             // Publishers.ValueForKey
+         .publisher(for: \.foo) // <- This is for getting a keypath to a property - not sure if it's passed down from the publisher, or if this is meant to send to a publisher keypath that the code scope has access to... (a variant on sink or assign)
+     }
+      */
 
     func testAnyFuture_FailingAFuture() {
         enum SampleError: Error {
@@ -160,7 +155,6 @@ class SwiftUI_CombineTests: XCTestCase {
         // badPlace
         //    .assertNoFailure()
 
-
         // IDEA: Can we use "mapError" and slip in assert to validate the failure propagating through the chain?
 
         //   unfortunately, no - sticking an assert as the only thing in that closure will return it, which causes
@@ -171,19 +165,19 @@ class SwiftUI_CombineTests: XCTestCase {
         // up to the test runner.
 
         /*
-        let _ = badPlace
-            .mapError({ someError -> SampleError in // -> SampleError is because the compiler can't infer the type...
-                XCTAssertNil(someError) // by itself this errors with: Cannot convert value of type '()' to closure result type '_'
-                // XCTAssertEqual(SampleError.exampleError, someError)
-                // This doesn't work, compiler error: "Protocol type 'Error' cannot conform to 'Equatable' because only concrete types can conform to protocols"
-                return SampleError.aDifferentError
-            })
-         */
+         let _ = badPlace
+             .mapError({ someError -> SampleError in // -> SampleError is because the compiler can't infer the type...
+                 XCTAssertNil(someError) // by itself this errors with: Cannot convert value of type '()' to closure result type '_'
+                 // XCTAssertEqual(SampleError.exampleError, someError)
+                 // This doesn't work, compiler error: "Protocol type 'Error' cannot conform to 'Equatable' because only concrete types can conform to protocols"
+                 return SampleError.aDifferentError
+             })
+          */
 
         // one way that *does* appear to work is to explicitly catch the error and using .catch() to
         // convert it into a result value, and then verify that result value gets called.
-        let _ = badPlace
-            .catch({ someError in
+        _ = badPlace
+            .catch { _ in
                 // expected to return a publisher of SOME form...
                 // .catch() is used to keep the whole stream alive and connected
 
@@ -194,8 +188,8 @@ class SwiftUI_CombineTests: XCTestCase {
                 // while this is catching an error, I'm not entirely clear on if you can validate
                 // the kind and any details of the specifics of the instance of error - that is, which
                 // error happened...
-                return Just("yo")
-            })
+                Just("yo")
+            }
             .sink(receiveValue: { placeholder in
                 XCTAssertEqual(placeholder, "yo")
             })

@@ -6,8 +6,8 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 enum APIFailureCondition: Error {
     case invalidServerResponse
@@ -22,7 +22,7 @@ struct GithubAPIUser: Decodable {
     let avatar_url: String
 }
 
-struct GithubAPI {
+enum GithubAPI {
     // NOTE(heckj): I've also seen this kind of API access
     // object set up with with a class and static methods on the class.
     // I don't know that there's a specific benefit to make this a value
@@ -43,7 +43,6 @@ struct GithubAPI {
     /// data source.
     /// - Parameter username: username to be retrieved from the Github API
     static func retrieveGithubUser(username: String) -> AnyPublisher<[GithubAPIUser], Never> {
-
         if username.count < 3 {
             return Just([]).eraseToAnyPublisher()
             // return Publishers.Empty<GithubAPIUser, Never>()
@@ -60,24 +59,24 @@ struct GithubAPI {
             })
             .tryMap { data, response -> Data in
                 guard let httpResponse = response as? HTTPURLResponse,
-                    httpResponse.statusCode == 200 else {
-                        throw APIFailureCondition.invalidServerResponse
+                      httpResponse.statusCode == 200
+                else {
+                    throw APIFailureCondition.invalidServerResponse
                 }
                 return data
-        }
-        .decode(type: GithubAPIUser.self, decoder: JSONDecoder())
+            }
+            .decode(type: GithubAPIUser.self, decoder: JSONDecoder())
             .map {
                 [$0]
-        }
-        .replaceError(with: [])
+            }
+            .replaceError(with: [])
             // ^^ when I originally wrote this method, I was returning
             // a GithubAPIUser? optional, and then a GithubAPIUser without
             // optional. I ended up converting this to return an empty
             // list as the "error output replacement" so that I could
             // represent that the current value requested didn't *have* a
             // correct github API response.
-        .eraseToAnyPublisher()
+            .eraseToAnyPublisher()
         return publisher
     }
-
 }

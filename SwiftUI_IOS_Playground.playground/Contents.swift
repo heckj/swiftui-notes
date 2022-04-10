@@ -1,6 +1,6 @@
-import SwiftUI
 import Combine
 import PlaygroundSupport
+import SwiftUI
 
 struct MyView: View {
     var body: some View {
@@ -10,7 +10,7 @@ struct MyView: View {
 
 let vc = UIHostingController(rootView: MyView())
 
-let foo = Publishers.Sequence<Array<String>, Never>(sequence: ["foo", "bar", "baz"])
+let foo = Publishers.Sequence<[String], Never>(sequence: ["foo", "bar", "baz"])
 // this publishes the stream combo: <String>,<Never>
 
 let reader = foo.sink { data in

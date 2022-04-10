@@ -14,13 +14,13 @@ import EntwineTest
 import XCTest
 
 class MergingPipelineTests: XCTestCase {
-
     // since I'm screwed on using the built in equatable with a tuple response type from the operator I'm testing
     // we'll make a one-off checking function to validate the expected virtualtime and resulting values all match up.
     // Global function 'XCTAssertEqual(_:_:_:file:line:)' requires that '(VirtualTime, Signal<(String, Int), Never>)' conform to 'Equatable'
     func testSequenceMatch<T0, T1, F0>(sequenceItem: (VirtualTime, Signal<(T0, T1), F0>),
-                           time: VirtualTime,
-                           inputvalues: (T0, T1)) -> Bool {
+                                       time: VirtualTime,
+                                       inputvalues: (T0, T1)) -> Bool
+    {
         if sequenceItem.0 != time {
             return false
         }
@@ -51,7 +51,7 @@ class MergingPipelineTests: XCTestCase {
         // validate
 
         // run the virtual time scheduler
-        let testableSubscriber = testScheduler.start { return merged }
+        let testableSubscriber = testScheduler.start { merged }
 
         // check the collected results
         XCTAssertEqual(testableSubscriber.recordedOutput.count, 6)
@@ -64,7 +64,7 @@ class MergingPipelineTests: XCTestCase {
         // which is always expected to be 200 with this scheduled
 
         // filter the output signals down to just the inputs - drop any subscriptions, cancel, or completions
-        let outputSignals = testableSubscriber.recordedOutput.filter { time, signal -> Bool in
+        let outputSignals = testableSubscriber.recordedOutput.filter { _, signal -> Bool in
             // input type is (VirtualTime, Signal<(String, Int), Never>)
             switch signal {
             case .input((_, _)):
@@ -86,8 +86,8 @@ class MergingPipelineTests: XCTestCase {
         // the hack that I'm using to get around this conformance ick is utilizing debugDescription to create a
         // string from the Signal reference, and then comparing that to a Signal instance created as the expected
         // value.
-        let _ = outputSignals[0] // a tuple instance of (VirtualTime, Signal<(String, Int)>)
-        let _ = outputSignals[0].1 // the signal itself: type Signal<(String, Int)>)
+        _ = outputSignals[0] // a tuple instance of (VirtualTime, Signal<(String, Int)>)
+        _ = outputSignals[0].1 // the signal itself: type Signal<(String, Int)>)
         let foo = outputSignals[0].1.debugDescription // converts the signal into a string using debugDescription
         let expected = Signal<(String, Int), Never>.input(("a", 1)).debugDescription
         XCTAssertEqual(foo, expected)
@@ -126,7 +126,7 @@ class MergingPipelineTests: XCTestCase {
             (100, .input("a")),
             (200, .input("b")),
             (350, .input("c")),
-            (400, .completion(.failure(TestFailureCondition.example)))
+            (400, .completion(.failure(TestFailureCondition.example))),
         ])
         let testablePublisher2: TestablePublisher<Int, Error> = testScheduler.createRelativeTestablePublisher([
             (100, .input(1)),
@@ -140,7 +140,7 @@ class MergingPipelineTests: XCTestCase {
         // validate
 
         // run the virtual time scheduler
-        let testableSubscriber = testScheduler.start { return merged }
+        let testableSubscriber = testScheduler.start { merged }
 
         // check the collected results
         XCTAssertEqual(testableSubscriber.recordedOutput.count, 7)
@@ -193,7 +193,7 @@ class MergingPipelineTests: XCTestCase {
             (100, .input("a")),
             (200, .input("b")),
             (350, .input("c")),
-            (400, .completion(.finished))
+            (400, .completion(.finished)),
         ])
         let testablePublisher2: TestablePublisher<Int, Never> = testScheduler.createRelativeTestablePublisher([
             (100, .input(1)),
@@ -212,7 +212,7 @@ class MergingPipelineTests: XCTestCase {
         // validate
 
         // run the virtual time scheduler
-        let testableSubscriber = testScheduler.start { return mergedPipeline }
+        let testableSubscriber = testScheduler.start { mergedPipeline }
 
         let expected: TestSequence<(String, Int, String), Never> = [
             (200, .subscription),
@@ -243,7 +243,7 @@ class MergingPipelineTests: XCTestCase {
             (100, .input("a")),
             (200, .input("b")),
             (350, .input("c")),
-            (400, .completion(.finished))
+            (400, .completion(.finished)),
         ])
         let testablePublisher2: TestablePublisher<Int, Never> = testScheduler.createRelativeTestablePublisher([
             (100, .input(1)),
@@ -256,7 +256,7 @@ class MergingPipelineTests: XCTestCase {
         // validate
 
         // run the virtual time scheduler
-        let testableSubscriber = testScheduler.start { return mergedPipeline }
+        let testableSubscriber = testScheduler.start { mergedPipeline }
 
         print(testableSubscriber.recordedOutput)
 
@@ -265,7 +265,7 @@ class MergingPipelineTests: XCTestCase {
             (300, .input(("a", 1))),
             (450, .input(("b", 2))),
             (550, .input(("c", 3))),
-            (600, .completion(.finished))
+            (600, .completion(.finished)),
         ]
         // using the latest hotness of Entwine - post 0.6.0 release (part of master branch, as of 20 July 2019)
         // mapInput does the transformation from tuple to struct, with the struct's defined in
@@ -284,7 +284,7 @@ class MergingPipelineTests: XCTestCase {
             (100, .input("a")),
             (200, .input("b")),
             (350, .input("c")),
-            (400, .completion(.finished))
+            (400, .completion(.finished)),
         ])
         let testablePublisher2: TestablePublisher<String, Never> = testScheduler.createRelativeTestablePublisher([
             (100, .input("x")),
@@ -296,10 +296,10 @@ class MergingPipelineTests: XCTestCase {
         // validate
 
         // run the virtual time scheduler
-        let testableSubscriber = testScheduler.start { return mergedPipeline }
+        let testableSubscriber = testScheduler.start { mergedPipeline }
         // print(testableSubscriber.recordedOutput)
 
-        let expected: TestSequence<(String), Never> = [
+        let expected: TestSequence<String, Never> = [
             (200, .subscription),
             (300, .input("a")),
             (300, .input("x")),

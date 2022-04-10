@@ -6,9 +6,9 @@
 //  Copyright © 2020 SwiftUI-Notes. All rights reserved.
 //
 
-import Foundation
 import Combine
 import CoreLocation
+import Foundation
 
 final class LocationProxy: NSObject, CLLocationManagerDelegate, ObservableObject {
     let mgr: CLLocationManager
@@ -23,9 +23,9 @@ final class LocationProxy: NSObject, CLLocationManagerDelegate, ObservableObject
     func requestAuthorization() {
         mgr.requestWhenInUseAuthorization()
     }
-    
+
     func authorizationStatusString() -> String {
-        switch self.authorizationStatus {
+        switch authorizationStatus {
         case .authorizedWhenInUse:
             return "Allowed When In Use"
         case .notDetermined:
@@ -50,7 +50,6 @@ final class LocationProxy: NSObject, CLLocationManagerDelegate, ObservableObject
         headingPublisher = headingSubject.eraseToAnyPublisher()
         locationPublisher = locationSubject.eraseToAnyPublisher()
 
-
         super.init()
         mgr.delegate = self
         if #available(iOS 14, *) {
@@ -61,7 +60,7 @@ final class LocationProxy: NSObject, CLLocationManagerDelegate, ObservableObject
             // if < iOS 14, the CLLocationManager isn't guaranteed to give us an initial
             // callback if everything is kosher, so explicitly check it.
             authorizationStatus = CLLocationManager.authorizationStatus()
-            if (authorizationStatus == .authorizedAlways || authorizationStatus == .authorizedWhenInUse) {
+            if authorizationStatus == .authorizedAlways || authorizationStatus == .authorizedWhenInUse {
                 enableEventForwarding()
             }
         }
@@ -72,23 +71,24 @@ final class LocationProxy: NSObject, CLLocationManagerDelegate, ObservableObject
             mgr.startUpdatingHeading()
         }
         mgr.startUpdatingLocation()
-        self.active = true
+        active = true
     }
 
     func disableEventForwarding() {
         mgr.stopUpdatingHeading()
         mgr.stopUpdatingLocation()
-        self.active = false
+        active = false
     }
-    // MARK - delegate methods
+
+    // MARK: - delegate methods
 
     // delegate method from CLLocationManagerDelegate - updates on authorization status changes
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        self.authorizationStatus = status
-        if (status == .authorizedAlways || status == .authorizedWhenInUse) {
-            self.enableEventForwarding()
+    func locationManager(_: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        authorizationStatus = status
+        if status == .authorizedAlways || status == .authorizedWhenInUse {
+            enableEventForwarding()
         } else {
-            self.disableEventForwarding()
+            disableEventForwarding()
         }
     }
 
@@ -98,13 +98,13 @@ final class LocationProxy: NSObject, CLLocationManagerDelegate, ObservableObject
      *  Discussion:
      *    Invoked when a new heading is available.
      */
-    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+    func locationManager(_: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
         // NOTE(heckj): simulator will *NOT* trigger this value, but it will send location updates
         // print(newHeading)
         headingSubject.send(newHeading)
     }
 
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         // print(locations)
         for loc in locations {
             locationSubject.send(loc)

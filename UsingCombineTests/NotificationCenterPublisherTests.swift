@@ -21,9 +21,8 @@ struct ExampleStruct {
 }
 
 class NotificationCenterPublisherTests: XCTestCase {
-
     func testNotificationCenterPublisherBareNotification() {
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
 
         let cancellable = NotificationCenter.default.publisher(for: .myExampleNotification)
             .sink { receivedNotification in
@@ -42,7 +41,7 @@ class NotificationCenterPublisherTests: XCTestCase {
     }
 
     func testNotificationCenterPublisherWithRefObject() {
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
         let refInstance = ExampleClass()
         refInstance.aProperty = "hello"
 
@@ -62,7 +61,7 @@ class NotificationCenterPublisherTests: XCTestCase {
     }
 
     func testNotificationCenterPublisherWithValueObject() {
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
         let valInstance = ExampleStruct(aProperty: "hello")
 
         let cancellable = NotificationCenter.default.publisher(for: .myExampleNotification, object: nil)
@@ -85,14 +84,14 @@ class NotificationCenterPublisherTests: XCTestCase {
     }
 
     func testNotificationCenterPublisherBareNotificationWithUserInfo() {
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
         let myUserInfo = ["foo": "bar"]
 
         let cancellable = NotificationCenter.default.publisher(for: .myExampleNotification)
             .sink { receivedNotification in
                 print("passed through: ", receivedNotification)
                 XCTAssertNotNil(receivedNotification.userInfo)
-                guard let localDict = receivedNotification.userInfo as? Dictionary<String, String> else {
+                guard let localDict = receivedNotification.userInfo as? [String: String] else {
                     XCTFail()
                     return
                 }

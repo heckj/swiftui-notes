@@ -6,11 +6,10 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
+import XCTest
 
 class RetryPublisherTests: XCTestCase {
-
     enum TestFailureCondition: Error {
         case invalidServerResponse
     }
@@ -20,7 +19,7 @@ class RetryPublisherTests: XCTestCase {
         let simpleControlledPublisher = PassthroughSubject<String, Error>()
 
         let cancellable = simpleControlledPublisher
-            .print(self.debugDescription)
+            .print(debugDescription)
             .retry(1)
             .sink(receiveCompletion: { fini in
                 print(" ** .sink() received the completion:", String(describing: fini))
@@ -41,7 +40,7 @@ class RetryPublisherTests: XCTestCase {
         simpleControlledPublisher.send(completion: Subscribers.Completion.failure(TestFailureCondition.invalidServerResponse))
 
         // with a completion, this prints two results and ends
-        //simpleControlledPublisher.send(completion: .finished)
+        // simpleControlledPublisher.send(completion: .finished)
 
         simpleControlledPublisher.send(redFish)
         simpleControlledPublisher.send(blueFish)
@@ -70,7 +69,7 @@ class RetryPublisherTests: XCTestCase {
         simpleControlledPublisher.send(completion: Subscribers.Completion.failure(TestFailureCondition.invalidServerResponse))
         XCTAssertNotNil(cancellable)
         // with a completion, this prints two results and ends
-        //simpleControlledPublisher.send(completion: .finished)
+        // simpleControlledPublisher.send(completion: .finished)
 
         //        output:
         //        (1)>: receive subscription: (CurrentValueSubject)
@@ -112,7 +111,6 @@ class RetryPublisherTests: XCTestCase {
         //        (1)>: receive finished
         //        (2)>: receive finished
         //        ** .sink() received the completion: finished
-
     }
 
     func testRetryWithOneShotFailPublisher() {
@@ -142,14 +140,13 @@ class RetryPublisherTests: XCTestCase {
         //        ** .sink() received the completion: failure(SwiftUI_NotesTests.CombinePatternTests.TestFailureCondition.invalidServerResponse)
         //        (2)>: receive subscription: (Retry)
         //        (2)>: request unlimited
-
     }
 
     func testRetryDelayOnFailureOnly() {
         // setup
-        let expectation = XCTestExpectation(description: self.debugDescription)
-        var asyncAPICallCount = 0;
-        var futureClosureHandlerCount = 0;
+        let expectation = XCTestExpectation(description: debugDescription)
+        var asyncAPICallCount = 0
+        var futureClosureHandlerCount = 0
 
         let msTimeFormatter = DateFormatter()
         msTimeFormatter.dateFormat = "[HH:mm:ss.SSSS] "
@@ -157,9 +154,9 @@ class RetryPublisherTests: XCTestCase {
         // example of a asynchronous function to be called from within a Future and its completion closure
         func instrumentedAsyncAPICall(sabotage: Bool, completion completionBlock: @escaping ((Bool, Error?) -> Void)) {
             DispatchQueue.global(qos: .background).async {
-                let delay = Int.random(in: 1...3)
+                let delay = Int.random(in: 1 ... 3)
                 print(msTimeFormatter.string(from: Date()) + " * starting async call (waiting \(delay) seconds before returning) ")
-                asyncAPICallCount+=1
+                asyncAPICallCount += 1
                 sleep(UInt32(delay))
                 print(msTimeFormatter.string(from: Date()) + " * completing async call ")
                 if sabotage {
@@ -170,11 +167,11 @@ class RetryPublisherTests: XCTestCase {
         }
 
         let upstreamPublisher = Deferred {
-            return Future<String, Error> { promise in
+            Future<String, Error> { promise in
                 futureClosureHandlerCount += 1
                 // setting "sabotage: true" in the asyncAPICall tells the test code to return a
                 // failure result, which will illustrate "retry" better.
-                instrumentedAsyncAPICall(sabotage: true) { (grantedAccess, err) in
+                instrumentedAsyncAPICall(sabotage: true) { _, err in
                     // NOTE(heckj): the closure resolving the API call into a Promise result
                     // is called far more than 3 times - 5 in this example, although I don't know
                     // why that is. The underlying API call, and the closure within the future
@@ -194,7 +191,7 @@ class RetryPublisherTests: XCTestCase {
         // delays the call - which isn't an ideal solution.
         // This was his suggestion at an attempt to do better.
 
-        let resultPublisher = upstreamPublisher.catch { error -> AnyPublisher<String, Error> in
+        let resultPublisher = upstreamPublisher.catch { _ -> AnyPublisher<String, Error> in
             print(msTimeFormatter.string(from: Date()) + "delaying on error for ~3 seconds ")
             return Publishers.Delay(upstream: upstreamPublisher,
                                     interval: 3,
@@ -211,8 +208,8 @@ class RetryPublisherTests: XCTestCase {
                 .eraseToAnyPublisher()
         }
 
-        XCTAssertEqual(asyncAPICallCount,0);
-        XCTAssertEqual(futureClosureHandlerCount,0);
+        XCTAssertEqual(asyncAPICallCount, 0)
+        XCTAssertEqual(futureClosureHandlerCount, 0)
 
         let cancellable = resultPublisher.sink(receiveCompletion: { err in
             print(msTimeFormatter.string(from: Date()) + ".sink() received the completion: ", String(describing: err))
@@ -222,7 +219,7 @@ class RetryPublisherTests: XCTestCase {
             // things are happening, the retry process ends up double-invoking the upstream publisher.
             XCTAssertEqual(asyncAPICallCount, 4)
             // the original request is 1, and then the Publishers.Delay() initiated request with a retry(2) are the others
-            XCTAssertEqual(futureClosureHandlerCount, 4);
+            XCTAssertEqual(futureClosureHandlerCount, 4)
             // the original request is 1, and then the Publishers.Delay() initiated request with a retry(2) are the others
             expectation.fulfill()
         }, receiveValue: { value in

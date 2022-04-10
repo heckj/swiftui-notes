@@ -6,15 +6,14 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import UIKit
 import Combine
+import UIKit
 
 class GithubViewController: UIViewController {
-
-    @IBOutlet weak var github_id_entry: UITextField!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var repositoryCountLabel: UILabel!
-    @IBOutlet weak var githubAvatarImageView: UIImageView!
+    @IBOutlet var github_id_entry: UITextField!
+    @IBOutlet var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet var repositoryCountLabel: UILabel!
+    @IBOutlet var githubAvatarImageView: UIImageView!
 
     var repositoryCountSubscriber: AnyCancellable?
     var avatarViewSubscriber: AnyCancellable?
@@ -28,19 +27,19 @@ class GithubViewController: UIViewController {
     // is "wired" to update UI elements
     @Published private var githubUserData: [GithubAPIUser] = []
 
-    var myBackgroundQueue: DispatchQueue = DispatchQueue(label: "myBackgroundQueue")
+    var myBackgroundQueue: DispatchQueue = .init(label: "myBackgroundQueue")
     let coreLocationProxy = LocationHeadingProxy()
 
-    // MARK - Actions
+    // MARK: - Actions
 
     @IBAction func githubIdChanged(_ sender: UITextField) {
         username = sender.text ?? ""
         print("Set username to ", username)
     }
 
-    @IBAction func poke(_ sender: Any) {
-    }
-    // MARK - lifecycle methods
+    @IBAction func poke(_: Any) {}
+
+    // MARK: - lifecycle methods
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,7 +48,7 @@ class GithubViewController: UIViewController {
         apiNetworkActivitySubscriber = GithubAPI.networkActivityPublisher
             .receive(on: RunLoop.main)
             .sink { doingSomethingNow in
-                if (doingSomethingNow) {
+                if doingSomethingNow {
                     self.activityIndicator.startAnimating()
                 } else {
                     self.activityIndicator.stopAnimating()
@@ -64,7 +63,7 @@ class GithubViewController: UIViewController {
             .removeDuplicates()
             .print("username pipeline: ") // debugging output for pipeline
             .map { username -> AnyPublisher<[GithubAPIUser], Never> in
-                return GithubAPI.retrieveGithubUser(username: username)
+                GithubAPI.retrieveGithubUser(username: username)
             }
             // ^^ type returned in the pipeline is a Publisher, so we use
             // switchToLatest to flatten the values out of that
@@ -127,21 +126,21 @@ class GithubViewController: UIViewController {
                     })
                     .map { $0.data }
                     // ^^ pare down to just the Data object
-                    .map { UIImage(data: $0)!}
+                    .map { UIImage(data: $0)! }
                     // ^^ convert Data into a UIImage with its initializer
                     .subscribe(on: self.myBackgroundQueue)
                     // ^^ do this work on a background Queue so we don't screw
                     // with the UI responsiveness
-                    .catch { err in
-                        return Just(UIImage())
+                    .catch { _ in
+                        Just(UIImage())
                     }
                     // ^^ deal the failure scenario and return my "replacement"
                     // image for when an avatar image either isn't available or
                     // fails somewhere in the pipeline here.
                     .eraseToAnyPublisher()
-                    // ^^ match the return type here to the return type defined
-                    // in the .map() wrapping this because otherwise the return
-                    // type would be terribly complex nested set of generics.
+                // ^^ match the return type here to the return type defined
+                // in the .map() wrapping this because otherwise the return
+                // type would be terribly complex nested set of generics.
             }
             .switchToLatest()
             // ^^ Take the returned publisher that's been passed down the chain
@@ -159,18 +158,16 @@ class GithubViewController: UIViewController {
             // ^^ this converts from the type UIImage to the type UIImage?
             // which is key to making it work correctly with the .assign()
             // operator, which must map the type *exactly*
-            .assign(to: \.image, on: self.githubAvatarImageView)
+            .assign(to: \.image, on: githubAvatarImageView)
 
         // convert the .sink to an `AnyCancellable` object that we have
         // referenced from the implied initializers
         avatarViewSubscriber = AnyCancellable(avatarViewSub)
 
         // KVO publisher of UIKit interface element
-        let _ = repositoryCountLabel.publisher(for: \.text)
+        _ = repositoryCountLabel.publisher(for: \.text)
             .sink { someValue in
                 print("repositoryCountLabel Updated to \(String(describing: someValue))")
             }
     }
-
 }
-

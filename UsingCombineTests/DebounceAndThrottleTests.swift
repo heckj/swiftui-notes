@@ -16,7 +16,7 @@ class DebounceAndThrottleTests: XCTestCase {
     let msTime: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "[HH:mm:ss.SSSS] "
-        
+
         // Would'a been cool - but DateComponentsFormatter is limited to "seconds" - doesn't do sub-second display
         // let intervalFormatter = DateComponentsFormatter()
         // intervalFormatter.allowedUnits = [.second,.nanosecond]
@@ -38,13 +38,13 @@ class DebounceAndThrottleTests: XCTestCase {
 
         foo.$intValue
             .debounce(for: 0.5, scheduler: testScheduler)
-            .print(self.debugDescription)
+            .print(debugDescription)
             .sink { someValue in
                 print("time mark: \(self.testScheduler.now)")
                 receivedCount += 1
                 receivedValue = someValue
             }
-            .store(in: &self.cancellables)
+            .store(in: &cancellables)
 
         // 0 ms
         // nothing received until the debounce time
@@ -97,7 +97,6 @@ class DebounceAndThrottleTests: XCTestCase {
     }
 
     func testThrottleLatestFalse() {
-
         class HoldingClass {
             @Published var intValue: Int = -1
         }
@@ -110,41 +109,41 @@ class DebounceAndThrottleTests: XCTestCase {
 
         let cancellable = foo.$intValue
             .throttle(for: 0.5, scheduler: testScheduler, latest: false)
-            .print(self.debugDescription)
+            .print(debugDescription)
             .sink { someValue in
                 print("time mark: \(self.testScheduler.now)")
                 receivedList.append(someValue)
-        }
+            }
 
         testScheduler.advance(by: .milliseconds(100))
-        
+
         foo.intValue = 1
-            
+
         testScheduler.advance(by: .milliseconds(100))
-        
+
         foo.intValue = 2
         // this value is collapsed by the throttle and not passed through to sink
-            
+
         testScheduler.advance(by: .milliseconds(400))
 
         foo.intValue = 3
-        
+
         testScheduler.advance(by: .milliseconds(100))
-        
+
         foo.intValue = 4
         // this value is collapsed by the throttle and not passed through to sink
 
         testScheduler.advance(by: .milliseconds(200))
-        
+
         foo.intValue = 5
         // this value is collapsed by the throttle and not passed through to sink
-        
+
         testScheduler.advance(by: .milliseconds(400))
-        
+
         foo.intValue = 6
-        
+
         testScheduler.advance(by: .milliseconds(400))
-        
+
         XCTAssertEqual(receivedList.count, 4)
 
         // NOTE(heckj): this changed in Xcode 11.2 (iOS 13.2):
@@ -155,9 +154,9 @@ class DebounceAndThrottleTests: XCTestCase {
         // This updated again in Xcode 11.3 (iOS 13.3), and now throttle(true) and throttle(false) exhibit
         // different behavior again.
         //
-        //XCTAssertEqual(receivedList, [-1, 5, 6]) // iOS 13.2.2
-        //XCTAssertEqual(receivedList, [-1, 3, 5]) // iOS 13.3 - flaky response
-        //XCTAssertEqual(receivedList, [-1, 3, 6]) // iOS 13.4
+        // XCTAssertEqual(receivedList, [-1, 5, 6]) // iOS 13.2.2
+        // XCTAssertEqual(receivedList, [-1, 3, 5]) // iOS 13.3 - flaky response
+        // XCTAssertEqual(receivedList, [-1, 3, 6]) // iOS 13.4
         XCTAssertEqual(receivedList, [-1, 1, 3, 6]) // iOS 14.1 - 14.4
         XCTAssertEqual(foo.intValue, 6)
         XCTAssertNotNil(cancellable)
@@ -176,7 +175,7 @@ class DebounceAndThrottleTests: XCTestCase {
 
         let cancellable = foo.$intValue
             .throttle(for: 0.5, scheduler: testScheduler, latest: true)
-            .print(self.debugDescription)
+            .print(debugDescription)
             .sink { someValue in
                 print("time mark: \(self.testScheduler.now)")
                 receivedList.append(someValue)
@@ -191,13 +190,13 @@ class DebounceAndThrottleTests: XCTestCase {
 
         foo.intValue = 2
         // this value gets collapsed and not propagated
-        
+
         testScheduler.advance(by: .milliseconds(400))
-        
+
         foo.intValue = 3
 
         testScheduler.advance(by: .milliseconds(100))
-        
+
         foo.intValue = 4
         // this value gets collapsed and not propagated
 
@@ -205,7 +204,7 @@ class DebounceAndThrottleTests: XCTestCase {
 
         foo.intValue = 5
         // this value gets collapsed and not propagated
-        
+
         testScheduler.advance(by: .milliseconds(300))
 
         foo.intValue = 6

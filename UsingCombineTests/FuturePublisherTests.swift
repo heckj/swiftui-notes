@@ -6,11 +6,10 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
+import XCTest
 
 class FuturePublisherTests: XCTestCase {
-
     enum TestFailureCondition: Error {
         case anErrorExample
     }
@@ -18,7 +17,7 @@ class FuturePublisherTests: XCTestCase {
     // example of a asynchronous function to be called from within a Future and its completion closure
     func asyncAPICall(sabotage: Bool, completion completionBlock: @escaping ((Bool, Error?) -> Void)) {
         DispatchQueue.global(qos: .background).async {
-            let delay = Int.random(in: 1...3)
+            let delay = Int.random(in: 1 ... 3)
             print(" * making async call (delay of \(delay) seconds)")
             sleep(UInt32(delay))
             if sabotage {
@@ -30,12 +29,12 @@ class FuturePublisherTests: XCTestCase {
 
     func testFuturePublisher() {
         // setup
-        var outputValue: Bool = false
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        var outputValue = false
+        let expectation = XCTestExpectation(description: debugDescription)
 
         // the creating the future publisher
         let sut = Future<Bool, Error> { promise in
-            self.asyncAPICall(sabotage: false) { (grantedAccess, err) in
+            self.asyncAPICall(sabotage: false) { grantedAccess, err in
                 if let err = err {
                     promise(.failure(err))
                 } else {
@@ -60,11 +59,11 @@ class FuturePublisherTests: XCTestCase {
 
     func testFuturePublisherShowingFailure() {
         // setup
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
 
         // the creating the future publisher
         let sut = Future<Bool, Error> { promise in
-            self.asyncAPICall(sabotage: true) { (grantedAccess, err) in
+            self.asyncAPICall(sabotage: true) { grantedAccess, err in
                 if let err = err {
                     promise(.failure(err))
                 } else {
@@ -89,16 +88,16 @@ class FuturePublisherTests: XCTestCase {
 
     func testFuturePublisherShowingFailureWithRetry() {
         // setup
-        let expectation = XCTestExpectation(description: self.debugDescription)
-        var asyncAPICallCount = 0;
-        var futureClosureHandlerCount = 0;
+        let expectation = XCTestExpectation(description: debugDescription)
+        var asyncAPICallCount = 0
+        var futureClosureHandlerCount = 0
 
         // example of a asynchronous function to be called from within a Future and its completion closure
         func instrumentedAsyncAPICall(sabotage: Bool, completion completionBlock: @escaping ((Bool, Error?) -> Void)) {
             DispatchQueue.global(qos: .background).async {
-                let delay = Int.random(in: 1...3)
+                let delay = Int.random(in: 1 ... 3)
                 print(" * making async call (delay of \(delay) seconds)")
-                asyncAPICallCount+=1
+                asyncAPICallCount += 1
                 sleep(UInt32(delay))
                 if sabotage {
                     completionBlock(false, TestFailureCondition.anErrorExample)
@@ -108,28 +107,28 @@ class FuturePublisherTests: XCTestCase {
         }
 
         let deferredFuturePublisher = Deferred {
-            return Future<Bool, Error> { promise in
+            Future<Bool, Error> { promise in
                 futureClosureHandlerCount += 1
                 // setting "sabotage: true" in the asyncAPICall tells the test code to return a
                 // failure result, which will illustrate "retry" better.
-                instrumentedAsyncAPICall(sabotage: true) { (grantedAccess, err) in
+                instrumentedAsyncAPICall(sabotage: true) { grantedAccess, err in
                     print("invoking async completion handler to return a resolved promise")
                     // NOTE(heckj): the closure resolving the API call into a Promise result
                     // is called more than 3 times - 5 in this example, although I don't know
                     // why that is. The underlying API call, and the closure within the future
                     // are each called 3 times - validated below in the assertions.
                     if let err = err {
-                       promise(.failure(err))
+                        promise(.failure(err))
                     } else {
                         promise(.success(grantedAccess))
                     }
                 }
             }
         }.eraseToAnyPublisher()
-        .retry(2)
+            .retry(2)
 
-        XCTAssertEqual(asyncAPICallCount,0);
-        XCTAssertEqual(futureClosureHandlerCount,0);
+        XCTAssertEqual(asyncAPICallCount, 0)
+        XCTAssertEqual(futureClosureHandlerCount, 0)
 
         let cancellable = deferredFuturePublisher.sink(receiveCompletion: { err in
             print(".sink() received the completion: ", String(describing: err))
@@ -137,7 +136,7 @@ class FuturePublisherTests: XCTestCase {
             // the end result should have 3 calls (the original, plus 2 retries,
             // made to the api endpoint defined in the Future
             XCTAssertEqual(asyncAPICallCount, 3)
-            XCTAssertEqual(futureClosureHandlerCount,3);
+            XCTAssertEqual(futureClosureHandlerCount, 3)
             expectation.fulfill()
         }, receiveValue: { value in
             print(".sink() received value: ", value)
@@ -150,7 +149,7 @@ class FuturePublisherTests: XCTestCase {
 
     func testResolvedFutureSuccess() {
         // setup
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
 
         let resolvedSuccessAsPublisher = Future<Bool, Error> { promise in
             promise(.success(Bool()))
@@ -166,12 +165,11 @@ class FuturePublisherTests: XCTestCase {
 
         wait(for: [expectation], timeout: 1.0)
         XCTAssertNotNil(cancellable)
-
     }
 
     func testResolvedFutureFailure() {
         // setup
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
 
         enum ExampleFailure: Error {
             case oneCase
@@ -196,12 +194,12 @@ class FuturePublisherTests: XCTestCase {
 
     func testDeferredFuturePublisherWithRetry() {
         // setup
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
 
         // the creating the future publisher
         let sut = Future<Bool, Error> { promise in
             print("invoking Future handler for resolving the provided promise")
-            self.asyncAPICall(sabotage: true) { (grantedAccess, err) in
+            self.asyncAPICall(sabotage: true) { grantedAccess, err in
                 print("invoking async completion handler to return a resolved promise")
                 if let err = err {
                     promise(.failure(err))
@@ -230,17 +228,17 @@ class FuturePublisherTests: XCTestCase {
 
     func testFutureWithinAFlatMap() {
         let simplePublisher = PassthroughSubject<String, Never>()
-        var outputValue: String? = nil
+        var outputValue: String?
 
         let cancellable = simplePublisher
-            .print(self.debugDescription)
+            .print(debugDescription)
             .flatMap { name in
-                return Future<String, Error> { promise in
+                Future<String, Error> { promise in
                     promise(.success(name))
                 }.catch { _ in
                     Just("No user found")
                 }.map { result in
-                    return "\(result) foo"
+                    "\(result) foo"
                 }
             }
             .sink(receiveCompletion: { err in
@@ -255,6 +253,4 @@ class FuturePublisherTests: XCTestCase {
         XCTAssertEqual(outputValue, "one foo")
         XCTAssertNotNil(cancellable)
     }
-
-
 }

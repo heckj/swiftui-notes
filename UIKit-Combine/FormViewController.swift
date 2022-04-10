@@ -6,24 +6,25 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import UIKit
 import Combine
+import UIKit
 
 class FormViewController: UIViewController {
-
-    @IBOutlet weak var value1_input: UITextField!
-    @IBOutlet weak var value2_input: UITextField!
-    @IBOutlet weak var value2_repeat_input: UITextField!
-    @IBOutlet weak var submission_button: UIButton!
-    @IBOutlet weak var value1_message_label: UILabel!
-    @IBOutlet weak var value2_message_label: UILabel!
+    @IBOutlet var value1_input: UITextField!
+    @IBOutlet var value2_input: UITextField!
+    @IBOutlet var value2_repeat_input: UITextField!
+    @IBOutlet var submission_button: UIButton!
+    @IBOutlet var value1_message_label: UILabel!
+    @IBOutlet var value2_message_label: UILabel!
 
     @IBAction func value1_updated(_ sender: UITextField) {
         value1 = sender.text ?? ""
     }
+
     @IBAction func value2_updated(_ sender: UITextField) {
         value2 = sender.text ?? ""
     }
+
     @IBAction func value2_repeat_updated(_ sender: UITextField) {
         value2_repeat = sender.text ?? ""
     }
@@ -76,11 +77,10 @@ class FormViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.readyToSubmit
+        readyToSubmit
             .map { $0 != nil }
             .receive(on: RunLoop.main)
             .assign(to: \.isEnabled, on: submission_button)
             .store(in: &cancellableSet)
     }
-
 }

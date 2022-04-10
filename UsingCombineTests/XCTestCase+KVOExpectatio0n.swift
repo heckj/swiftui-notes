@@ -21,10 +21,10 @@ final class KVOExpectation: XCTestExpectation {
     /// observed key path will be checked immediately after initialization.
     convenience init<Object: NSObject, Value: Equatable>(
         object objectToObserve: Object, keyPath: KeyPath<Object, Value>,
-        expectedValue: Value, file: StaticString = #file, line: Int = #line)
-    {
-        self.init(object: objectToObserve, keyPath: keyPath, options: .initial) { (obj, change) -> Bool in
-            return obj[keyPath: keyPath] == expectedValue
+        expectedValue: Value, file _: StaticString = #file, line _: Int = #line
+    ) {
+        self.init(object: objectToObserve, keyPath: keyPath, options: .initial) { obj, _ -> Bool in
+            obj[keyPath: keyPath] == expectedValue
         }
     }
 
@@ -48,10 +48,10 @@ final class KVOExpectation: XCTestExpectation {
         object objectToObserve: Object, keyPath: KeyPath<Object, Value>,
         options: NSKeyValueObservingOptions = [],
         file: StaticString = #file, line: Int = #line,
-        handler: ((Object, NSKeyValueObservedChange<Value>) -> Bool)? = nil)
-    {
+        handler: ((Object, NSKeyValueObservedChange<Value>) -> Bool)? = nil
+    ) {
         super.init(description: KVOExpectation.description(forObject: objectToObserve, keyPath: keyPath, file: file, line: line))
-        kvoToken = objectToObserve.observe(keyPath, options: options) { (object, change) in
+        kvoToken = objectToObserve.observe(keyPath, options: options) { object, change in
             let isFulfilled = handler == nil || handler?(object, change) == true
             if isFulfilled {
                 self.kvoToken = nil
@@ -79,11 +79,12 @@ extension XCTestCase {
     @discardableResult
     func keyValueObservingExpectation<Object: NSObject, Value: Equatable>(
         for objectToObserve: Object, keyPath: KeyPath<Object, Value>,
-        expectedValue: Value, file: StaticString = #file, line: Int = #line)
+        expectedValue: Value, file _: StaticString = #file, line _: Int = #line
+    )
         -> XCTestExpectation
     {
-        return keyValueObservingExpectation(for: objectToObserve, keyPath: keyPath, options: [.initial]) { (obj, change) -> Bool in
-            return obj[keyPath: keyPath] == expectedValue
+        return keyValueObservingExpectation(for: objectToObserve, keyPath: keyPath, options: [.initial]) { obj, _ -> Bool in
+            obj[keyPath: keyPath] == expectedValue
         }
     }
 
@@ -108,7 +109,8 @@ extension XCTestCase {
         for objectToObserve: Object, keyPath: KeyPath<Object, Value>,
         options: NSKeyValueObservingOptions = [],
         file: StaticString = #file, line: Int = #line,
-        handler: ((Object, NSKeyValueObservedChange<Value>) -> Bool)? = nil)
+        handler: ((Object, NSKeyValueObservedChange<Value>) -> Bool)? = nil
+    )
         -> XCTestExpectation
     {
         let wrapper = expectation(description: KVOExpectation.description(forObject: objectToObserve, keyPath: keyPath, file: file, line: line))
@@ -117,7 +119,7 @@ extension XCTestCase {
         wrapper.assertForOverFulfill = true
         // The KVO handler inside KVOExpectation retains its parent object while the observation is active.
         // That's why we can get away with not retaining the KVOExpectation here.
-        _ = KVOExpectation(object: objectToObserve, keyPath: keyPath, options: options) { (object, change) in
+        _ = KVOExpectation(object: objectToObserve, keyPath: keyPath, options: options) { object, change in
             let isFulfilled = handler == nil || handler?(object, change) == true
             if isFulfilled {
                 wrapper.fulfill()
@@ -133,8 +135,8 @@ extension XCTestCase {
 class KVOExpectationTests: XCTestCase {
     func test_settingProperty_fulfillsExpectation() {
         let kvoObject = KVOAbleNSObject()
-        let sut = KVOExpectation(object: kvoObject, keyPath: \.intValue) { (obj, change) -> Bool in
-            return obj.intValue == 10
+        let sut = KVOExpectation(object: kvoObject, keyPath: \.intValue) { obj, _ -> Bool in
+            obj.intValue == 10
         }
         kvoObject.intValue = 10
         wait(for: [sut], timeout: 1)
@@ -142,12 +144,12 @@ class KVOExpectationTests: XCTestCase {
 
     func test_doesNotFulfill_unlessPredicateIsTrue() {
         let kvoObject = KVOAbleNSObject()
-        let first = KVOExpectation(object: kvoObject, keyPath: \.intValue) { (obj, change) -> Bool in
-            return obj.intValue == 20
+        let first = KVOExpectation(object: kvoObject, keyPath: \.intValue) { obj, _ -> Bool in
+            obj.intValue == 20
         }
         first.isInverted = true
-        let second = KVOExpectation(object: kvoObject, keyPath: \.intValue) { (obj, change) -> Bool in
-            return obj.intValue == 20
+        let second = KVOExpectation(object: kvoObject, keyPath: \.intValue) { obj, _ -> Bool in
+            obj.intValue == 20
         }
         kvoObject.intValue = 10
         wait(for: [first], timeout: 1)
@@ -158,12 +160,12 @@ class KVOExpectationTests: XCTestCase {
     func test_fulfillingWithInitialValue_requiresInitialKVOOption() {
         let kvoTarget = KVOAbleNSObject()
         kvoTarget.intValue = 10
-        let expectWithoutInitial = KVOExpectation(object: kvoTarget, keyPath: \.intValue, options: []) { (obj, change) -> Bool in
-            return obj.intValue == 10
+        let expectWithoutInitial = KVOExpectation(object: kvoTarget, keyPath: \.intValue, options: []) { obj, _ -> Bool in
+            obj.intValue == 10
         }
         expectWithoutInitial.isInverted = true
-        let expectWithInitial = KVOExpectation(object: kvoTarget, keyPath: \.intValue, options: .initial) { (obj, change) -> Bool in
-            return obj.intValue == 10
+        let expectWithInitial = KVOExpectation(object: kvoTarget, keyPath: \.intValue, options: .initial) { obj, _ -> Bool in
+            obj.intValue == 10
         }
         wait(for: [expectWithoutInitial, expectWithInitial], timeout: 1)
     }
@@ -206,8 +208,8 @@ class KVOExpectationTests: XCTestCase {
 
     func test_supportsXCTestCaseConvenienceAPI() {
         let kvoObject = KVOAbleNSObject()
-        keyValueObservingExpectation(for: kvoObject, keyPath: \.intValue) { (obj, change) in
-            return obj.intValue == 10
+        keyValueObservingExpectation(for: kvoObject, keyPath: \.intValue) { obj, _ in
+            obj.intValue == 10
         }
         kvoObject.intValue = 10
         waitForExpectations(timeout: 1)
@@ -215,8 +217,8 @@ class KVOExpectationTests: XCTestCase {
 
     func test_XCTestCaseConvenienceAPI_onlyFiresWhenPredicateIsTrue() {
         let kvoObject = KVOAbleNSObject()
-        let sut = keyValueObservingExpectation(for: kvoObject, keyPath: \.intValue) { (obj, change) in
-            return obj.intValue == 20
+        let sut = keyValueObservingExpectation(for: kvoObject, keyPath: \.intValue) { obj, _ in
+            obj.intValue == 20
         }
         sut.isInverted = true
         kvoObject.intValue = 10
@@ -239,4 +241,4 @@ private final class KVOAbleNSObject: NSObject {
     @objc dynamic var intValue: Int = 0
 }
 
-//KVOExpectationTests.defaultTestSuite.run()
+// KVOExpectationTests.defaultTestSuite.run()

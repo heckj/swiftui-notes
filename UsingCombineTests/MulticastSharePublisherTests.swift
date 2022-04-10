@@ -6,16 +6,15 @@
 //  Copyright © 2020 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
+import XCTest
 
 class MulticastSharePublisherTests: XCTestCase {
-
     var sourceValue = 0
 
     func sourceGenerator() -> Int {
-      sourceValue += 1
-      return sourceValue
+        sourceValue += 1
+        return sourceValue
     }
 
     enum TestFailureCondition: Error {
@@ -25,24 +24,24 @@ class MulticastSharePublisherTests: XCTestCase {
     // example of a asynchronous function to be called from within a Future and its completion closure
     func asyncAPICall(sabotage: Bool, completion completionBlock: @escaping ((Int, Error?) -> Void)) {
         DispatchQueue.global(qos: .background).async {
-            let delay = Int.random(in: 1...3)
+            let delay = Int.random(in: 1 ... 3)
             print(" * making async call (delay of \(delay) seconds)")
             sleep(UInt32(delay))
             if sabotage {
                 completionBlock(0, TestFailureCondition.anErrorExample)
             }
-          completionBlock(self.sourceGenerator(), nil)
+            completionBlock(self.sourceGenerator(), nil)
         }
     }
 
     func testDeferredFuturePublisher() {
         // setup
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
 
         // the creating the deferred, future publisher
         let pub = Deferred {
             Future<Int, Error> { promise in
-                self.asyncAPICall(sabotage: false) { (grantedAccess, err) in
+                self.asyncAPICall(sabotage: false) { grantedAccess, err in
                     if let err = err {
                         promise(.failure(err))
                     } else {
@@ -67,17 +66,17 @@ class MulticastSharePublisherTests: XCTestCase {
 
     func testSharedDeferredFuturePublisher() {
         // setup
-        let firstCompletion = XCTestExpectation(description: self.debugDescription)
+        let firstCompletion = XCTestExpectation(description: debugDescription)
         firstCompletion.expectedFulfillmentCount = 2
 
-        let secondCompletion = expectation(description: self.debugDescription)
-        let secondValue = expectation(description: self.debugDescription)
+        let secondCompletion = expectation(description: debugDescription)
+        let secondValue = expectation(description: debugDescription)
         secondValue.isInverted = true
 
         // the creating the deferred, future publisher
         let pub = Deferred {
             Future<Int, Error> { promise in
-                self.asyncAPICall(sabotage: false) { (grantedAccess, err) in
+                self.asyncAPICall(sabotage: false) { grantedAccess, err in
                     if let err = err {
                         promise(.failure(err))
                     } else {
@@ -133,13 +132,13 @@ class MulticastSharePublisherTests: XCTestCase {
 
     func testMulticastDeferredFuturePublisher() {
         // setup
-        let firstCompletion = XCTestExpectation(description: self.debugDescription)
-        let firstValues = XCTestExpectation(description: self.debugDescription)
+        let firstCompletion = XCTestExpectation(description: debugDescription)
+        let firstValues = XCTestExpectation(description: debugDescription)
         firstCompletion.expectedFulfillmentCount = 2
         firstValues.expectedFulfillmentCount = 2
 
-        let secondCompletion = expectation(description: self.debugDescription)
-        let secondValue = expectation(description: self.debugDescription)
+        let secondCompletion = expectation(description: debugDescription)
+        let secondValue = expectation(description: debugDescription)
         secondValue.isInverted = true
 
         let pipelineFork = PassthroughSubject<Int, Error>()
@@ -151,7 +150,7 @@ class MulticastSharePublisherTests: XCTestCase {
         // the creating the deferred, future publisher
         let publisher = Deferred {
             Future<Int, Error> { promise in
-                self.asyncAPICall(sabotage: false) { (grantedAccess, err) in
+                self.asyncAPICall(sabotage: false) { grantedAccess, err in
                     if let err = err {
                         promise(.failure(err))
                     } else {
@@ -209,15 +208,15 @@ class MulticastSharePublisherTests: XCTestCase {
 
     func testAltMulticastDeferredFuturePublisher() {
         // setup
-        let expectation1 = XCTestExpectation(description: self.debugDescription)
-        let expectation2 = XCTestExpectation(description: self.debugDescription)
+        let expectation1 = XCTestExpectation(description: debugDescription)
+        let expectation2 = XCTestExpectation(description: debugDescription)
 
         var cancellables = Set<AnyCancellable>()
 
         // the creating the deferred, future publisher
         let publisher = Deferred {
             Future<Int, Error> { promise in
-                self.asyncAPICall(sabotage: false) { (grantedAccess, err) in
+                self.asyncAPICall(sabotage: false) { grantedAccess, err in
                     if let err = err {
                         promise(.failure(err))
                     } else {
@@ -261,16 +260,16 @@ class MulticastSharePublisherTests: XCTestCase {
 
     func testMakeConnectable() {
         // setup
-        let firstCompletion = expectation(description: self.debugDescription)
+        let firstCompletion = expectation(description: debugDescription)
 
-        let values = expectation(description: self.debugDescription)
+        let values = expectation(description: debugDescription)
         values.expectedFulfillmentCount = 4
 
-        let waiting = expectation(description: self.debugDescription)
+        let waiting = expectation(description: debugDescription)
 
         var cancellables = Set<AnyCancellable>()
 
-        let publisher = [1,2].publisher
+        let publisher = [1, 2].publisher
             .makeConnectable()
 
         // driving it by attaching it to .sink
@@ -307,18 +306,18 @@ class MulticastSharePublisherTests: XCTestCase {
 
     func testMulticastDeferredFutureAutoConnectPublisher() {
         // setup
-        let doSomeSpyWork = expectation(description: self.debugDescription)
-        let legitCompletion = expectation(description: self.debugDescription)
-        let spyCompletion = expectation(description: self.debugDescription)
-        let spyValueReceived = expectation(description: self.debugDescription)
-        let legitValueReceived = expectation(description: self.debugDescription)
+        let doSomeSpyWork = expectation(description: debugDescription)
+        let legitCompletion = expectation(description: debugDescription)
+        let spyCompletion = expectation(description: debugDescription)
+        let spyValueReceived = expectation(description: debugDescription)
+        let legitValueReceived = expectation(description: debugDescription)
 
         var cancellables = Set<AnyCancellable>()
 
         // the creating the deferred, future publisher
         let publisher = Deferred {
             Future<Int, Error> { promise in
-                self.asyncAPICall(sabotage: false) { (grantedAccess, err) in
+                self.asyncAPICall(sabotage: false) { grantedAccess, err in
                     if let err = err {
                         promise(.failure(err))
                     } else {

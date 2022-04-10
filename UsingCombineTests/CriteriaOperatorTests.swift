@@ -6,11 +6,10 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
+import XCTest
 
 class CriteriaOperatorTests: XCTestCase {
-
     enum TestExampleError: Error {
         case invalidValue
     }
@@ -23,21 +22,20 @@ class CriteriaOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .contains("abc")
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .contains("abc")
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         passSubj.send("hello")
         XCTAssertEqual(responses.count, 0)
@@ -61,21 +59,20 @@ class CriteriaOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .contains("abc")
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .contains("abc")
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         passSubj.send("hello")
         XCTAssertEqual(responses.count, 0)
@@ -96,23 +93,22 @@ class CriteriaOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .contains { someval -> Bool in
-            return someval == "abc"
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
+            .contains { someval -> Bool in
+                someval == "abc"
             }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         passSubj.send("hello")
         XCTAssertEqual(responses.count, 0)
@@ -133,23 +129,22 @@ class CriteriaOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .contains { someval -> Bool in
-            return someval == "abc"
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
+            .contains { someval -> Bool in
+                someval == "abc"
             }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         passSubj.send("hello")
         XCTAssertEqual(responses.count, 0)
@@ -163,7 +158,6 @@ class CriteriaOperatorTests: XCTestCase {
     }
 
     func testTryContainsWhere() {
-
         enum TestExampleError: Error {
             case invalidValue
         }
@@ -175,26 +169,25 @@ class CriteriaOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .tryContains { someval -> Bool in
-            if (someval == "boom") {
-                throw TestExampleError.invalidValue
+            .tryContains { someval -> Bool in
+                if someval == "boom" {
+                    throw TestExampleError.invalidValue
+                }
+                return someval == "abc"
             }
-            return someval == "abc"
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         passSubj.send("hello")
         XCTAssertEqual(responses.count, 0)
@@ -215,26 +208,25 @@ class CriteriaOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .tryContains { someval -> Bool in
-            if (someval == "boom") {
-                throw TestExampleError.invalidValue
+            .tryContains { someval -> Bool in
+                if someval == "boom" {
+                    throw TestExampleError.invalidValue
+                }
+                return someval == "abc"
             }
-            return someval == "abc"
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            responses.append(responseValue)
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                responses.append(responseValue)
+                print(".sink() data received \(responseValue)")
+            })
 
         passSubj.send("hello")
         XCTAssertEqual(responses.count, 0)
@@ -258,23 +250,22 @@ class CriteriaOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .allSatisfy { someval -> Bool in
-            return (someval.count > 3)
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
+            .allSatisfy { someval -> Bool in
+                someval.count > 3
             }
-        }, receiveValue: { responseValue in
-            print(".sink() data received \(responseValue)")
-            responses.append(responseValue)
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                print(".sink() data received \(responseValue)")
+                responses.append(responseValue)
+            })
 
         passSubj.send("hello")
         XCTAssertEqual(responses.count, 0)
@@ -298,23 +289,22 @@ class CriteriaOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .allSatisfy { someval -> Bool in
-            return (someval.count > 3)
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
+            .allSatisfy { someval -> Bool in
+                someval.count > 3
             }
-        }, receiveValue: { responseValue in
-            print(".sink() data received \(responseValue)")
-            responses.append(responseValue)
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                print(".sink() data received \(responseValue)")
+                responses.append(responseValue)
+            })
 
         passSubj.send("hello")
         XCTAssertEqual(responses.count, 0)
@@ -338,26 +328,25 @@ class CriteriaOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .tryAllSatisfy { someval -> Bool in
-            if (someval == "boom") {
-                throw TestExampleError.invalidValue
+            .tryAllSatisfy { someval -> Bool in
+                if someval == "boom" {
+                    throw TestExampleError.invalidValue
+                }
+                return (someval.count > 3)
             }
-            return (someval.count > 3)
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            print(".sink() data received \(responseValue)")
-            responses.append(responseValue)
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                print(".sink() data received \(responseValue)")
+                responses.append(responseValue)
+            })
 
         passSubj.send("hello")
         XCTAssertEqual(responses.count, 0)
@@ -381,26 +370,25 @@ class CriteriaOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .tryAllSatisfy { someval -> Bool in
-            if (someval == "boom") {
-                throw TestExampleError.invalidValue
+            .tryAllSatisfy { someval -> Bool in
+                if someval == "boom" {
+                    throw TestExampleError.invalidValue
+                }
+                return (someval.count > 3)
             }
-            return (someval.count > 3)
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            print(".sink() data received \(responseValue)")
-            responses.append(responseValue)
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                print(".sink() data received \(responseValue)")
+                responses.append(responseValue)
+            })
 
         passSubj.send("hello")
         XCTAssertEqual(responses.count, 0)
@@ -424,26 +412,25 @@ class CriteriaOperatorTests: XCTestCase {
         var terminatedStream = false
 
         let cancellable = passSubj
-        .tryAllSatisfy { someval -> Bool in
-            if (someval == "boom") {
-                throw TestExampleError.invalidValue
+            .tryAllSatisfy { someval -> Bool in
+                if someval == "boom" {
+                    throw TestExampleError.invalidValue
+                }
+                return (someval.count > 3)
             }
-            return (someval.count > 3)
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            terminatedStream = true
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            print(".sink() data received \(responseValue)")
-            responses.append(responseValue)
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                terminatedStream = true
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                print(".sink() data received \(responseValue)")
+                responses.append(responseValue)
+            })
 
         passSubj.send("hello")
         XCTAssertEqual(responses.count, 0)

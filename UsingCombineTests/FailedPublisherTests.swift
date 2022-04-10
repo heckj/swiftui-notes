@@ -6,17 +6,16 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
+import XCTest
 
 class FailedPublisherTests: XCTestCase {
-
     enum TestFailureCondition: Error {
         case exampleFailure
     }
 
     func testFailPublisher() {
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
 
         let cancellable = Fail<String, Error>(error: TestFailureCondition.exampleFailure)
             .sink(receiveCompletion: { completion in
@@ -24,10 +23,8 @@ class FailedPublisherTests: XCTestCase {
                 switch completion {
                 case .finished:
                     XCTFail("No finished should be received from empty")
-                    break
-                case .failure(let anError):
+                case let .failure(anError):
                     print("received error: ", anError)
-                    break
                 }
                 expectation.fulfill()
             }, receiveValue: { responseValue in
@@ -40,7 +37,7 @@ class FailedPublisherTests: XCTestCase {
     }
 
     func testFailPublisherAltInitializer() {
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
 
         let cancellable = Fail(outputType: String.self, failure: TestFailureCondition.exampleFailure)
             .sink(receiveCompletion: { completion in
@@ -48,10 +45,8 @@ class FailedPublisherTests: XCTestCase {
                 switch completion {
                 case .finished:
                     XCTFail("No finished should be received from empty")
-                    break
-                case .failure(let anError):
+                case let .failure(anError):
                     print("received error: ", anError)
-                    break
                 }
                 expectation.fulfill()
             }, receiveValue: { responseValue in
@@ -64,7 +59,7 @@ class FailedPublisherTests: XCTestCase {
     }
 
     func testSetFailureTypePublisher() {
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
 
         let initialSequence = ["one", "two", "red", "blue"]
 
@@ -75,9 +70,8 @@ class FailedPublisherTests: XCTestCase {
                 switch completion {
                 case .finished:
                     break
-                case .failure(let anError):
+                case let .failure(anError):
                     print("received error: ", anError)
-                    break
                 }
                 expectation.fulfill()
             }, receiveValue: { responseValue in

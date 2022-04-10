@@ -6,11 +6,10 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
+import XCTest
 
 class ReducingOperatorTests: XCTestCase {
-
     enum TestExampleError: Error {
         case nilValue
     }
@@ -20,23 +19,22 @@ class ReducingOperatorTests: XCTestCase {
         // no initial value is propagated from a PassthroughSubject
 
         let cancellable = passSubj
-        .reduce("", { prevVal, newValueFromPublisher -> String in
-            return prevVal+newValueFromPublisher
-        })
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                XCTFail()
-                break
+            .reduce("") { prevVal, newValueFromPublisher -> String in
+                prevVal + newValueFromPublisher
             }
-        }, receiveValue: { responseValue in
-            XCTAssertEqual(responseValue, "hello world")
-            print(".sink() data received \(responseValue)")
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                    XCTFail()
+                }
+            }, receiveValue: { responseValue in
+                XCTAssertEqual(responseValue, "hello world")
+                print(".sink() data received \(responseValue)")
+            })
 
         passSubj.send("hello")
         passSubj.send(" ")
@@ -47,34 +45,31 @@ class ReducingOperatorTests: XCTestCase {
     }
 
     func testReduceWithError() {
-
         enum TestExampleError: Error {
             case example
         }
 
-        var collectedResult : String?
+        var collectedResult: String?
         let passSubj = PassthroughSubject<String, Error>()
         // no initial value is propagated from a PassthroughSubject
 
         let cancellable = passSubj
-            .reduce("", { prevVal, newValueFromPublisher -> String in
-            return prevVal+newValueFromPublisher
-        })
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            switch completion {
-            case .finished:
-                XCTFail()
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
+            .reduce("") { prevVal, newValueFromPublisher -> String in
+                prevVal + newValueFromPublisher
             }
-        }, receiveValue: { responseValue in
-            print(".sink() data received \(responseValue)")
-            collectedResult = responseValue
-            XCTFail()
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                switch completion {
+                case .finished:
+                    XCTFail()
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                print(".sink() data received \(responseValue)")
+                collectedResult = responseValue
+                XCTFail()
+            })
 
         passSubj.send("hello")
         passSubj.send(" ")
@@ -85,32 +80,30 @@ class ReducingOperatorTests: XCTestCase {
     }
 
     func testTryReduce() {
-
         let passSubj = PassthroughSubject<String?, Never>()
         // no initial value is propagated from a PassthroughSubject
 
         var endResult: String?
 
         let cancellable = passSubj
-        .tryReduce("", { prevVal, newValueFromPublisher -> String in
-            guard let upstreamValue = newValueFromPublisher else {
-                throw TestExampleError.nilValue
+            .tryReduce("") { prevVal, newValueFromPublisher -> String in
+                guard let upstreamValue = newValueFromPublisher else {
+                    throw TestExampleError.nilValue
+                }
+                return prevVal + upstreamValue
             }
-            return prevVal+upstreamValue
-        })
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            print(".sink() data received \(responseValue)")
-            endResult = responseValue
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                print(".sink() data received \(responseValue)")
+                endResult = responseValue
+            })
 
         passSubj.send("hello")
         XCTAssertNil(endResult)
@@ -129,29 +122,28 @@ class ReducingOperatorTests: XCTestCase {
         // no initial value is propagated from a PassthroughSubject
 
         var endResult: String?
-        var errorReceived = false;
+        var errorReceived = false
 
         let cancellable = passSubj
-        .tryReduce("", { prevVal, newValueFromPublisher -> String in
-            guard let upstreamValue = newValueFromPublisher else {
-                throw TestExampleError.nilValue
+            .tryReduce("") { prevVal, newValueFromPublisher -> String in
+                guard let upstreamValue = newValueFromPublisher else {
+                    throw TestExampleError.nilValue
+                }
+                return prevVal + upstreamValue
             }
-            return prevVal+upstreamValue
-        })
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                errorReceived = true
-                break
-            }
-        }, receiveValue: { responseValue in
-            print(".sink() data received \(responseValue)")
-            endResult = responseValue
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                    errorReceived = true
+                }
+            }, receiveValue: { responseValue in
+                print(".sink() data received \(responseValue)")
+                endResult = responseValue
+            })
 
         passSubj.send("hello")
         XCTAssertNil(endResult)
@@ -168,20 +160,19 @@ class ReducingOperatorTests: XCTestCase {
         // no initial value is propagated from a PassthroughSubject
 
         let cancellable = passSubj
-        .collect()
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            print(".sink() data received \(responseValue)")
-            XCTAssertEqual(responseValue, [1,2])
-        })
+            .collect()
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                print(".sink() data received \(responseValue)")
+                XCTAssertEqual(responseValue, [1, 2])
+            })
 
         passSubj.send(1)
         passSubj.send(2)
@@ -194,21 +185,19 @@ class ReducingOperatorTests: XCTestCase {
         // no initial value is propagated from a PassthroughSubject
 
         let cancellable = passSubj
-        .collect()
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            switch completion {
-            case .finished:
-                XCTFail()
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            print(".sink() data received \(responseValue)")
-            XCTFail() // no values will be received when an error is triggered
-        })
+            .collect()
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                switch completion {
+                case .finished:
+                    XCTFail()
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                print(".sink() data received \(responseValue)")
+                XCTFail() // no values will be received when an error is triggered
+            })
 
         passSubj.send(1)
         passSubj.send(2)
@@ -223,20 +212,19 @@ class ReducingOperatorTests: XCTestCase {
         var latestReceivedResult: [Int] = []
 
         let cancellable = passSubj
-        .collect(3)
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            print(".sink() data received \(responseValue)")
-            latestReceivedResult = responseValue
-        })
+            .collect(3)
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                print(".sink() data received \(responseValue)")
+                latestReceivedResult = responseValue
+            })
 
         passSubj.send(1)
         XCTAssertEqual(latestReceivedResult.count, 0)
@@ -244,7 +232,7 @@ class ReducingOperatorTests: XCTestCase {
         XCTAssertEqual(latestReceivedResult.count, 0)
         passSubj.send(completion: Subscribers.Completion.finished)
         XCTAssertEqual(latestReceivedResult.count, 2)
-        XCTAssertEqual(latestReceivedResult, [1,2])
+        XCTAssertEqual(latestReceivedResult, [1, 2])
         XCTAssertNotNil(cancellable)
     }
 
@@ -255,20 +243,19 @@ class ReducingOperatorTests: XCTestCase {
         var latestReceivedResult: [Int] = []
 
         let cancellable = passSubj
-        .collect(3)
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            print(".sink() data received \(responseValue)")
-            latestReceivedResult = responseValue
-        })
+            .collect(3)
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                print(".sink() data received \(responseValue)")
+                latestReceivedResult = responseValue
+            })
 
         passSubj.send(1)
         XCTAssertEqual(latestReceivedResult.count, 0)
@@ -276,23 +263,23 @@ class ReducingOperatorTests: XCTestCase {
         XCTAssertEqual(latestReceivedResult.count, 0)
         passSubj.send(3)
         XCTAssertEqual(latestReceivedResult.count, 3)
-        XCTAssertEqual(latestReceivedResult, [1,2,3])
+        XCTAssertEqual(latestReceivedResult, [1, 2, 3])
         passSubj.send(4)
-        XCTAssertEqual(latestReceivedResult, [1,2,3])
+        XCTAssertEqual(latestReceivedResult, [1, 2, 3])
         passSubj.send(5)
-        XCTAssertEqual(latestReceivedResult, [1,2,3])
+        XCTAssertEqual(latestReceivedResult, [1, 2, 3])
         passSubj.send(completion: Subscribers.Completion.finished)
-        XCTAssertEqual(latestReceivedResult, [4,5])
+        XCTAssertEqual(latestReceivedResult, [4, 5])
         XCTAssertNotNil(cancellable)
     }
 
     func testCollectByTime() {
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
         let passSubj = PassthroughSubject<Int, Error>()
         // no initial value is propagated from a PassthroughSubject
 
         var latestReceivedResult: [Int] = []
-        let q = DispatchQueue(label: self.debugDescription)
+        let q = DispatchQueue(label: debugDescription)
 
         let cancellable = passSubj
             // .collect(Publishers.TimeGroupingStrategy<DispatchQueue>.byTime(q, 1.0))
@@ -303,59 +290,58 @@ class ReducingOperatorTests: XCTestCase {
                 switch completion {
                 case .finished:
                     break
-                case .failure(let anError):
+                case let .failure(anError):
                     print("received error: ", anError)
-                    break
                 }
             }, receiveValue: { responseValue in
                 print(".sink() data received \(responseValue)")
                 latestReceivedResult = responseValue
             })
 
-        q.asyncAfter(deadline: .now() + 0.1, execute: {
+        q.asyncAfter(deadline: .now() + 0.1) {
             passSubj.send(1)
-        })
-        q.asyncAfter(deadline: .now() + 0.2, execute: {
+        }
+        q.asyncAfter(deadline: .now() + 0.2) {
             passSubj.send(2)
-        })
-        q.asyncAfter(deadline: .now() + 0.3, execute: {
+        }
+        q.asyncAfter(deadline: .now() + 0.3) {
             passSubj.send(3)
-        })
-        q.asyncAfter(deadline: .now() + 0.4, execute: {
+        }
+        q.asyncAfter(deadline: .now() + 0.4) {
             passSubj.send(4)
-        })
+        }
 
-        q.asyncAfter(deadline: .now() + 1.01, execute: {
+        q.asyncAfter(deadline: .now() + 1.01) {
             XCTAssertEqual(latestReceivedResult, [1, 2, 3, 4])
-        })
+        }
 
-        q.asyncAfter(deadline: .now() + 1.3, execute: {
+        q.asyncAfter(deadline: .now() + 1.3) {
             passSubj.send(5)
-        })
-        q.asyncAfter(deadline: .now() + 1.4, execute: {
+        }
+        q.asyncAfter(deadline: .now() + 1.4) {
             passSubj.send(6)
-        })
+        }
 
-        q.asyncAfter(deadline: .now() + 3, execute: {
+        q.asyncAfter(deadline: .now() + 3) {
             passSubj.send(completion: Subscribers.Completion.finished)
-        })
+        }
 
-        q.asyncAfter(deadline: .now() + 3.01, execute: {
+        q.asyncAfter(deadline: .now() + 3.01) {
             XCTAssertEqual(latestReceivedResult, [5, 6])
             expectation.fulfill()
-        })
+        }
 
         XCTAssertNotNil(cancellable)
         wait(for: [expectation], timeout: 5.0)
     }
 
     func testCollectByTimeOrCount() {
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
         let passSubj = PassthroughSubject<Int, Error>()
         // no initial value is propagated from a PassthroughSubject
 
         var latestReceivedResult: [Int] = []
-        let q = DispatchQueue(label: self.debugDescription)
+        let q = DispatchQueue(label: debugDescription)
 
         let cancellable = passSubj
             .collect(.byTimeOrCount(q, 1.0, 3))
@@ -364,86 +350,82 @@ class ReducingOperatorTests: XCTestCase {
                 switch completion {
                 case .finished:
                     break
-                case .failure(let anError):
+                case let .failure(anError):
                     print("received error: ", anError)
-                    break
                 }
             }, receiveValue: { responseValue in
                 print(".sink() data received \(responseValue)")
                 latestReceivedResult = responseValue
             })
 
-        q.asyncAfter(deadline: .now() + 0.1, execute: {
+        q.asyncAfter(deadline: .now() + 0.1) {
             passSubj.send(1)
-        })
-        q.asyncAfter(deadline: .now() + 0.2, execute: {
+        }
+        q.asyncAfter(deadline: .now() + 0.2) {
             passSubj.send(2)
-        })
-        q.asyncAfter(deadline: .now() + 0.3, execute: {
+        }
+        q.asyncAfter(deadline: .now() + 0.3) {
             passSubj.send(3)
-        })
+        }
 
-        q.asyncAfter(deadline: .now() + 0.35, execute: {
-            XCTAssertEqual(latestReceivedResult, [1,2,3])
-        })
+        q.asyncAfter(deadline: .now() + 0.35) {
+            XCTAssertEqual(latestReceivedResult, [1, 2, 3])
+        }
 
-        q.asyncAfter(deadline: .now() + 0.4, execute: {
+        q.asyncAfter(deadline: .now() + 0.4) {
             passSubj.send(4)
-        })
-        q.asyncAfter(deadline: .now() + 0.5, execute: {
+        }
+        q.asyncAfter(deadline: .now() + 0.5) {
             passSubj.send(5)
-        })
+        }
 
-        q.asyncAfter(deadline: .now() + 1.05, execute: {
-            XCTAssertEqual(latestReceivedResult, [4,5])
-        })
+        q.asyncAfter(deadline: .now() + 1.05) {
+            XCTAssertEqual(latestReceivedResult, [4, 5])
+        }
 
-        q.asyncAfter(deadline: .now() + 1.3, execute: {
+        q.asyncAfter(deadline: .now() + 1.3) {
             passSubj.send(6)
-        })
-        q.asyncAfter(deadline: .now() + 1.4, execute: {
+        }
+        q.asyncAfter(deadline: .now() + 1.4) {
             passSubj.send(7)
-        })
+        }
 
-        q.asyncAfter(deadline: .now() + 3, execute: {
+        q.asyncAfter(deadline: .now() + 3) {
             passSubj.send(completion: Subscribers.Completion.finished)
-        })
+        }
 
-        q.asyncAfter(deadline: .now() + 3.05, execute: {
+        q.asyncAfter(deadline: .now() + 3.05) {
             XCTAssertEqual(latestReceivedResult, [6, 7])
             expectation.fulfill()
-        })
+        }
 
         XCTAssertNotNil(cancellable)
         wait(for: [expectation], timeout: 5.0)
     }
 
-
     func testIgnoreOutputSuccess() {
         let passSubj = PassthroughSubject<Int, Error>()
         // no initial value is propagated from a PassthroughSubject
 
-        var finishReceived = false;
-        var failureReceived = false;
-        var dataCallbackReceived = false;
+        var finishReceived = false
+        var failureReceived = false
+        var dataCallbackReceived = false
 
         let cancellable = passSubj
-        .ignoreOutput()
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            switch completion {
-            case .finished:
-                finishReceived = true
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                failureReceived = true
-                break
-            }
-        }, receiveValue: { _ in
-            print(".sink() data received")
-            dataCallbackReceived = true
-        })
+            .ignoreOutput()
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                switch completion {
+                case .finished:
+                    finishReceived = true
+                case let .failure(anError):
+                    print("received error: ", anError)
+                    failureReceived = true
+                }
+            }, receiveValue: { _ in
+                print(".sink() data received")
+                dataCallbackReceived = true
+            })
 
         passSubj.send(1)
         XCTAssertFalse(finishReceived)
@@ -467,27 +449,25 @@ class ReducingOperatorTests: XCTestCase {
         let passSubj = PassthroughSubject<Int, Error>()
         // no initial value is propagated from a PassthroughSubject
 
-        var finishReceived = false;
-        var failureReceived = false;
-        var dataCallbackReceived = false;
+        var finishReceived = false
+        var failureReceived = false
+        var dataCallbackReceived = false
 
         let cancellable = passSubj
-        .ignoreOutput()
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            switch completion {
-            case .finished:
-                finishReceived = true
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                failureReceived = true
-                break
-            }
-        }, receiveValue: { _ in
-            print(".sink() data received")
-            dataCallbackReceived = true
-        })
+            .ignoreOutput()
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                switch completion {
+                case .finished:
+                    finishReceived = true
+                case let .failure(anError):
+                    print("received error: ", anError)
+                    failureReceived = true
+                }
+            }, receiveValue: { _ in
+                print(".sink() data received")
+                dataCallbackReceived = true
+            })
 
         passSubj.send(1)
         XCTAssertFalse(finishReceived)

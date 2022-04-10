@@ -6,11 +6,10 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
+import XCTest
 
 class MathOperatorTests: XCTestCase {
-
     func testMax() {
         let passSubj = PassthroughSubject<Int, Error>()
         // no initial value is propagated from a PassthroughSubject
@@ -18,20 +17,19 @@ class MathOperatorTests: XCTestCase {
         var latestReceivedResult: Int?
 
         let cancellable = passSubj
-        .max()
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            print(".sink() data received \(responseValue)")
-            latestReceivedResult = responseValue
-        })
+            .max()
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                print(".sink() data received \(responseValue)")
+                latestReceivedResult = responseValue
+            })
 
         passSubj.send(1)
         XCTAssertNil(latestReceivedResult)
@@ -58,25 +56,24 @@ class MathOperatorTests: XCTestCase {
         var latestReceivedResult: ExampleStruct?
 
         let cancellable = passSubj
-        .max { (struct1, struct2) -> Bool in
-            return struct1.property1 < struct2.property1
-            // returning boolean true to order struct2 greater than struct1
-            // the underlying method parameter for this closure hints to it:
-            // `areInIncreasingOrder`
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
+            .max { struct1, struct2 -> Bool in
+                struct1.property1 < struct2.property1
+                // returning boolean true to order struct2 greater than struct1
+                // the underlying method parameter for this closure hints to it:
+                // `areInIncreasingOrder`
             }
-        }, receiveValue: { responseValue in
-            print(".sink() data received \(responseValue)")
-            latestReceivedResult = responseValue
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                print(".sink() data received \(responseValue)")
+                latestReceivedResult = responseValue
+            })
 
         passSubj.send(ExampleStruct(property1: 1, property2: 2))
         XCTAssertNil(latestReceivedResult)
@@ -95,7 +92,7 @@ class MathOperatorTests: XCTestCase {
         var latestReceivedResult: ExampleStruct?
 
         let cancellable = passSubj
-            .tryMax { (struct1, struct2) -> Bool in
+            .tryMax { struct1, struct2 -> Bool in
                 guard let concrete1 = struct1.property2, let concrete2 = struct2.property2 else {
                     throw TestExampleError.nilValue
                 }
@@ -109,9 +106,8 @@ class MathOperatorTests: XCTestCase {
                 switch completion {
                 case .finished:
                     break
-                case .failure(let anError):
+                case let .failure(anError):
                     print("received error: ", anError)
-                    break
                 }
             }, receiveValue: { responseValue in
                 print(".sink() data received \(responseValue)")
@@ -136,7 +132,7 @@ class MathOperatorTests: XCTestCase {
         var failureReceived = false
 
         let cancellable = passSubj
-            .tryMax { (struct1, struct2) -> Bool in
+            .tryMax { struct1, struct2 -> Bool in
                 guard let concrete1 = struct1.property2, let concrete2 = struct2.property2 else {
                     throw TestExampleError.nilValue
                 }
@@ -150,10 +146,9 @@ class MathOperatorTests: XCTestCase {
                 switch completion {
                 case .finished:
                     break
-                case .failure(let anError):
+                case let .failure(anError):
                     print("received error: ", anError)
                     failureReceived = true
-                    break
                 }
             }, receiveValue: { responseValue in
                 print(".sink() data received \(responseValue)")
@@ -177,20 +172,19 @@ class MathOperatorTests: XCTestCase {
         var latestReceivedResult: Int?
 
         let cancellable = passSubj
-        .min()
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            print(".sink() data received \(responseValue)")
-            latestReceivedResult = responseValue
-        })
+            .min()
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                print(".sink() data received \(responseValue)")
+                latestReceivedResult = responseValue
+            })
 
         passSubj.send(1)
         XCTAssertNil(latestReceivedResult)
@@ -208,25 +202,24 @@ class MathOperatorTests: XCTestCase {
         var latestReceivedResult: ExampleStruct?
 
         let cancellable = passSubj
-        .min { (struct1, struct2) -> Bool in
-            return struct1.property1 < struct2.property1
-            // returning boolean true to order struct2 greater than struct1
-            // the underlying method parameter for this closure hints to it:
-            // `areInIncreasingOrder`
-        }
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
+            .min { struct1, struct2 -> Bool in
+                struct1.property1 < struct2.property1
+                // returning boolean true to order struct2 greater than struct1
+                // the underlying method parameter for this closure hints to it:
+                // `areInIncreasingOrder`
             }
-        }, receiveValue: { responseValue in
-            print(".sink() data received \(responseValue)")
-            latestReceivedResult = responseValue
-        })
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                print(".sink() data received \(responseValue)")
+                latestReceivedResult = responseValue
+            })
 
         passSubj.send(ExampleStruct(property1: 1, property2: 2))
         XCTAssertNil(latestReceivedResult)
@@ -245,7 +238,7 @@ class MathOperatorTests: XCTestCase {
         var latestReceivedResult: ExampleStruct?
 
         let cancellable = passSubj
-            .tryMin { (struct1, struct2) -> Bool in
+            .tryMin { struct1, struct2 -> Bool in
                 guard let concrete1 = struct1.property2, let concrete2 = struct2.property2 else {
                     throw TestExampleError.nilValue
                 }
@@ -259,9 +252,8 @@ class MathOperatorTests: XCTestCase {
                 switch completion {
                 case .finished:
                     break
-                case .failure(let anError):
+                case let .failure(anError):
                     print("received error: ", anError)
-                    break
                 }
             }, receiveValue: { responseValue in
                 print(".sink() data received \(responseValue)")
@@ -286,7 +278,7 @@ class MathOperatorTests: XCTestCase {
         var failureReceived = false
 
         let cancellable = passSubj
-            .tryMin { (struct1, struct2) -> Bool in
+            .tryMin { struct1, struct2 -> Bool in
                 guard let concrete1 = struct1.property2, let concrete2 = struct2.property2 else {
                     throw TestExampleError.nilValue
                 }
@@ -298,10 +290,9 @@ class MathOperatorTests: XCTestCase {
                 switch completion {
                 case .finished:
                     break
-                case .failure(let anError):
+                case let .failure(anError):
                     print("received error: ", anError)
                     failureReceived = true
-                    break
                 }
             }, receiveValue: { responseValue in
                 print(".sink() data received \(responseValue)")
@@ -325,20 +316,19 @@ class MathOperatorTests: XCTestCase {
         var latestReceivedResult: Int?
 
         let cancellable = passSubj
-        .count()
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            print(".sink() data received \(responseValue)")
-            latestReceivedResult = responseValue
-        })
+            .count()
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                print(".sink() data received \(responseValue)")
+                latestReceivedResult = responseValue
+            })
 
         passSubj.send(9)
         XCTAssertNil(latestReceivedResult)
@@ -356,20 +346,19 @@ class MathOperatorTests: XCTestCase {
         var latestReceivedResult: Int?
 
         let cancellable = passSubj
-        .count()
-        .sink(receiveCompletion: { completion in
-            print(".sink() received the completion", String(describing: completion))
-            switch completion {
-            case .finished:
-                break
-            case .failure(let anError):
-                print("received error: ", anError)
-                break
-            }
-        }, receiveValue: { responseValue in
-            print(".sink() data received \(responseValue)")
-            latestReceivedResult = responseValue
-        })
+            .count()
+            .sink(receiveCompletion: { completion in
+                print(".sink() received the completion", String(describing: completion))
+                switch completion {
+                case .finished:
+                    break
+                case let .failure(anError):
+                    print("received error: ", anError)
+                }
+            }, receiveValue: { responseValue in
+                print(".sink() data received \(responseValue)")
+                latestReceivedResult = responseValue
+            })
 
         passSubj.send(9)
         XCTAssertNil(latestReceivedResult)

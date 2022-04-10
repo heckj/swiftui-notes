@@ -6,13 +6,11 @@
 //  Copyright © 2020 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
+import XCTest
 
 class RecordTests: XCTestCase {
-
-    enum TestFailureCondition: Error, Codable, CodingKey
-    {
+    enum TestFailureCondition: Error, Codable, CodingKey {
         // reading on codable enums: https://www.objc.io/blog/2018/01/23/codable-enums/
         // and https://medium.com/@hllmandel/codable-enum-with-associated-values-swift-4-e7d75d6f4370
 
@@ -25,9 +23,9 @@ class RecordTests: XCTestCase {
             // let value =  try container.decode(TestFailureCondition.self, forKey: .invalidServerResponse)
             // self = .left(leftValue)
 
-            if (try container.decodeNil(forKey: .invalidServerResponse)) {
+            if try container.decodeNil(forKey: .invalidServerResponse) {
                 self = .invalidServerResponse
-            } else if (try container.decodeNil(forKey: .aDifferentFailure)) {
+            } else if try container.decodeNil(forKey: .aDifferentFailure) {
                 self = .aDifferentFailure
             } else {
                 // default if nothing else worked
@@ -40,10 +38,10 @@ class RecordTests: XCTestCase {
             switch self {
             case .invalidServerResponse:
                 try container.encodeNil(forKey: .invalidServerResponse)
-                // If the error enum was set up with associated values, we'd need to twiddle the
-                // encode/decode a bit along these lines:
-                //
-                // try container.encode("x", forKey: .invalidServerResponse)
+            // If the error enum was set up with associated values, we'd need to twiddle the
+            // encode/decode a bit along these lines:
+            //
+            // try container.encode("x", forKey: .invalidServerResponse)
             case .aDifferentFailure:
                 try container.encodeNil(forKey: .aDifferentFailure)
             }
@@ -54,8 +52,7 @@ class RecordTests: XCTestCase {
     }
 
     func testRecordInitializer() {
-
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
 
         // creates a recording
         let x = Record<String, Never> { example in
@@ -86,7 +83,6 @@ class RecordTests: XCTestCase {
     }
 
     func testRecordInitializationFromRecord() {
-
         // creates a recording
         let firstRecord = Record<String, Never> { example in
             example.receive("one")
@@ -110,8 +106,7 @@ class RecordTests: XCTestCase {
     }
 
     func testRecordInitializerAlt() {
-
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
 
         let y = Record<String, Never>(output: ["one", "two", "three"], completion: .finished)
 
@@ -136,10 +131,9 @@ class RecordTests: XCTestCase {
     }
 
     func testRecordEncodeDecodeWithFailureType() {
-
         // creates a recording
         let originalRecord = Record<String, TestFailureCondition> { example in
-            //example is of type Record<String, TestFailureCondition>.Recording
+            // example is of type Record<String, TestFailureCondition>.Recording
             example.receive("one")
             example.receive("two")
             example.receive("three")
@@ -154,9 +148,9 @@ class RecordTests: XCTestCase {
             if let json = String(data: encoded, encoding: .utf8) {
                 // print(json)
                 XCTAssertEqual(json,
-"""
-{"recording":{"completion":{"success":false,"error":{"invalidServerResponse":null}},"output":["one","two","three"]}}
-""")
+                               """
+                               {"recording":{"completion":{"success":false,"error":{"invalidServerResponse":null}},"output":["one","two","three"]}}
+                               """)
             }
 
             let jdecoder = JSONDecoder()
@@ -167,12 +161,9 @@ class RecordTests: XCTestCase {
                 XCTAssertNotNil(foo)
                 XCTAssertEqual(foo.recording.output.count, 3)
                 // XCTAssertEqual(foo, originalRecord)
-            }
-            catch {
+            } catch {
                 XCTFail("Unexpected error decoding: \(error)")
             }
-
-
         }
 
         XCTAssertNotNil(originalRecord)
@@ -195,9 +186,9 @@ class RecordTests: XCTestCase {
             if let json = String(data: encoded, encoding: .utf8) {
                 print(json)
                 XCTAssertEqual(json,
-"""
-{"recording":{"completion":{"success":true},"output":["one","two","three"]}}
-""")
+                               """
+                               {"recording":{"completion":{"success":true},"output":["one","two","three"]}}
+                               """)
             }
 
             let jdecoder = JSONDecoder()
@@ -207,8 +198,7 @@ class RecordTests: XCTestCase {
                 XCTAssertNotNil(foo)
                 XCTAssertEqual(foo.recording.output.count, 3)
                 // XCTAssertEqual(foo, originalRecord)  - can't arrange this, as Record<> isn't Equatable
-            }
-            catch {
+            } catch {
                 XCTFail("Unexpected error decoding: \(error)")
             }
         }
@@ -217,5 +207,4 @@ class RecordTests: XCTestCase {
         XCTAssertNotNil(originalRecord.recording)
         XCTAssertEqual(originalRecord.recording.output.count, 3)
     }
-
 }

@@ -6,27 +6,25 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
+import XCTest
 
 class ScanPublisherTests: XCTestCase {
-
     func testScanInt() {
         let simplePublisher = PassthroughSubject<Int, Error>()
 
         var outputHolder = 0
         let cancellable = simplePublisher
-            .scan(0, { a, b -> Int in
-                return a + b
-            })
-            .print(self.debugDescription)
+            .scan(0) { a, b -> Int in
+                a + b
+            }
+            .print(debugDescription)
             .sink(receiveCompletion: { completion in
                 print(".sink() received the completion:", String(describing: completion))
                 switch completion {
-                case .failure(let anError):
+                case let .failure(anError):
                     print(".sink() received completion error: ", anError)
                     XCTFail("no error should be received")
-                    break
                 case .finished:
                     break
                 }
@@ -51,17 +49,16 @@ class ScanPublisherTests: XCTestCase {
 
         var outputHolder: String?
         let cancellable = simplePublisher
-            .scan("", { a, b -> String in
-                return a + b
-            })
-            .print(self.debugDescription)
+            .scan("") { a, b -> String in
+                a + b
+            }
+            .print(debugDescription)
             .sink(receiveCompletion: { completion in
                 print(".sink() received the completion:", String(describing: completion))
                 switch completion {
-                case .failure(let anError):
+                case let .failure(anError):
                     print(".sink() received completion error: ", anError)
                     XCTFail("no error should be received")
-                    break
                 case .finished:
                     break
                 }
@@ -89,17 +86,16 @@ class ScanPublisherTests: XCTestCase {
 
         var outputHolder: Int?
         let cancellable = simplePublisher
-            .scan(0, { prevVal, newValueFromPublisher -> Int in
-                return prevVal + newValueFromPublisher.count
-            })
-            .print(self.debugDescription)
+            .scan(0) { prevVal, newValueFromPublisher -> Int in
+                prevVal + newValueFromPublisher.count
+            }
+            .print(debugDescription)
             .sink(receiveCompletion: { completion in
                 print(".sink() received the completion:", String(describing: completion))
                 switch completion {
-                case .failure(let anError):
+                case let .failure(anError):
                     print(".sink() received completion error: ", anError)
                     XCTFail("no error should be received")
-                    break
                 case .finished:
                     break
                 }
@@ -123,7 +119,6 @@ class ScanPublisherTests: XCTestCase {
     }
 
     func testTryScanString() {
-
         enum TestFailure: Error {
             case boom
         }
@@ -131,28 +126,26 @@ class ScanPublisherTests: XCTestCase {
         let simplePublisher = PassthroughSubject<String, Error>()
 
         var outputHolder: String?
-        var erroredFromUpdates: Bool = false
+        var erroredFromUpdates = false
         let cancellable = simplePublisher
-            .tryScan("", { prevVal, newValueFromPublisher -> String in
+            .tryScan("") { prevVal, newValueFromPublisher -> String in
                 // this little bit of creative logic explicitly explodes if the combined
                 // sequence that we accumulate is equal to 'ab'. We trigger this explicitly
                 // from our test logic below to show the try aspect of tryScan
-                if (prevVal == "ab") {
+                if prevVal == "ab" {
                     throw TestFailure.boom
                 }
                 return prevVal + newValueFromPublisher
-            })
-            .print(self.debugDescription)
+            }
+            .print(debugDescription)
             .sink(receiveCompletion: { completion in
                 print(".sink() received the completion:", String(describing: completion))
                 switch completion {
-                case .failure(let anError):
+                case let .failure(anError):
                     print(".sink() received completion error: ", anError)
                     erroredFromUpdates = true
-                    break
                 case .finished:
                     XCTFail() // this should never complete
-                    break
                 }
             }, receiveValue: { receivedValue in
                 print(".sink() received \(receivedValue)")
@@ -177,5 +170,4 @@ class ScanPublisherTests: XCTestCase {
         XCTAssertEqual(outputHolder, "ab")
         XCTAssertNotNil(cancellable)
     }
-
 }

@@ -6,11 +6,10 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
+import XCTest
 
 class SwitchAndFlatMapPublisherTests: XCTestCase {
-
     // matching the data structure returned from ip.jsontest.com
     struct IPInfo: Codable {
         var ip: String
@@ -25,11 +24,11 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
         let simpleControlledPublisher = PassthroughSubject<String, Never>()
 
         let cancellable = simpleControlledPublisher
-            .flatMap { someValue in // takes a String in and returns a Publisher
-                return Just<String>("Alternate data")
+            .flatMap { _ in // takes a String in and returns a Publisher
+                Just<String>("Alternate data")
                 // flatMap returns a Publisher, where map returns <Input> - String in this case
-        }
-        .eraseToAnyPublisher()
+            }
+            .eraseToAnyPublisher()
             .sink(receiveCompletion: { fini in
                 print(".sink() received the completion:", String(describing: fini))
             }, receiveValue: { stringValue in
@@ -61,10 +60,10 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
         let backDoorPublisher = PassthroughSubject<String, Never>()
 
         let cancellable = simpleControlledPublisher
-            .flatMap { someValue -> AnyPublisher<String, Never> in // takes a String in and returns a Publisher
-                return backDoorPublisher.eraseToAnyPublisher()
-        }
-        .eraseToAnyPublisher()
+            .flatMap { _ -> AnyPublisher<String, Never> in // takes a String in and returns a Publisher
+                backDoorPublisher.eraseToAnyPublisher()
+            }
+            .eraseToAnyPublisher()
             //            .print()
             .sink(receiveCompletion: { fini in
                 print(" ** .sink() received the completion:", String(describing: fini))
@@ -94,14 +93,14 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
         // with the above line uncommented, the original pipeline is terminated, but the
         // backDoor pipelines put into place by the flatmap are still completely active to downstream
         // subscribers. Console output:
-        //** .sink() received first response
-        //** .sink() received second response
-        //** .sink() received second response
-        //** .sink() received third response
-        //** .sink() received third response
-        //** .sink() received fourth response
-        //** .sink() received fourth response
-        //** .sink() received the completion: finished
+        // ** .sink() received first response
+        // ** .sink() received second response
+        // ** .sink() received second response
+        // ** .sink() received third response
+        // ** .sink() received third response
+        // ** .sink() received fourth response
+        // ** .sink() received fourth response
+        // ** .sink() received the completion: finished
 
         simpleControlledPublisher.send(redFish)
         backDoorPublisher.send("third response")
@@ -115,17 +114,16 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
         // based on this output, flatMap is adding a publisher for every element in the original stream
         // and each publisher that's created gets added - so if the original stream had 3 events flow through,
         // there could be 3 active publishers sending data
-        //** .sink() received first response
-        //** .sink() received second response
-        //** .sink() received second response
-        //** .sink() received third response
-        //** .sink() received third response
-        //** .sink() received third response
-        //** .sink() received fourth response
-        //** .sink() received fourth response
-        //** .sink() received fourth response
-        //** .sink() received fourth response
-
+        // ** .sink() received first response
+        // ** .sink() received second response
+        // ** .sink() received second response
+        // ** .sink() received third response
+        // ** .sink() received third response
+        // ** .sink() received third response
+        // ** .sink() received fourth response
+        // ** .sink() received fourth response
+        // ** .sink() received fourth response
+        // ** .sink() received fourth response
     }
 
     func testBasicFlatMapFallback_Data_NeverPublisher() {
@@ -134,24 +132,24 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
 
         let cancellable = simpleControlledPublisher
             .flatMap { value in // takes a String in and returns a Publisher
-                return Just<Data>(value)
+                Just<Data>(value)
                     .decode(type: IPInfo.self, decoder: JSONDecoder())
                     .catch { _ in
-                        return Just(IPInfo(ip: "8.8.8.8"))
-                }
-        }
-        .sink(receiveCompletion: { fini in
-            print(".sink() received the completion:", String(describing: fini))
-        }, receiveValue: { stringValue in
-            XCTAssertNotNil(stringValue)
-            print(".sink() received \(stringValue)")
-            // this print adds into the console output:
-            // .sink() received IPInfo(ip: "1.2.3.4")
-            // .sink() received IPInfo(ip: "192.168.1.1")
-            // .sink() received IPInfo(ip: "8.8.8.8")
-            // .sink() received IPInfo(ip: "192.168.0.1")
-            // .sink() received the completion: finished
-        })
+                        Just(IPInfo(ip: "8.8.8.8"))
+                    }
+            }
+            .sink(receiveCompletion: { fini in
+                print(".sink() received the completion:", String(describing: fini))
+            }, receiveValue: { stringValue in
+                XCTAssertNotNil(stringValue)
+                print(".sink() received \(stringValue)")
+                // this print adds into the console output:
+                // .sink() received IPInfo(ip: "1.2.3.4")
+                // .sink() received IPInfo(ip: "192.168.1.1")
+                // .sink() received IPInfo(ip: "8.8.8.8")
+                // .sink() received IPInfo(ip: "192.168.0.1")
+                // .sink() received the completion: finished
+            })
 
         let oneFish = "{ \"ip\": \"1.2.3.4\" }".data(using: .utf8)
         let twoFish = "{ \"ip\": \"192.168.1.1\" }".data(using: .utf8)
@@ -172,24 +170,24 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
 
         let cancellable = simpleControlledPublisher
             .flatMap { value in // takes a String in and returns a Publisher
-                return Just(value)
+                Just(value)
                     .decode(type: IPInfo.self, decoder: JSONDecoder())
                 //                .catch { _ in
                 //                    return Publishers.Just(IPInfo(ip: "8.8.8.8"))
                 //                }
-        }
-        .sink(receiveCompletion: { fini in
-            print(".sink() received the completion:", String(describing: fini))
-        }, receiveValue: { stringValue in
-            XCTAssertNotNil(stringValue)
-            print(".sink() received \(stringValue)")
-            // this print adds into the console output:
-            // .sink() received IPInfo(ip: "1.2.3.4")
-            // .sink() received IPInfo(ip: "192.168.1.1")
-            // .sink() received IPInfo(ip: "8.8.8.8")
-            // .sink() received IPInfo(ip: "192.168.0.1")
-            // .sink() received the completion: finished
-        })
+            }
+            .sink(receiveCompletion: { fini in
+                print(".sink() received the completion:", String(describing: fini))
+            }, receiveValue: { stringValue in
+                XCTAssertNotNil(stringValue)
+                print(".sink() received \(stringValue)")
+                // this print adds into the console output:
+                // .sink() received IPInfo(ip: "1.2.3.4")
+                // .sink() received IPInfo(ip: "192.168.1.1")
+                // .sink() received IPInfo(ip: "8.8.8.8")
+                // .sink() received IPInfo(ip: "192.168.0.1")
+                // .sink() received the completion: finished
+            })
 
         let oneFish = "{ \"ip\": \"1.2.3.4\" }".data(using: .utf8)
         let twoFish = "{ \"ip\": \"192.168.1.1\" }".data(using: .utf8)
@@ -205,7 +203,7 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
     }
 
     func testSwitchToLatest() {
-        func APIProxyExample(someString: String) -> AnyPublisher<[String],Never> {
+        func APIProxyExample(someString: String) -> AnyPublisher<[String], Never> {
             // an example function that might act akin to an API call that returns a publisher with a response.
 
             // in this case we just return a publisher with the input value inside a list
@@ -216,17 +214,16 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
 
         let cancellable = simpleSubjectPublisher
             .map { stringValue in
-                return APIProxyExample(someString: stringValue)
+                APIProxyExample(someString: stringValue)
             }
             .switchToLatest()
-            .print(self.debugDescription)
+            .print(debugDescription)
             .sink(receiveCompletion: { completion in
                 print(".sink() received the completion:", String(describing: completion))
                 switch completion {
-                case .failure(let anError):
+                case let .failure(anError):
                     print(".sink() received completion error: ", anError)
                     XCTFail("no error should be received")
-                    break
                 case .finished:
                     break
                 }
@@ -277,7 +274,7 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
         subject.send(())
 
         // If deadline > .now() + delay than you will receive completion otherwise not
-        let deadline: DispatchTime = .now() + delay/2
+        let deadline: DispatchTime = .now() + delay / 2
         scheduler.asyncAfter(deadline: deadline) {
             subject.send(completion: .finished)
         }
@@ -302,7 +299,7 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
                     .map { _ in () }
                     .prefix(8)
                     .handleEvents(receiveOutput: { _ in print("inner value") },
-                                receiveCompletion: { print("inner completed: \($0)") })
+                                  receiveCompletion: { print("inner completed: \($0)") })
                     .eraseToAnyPublisher()
             }
             .switchToLatest()
@@ -319,10 +316,9 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
         XCTAssertTrue(outerCompleted)
         XCTAssertNotNil(subscription)
     }
-    
-    
+
     func testSwitchToLatestReturningTwoResults() {
-        func APIDifferentProxyExample() -> AnyPublisher<String,Never> {
+        func APIDifferentProxyExample() -> AnyPublisher<String, Never> {
             // an example function that might act akin to an API call that returns a publisher with a response.
 
             // this "api response" provides more than a one-shot response.
@@ -336,18 +332,17 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
         let simpleSubjectPublisher = PassthroughSubject<String, Never>()
 
         let cancellable = simpleSubjectPublisher
-            .map { stringValue in
-                return APIDifferentProxyExample()
+            .map { _ in
+                APIDifferentProxyExample()
             }
             .switchToLatest()
-            .print(self.debugDescription)
+            .print(debugDescription)
             .sink(receiveCompletion: { completion in
                 print(".sink() received the completion:", String(describing: completion))
                 switch completion {
-                case .failure(let anError):
+                case let .failure(anError):
                     print(".sink() received completion error: ", anError)
                     XCTFail("no error should be received")
-                    break
                 case .finished:
                     break
                 }
@@ -357,7 +352,7 @@ class SwitchAndFlatMapPublisherTests: XCTestCase {
             })
 
         XCTAssertNotNil(cancellable)
-        
+
         XCTAssertEqual(countOfResponses, 0)
         simpleSubjectPublisher.send("trigger")
         XCTAssertEqual(countOfResponses, 2)

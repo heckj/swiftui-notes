@@ -6,13 +6,12 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
+import XCTest
 
 class SequencePublisherTests: XCTestCase {
-
     func testSequencePublisher() {
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
 
         let initialSequence = ["one", "two", "red", "blue"]
 
@@ -25,10 +24,9 @@ class SequencePublisherTests: XCTestCase {
                 switch completion {
                 case .finished:
                     break
-                case .failure(let anError):
+                case let .failure(anError):
                     XCTFail("No failure should be received from empty")
                     print("received error: ", anError)
-                    break
                 }
                 expectation.fulfill()
             }, receiveValue: { valueReceived in
@@ -44,7 +42,7 @@ class SequencePublisherTests: XCTestCase {
     }
 
     func testSequencePublisherOptionalType() {
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
 
         let initialSequence = ["one", "two", nil, "red", "blue"]
 
@@ -57,10 +55,9 @@ class SequencePublisherTests: XCTestCase {
                 switch completion {
                 case .finished:
                     break
-                case .failure(let anError):
+                case let .failure(anError):
                     XCTFail("No failure should be received from empty")
                     print("received error: ", anError)
-                    break
                 }
                 expectation.fulfill()
             }, receiveValue: { valueReceived in
@@ -76,7 +73,7 @@ class SequencePublisherTests: XCTestCase {
     }
 
     func testConvenienceArraySequencePublisher() {
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
 
         let initialSequence = ["one", "two", "red", "blue"]
 
@@ -94,10 +91,9 @@ class SequencePublisherTests: XCTestCase {
                 switch completion {
                 case .finished:
                     break
-                case .failure(let anError):
+                case let .failure(anError):
                     XCTFail("No failure should be received from empty")
                     print("received error: ", anError)
-                    break
                 }
                 expectation.fulfill()
             }, receiveValue: { valueReceived in
@@ -113,9 +109,9 @@ class SequencePublisherTests: XCTestCase {
     }
 
     func testConvenienceMapSequencePublisher() {
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
 
-        let associativeArray: [String:String] = ["one": "two", "red": "blue"]
+        let associativeArray: [String: String] = ["one": "two", "red": "blue"]
 
         var receiveCount = 0
         var collectedSequence: [(String, String)] = []
@@ -126,10 +122,9 @@ class SequencePublisherTests: XCTestCase {
                 switch completion {
                 case .finished:
                     break
-                case .failure(let anError):
+                case let .failure(anError):
                     XCTFail("No failure should be received from empty")
                     print("received error: ", anError)
-                    break
                 }
                 expectation.fulfill()
             }, receiveValue: { valueReceived in

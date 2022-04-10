@@ -6,11 +6,10 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
+import XCTest
 
 class SinkSubscriberTests: XCTestCase {
-
     func testSimpleSink() {
         // setup
         let expectation = XCTestExpectation(description: "async sink test")
@@ -62,13 +61,11 @@ class SinkSubscriberTests: XCTestCase {
                     print(".sink() received the completion:", String(describing: completion))
                     // no associated data, but you can react to knowing the request has been completed
                     XCTFail("We should never receive the completion, because the error should happen first")
-                    break
-                case .failure(let anError):
+                case let .failure(anError):
                     // do what you want with the error details, presenting, logging, or hiding as appropriate
                     print("received the error: ", anError)
                     XCTAssertEqual(anError.localizedDescription,
                                    TestFailureCondition.anErrorExample.localizedDescription)
-                    break
                 }
             }, receiveValue: { someValue in
                 // do what you want with the resulting value passed down
@@ -119,12 +116,10 @@ class SinkSubscriberTests: XCTestCase {
                     print(".sink() received the completion:", String(describing: completion))
                     // no associated data, but you can react to knowing the request has been completed
                     XCTFail("We should never receive the completion, because the cancel should happen first")
-                    break
-                case .failure(let anError):
+                case let .failure(anError):
                     // do what you want with the error details, presenting, logging, or hiding as appropriate
                     print("received the error: ", anError)
                     XCTFail("We should never receive the completion, because the cancel should happen first")
-                    break
                 }
             }, receiveValue: { someValue in
                 // do what you want with the resulting value passed down
@@ -154,7 +149,5 @@ class SinkSubscriberTests: XCTestCase {
         simplePublisher.send(completion: Subscribers.Completion.finished)
         XCTAssertEqual(countValuesReceived, 1)
         XCTAssertEqual(countCompletionsReceived, 0)
-
     }
 }
-

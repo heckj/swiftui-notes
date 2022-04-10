@@ -6,27 +6,26 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import UIKit
 import Combine
 import CoreLocation
+import UIKit
 
 class HeadingViewController: UIViewController {
-
     var headingSubscriber: AnyCancellable?
 
     let coreLocationProxy = LocationHeadingProxy()
-    var headingBackgroundQueue: DispatchQueue = DispatchQueue(label: "headingBackgroundQueue")
+    var headingBackgroundQueue: DispatchQueue = .init(label: "headingBackgroundQueue")
 
-    // MARK - lifecycle methods
+    // MARK: - lifecycle methods
 
-    @IBOutlet weak var permissionButton: UIButton!
-    @IBOutlet weak var activateTrackingSwitch: UISwitch!
-    @IBOutlet weak var headingLabel: UILabel!
-    @IBOutlet weak var locationPermissionLabel: UILabel!
+    @IBOutlet var permissionButton: UIButton!
+    @IBOutlet var activateTrackingSwitch: UISwitch!
+    @IBOutlet var headingLabel: UILabel!
+    @IBOutlet var locationPermissionLabel: UILabel!
 
-    @IBAction func requestPermission(_ sender: UIButton) {
+    @IBAction func requestPermission(_: UIButton) {
         print("requesting corelocation permission")
-        let _ = Future<Int, Never> { promise in
+        _ = Future<Int, Never> { promise in
             self.coreLocationProxy.mgr.requestWhenInUseAuthorization()
             return promise(.success(1))
         }
@@ -41,10 +40,10 @@ class HeadingViewController: UIViewController {
     @IBAction func trackingToggled(_ sender: UISwitch) {
         switch sender.isOn {
         case true:
-            self.coreLocationProxy.enable()
+            coreLocationProxy.enable()
             print("Enabling heading tracking")
         case false:
-            self.coreLocationProxy.disable()
+            coreLocationProxy.disable()
             print("Disabling heading tracking")
         }
     }
@@ -77,19 +76,17 @@ class HeadingViewController: UIViewController {
         // Do any additional setup after loading the view.
 
         // request authorization for the corelocation data
-        self.updatePermissionStatus()
+        updatePermissionStatus()
 
         let corelocationsub = coreLocationProxy
             .publisher
             .print("headingSubscriber")
             .receive(on: RunLoop.main)
-            .sink(receiveCompletion: { completion in },
+            .sink(receiveCompletion: { _ in },
                   receiveValue: { someValue in
-                    self.headingLabel.text = String(someValue.trueHeading)
-            })
+                      self.headingLabel.text = String(someValue.trueHeading)
+                  })
 
         headingSubscriber = AnyCancellable(corelocationsub)
     }
-
 }
-

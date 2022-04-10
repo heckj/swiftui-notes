@@ -6,11 +6,10 @@
 //  Copyright © 2020 SwiftUI-Notes. All rights reserved.
 //
 
-import Foundation
 import Combine
+import Foundation
 
-class ReactiveFormModel : ObservableObject {
-
+class ReactiveFormModel: ObservableObject {
     @Published var firstEntry: String = ""
     @Published var secondEntry: String = ""
     @Published var validationMessages = [String]()
@@ -18,16 +17,16 @@ class ReactiveFormModel : ObservableObject {
     private var cancellableSet: Set<AnyCancellable> = []
 
     var submitAllowed: AnyPublisher<Bool, Never>!
-    
+
     init() {
         let validationPipeline = Publishers.CombineLatest($firstEntry, $secondEntry)
-            .map { (arg) -> [String] in
+            .map { arg -> [String] in
                 var diagMsgs = [String]()
                 let (value, value_repeat) = arg
                 if !(value_repeat == value) {
                     diagMsgs.append("Values for fields must match.")
                 }
-                if (value.count < 5 || value_repeat.count < 5) {
+                if value.count < 5 || value_repeat.count < 5 {
                     diagMsgs.append("Please enter values of at least 5 characters.")
                 }
                 return diagMsgs
@@ -36,11 +35,11 @@ class ReactiveFormModel : ObservableObject {
 
         submitAllowed = validationPipeline
             .map { stringArray in
-                return stringArray.count < 1
+                stringArray.count < 1
             }
             .eraseToAnyPublisher()
 
-        let _ = validationPipeline
+        _ = validationPipeline
             .assign(to: \.validationMessages, on: self)
             .store(in: &cancellableSet)
     }

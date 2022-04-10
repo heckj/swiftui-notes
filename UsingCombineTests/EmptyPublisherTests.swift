@@ -6,13 +6,12 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
+import XCTest
 
 class EmptyPublisherTests: XCTestCase {
-
     func testEmptyPublisher() {
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
 
         let cancellable = Empty<String, Never>()
             .sink(receiveCompletion: { completion in
@@ -20,11 +19,9 @@ class EmptyPublisherTests: XCTestCase {
                 switch completion {
                 case .finished:
                     expectation.fulfill()
-                    break
-                case .failure(let anError):
+                case let .failure(anError):
                     print("received error: ", anError)
                     XCTFail("No failure should be received from empty")
-                    break
                 }
             }, receiveValue: { postmanResponse in
                 XCTFail("No vaue should be received from empty")
@@ -34,5 +31,4 @@ class EmptyPublisherTests: XCTestCase {
         wait(for: [expectation], timeout: 5.0)
         XCTAssertNotNil(cancellable)
     }
-
 }

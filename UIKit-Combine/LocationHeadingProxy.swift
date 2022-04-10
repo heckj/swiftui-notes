@@ -6,9 +6,9 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import Foundation
 import Combine
 import CoreLocation
+import Foundation
 
 final class LocationHeadingProxy: NSObject, CLLocationManagerDelegate {
     let mgr: CLLocationManager
@@ -31,7 +31,8 @@ final class LocationHeadingProxy: NSObject, CLLocationManagerDelegate {
     func disable() {
         mgr.stopUpdatingHeading()
     }
-    // MARK - delegate methods
+
+    // MARK: - delegate methods
 
     /*
      *  locationManager:didUpdateHeading:
@@ -39,7 +40,7 @@ final class LocationHeadingProxy: NSObject, CLLocationManagerDelegate {
      *  Discussion:
      *    Invoked when a new heading is available.
      */
-    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+    func locationManager(_: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
         headingPublisher.send(newHeading)
     }
 
@@ -48,7 +49,7 @@ final class LocationHeadingProxy: NSObject, CLLocationManagerDelegate {
      *  Discussion:
      *    Invoked when an error has occurred. Error types are defined in "CLError.h".
      */
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+    func locationManager(_: CLLocationManager, didFailWithError error: Error) {
         headingPublisher.send(completion: Subscribers.Completion.failure(error))
     }
 }

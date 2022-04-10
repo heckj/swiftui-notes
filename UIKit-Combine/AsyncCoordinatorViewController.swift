@@ -6,25 +6,24 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import UIKit
 import Combine
+import UIKit
 
 class AsyncCoordinatorViewController: UIViewController {
+    @IBOutlet var startButton: UIButton!
 
-    @IBOutlet weak var startButton: UIButton!
-
-    @IBOutlet weak var step1_button: UIButton!
-    @IBOutlet weak var step2_1_button: UIButton!
-    @IBOutlet weak var step2_2_button: UIButton!
-    @IBOutlet weak var step2_3_button: UIButton!
-    @IBOutlet weak var step3_button: UIButton!
-    @IBOutlet weak var step4_button: UIButton!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet var step1_button: UIButton!
+    @IBOutlet var step2_1_button: UIButton!
+    @IBOutlet var step2_2_button: UIButton!
+    @IBOutlet var step2_3_button: UIButton!
+    @IBOutlet var step3_button: UIButton!
+    @IBOutlet var step4_button: UIButton!
+    @IBOutlet var activityIndicator: UIActivityIndicatorView!
 
     var cancellable: AnyCancellable?
     var coordinatedPipeline: AnyPublisher<Bool, Error>?
 
-    @IBAction func doit(_ sender: Any) {
+    @IBAction func doit(_: Any) {
         runItAll()
     }
 
@@ -35,11 +34,11 @@ class AsyncCoordinatorViewController: UIViewController {
             activityIndicator.stopAnimating()
         }
         print("resetting all the steps")
-        self.resetAllSteps()
+        resetAllSteps()
         // driving it by attaching it to .sink
-        self.activityIndicator.startAnimating()
+        activityIndicator.startAnimating()
         print("attaching a new sink to start things going")
-        self.cancellable = coordinatedPipeline?
+        cancellable = coordinatedPipeline?
             .print()
             .sink(receiveCompletion: { completion in
                 print(".sink() received the completion: ", String(describing: completion))
@@ -48,13 +47,14 @@ class AsyncCoordinatorViewController: UIViewController {
                 print(".sink() received value: ", value)
             })
     }
+
     // MARK: - helper pieces that would normally be in other files
 
     // this emulates an async API call with a completion callback
     // it does nothing other than wait and ultimately return with a boolean value
     func randomAsyncAPI(completion completionBlock: @escaping ((Bool, Error?) -> Void)) {
         DispatchQueue.global(qos: .background).async {
-            sleep(.random(in: 1...4))
+            sleep(.random(in: 1 ... 4))
             completionBlock(true, nil)
         }
     }
@@ -64,7 +64,7 @@ class AsyncCoordinatorViewController: UIViewController {
     /// - Parameter button: button to be updated
     func createFuturePublisher(button: UIButton) -> AnyPublisher<Bool, Error> {
         return Future<Bool, Error> { promise in
-            self.randomAsyncAPI() { (result, err) in
+            self.randomAsyncAPI { result, err in
                 if let err = err {
                     promise(.failure(err))
                 } else {
@@ -73,9 +73,9 @@ class AsyncCoordinatorViewController: UIViewController {
             }
         }
         .receive(on: RunLoop.main)
-            // so that we can update UI elements to show the "completion"
-            // of this step
-        .map { inValue -> Bool in
+        // so that we can update UI elements to show the "completion"
+        // of this step
+        .map { _ -> Bool in
             // intentially side effecting here to show progress of pipeline
             self.markStepDone(button: button)
             return true
@@ -91,38 +91,38 @@ class AsyncCoordinatorViewController: UIViewController {
     }
 
     func resetAllSteps() {
-        for button in [self.step1_button, self.step2_1_button, self.step2_2_button, self.step2_3_button, self.step3_button, self.step4_button] {
+        for button in [step1_button, step2_1_button, step2_2_button, step2_3_button, step3_button, step4_button] {
             button?.backgroundColor = .lightGray
             button?.isHighlighted = false
         }
-        self.activityIndicator.stopAnimating()
+        activityIndicator.stopAnimating()
     }
 
     // MARK: - view setup
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.activityIndicator.stopAnimating()
+        activityIndicator.stopAnimating()
 
         // Do any additional setup after loading the view.
 
-        coordinatedPipeline = createFuturePublisher(button: self.step1_button)
-            .flatMap { flatMapInValue -> AnyPublisher<Bool, Error> in
-            let step2_1 = self.createFuturePublisher(button: self.step2_1_button)
-            let step2_2 = self.createFuturePublisher(button: self.step2_2_button)
-            let step2_3 = self.createFuturePublisher(button: self.step2_3_button)
-            return Publishers.Zip3(step2_1, step2_2, step2_3)
-                .map { _ -> Bool in
-                    return true
-                }
-                .eraseToAnyPublisher()
+        coordinatedPipeline = createFuturePublisher(button: step1_button)
+            .flatMap { _ -> AnyPublisher<Bool, Error> in
+                let step2_1 = self.createFuturePublisher(button: self.step2_1_button)
+                let step2_2 = self.createFuturePublisher(button: self.step2_2_button)
+                let step2_3 = self.createFuturePublisher(button: self.step2_3_button)
+                return Publishers.Zip3(step2_1, step2_2, step2_3)
+                    .map { _ -> Bool in
+                        true
+                    }
+                    .eraseToAnyPublisher()
             }
-        .flatMap { _ in
-            return self.createFuturePublisher(button: self.step3_button)
-        }
-        .flatMap { _ in
-            return self.createFuturePublisher(button: self.step4_button)
-        }
-        .eraseToAnyPublisher()
+            .flatMap { _ in
+                self.createFuturePublisher(button: self.step3_button)
+            }
+            .flatMap { _ in
+                self.createFuturePublisher(button: self.step4_button)
+            }
+            .eraseToAnyPublisher()
     }
 }

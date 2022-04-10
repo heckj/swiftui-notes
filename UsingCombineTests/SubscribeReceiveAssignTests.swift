@@ -6,11 +6,10 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
+import XCTest
 
 class SubscribeReceiveAssignTests: XCTestCase {
-
     private final class KVOAbleNSObject: NSObject {
         @objc dynamic var intValue: Int = 0
         @objc dynamic var boolValue: Bool = false
@@ -24,13 +23,13 @@ class SubscribeReceiveAssignTests: XCTestCase {
         // setup
         let canary = KVOAbleNSObject()
         let myBackgroundQueue = DispatchQueue(label: "UsingCombineExample", attributes: .concurrent)
-        let sut = KVOExpectation(object: canary, keyPath: \.boolValue) { (obj, change) -> Bool in
-            return obj.boolValue
+        let sut = KVOExpectation(object: canary, keyPath: \.boolValue) { obj, _ -> Bool in
+            obj.boolValue
         }
         let sampleURL = URL(string: "https://postman-echo.com/time/valid?timestamp=2016-10-10")
         // checks the validity of a timestamp - this one should return {"valid":true}
 
-        //validate
+        // validate
         let cancellable = URLSession.shared.dataTaskPublisher(for: sampleURL!)
             .subscribe(on: myBackgroundQueue)
             .map { $0.data }
@@ -44,44 +43,43 @@ class SubscribeReceiveAssignTests: XCTestCase {
         wait(for: [sut], timeout: 5)
         XCTAssertNotNil(cancellable)
     }
-  
-  func testJustSubscribeOnReceiveOn() {
-    // setup
-    let upstreamName = "upstream"
-    let upstreamScheduler = DispatchQueue(label: upstreamName)
 
-    let downstreamName = "downstream"
-    let downstreamScheduler = DispatchQueue(label: downstreamName)
-    
-    var upstreamResult: String?
-    var downstreamResult: String?
-    let exp = self.expectation(description: #function)
+    func testJustSubscribeOnReceiveOn() {
+        // setup
+        let upstreamName = "upstream"
+        let upstreamScheduler = DispatchQueue(label: upstreamName)
 
-    // validate
-    let cancellable = Just<Void>(())
-      .subscribe(on: upstreamScheduler)
-      .map({ _ in
-        let name = __dispatch_queue_get_label(nil)
-        upstreamResult = String(cString: name, encoding: .utf8)
-      })
-      .receive(on: downstreamScheduler)
-      .sink(receiveValue: { _ in
-        let name = __dispatch_queue_get_label(nil)
-        downstreamResult = String(cString: name, encoding: .utf8)
-        exp.fulfill()
-    })
-    
-    waitForExpectations(timeout: 1)
-    XCTAssertEqual(upstreamName, upstreamResult ?? nil)
-    XCTAssertEqual(downstreamName, downstreamResult ?? nil)
-    XCTAssertNotNil(cancellable)
-  }
+        let downstreamName = "downstream"
+        let downstreamScheduler = DispatchQueue(label: downstreamName)
+
+        var upstreamResult: String?
+        var downstreamResult: String?
+        let exp = expectation(description: #function)
+
+        // validate
+        let cancellable = Just<Void>(())
+            .subscribe(on: upstreamScheduler)
+            .map { _ in
+                let name = __dispatch_queue_get_label(nil)
+                upstreamResult = String(cString: name, encoding: .utf8)
+            }
+            .receive(on: downstreamScheduler)
+            .sink(receiveValue: { _ in
+                let name = __dispatch_queue_get_label(nil)
+                downstreamResult = String(cString: name, encoding: .utf8)
+                exp.fulfill()
+            })
+
+        waitForExpectations(timeout: 1)
+        XCTAssertEqual(upstreamName, upstreamResult ?? nil)
+        XCTAssertEqual(downstreamName, downstreamResult ?? nil)
+        XCTAssertNotNil(cancellable)
+    }
 
     func testMixedQueuesSubscribeReceiveDelayPipeline() {
-
         // setup
         let simplePublisher = PassthroughSubject<String, Never>()
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
 
         let firstQueue = DispatchQueue(label: "firstQueue")
         let secondQueue = DispatchQueue(label: "secondQueue")
@@ -89,7 +87,7 @@ class SubscribeReceiveAssignTests: XCTestCase {
         let sendQueue = DispatchQueue(label: "sendQueue")
         // checks the validity of a timestamp - this one should return {"valid":true}
 
-        //validate
+        // validate
         let cancellable = simplePublisher
             .map { someValue -> String in
                 print("map after publisher on queue:", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
@@ -131,10 +129,10 @@ class SubscribeReceiveAssignTests: XCTestCase {
             }
 
         XCTAssertNotNil(cancellable)
-        sendQueue.asyncAfter(deadline: .now() + 0.1, execute: {
+        sendQueue.asyncAfter(deadline: .now() + 0.1) {
             print("sending data on queue:", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
             simplePublisher.send("something in")
-        })
+        }
 
         wait(for: [expectation], timeout: 5)
     }
@@ -142,13 +140,13 @@ class SubscribeReceiveAssignTests: XCTestCase {
     func testSubscribeAndDataTaskQueueHandling() {
         // NOTE(heckj): Documented the unpexected feedback here at FB6727976
         // setup
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
 
         let firstQueue = DispatchQueue(label: "firstQueue")
         let sampleURL = URL(string: "https://postman-echo.com/time/valid?timestamp=2016-10-10")
         // checks the validity of a timestamp - this one should return {"valid":true}
 
-        //validate
+        // validate
         let cancellable = URLSession.shared.dataTaskPublisher(for: sampleURL!)
             .map {
                 print("map after dataTask on queue label ", String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)!)
@@ -189,13 +187,13 @@ class SubscribeReceiveAssignTests: XCTestCase {
     func testSubscribeAndDataTaskQueueHandling_differentOrdering() {
         // NOTE(heckj): Documented the unpexected feedback here at FB6727976
         // setup
-        let expectation = XCTestExpectation(description: self.debugDescription)
+        let expectation = XCTestExpectation(description: debugDescription)
 
         let firstQueue = DispatchQueue(label: "firstQueue")
         let sampleURL = URL(string: "https://postman-echo.com/time/valid?timestamp=2016-10-10")
         // checks the validity of a timestamp - this one should return {"valid":true}
 
-        //validate
+        // validate
         let cancellable = URLSession.shared.dataTaskPublisher(for: sampleURL!)
             // just changed the ordering to see if subscribe only impacted the publisher just prior
             .subscribe(on: firstQueue)

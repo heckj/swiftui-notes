@@ -6,23 +6,22 @@
 //  Copyright © 2021 SwiftUI-Notes. All rights reserved.
 //
 
-import SwiftUI
 import Combine
+import SwiftUI
 
 struct PublisherBindingExampleView: View {
-    
     @State private var filterText = ""
     @State private var delayed = ""
-    
-    private var relay = PassthroughSubject<String,Never>()
+
+    private var relay = PassthroughSubject<String, Never>()
     private var debouncedPublisher: AnyPublisher<String, Never>
-    
+
     init() {
-        self.debouncedPublisher = relay
+        debouncedPublisher = relay
             .debounce(for: 1, scheduler: RunLoop.main)
             .eraseToAnyPublisher()
     }
-    
+
     var body: some View {
         VStack {
             TextField("filter", text: $filterText)

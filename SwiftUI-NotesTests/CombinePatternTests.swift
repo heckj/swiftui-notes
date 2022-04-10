@@ -6,11 +6,10 @@
 //  Copyright © 2019 SwiftUI-Notes. All rights reserved.
 //
 
-import XCTest
 import Combine
+import XCTest
 
 class CombinePatternTests: XCTestCase {
-
     enum TestFailureCondition: Error {
         case invalidServerResponse
     }
@@ -18,7 +17,7 @@ class CombinePatternTests: XCTestCase {
     func testDeadSimpleChain() {
         let simplePublisher = PassthroughSubject<String, Error>()
 
-        let _ = simplePublisher
+        _ = simplePublisher
             .print()
             // the result of adding in .print() to this chain is the following additional console output
             //        receive subscription: (PassthroughSubject)
@@ -44,7 +43,7 @@ class CombinePatternTests: XCTestCase {
         // this data will never be seen by anything in the pipeline above because we've already sent a completion
         simplePublisher.send(completion: Subscribers.Completion.finished)
 
-// the full console output from this test
+        // the full console output from this test
 //        receive subscription: (PassthroughSubject)
 //        request unlimited
 //        receive value: (firstStringValue)
@@ -53,13 +52,12 @@ class CombinePatternTests: XCTestCase {
 //        .sink() received secondStringValue
 //        receive error: (invalidServerResponse)
 //        .sink() caught the failure failure(SwiftUI_NotesTests.CombinePatternTests.TestFailureCondition.invalidServerResponse)
-
     }
 
     func testDeadSimpleChainAssertNoFailure() {
         let simplePublisher = PassthroughSubject<String, Error>()
 
-        let _ = simplePublisher
+        _ = simplePublisher
             .assertNoFailure("What could possibly go wrong?")
             .sink(receiveCompletion: { fini in
                 print(".sink() received the completion:", String(describing: fini))
@@ -78,10 +76,10 @@ class CombinePatternTests: XCTestCase {
     func testDeadSimpleChainCatch() {
         let simplePublisher = PassthroughSubject<String, Error>()
 
-        let _ = simplePublisher
-            .catch { err in
+        _ = simplePublisher
+            .catch { _ in
                 // must return a Publisher
-                return Just("replacement value")
+                Just("replacement value")
             }
             .sink(receiveCompletion: { fini in
                 print(".sink() received the completion:", String(describing: fini))
@@ -103,7 +101,5 @@ class CombinePatternTests: XCTestCase {
         // .sink() received the completion: finished
         // NOTE(heckj) catch intercepts the whole chain and replaces it with what you return.
         // In this case, it's the Just convenience publisher, which in turn immediately sends a "finish" when it's done.
-
     }
-
 }
