@@ -486,7 +486,7 @@ Because the output type does not include what changes on the referenced object, 
 In practice, this method is most frequently used by the SwiftUI framework.
 SwiftUI views use the `@ObservedObject` property wrapper to know when to invalidate and refresh views that reference classes implementing ObservableObject.
 
-Classes implementing ObservedObject are also expected to use @Published to provide notifications of changes on specific properties, or to optionally provide a custom announcement that indicates the object has changed.
+Classes implementing `ObservableObject` are also expected to use @Published to provide notifications of changes on specific properties, or to optionally provide a custom announcement that indicates the object has changed.
 
 It can also be used locally to watch for updates to a reference-type model.
 
