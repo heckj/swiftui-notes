@@ -953,7 +953,7 @@ For example, if you have an object getting passed down that has a boolean proper
 [source, swift]
 ----
 struct MyStruct {
-    isValid: bool = true
+    var isValid: Bool = true
 }
 //
 Just(MyStruct())
