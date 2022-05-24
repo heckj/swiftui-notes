@@ -7,7 +7,7 @@
 <meta name="generator" content="Asciidoctor 2.0.10">
 <meta name="keywords" content="Apple, Combine, ReactiveX, SwiftUI">
 <meta name="author" content="Joseph Heck">
-<meta name="copyright" content="Joseph Heck 2019-2021">
+<meta name="copyright" content="Joseph Heck 2019-2022">
 <title>Using Combine</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -445,8 +445,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h1>Using Combine</h1>
 <div class="details">
 <span id="author" class="author">Joseph Heck</span><br>
-<span id="revnumber">version 1.2.1,</span>
-<span id="revdate">2021-12-21</span>
+<span id="revnumber">version 1.2.2,</span>
+<span id="revdate">2021-05-24</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -742,10 +742,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>(<a href="./index.html">english</a>) (<a href="./index_zh-CN.html">普通话</a>)</p>
 </div>
 <div class="paragraph">
-<p>版本号: 1.2.1</p>
+<p>版本号: 1.2.2</p>
 </div>
 <div class="paragraph">
-<p>该版日期: 2021-12-21</p>
+<p>该版日期: 2021-05-24</p>
 </div>
 <div class="paragraph">
 <p>这是一本中高级难度的书，主要关注在如何使用 Combine 框架。
@@ -5787,7 +5787,7 @@ Apple 的文档包括一篇关于 <a href="https://developer.apple.com/documenta
     <span class="c1">// setup</span>
     <span class="k">let</span> <span class="nv">simplePublisher</span> <span class="o">=</span> <span class="kt">PassthroughSubject</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kt">Error</span><span class="o">&gt;</span><span class="p">()</span> <i class="conum" data-value="2"></i><b>(2)</b>
 
-    <span class="k">let</span> <span class="nv">_</span> <span class="o">=</span> <span class="n">simplePublisher</span> <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="k">let</span> <span class="nv">cancellable</span> <span class="o">=</span> <span class="n">simplePublisher</span> <i class="conum" data-value="3"></i><b>(3)</b>
         <span class="o">.</span><span class="nf">sink</span><span class="p">(</span><span class="nv">receiveCompletion</span><span class="p">:</span> <span class="p">{</span> <span class="n">completion</span> <span class="k">in</span>
             <span class="n">countCompletionsReceived</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">switch</span> <span class="n">completion</span> <span class="p">{</span> <i class="conum" data-value="4"></i><b>(4)</b>
@@ -13223,8 +13223,8 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.2.1<br>
-Last updated 2022-04-23 16:55:41 UTC
+Version 1.2.2<br>
+Last updated 2022-05-24 15:46:06 UTC
 </div>
 </div>
 <style>
