@@ -65,7 +65,7 @@ func testSinkReceiveDataThenError() {
     // setup
     let simplePublisher = PassthroughSubject<String, Error>() <2>
 
-    let _ = simplePublisher <3>
+    let cancellable = simplePublisher <3>
         .sink(receiveCompletion: { completion in
             countCompletionsReceived += 1
             switch completion { <4>
