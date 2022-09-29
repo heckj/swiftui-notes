@@ -48,7 +48,7 @@ The general pattern of this view starts with a textfield that accepts user input
 2. We have a subscriber (`usernameSubscriber`) attached `$username` publisher, which publishes the value on change and attempts to retrieve the GitHub user.
 The resulting variable `githubUserData` (also <<reference#reference-published,@Published>>) is a list of GitHub user objects.
 Even though we only expect a single value here, we use a list because we can conveniently return an empty list on failure scenarios: unable to access the API or the username isn't registered at GitHub.
-3. We have the `passthroughSubject` `apiNetworkActivitySubscriber` to reflect when the GithubAPI object starts or finishes making network requests.
+3. We have the `passthroughSubject` `networkActivityPublisher` to reflect when the GithubAPI object starts or finishes making network requests.
 4. We have a another subscriber `repositoryCountSubscriber` attached to `$githubUserData` publisher that pulls the repository count off the github user data object and assigns it to a text field to be displayed.
 5. We have a final subscriber `avatarViewSubscriber` attached to `$githubUserData` that attempts to retrieve the image associated with the user's avatar for display.
 
