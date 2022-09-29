@@ -4161,7 +4161,7 @@ throttle 操作符保证了每半秒最多可发出 1 个请求。</td>
 尽管我们只期望在这里获得单个值，但我们使用列表是因为我们可以方便地在失败情况下返回空列表：无法访问 API 或用户名未在 GitHub 注册。</p>
 </li>
 <li>
-<p>我们有 <code>passthroughSubject</code> <code>apiNetworkActivitySubscriber</code> 来反映 GithubAPI 对象何时开始或完成网络请求。</p>
+<p>我们有 <code>passthroughSubject</code> <code>networkActivityPublisher</code> 来反映 GithubAPI 对象何时开始或完成网络请求。</p>
 </li>
 <li>
 <p>我们有另一个订阅者 <code>repositoryCountSubscriber</code> 连接到 <code>$githubUserData</code> 发布者，该发布者从 github 用户数据对象中提取出仓库个数，并将其分配给要显示的文本字段。</p>
@@ -13224,7 +13224,7 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 <div id="footer">
 <div id="footer-text">
 Version 1.2.2<br>
-Last updated 2022-05-28 19:10:59 UTC
+Last updated 2022-09-29 16:21:30 UTC
 </div>
 </div>
 <style>

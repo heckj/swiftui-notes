@@ -4112,7 +4112,7 @@ The resulting variable <code>githubUserData</code> (also <a href="#reference-pub
 Even though we only expect a single value here, we use a list because we can conveniently return an empty list on failure scenarios: unable to access the API or the username isn&#8217;t registered at GitHub.</p>
 </li>
 <li>
-<p>We have the <code>passthroughSubject</code> <code>apiNetworkActivitySubscriber</code> to reflect when the GithubAPI object starts or finishes making network requests.</p>
+<p>We have the <code>passthroughSubject</code> <code>networkActivityPublisher</code> to reflect when the GithubAPI object starts or finishes making network requests.</p>
 </li>
 <li>
 <p>We have a another subscriber <code>repositoryCountSubscriber</code> attached to <code>$githubUserData</code> publisher that pulls the repository count off the github user data object and assigns it to a text field to be displayed.</p>
@@ -13176,7 +13176,7 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 <div id="footer">
 <div id="footer-text">
 Version 1.2.2<br>
-Last updated 2022-05-28 19:10:59 UTC
+Last updated 2022-09-29 16:21:30 UTC
 </div>
 </div>
 <style>
