@@ -48,7 +48,7 @@ __代码和解释__::
 2. 我们有一个订阅者（`usernameSubscriber`）连接到 `$username` 发布者，该发布者发送值的更新，并尝试取回 GitHub user。
 结果返回的变量 `githubUserData`（也被 <<reference#reference-published,@Published>> 标记）是一个 GitHub 用户对象的列表。
 尽管我们只期望在这里获得单个值，但我们使用列表是因为我们可以方便地在失败情况下返回空列表：无法访问 API 或用户名未在 GitHub 注册。
-3. 我们有 `passthroughSubject` `apiNetworkActivitySubscriber` 来反映 GithubAPI 对象何时开始或完成网络请求。
+3. 我们有 `passthroughSubject` `networkActivityPublisher` 来反映 GithubAPI 对象何时开始或完成网络请求。
 4. 我们有另一个订阅者 `repositoryCountSubscriber` 连接到 `$githubUserData` 发布者，该发布者从 github 用户数据对象中提取出仓库个数，并将其分配给要显示的文本字段。
 5. 我们有一个最终的订阅者 `avatarViewSubscriber` 连接到 `$githubUserData`，尝试取回与用户的头像相关的图像进行显示。
 
