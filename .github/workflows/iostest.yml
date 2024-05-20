@@ -52,7 +52,11 @@ jobs:
     - name: Show available destinations
       run: xcodebuild -scheme SwiftUI-Notes -showdestinations
 
-    - name: Run the Combine test suite
+    - name: Run the Combine test suite (macOS)
+      run: |
+        xcodebuild -scheme SwiftUI-Notes test 
+
+    - name: Run the Combine test suite (iOS)
       run: |
         xcodebuild -scheme SwiftUI-Notes \
         -configuration Debug \
