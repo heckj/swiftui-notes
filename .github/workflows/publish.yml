@@ -25,7 +25,7 @@ jobs:
 
     - name: generate zh-CN html with asciidoctor from docs/
       run: docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs_zh-CN/using-combine_zh-CN.adoc
-      # results to appear in the directory 'output', which on GH action is owned by root, not `me` 
+      # results to appear in the directory 'output', which on GH action is owned by root, not `me`
 
     - name: permission check
       run: ls -altr
