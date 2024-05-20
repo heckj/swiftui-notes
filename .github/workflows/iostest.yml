@@ -50,18 +50,12 @@ jobs:
       run: xcodebuild -list
 
     - name: Show available destinations
-      run: xcodebuild -scheme SwiftUI-Notes -showsdks
-    - name: Show available destinations
       run: xcodebuild -scheme SwiftUI-Notes -showdestinations
-
-    - name: Run the Combine test suite (macOS)
-      run: |
-        xcodebuild -scheme SwiftUI-Notes test 
 
     - name: Run the Combine test suite (iOS)
       run: |
         xcodebuild -scheme SwiftUI-Notes \
         -configuration Debug \
         -sdk iphonesimulator17.0 \
-        -destination 'platform=iOS Simulator,OS=16.4,name=iPhone 8' \
+        -destination 'platform=iOS Simulator,OS=17.5,name=iPhone 14' \
         test -showBuildTimingSummary
