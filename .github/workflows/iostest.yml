@@ -50,6 +50,8 @@ jobs:
       run: xcodebuild -list
 
     - name: Show available destinations
+      run: xcodebuild -scheme SwiftUI-Notes -showsdks
+    - name: Show available destinations
       run: xcodebuild -scheme SwiftUI-Notes -showdestinations
 
     - name: Run the Combine test suite (macOS)
