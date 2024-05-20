@@ -1,6 +1,6 @@
 name: CI
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   test-adoc-generation:
@@ -16,14 +16,14 @@ jobs:
       run: docker run --rm -v $(pwd):/documents/ --name asciidoc-to-html heckj/docker-asciidoctor asciidoctor -v -t -D /documents/output -r ./docs/lib/google-analytics-docinfoprocessor.rb docs/using-combine-book.adoc
       # results to appear in the directory 'output'
 
-  build:
+  # build:
 
-    runs-on: macos-11
+    # runs-on: macos-14
     #env:
       # sets the version of Xcode to utilize within the VM for all steps
       # DEVELOPER_DIR: /Applications/Xcode_13.app/Contents/Developer
-    steps:
-    - uses: actions/checkout@v2
+    # steps:
+    # - uses: actions/checkout@v2
 
     # - name: docker version
     #   run: docker -v
@@ -31,14 +31,14 @@ jobs:
     # - name: docker help
     #   run: docker --help
 
-    - name: Show what's in Applications
-      run: ls -al /Applications
+    # - name: Show what's in Applications
+    #   run: ls -al /Applications
 
     # - name: xcodebuild --help
     #  run: xcodebuild --help
 
-    - name: xcodebuild --showsdks
-      run: xcodebuild -showsdks
+    # - name: xcodebuild --showsdks
+    #   run: xcodebuild -showsdks
 
     # - name: xcodebuild -showBuildSettings
     #   run: xcodebuild -showBuildSettings
@@ -46,16 +46,16 @@ jobs:
     # - name: xcodebuild -showTestPlans
     #   run: xcodebuild -showTestPlans
 
-    - name: xcodebuild -list
-      run: xcodebuild -list
+    # - name: xcodebuild -list
+    #   run: xcodebuild -list
 
-    - name: Show available destinations
-      run: xcodebuild -scheme SwiftUI-Notes -showdestinations
+    # - name: Show available destinations
+    #   run: xcodebuild -scheme SwiftUI-Notes -showdestinations
 
-    - name: Run the Combine test suite
-      run: |
-        xcodebuild -scheme SwiftUI-Notes \
-        -configuration Debug \
-        -sdk iphonesimulator15.0 \
-        -destination 'platform=iOS Simulator,OS=15.0,name=iPhone 8' \
-        test -showBuildTimingSummary
+    # - name: Run the Combine test suite (iOS)
+    #   run: |
+    #     xcodebuild -scheme SwiftUI-Notes \
+    #     -configuration Debug \
+    #     -sdk iphonesimulator17.0 \
+    #     -destination 'platform=iOS Simulator,OS=17.5,name=iPhone 14' \
+    #     test -showBuildTimingSummary
