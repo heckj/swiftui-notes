@@ -486,15 +486,18 @@
 					};
 					1A6006F222D267F30030A471 = {
 						CreatedOnToolsVersion = 11.0;
+						TestTargetID = 1A6006DD22D267F10030A471;
 					};
 					1AC8C77422B1BED80064C1AE = {
 						CreatedOnToolsVersion = 11.0;
 					};
 					1AC8C78A22B1BED90064C1AE = {
 						CreatedOnToolsVersion = 11.0;
+						TestTargetID = 1AC8C77422B1BED80064C1AE;
 					};
 					1AEA9C2322CD5FE7006709F1 = {
 						CreatedOnToolsVersion = 11.0;
+						TestTargetID = 1AC8C77422B1BED80064C1AE;
 					};
 				};
 			};
@@ -763,6 +766,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/UIKit-Combine.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/UIKit-Combine";
 			};
 			name = Debug;
 		};
@@ -782,6 +786,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/UIKit-Combine.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/UIKit-Combine";
 			};
 			name = Release;
 		};
@@ -963,6 +968,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftUI-Notes.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SwiftUI-Notes";
 			};
 			name = Debug;
 		};
@@ -982,6 +988,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftUI-Notes.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SwiftUI-Notes";
 			};
 			name = Release;
 		};
@@ -1000,6 +1007,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftUI-Notes.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SwiftUI-Notes";
 			};
 			name = Debug;
 		};
@@ -1018,6 +1026,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftUI-Notes.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SwiftUI-Notes";
 			};
 			name = Release;
 		};
